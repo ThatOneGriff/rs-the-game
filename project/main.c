@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 /* = Library information =
-SDL version: 3.2.4 (last updated 10.11.2025)
+SDL version: 3.2.28 (last updated 06.12.2025)
 nlohmann/json version: TBA
 
  = Compiler args (in order) =
@@ -16,6 +16,7 @@ gcc main.c -o ../main.exe -I "C:/SDL/x86_64-w64-mingw32/include" -L "C:/SDL/x86_
 ../main.exe
 */
 
+/// NOTE: use texture scaling mode `SDL_SCALING_PIXELART`.
 
 
 #define SDL_MAIN_HANDLED
