@@ -12,7 +12,7 @@ SDL version: 3.2.28 (last updated 06.12.2025)
 nlohmann/json version: TBA
 
  = Compiler args (in order) =
-gcc project/main.c -o ./main.exe -I "C:/SDL/x86_64-w64-mingw32/include" -L "C:/SDL/x86_64-w64-mingw32/lib" -lSDL3 -I "C:/SDL_Image/x86_64-w64-mingw32/include" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -lSDL3_image -I "C:/SDL_ttf/x86_64-w64-mingw32/include" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib" -lSDL3_ttf -Ofast -Wall -Werror -std=c17
+gcc -Ofast -Wall -Werror -std=c17 project/main.c -o ./main.exe -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" -L "./SDL3-x64" -lSDL3 -lSDL3_image -lSDL3_ttf -static
 ./main.exe
 */
 
