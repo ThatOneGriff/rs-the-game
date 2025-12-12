@@ -1,1 +1,96 @@
-<mxGraphModel><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel>
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0" version="29.2.6">
+  <diagram id="USbZ7FDXOyAWcOUBZtof" name="Page-1">
+    <mxGraphModel dx="1226" dy="1825" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="1JXPIRBj4ran-aVUihR--2" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;fontFamily=Courier New;" value="miniaudio" vertex="1">
+          <mxGeometry height="40" width="120" x="100" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--13" edge="1" parent="1" source="1JXPIRBj4ran-aVUihR--3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="1JXPIRBj4ran-aVUihR--12">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="160" y="400" />
+              <mxPoint x="240" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Courier New;" value="audio.c" vertex="1">
+          <mxGeometry height="50" width="120" x="100" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--11" edge="1" parent="1" source="1JXPIRBj4ran-aVUihR--5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="1JXPIRBj4ran-aVUihR--10" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="320" y="210" />
+              <mxPoint x="320" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--5" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fontFamily=Courier New;" value="audio.h" vertex="1">
+          <mxGeometry height="40" width="120" x="260" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--6" edge="1" parent="1" source="1JXPIRBj4ran-aVUihR--2" style="endArrow=classic;html=1;rounded=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;fillColor=#6a00ff;strokeColor=#3700CC;" target="1JXPIRBj4ran-aVUihR--3" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="380" y="270" as="sourcePoint" />
+            <mxPoint x="430" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--7" edge="1" parent="1" source="1JXPIRBj4ran-aVUihR--2" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="1JXPIRBj4ran-aVUihR--5" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="160" y="90" />
+              <mxPoint x="320" y="90" />
+            </Array>
+            <mxPoint x="380" y="270" as="sourcePoint" />
+            <mxPoint x="430" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--14" edge="1" parent="1" source="1JXPIRBj4ran-aVUihR--10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="1JXPIRBj4ran-aVUihR--12">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="400" />
+              <mxPoint x="240" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--10" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Courier New;" value="main.c" vertex="1">
+          <mxGeometry height="50" width="120" x="300" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Courier New;fontStyle=1;fillColor=#a20025;fontColor=#ffffff;strokeColor=#6F0000;" value="main.exe" vertex="1">
+          <mxGeometry height="60" width="120" x="180" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--19" parent="1" style="swimlane;whiteSpace=wrap;html=1;" value="Audio" vertex="1">
+          <mxGeometry height="270" width="320" x="80" y="-10" as="geometry" />
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--30" parent="1" style="swimlane;whiteSpace=wrap;html=1;" value="SDL3" vertex="1">
+          <mxGeometry height="100" width="630" x="430" y="-10" as="geometry" />
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--22" parent="1JXPIRBj4ran-aVUihR--30" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;fontFamily=Courier New;" value="SDL3_image" vertex="1">
+          <mxGeometry height="40" width="120" x="135" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--23" parent="1JXPIRBj4ran-aVUihR--30" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;fontFamily=Courier New;" value="SDL3_main" vertex="1">
+          <mxGeometry height="40" width="120" x="255" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--24" parent="1JXPIRBj4ran-aVUihR--30" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;fontFamily=Courier New;" value="SDL3_timer" vertex="1">
+          <mxGeometry height="40" width="120" x="375" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--25" parent="1JXPIRBj4ran-aVUihR--30" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;fontFamily=Courier New;" value="SDL3_ttf" vertex="1">
+          <mxGeometry height="40" width="120" x="495" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--21" parent="1JXPIRBj4ran-aVUihR--30" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#008a00;fontColor=#ffffff;strokeColor=#005700;fontFamily=Courier New;" value="SDL3" vertex="1">
+          <mxGeometry height="40" width="120" x="15" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="1JXPIRBj4ran-aVUihR--31" edge="1" parent="1" source="1JXPIRBj4ran-aVUihR--30" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="1JXPIRBj4ran-aVUihR--10" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="745" y="290" />
+              <mxPoint x="360" y="290" />
+            </Array>
+            <mxPoint x="580" y="180" as="sourcePoint" />
+            <mxPoint x="630" y="130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

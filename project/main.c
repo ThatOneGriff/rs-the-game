@@ -9,7 +9,8 @@
 #include <stdlib.h>
 
 /* = Library information =
-SDL version: 3.2.28 (last updated 06.12.2025)
+SDL3 version: 3.2.28       (last updated  6.12.25)
+miniaudio version: 0.11.23 (last updated 12.12.25)
 nlohmann/json version: TBA
 
  = Compiler args (in order) =
