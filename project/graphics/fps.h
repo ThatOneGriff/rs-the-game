@@ -37,7 +37,8 @@ struct FPS_Manager new_fps_manager(const unsigned int fps_cap)
     struct FPS_Manager result;
     if (fps_cap == 0)
     {
-        print_error("Invalid frame cap of 0", NON_SDL_ERROR);
+        /// An error because a broken `FPS_Manager` makes the whole rendering process UB.
+        print_error("`new_fps_manager()`: Invalid frame cap of 0. Terminating FPS manager creation", NON_SDL_ERROR);
         return result;
     }
 

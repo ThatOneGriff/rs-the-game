@@ -32,12 +32,12 @@ void program_exit(const int exit_code);
 void init(int* exit_code)
 {
     if (exit_code == NULL)
-        print_warning("`init`: `*exit_code` is `NULL`", NON_SDL_ERROR);
+        print_warning("`init()`: `*exit_code` arg is `NULL`", NON_SDL_ERROR);
 
     /// Initialization
     if (! SDL_Init(SDL_FLAGS))
     {
-        print_error("`init`, initialization", IS_SDL_ERROR);
+        print_error("`init()`: failed SDL3 initialization", IS_SDL_ERROR);
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -46,7 +46,7 @@ void init(int* exit_code)
     graphics_layer.window = SDL_CreateWindow(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
     if (graphics_layer.window == NULL)
     {
-        print_error("`init`, window creation", IS_SDL_ERROR);
+        print_error("`init()`: failed to create a window", IS_SDL_ERROR);
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -55,7 +55,7 @@ void init(int* exit_code)
     graphics_layer.renderer = SDL_CreateRenderer(graphics_layer.window, NULL); /// `name` is related to drivers; SDL determines it automatically on `NULL`.
     if (graphics_layer.renderer == NULL)
     {
-        print_error("`init`, renderer creation", IS_SDL_ERROR);
+        print_error("`init()`: failed to create a renderer", IS_SDL_ERROR);
         SDL_DestroyWindow(graphics_layer.window);
         graphics_layer.window = NULL;
         *exit_code = EXIT_FAILURE;
@@ -65,12 +65,12 @@ void init(int* exit_code)
     /// Null texture (debug purposes)
     graphics_layer.null_texture = IMG_LoadTexture(graphics_layer.renderer, "res/images/null.png");
     if (graphics_layer.null_texture == NULL)
-        print_warning("`init`, null texture creation (not critical)", IS_SDL_ERROR);
+        print_warning("`init()`: failed to load the null texture (not critical)", IS_SDL_ERROR);
 
     /// TTF initialization
     if (! TTF_Init())
     {
-        print_error("`init`, TTF initialization", IS_SDL_ERROR);
+        print_error("`init()`: failed to initialize TTF", IS_SDL_ERROR);
         SDL_DestroyWindow(graphics_layer.window);
         graphics_layer.window = NULL;
         SDL_DestroyRenderer(graphics_layer.renderer);
@@ -83,7 +83,7 @@ void init(int* exit_code)
     TTF_Font* test_main_font_load = TTF_OpenFont(MAIN_FONT, 1);
     if (test_main_font_load == NULL)
     {
-        print_error("`init`, main font test loading", IS_SDL_ERROR);
+        print_error("`init()`: failed to load the main font", IS_SDL_ERROR);
         SDL_DestroyWindow(graphics_layer.window);
         graphics_layer.window = NULL;
         SDL_DestroyRenderer(graphics_layer.renderer);
@@ -99,7 +99,7 @@ void init(int* exit_code)
     SDL_Surface* icon = IMG_Load("res/images/icon.png");
     if (icon == NULL)
     {
-        print_error("`init`, icon loading", IS_SDL_ERROR);
+        print_error("`init()`: failed to load the program icon", IS_SDL_ERROR);
         SDL_DestroyWindow(graphics_layer.window);
         graphics_layer.window = NULL;
         SDL_DestroyRenderer(graphics_layer.renderer);
@@ -115,7 +115,7 @@ void init(int* exit_code)
     /// Audio
     if (ma_engine_init(NULL, &audio.engine) != MA_SUCCESS)
     {
-        print_error("`init`, audio initialization", NON_SDL_ERROR);
+        print_error("`init()`: failed to initialize audio", NON_SDL_ERROR);
         SDL_DestroyWindow(graphics_layer.window);
         graphics_layer.window = NULL;
         SDL_DestroyRenderer(graphics_layer.renderer);
@@ -126,7 +126,7 @@ void init(int* exit_code)
     }
 
     set_fps_cap(60);
-    print_success("`init`");
+    print_success("`init()`");
     *exit_code = EXIT_SUCCESS;
 }
 
@@ -157,7 +157,7 @@ void quit(void)
     SDL_Quit();
     //ma_sound_uninit (&audio.bg_music);
     ma_engine_uninit(&audio.engine);
-    print_success("`quit`");
+    print_success("`quit()`");
 }
 
 

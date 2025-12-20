@@ -4,9 +4,9 @@
 
 #include <SDL3/SDL.h> /// SDL_GetError().
 #include <stdio.h>    /// I/O.
-#include <stdbool.h>  /// `bool` args for `print_*`.
+#include <stdbool.h>  /// `bool` args for `print_*()`.
 
-#include "helpers/helpers.h"     /// Coloured text.
+#include "helpers/helpers.h" /// Coloured text.
 
 #define UNUSED(expr) do { (void)(expr); } while (0)
 #define  IS_SDL_ERROR true

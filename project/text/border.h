@@ -24,7 +24,7 @@ void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius,
 {
     if (surf_out == NULL || surf_target == NULL)
     {
-        print_warning("`_blit_8x()`: `NULL` surface arg(s)", NON_SDL_ERROR);
+        print_warning("`_blit_8x()`: `NULL` surface arg(s). Terminating `_blit_8x()`", NON_SDL_ERROR);
         return;
     }
     if (radius == 0)
