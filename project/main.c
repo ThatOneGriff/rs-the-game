@@ -18,6 +18,10 @@
 /* Audio */
 #include "audio/audio.h"
 
+/* Logic */
+#include "logic/input.h"
+#include "logic/logic_layer.h"
+
 /* = Library information =
 SDL3 version: 3.2.28       (last updated  6.12.25)
 miniaudio version: 0.11.23 (last updated 12.12.25)
@@ -33,7 +37,8 @@ gcc -Ofast -Wall -Wextra -Werror -std=c17 project/main.c project/audio/audio.c -
 
 /* Predef */
 
-int main(int argc, char *argv[]);
+int  main(int argc, char *argv[]);
+void game_loop();
 
 
 /* Body */
@@ -67,6 +72,22 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
+    game_loop();
+
     program_exit(EXIT_SUCCESS); /// Actual quitting of the program.
     return EXIT_SUCCESS; /// Solely for `-Wall -Wextra` compliance.
+}
+
+
+void game_loop()
+{
+    while (logic_layer.game_is_running)
+    {
+        SDL_RenderClear(graphics_layer.renderer);
+
+        process_events();
+
+        SDL_RenderTexture(graphics_layer.renderer, graphics_layer.null_texture, NULL, NULL);
+        SDL_RenderPresent(graphics_layer.renderer);
+    }
 }

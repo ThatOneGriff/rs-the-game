@@ -3,8 +3,9 @@
 #define GRAPHICS_LAYER_H
 
 #define WINDOW_TITLE "Renault Sport: The Game"
-#define WINDOW_WIDTH  1200
-#define WINDOW_HEIGHT  900
+#define WINDOW_WIDTH  1280
+#define WINDOW_HEIGHT  720
+
 
 /* Predef */
 
@@ -14,7 +15,6 @@ void _init_graphics_layer(void);
 
 /* Struct */
 
-/// Singleton, => static.
 struct Graphics_Layer
 {
     SDL_Window*   window;
