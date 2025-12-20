@@ -1,3 +1,5 @@
+/// Every header that was ever used in this project is included here.
+
 /*- SDL -*/
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
@@ -11,6 +13,7 @@
 
 /* Main headers */
 #include "debug.h"
+#include "init_quit.h"
 
 /* Audio */
 #include "audio/audio.h"
@@ -42,7 +45,9 @@ int main(int argc, char *argv[])
     UNUSED(argv);
     printf("\n");
     
-    
+    int exit_code = EXIT_SUCCESS;
+    init(&exit_code);
 
-    return 0;
+    program_exit(EXIT_SUCCESS); /// Actual quitting of the program.
+    return EXIT_SUCCESS; /// For `-Wall -Wextra` compliance only.
 }

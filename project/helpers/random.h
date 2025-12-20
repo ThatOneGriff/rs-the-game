@@ -2,7 +2,8 @@
 #ifndef RANDOM_H
 #define RANDOM_H
 
-#include <time.h>
+#include <stdio.h> /// I/O.
+#include <time.h>  /// Time-based random seeding.
 
 
 /* Prefef */
@@ -25,11 +26,11 @@ unsigned int randint(const unsigned int min, const unsigned int max)
     else if (min == max)
         return min;
     
-    /// not seeded
+    /// not seeded (happens only once)
     if (_seed == 0)
     {
         _seed = time(NULL);
-        srand(_seed); /// srand() only needs to be called once
+        srand(_seed); /// srand() only needs to be called once.
     }
 
     return rand() % (max-min+1) + min;

@@ -1,18 +1,17 @@
 #pragma once
 #ifndef LOGIC_LAYER_H
-#define LOGIC_H
+#define LOGIC_LAYER_H
 
-#include <stdio.h>
-#include <stdlib.h>
+
+/* Predef */
 
 struct Logic_Layer;
 void _init_logic_layer(void);
-static struct Logic_Layer logic_layer;
+static struct Logic_Layer logic_layer; /// Singleton.
 
 
-/// Structs
+/* Body */
 
-/// Singleton, => static.
 struct Logic_Layer
 {
     SDL_Event event;
@@ -24,4 +23,4 @@ void _init_logic_layer(void)
     logic_layer.game_is_running = true;
 }
 
-#endif /// EVENTS_LOGIC_H
+#endif /// LOGIC_LAYER_H

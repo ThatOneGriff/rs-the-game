@@ -2,16 +2,13 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include <SDL3/SDL.h>
+#include <SDL3/SDL.h> /// SDL3.
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <stdbool.h> /// For `logic_layer` manipulation.
+#include <stdio.h>   /// I/O.
 
-#include "logic_layer.h"
-#include "game_components/scene.h"
-#include "graphics/graphics_layer.h"
-#include "text/text.h"
+#include "logic_layer.h" /// Exiting the game.
+//#include "game_components/scene.h"
 
 
 /* Predef */
@@ -25,12 +22,6 @@ void _process_keyboard(const SDL_Keycode event_key);
 
 void process_events(void)
 {
-    if (ma_sound_at_end(&audio.bg_music))
-    {
-        logic_layer.game_is_running = false;
-        return;
-    }
-
     //_process_input(); /// Seems logical to put it into `SDL_EVENT_KEY_DOWN`. However, this means a fraction-of-second input lag.
     while (SDL_PollEvent(&logic_layer.event))
     {
@@ -50,7 +41,7 @@ void process_events(void)
     }
 }
 
-/// NOTE: `Player` is deleted, but I might need the code in R.S..
+/// NOTE: `Joker_Demo` leftovers. Will be useful.
 /*void _process_input(void)
 {
     /// Player movement
@@ -88,19 +79,6 @@ void _process_keyboard(const SDL_Keycode event_key)
     int exit_code = EXIT_SUCCESS;
     switch(event_key)
     {
-    /// Random textcolor
-    case SDLK_C:
-        rebake_text(
-            &scene.text,
-            "Why so jolly?",
-            (SDL_Color){randint(0, 255), randint(0, 255), randint(0, 255), 255},
-            50,
-            4,
-            &exit_code
-        );
-        break; /// WARNING: with an esoteric-enough fall-through,
-               /// case(smth1)'s `EXIT_FAILURE` may be overshadowed by case(smth2)'s `EXIT_SUCCESS`.
-    
     /// Frame cap on / off
     case SDLK_F:
         rendering_FPS_manager.fps_capped = ! rendering_FPS_manager.fps_capped;
@@ -114,7 +92,8 @@ void _process_keyboard(const SDL_Keycode event_key)
             printf("- [FPS cap] Disabled\n");
             rem_fps_cap();
         }
-        break;
+        break; /// WARNING: with an esoteric-enough fall-through,
+               /// case(smth1)'s `EXIT_FAILURE` may be overshadowed by case(smth2)'s `EXIT_SUCCESS`.
     
     /// Exit
     case SDLK_ESCAPE:

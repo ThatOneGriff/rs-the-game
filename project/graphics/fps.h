@@ -2,8 +2,7 @@
 #ifndef FPS_H
 #define FPS_H
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "../debug.h" /// Error printing.
 
 #define SEC_IN_NS 1000000000.0
 
@@ -38,7 +37,7 @@ struct FPS_Manager new_fps_manager(const unsigned int fps_cap)
     struct FPS_Manager result;
     if (fps_cap == 0)
     {
-        fprintf(stderr, "~[WRNNG] Invalid frame cap of 0.\n");
+        print_error("Invalid frame cap of 0", NON_SDL_ERROR);
         return result;
     }
 

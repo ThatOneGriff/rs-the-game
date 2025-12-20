@@ -3,7 +3,7 @@
 #define HELPERS_H
 
 /// For text colouring.
-#include <windows.h>
+#include <windows.h> /// Text colouring.
 #define WHITE  7
 #define GRAY   8
 #define RED    4

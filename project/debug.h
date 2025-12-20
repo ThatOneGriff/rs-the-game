@@ -2,24 +2,38 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#include <SDL3/SDL.h> /// SDL_GetError()
-#include <stdio.h>    /// I/O
-#include <stdbool.h>  /// `bool` args for `print_*`
+#include <SDL3/SDL.h> /// SDL_GetError().
+#include <stdio.h>    /// I/O.
+#include <stdbool.h>  /// `bool` args for `print_*`.
 
-#include "helpers/helpers.h"     /// Coloured text
+#include "helpers/helpers.h"     /// Coloured text.
 
 #define UNUSED(expr) do { (void)(expr); } while (0)
-#define SDL_ERROR     true
+#define  IS_SDL_ERROR true
 #define NON_SDL_ERROR false
 
 
 /* Predef */
 
+void print_success(char* text);
 void print_error(  char* text, bool is_SDL_error);
 void print_warning(char* text, bool is_SDL_error);
 
 
 /* Body */
+
+void print_success(char* text)
+{
+    if (text == NULL)
+        return;
+    
+    textcolor(GREEN);
+    fprintf(stderr, "~ [SUCCESS] ");
+    textcolor(WHITE);
+
+    fprintf(stderr, "%s.\n", text);
+}
+
 
 void print_error(char* text, bool is_SDL_error)
 {
@@ -27,14 +41,14 @@ void print_error(char* text, bool is_SDL_error)
         return;
     
     textcolor(RED);
-    printf("~ [ERROR] ");
+    fprintf(stderr, "~ [ERROR] ");
     textcolor(WHITE);
 
-    printf("%s", text);
+    fprintf(stderr, "%s", text);
     if (is_SDL_error)
-        printf(": %s.\n", SDL_GetError());
+        fprintf(stderr, ": \"%s\".\n", SDL_GetError());
     else
-        printf(".\n");
+        fprintf(stderr, ".\n");
 }
 
 
@@ -44,14 +58,14 @@ void print_warning(char* text, bool is_SDL_error)
         return;
     
     textcolor(YELLOW);
-    printf("~ [WRNNG] ");
+    fprintf(stderr, "~ [WRNNG] ");
     textcolor(WHITE);
 
-    printf("%s", text);
+    fprintf(stderr, "%s", text);
     if (is_SDL_error)
-        printf(": %s.\n", SDL_GetError());
+        fprintf(stderr, ": \"%s\".\n", SDL_GetError());
     else
-        printf(".\n");
+        fprintf(stderr, ".\n");
 }
 
 #endif /// DEBUG_H

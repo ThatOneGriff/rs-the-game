@@ -2,39 +2,42 @@
 #ifndef INIT_QUIT_H
 #define INIT_QUIT_H
 
-#include <SDL3/SDL.h>
-#include <SDL3_image/SDL_image.h>
-#include <SDL3_ttf/SDL_ttf.h>
+#include <SDL3/SDL.h>             /// Initialization
+#include <SDL3_image/SDL_image.h> /// of
+#include <SDL3_ttf/SDL_ttf.h>     /// SDL3.
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <stdio.h>  /// I/O
 
-#include "logic_layer.h"
-#include "audio/audio.h"
-#include "game_components/scene.h"
-#include "graphics/fps.h"
-#include "graphics/graphics_layer.h"
-#include "text/text.h"
+#include "debug.h"  /// Error / warning output.
+#include "audio/audio.h"             /// Initialization
+#include "logic/logic_layer.h"       /// of
+#include "graphics/fps.h"            /// various
+#include "graphics/graphics_layer.h" /// game
+#include "text/text.h"               /// components.
+//#include "game_components/scene.h"
 
 #define SDL_FLAGS (SDL_INIT_VIDEO)
 
 
 /* Predef */
 
-void init_SDL(int* exit_code);
-void free_SDL(void);
+void init(int* exit_code);
+void quit(void);
 void program_exit(const int exit_code);
 
 
 /* Body */
 
 
-void init_SDL(int* exit_code)
+void init(int* exit_code)
 {
+    if (exit_code == NULL)
+        print_warning("`init`: `*exit_code` is `NULL`", NON_SDL_ERROR);
+
     /// Initialization
     if (! SDL_Init(SDL_FLAGS))
     {
-        fprintf(stderr, "~ [ERROR] while initializing SDL3: %s\n", SDL_GetError());
+        print_error("`init`, initialization", IS_SDL_ERROR);
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -43,7 +46,7 @@ void init_SDL(int* exit_code)
     graphics_layer.window = SDL_CreateWindow(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
     if (graphics_layer.window == NULL)
     {
-        fprintf(stderr, "~ [ERROR] while creating Window: %s\n", SDL_GetError());
+        print_error("`init`, window creation", IS_SDL_ERROR);
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -52,39 +55,56 @@ void init_SDL(int* exit_code)
     graphics_layer.renderer = SDL_CreateRenderer(graphics_layer.window, NULL); /// `name` is related to drivers; SDL determines it automatically on `NULL`.
     if (graphics_layer.renderer == NULL)
     {
-        fprintf(stderr, "~ [ERROR] while creating Renderer: %s\n", SDL_GetError());
+        print_error("`init`, renderer creation", IS_SDL_ERROR);
+        SDL_DestroyWindow(graphics_layer.window);
+        graphics_layer.window = NULL;
         *exit_code = EXIT_FAILURE;
         return;
     }
     
+    /// Null texture (debug purposes)
     graphics_layer.null_texture = IMG_LoadTexture(graphics_layer.renderer, "res/images/null.png");
     if (graphics_layer.null_texture == NULL)
-        fprintf(stderr, "~ [WRNNG] `null_texture` couldn't be loaded; not critical.\n");
+        print_warning("`init`, null texture creation (not critical)", IS_SDL_ERROR);
 
     /// TTF initialization
     if (! TTF_Init())
     {
-        fprintf(stderr, "~ [ERROR] while initializing TTF: %s\n", SDL_GetError());
+        print_error("`init`, TTF initialization", IS_SDL_ERROR);
+        SDL_DestroyWindow(graphics_layer.window);
+        graphics_layer.window = NULL;
+        SDL_DestroyRenderer(graphics_layer.renderer);
+        graphics_layer.renderer = NULL;
         *exit_code = EXIT_FAILURE;
         return;
     }
 
-    /// Font
-    TTF_Font* test_load_main_font = TTF_OpenFont(MAIN_FONT, 1);
-    if (test_load_main_font == NULL)
+    /// Font (test loading)
+    TTF_Font* test_main_font_load = TTF_OpenFont(MAIN_FONT, 1);
+    if (test_main_font_load == NULL)
     {
-        fprintf(stderr, "~ [ERROR] while loading main font: %s\n", SDL_GetError());
+        print_error("`init`, main font test loading", IS_SDL_ERROR);
+        SDL_DestroyWindow(graphics_layer.window);
+        graphics_layer.window = NULL;
+        SDL_DestroyRenderer(graphics_layer.renderer);
+        graphics_layer.renderer = NULL;
+        TTF_Quit();
         *exit_code = EXIT_FAILURE;
         return;
     }
-    TTF_CloseFont(test_load_main_font);
-    test_load_main_font = NULL;
+    TTF_CloseFont(test_main_font_load);
+    test_main_font_load = NULL;
 
     /// Icon
     SDL_Surface* icon = IMG_Load("res/images/icon.png");
     if (icon == NULL)
     {
-        fprintf(stderr, "~ [ERROR] while loading icon: %s\n", SDL_GetError());
+        print_error("`init`, icon loading", IS_SDL_ERROR);
+        SDL_DestroyWindow(graphics_layer.window);
+        graphics_layer.window = NULL;
+        SDL_DestroyRenderer(graphics_layer.renderer);
+        graphics_layer.renderer = NULL;
+        TTF_Quit();
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -92,14 +112,27 @@ void init_SDL(int* exit_code)
     SDL_DestroySurface(icon);
     icon = NULL;
 
+    /// Audio
+    if (ma_engine_init(NULL, &audio.engine) != MA_SUCCESS)
+    {
+        print_error("`init`, audio initialization", NON_SDL_ERROR);
+        SDL_DestroyWindow(graphics_layer.window);
+        graphics_layer.window = NULL;
+        SDL_DestroyRenderer(graphics_layer.renderer);
+        graphics_layer.renderer = NULL;
+        TTF_Quit();
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
+
     set_fps_cap(60);
-    printf("[SUCCESS] Init\n");
+    print_success("`init`");
     *exit_code = EXIT_SUCCESS;
 }
 
 
-/// Works by FILO principle. De-init with a stack, maybe?
-void free_SDL(void)
+/// Works by FILO principle. IDEA: de-init with a stack? Could greatly shorten the code.
+void quit(void)
 {
     if (graphics_layer.renderer != NULL)
     {
@@ -122,14 +155,15 @@ void free_SDL(void)
 
     TTF_Quit();
     SDL_Quit();
-    printf("[SUCCESS] Quit\n");
+    //ma_sound_uninit (&audio.bg_music);
+    ma_engine_uninit(&audio.engine);
+    print_success("`quit`");
 }
+
 
 void program_exit(const int exit_code)
 {
-    ma_sound_uninit (&audio.bg_music);
-    ma_engine_uninit(&audio.engine);
-    free_SDL();
+    quit();
     printf("\n");
     exit(exit_code);
 }

@@ -2,14 +2,14 @@
 #ifndef GRAPHICS_LAYER_H
 #define GRAPHICS_LAYER_H
 
-#include <SDL3/SDL.h>
+#define WINDOW_TITLE "Renault Sport: The Game"
+#define WINDOW_WIDTH  1200
+#define WINDOW_HEIGHT  900
 
-#include <stdio.h>
-#include <stdlib.h>
+/* Predef */
 
-#define WINDOW_TITLE "Joker Demo"
-#define WINDOW_WIDTH  800
-#define WINDOW_HEIGHT 600
+struct Graphics_Layer;
+void _init_graphics_layer(void);
 
 
 /* Struct */
@@ -21,7 +21,7 @@ struct Graphics_Layer
     SDL_Renderer* renderer;
     SDL_Texture*  null_texture;
 };
-static struct Graphics_Layer graphics_layer;
+static struct Graphics_Layer graphics_layer; /// Singleton.
 void _init_graphics_layer(void)
 {
     graphics_layer.window   = NULL;
