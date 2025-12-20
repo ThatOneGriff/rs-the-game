@@ -2,7 +2,7 @@
 #ifndef HELPERS_H
 #define HELPERS_H
 
-/// For text coloring.
+/// For text colouring.
 #include <windows.h>
 #define WHITE  7
 #define GRAY   8
