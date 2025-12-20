@@ -44,10 +44,29 @@ int main(int argc, char *argv[])
     UNUSED(argc);
     UNUSED(argv);
     printf("\n");
-    
+    /// [!!!] STRICTLY ON TOP [!!!]
     int exit_code = EXIT_SUCCESS;
+    SDL_SetMainReady();
+    _init_graphics_layer();
+    _init_logic_layer();
+    /// , because you don't want to use uninitialized `layer`'s.
+
+    /// SDL init
     init(&exit_code);
+    if (exit_code == EXIT_FAILURE)
+    {
+        print_error("Failure initializing the program", NON_SDL_ERROR);
+        program_exit(exit_code);
+    }
+
+    /// Audio init
+    if (ma_engine_init(NULL, &audio.engine) != MA_SUCCESS)
+    {
+        print_error("Failure initializing miniaudio", NON_SDL_ERROR);
+        program_exit(exit_code);
+        return EXIT_FAILURE;
+    }
 
     program_exit(EXIT_SUCCESS); /// Actual quitting of the program.
-    return EXIT_SUCCESS; /// For `-Wall -Wextra` compliance only.
+    return EXIT_SUCCESS; /// Solely for `-Wall -Wextra` compliance.
 }
