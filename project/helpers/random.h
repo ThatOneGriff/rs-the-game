@@ -2,6 +2,7 @@
 #ifndef RANDOM_H
 #define RANDOM_H
 
+#include <SDL3/SDL.h> /// Rand `SDL_Color`
 #include <stdio.h> /// I/O.
 #include <time.h>  /// Time-based random seeding.
 
@@ -10,7 +11,9 @@
 
 unsigned int randint     (const unsigned int min, const unsigned int max);
 unsigned int randint_except(    unsigned int min,       unsigned int max, const unsigned int except);
+SDL_Color    rand_color(void);
 float        rand_percent(const unsigned int min, const unsigned int max);
+
 
 
 /* Body */
@@ -49,6 +52,12 @@ unsigned int randint_except(unsigned int min, unsigned int max, const unsigned i
         ++result;
     
     return result;
+}
+
+
+SDL_Color rand_color(void)
+{
+    return (SDL_Color){randint(0, 255), randint(0, 255), randint(0, 255), 0};
 }
 
 

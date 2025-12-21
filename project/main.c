@@ -16,20 +16,36 @@
 #include "init_quit.h"
 #include "resources.h"
 
+#ifdef USING_AUDIO
 /* Audio */
 #include "audio/audio.h"
+#endif /// USING_AUDIO
+
+/* Graphics */
+#include "graphics/fps.h"
+#include "graphics/graphics_layer.h"
+#include "graphics/texture.h"
+
+/* Helpers */
+#include "helpers/helpers.h"
+#include "helpers/random.h"
 
 /* Logic */
 #include "logic/input.h"
 #include "logic/logic_layer.h"
+
+/* Text */
+#include "text/border.h"
+#include "text/text.h"
 
 /* = Library information =
 SDL3 version: 3.2.28       (last updated  6.12.25)
 miniaudio version: 0.11.23 (last updated 12.12.25)
 nlohmann/json version: TBA
 
- = Compiler args (in order) =
+ = Compiler args (1: w/ audio, 2: w/o audio) =
 gcc -Ofast -Wall -Wextra -Werror -std=c17 project/main.c project/audio/audio.c -o ./main.exe -lSDL3 -lSDL3_image -lSDL3_ttf -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
+gcc -Ofast -Wall -Wextra -Werror -std=c17 project/main.c -o ./main.exe -lSDL3 -lSDL3_image -lSDL3_ttf -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
 ./main.exe
 */
 
@@ -65,14 +81,6 @@ int main(int argc, char *argv[])
         program_exit(exit_code);
     }
 
-    /// Audio init
-    if (ma_engine_init(NULL, &audio.engine) != MA_SUCCESS)
-    {
-        print_error("Failure initializing miniaudio", NON_SDL_ERROR);
-        program_exit(exit_code);
-        return EXIT_FAILURE;
-    }
-
     game_loop();
 
     program_exit(EXIT_SUCCESS); /// Actual quitting of the program.
@@ -82,6 +90,7 @@ int main(int argc, char *argv[])
 
 void game_loop()
 {
+    struct Texture* test_text = create_text("Test", (SDL_Color){255,255,255,0}, rand_color(), 150, 15);
     while (logic_layer.game_is_running)
     {
         SDL_RenderClear(graphics_layer.renderer);
@@ -89,6 +98,9 @@ void game_loop()
         process_events();
 
         SDL_RenderTexture(graphics_layer.renderer, graphics_layer.null_texture, NULL, NULL);
+        render_texture(test_text);
         SDL_RenderPresent(graphics_layer.renderer);
+
+        SDL_Delay(16);
     }
 }

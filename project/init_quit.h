@@ -10,7 +10,9 @@
 
 #include "debug.h"     /// Error / warning output.
 #include "resources.h" /// Texture & font paths.
+#ifdef USING_AUDIO
 #include "audio/audio.h"             /// Initialization
+#endif /// USING_AUDIO
 #include "logic/logic_layer.h"       /// of
 #include "graphics/fps.h"            /// various
 #include "graphics/graphics_layer.h" /// game
@@ -113,6 +115,7 @@ void init(int* exit_code)
     SDL_DestroySurface(icon);
     icon = NULL;
 
+    #ifdef USING_AUDIO
     /// Audio
     if (ma_engine_init(NULL, &audio.engine) != MA_SUCCESS)
     {
@@ -125,6 +128,7 @@ void init(int* exit_code)
         *exit_code = EXIT_FAILURE;
         return;
     }
+    #endif /// USING_AUDIO
 
     set_fps_cap(60);
     print_success("`init()`");
@@ -156,8 +160,10 @@ void quit(void)
 
     TTF_Quit();
     SDL_Quit();
+    #ifdef USING_AUDIO
     //ma_sound_uninit (&audio.bg_music);
     ma_engine_uninit(&audio.engine);
+    #endif /// USING_AUDIO
     print_success("`quit()`");
 }
 

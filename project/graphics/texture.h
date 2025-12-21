@@ -15,13 +15,13 @@ struct Texture
     SDL_Texture* texture;
     SDL_FRect    rect;
 };
+struct Texture* load_texture(const char* path, const SDL_FRect rect);
+void free_texture(struct Texture** target);
 
 
 /* Predef */
 
-struct Texture* load_texture(const char* path, const SDL_FRect rect);
 void render_texture(const struct Texture* target);
-void free_texture(const struct Texture** target);
 
 
 /* Body */
@@ -36,8 +36,6 @@ struct Texture* load_texture(const char* path, const SDL_FRect rect)
     }
     if (rect.w == 0 || rect.h == 0)
         print_warning("`load_texture()`: `rect`'s `x` or `y` is 0. Are you sure?", NON_SDL_ERROR);
-    if (exit_code == NULL)
-        print_warning("`load_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR)
     
     /* Texture loading */
     struct Texture* result = malloc(sizeof(struct Texture));
@@ -77,13 +75,14 @@ void render_texture(const struct Texture* target)
 }
 
 
-void free_texture(const struct Texture** target)
+void free_texture(struct Texture** target)
 {
-    if (target == NULL || target->texture == NULL)
+    if (*target == NULL || (*target)->texture == NULL)
         return;
 
-    SDL_DestroyTexture(target->texture);
-    target->texture = NULL;
+    SDL_DestroyTexture((*target)->texture);
+    (*target)->texture = NULL;
+    (*target)->rect = (SDL_FRect){0.0, 0.0, 0.0, 0.0};
     free(*target);
     *target = NULL;
     return;

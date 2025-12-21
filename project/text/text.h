@@ -7,129 +7,59 @@
 
 #include "border.h"       /// Text w/ borders.
 #include "../resources.h" /// Font path(s).
-#include "../graphics/fps.h"            /// Text movement (NOTE: text movement may be redundant)
-#include "../graphics/graphics_layer.h" /// `SDL_CreateTextureFromSurface()`
-#include "../helpers/helpers.h" /// `struct Vec2` for text movement (NOTE 2: text movement may be redundant)
-#include "../helpers/random.h"  /// Randomized text direction (NOTE: text movement may be redundant)
-
-
-/* Struct */
-
-struct Text_IMG
-{
-    SDL_Texture* texture;
-    SDL_FRect    rect;
-    struct Vec2 direction;
-    float velocity;
-};
+#include "../graphics/graphics_layer.h" /// `SDL_CreateTextureFromSurface()`.
+#include "../graphics/texture.h" /// Rendering text into a texture.
 
 
 /* Predef */
 
-struct Text_IMG create_text(              const char* text,     const SDL_Color color,     const unsigned int size,     const unsigned int border_thickness, const float movement_velocity, int* exit_code);
-void free_text  (struct Text_IMG* target);
-void rebake_text(struct Text_IMG* target, const char* new_text, const SDL_Color new_color, const unsigned int new_size, const unsigned int new_border_thickness, int* exit_code);
-
-void move_text  (struct Text_IMG* target);
+struct Texture* create_text(const char* text, const SDL_Color inner_color, const SDL_Color outer_color, const unsigned int size, const unsigned int border_thickness);
 
 
 /* Body */
 
-struct Text_IMG create_text(const char* text, const SDL_Color color, const unsigned int size, const unsigned int border_thickness, const float movement_velocity, int* exit_code)
+struct Texture* create_text(const char* text, const SDL_Color inner_color, const SDL_Color outer_color, const unsigned int size, const unsigned int border_thickness)
 {
-    struct Text_IMG result;
     if (size == 0)
     {
         print_error("`create_text()`: `size` is 0", NON_SDL_ERROR);
-        return result;
+        return NULL;
     }
 
     /// `0` arg for auto-determined length.
-    SDL_Surface* text_surf = create_bordered_text_surface(text, size, border_thickness, (SDL_Color){255, 255, 255, 255}, color);
+    SDL_Surface* text_surf = create_bordered_text_surface(text, size, border_thickness, inner_color, outer_color);
     if (text_surf == NULL)
     {
         print_error("`create_text()`: couldn't create `text_surf`", IS_SDL_ERROR);
-        *exit_code = EXIT_FAILURE;
-        return result;
+        return NULL;
     }
 
-    result.texture = SDL_CreateTextureFromSurface(graphics_layer.renderer, text_surf);
-    if (result.texture == NULL)
+    struct Texture* result = malloc(sizeof(struct Texture));
+    result->texture = SDL_CreateTextureFromSurface(graphics_layer.renderer, text_surf);
+    if (result->texture == NULL)
     {
         print_error("`create_text()`: couldn't create a resulting texture from `text_surf`", IS_SDL_ERROR);
         SDL_DestroySurface(text_surf);
         text_surf = NULL;
-        *exit_code = EXIT_FAILURE;
-        return result;
+        free(result);
+        result = NULL;
+        return NULL;
     }
-    result.rect.w = (float)text_surf->w;
-    result.rect.h = (float)text_surf->h;
+    result->rect.w = (float)text_surf->w;
+    result->rect.h = (float)text_surf->h;
 
     SDL_DestroySurface(text_surf);
     text_surf = NULL;
     
-    /// Centering on the screen with a 5% wiggle room. TODO: should instead be passed as a parameter.
-    result.rect.x = (float)(WINDOW_WIDTH  - result.rect.w) / 2 * rand_percent(95, 105);
-    result.rect.y = (float)(WINDOW_HEIGHT - result.rect.h) / 2 * rand_percent(95, 105);
+    /// Centering the result on the screen. TODO: should instead be passed as a parameter.
+    result->rect.x = (float)(WINDOW_WIDTH  - result->rect.w) / 2;// * rand_percent(95, 105);
+    result->rect.y = (float)(WINDOW_HEIGHT - result->rect.h) / 2;// * rand_percent(95, 105);
 
-    if (movement_velocity != 0)
-    {
-        result.direction.x = (int)randint_except(1,3,2) - 2; /// -1, 1
-        result.direction.y = (int)randint_except(1,3,2) - 2; /// -1, 1
-        result.velocity = movement_velocity;
-    }
-
-    *exit_code = EXIT_SUCCESS;
     return result;
 }
 
 
-void free_text(struct Text_IMG* target)
-{
-    SDL_DestroyTexture(target->texture);
-    target->texture = NULL;
-    target->rect = (SDL_FRect){0.0, 0.0, 0.0, 0.0};
-    target->direction = (struct Vec2){0, 0};
-}
-
-
-void rebake_text(struct Text_IMG* target, const char* new_text, const SDL_Color new_color, const unsigned int new_size, const unsigned int new_border_thickness, int* exit_code)
-{
-    if (new_size == 0)
-    {
-        print_error("`rebake_text()`: `new_size` parameter set as 0", NON_SDL_ERROR);
-        return;
-    }
-
-    /// `0` arg for auto-determined length.
-    SDL_Surface* text_surf = create_bordered_text_surface(new_text, new_size, new_border_thickness, (SDL_Color){255, 255, 255, 255}, new_color);
-    if (text_surf == NULL)
-    {
-        print_error("`rebake_text()`: couldn't create `text_surf`", IS_SDL_ERROR);
-        *exit_code = EXIT_FAILURE;
-        return;
-    }
-
-    target->texture = SDL_CreateTextureFromSurface(graphics_layer.renderer, text_surf);
-    if (target->texture == NULL)
-    {
-        print_error("`rebake_text()`: couldn't create a resulting texture from `text_surf`", IS_SDL_ERROR);
-        SDL_DestroySurface(text_surf);
-        text_surf = NULL;
-        *exit_code = EXIT_FAILURE;
-        return;
-    }
-    target->rect.w = (float)text_surf->w;
-    target->rect.h = (float)text_surf->h;
-
-    SDL_DestroySurface(text_surf);
-    text_surf = NULL;
-
-    *exit_code = EXIT_SUCCESS;
-}
-
-
-void move_text(struct Text_IMG* target)
+/*void move_text(struct Text_IMG* target)
 {
     if (target == NULL)
     {
@@ -155,6 +85,6 @@ void move_text(struct Text_IMG* target)
     const float y_move = (float)target->direction.y * (float)target->velocity * movement_FPS_manager.fraction_of_target_delta_elapsed;
     target->rect.x += x_move;
     target->rect.y += y_move;
-}
+}*/
 
 #endif /// TEXT_H
