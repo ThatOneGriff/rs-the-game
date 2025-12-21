@@ -1,0 +1,92 @@
+#pragma once
+#ifndef TEXTURE_H
+#define TEXTURE_H
+
+#include <SDL3/SDL.h> /// SDL3
+#include <SDL3_image/SDL_image.h> /// SDL3_image
+
+#include "graphics_layer.h" /// Rendering of the texture
+
+
+/* Struct */
+
+struct Texture
+{
+    SDL_Texture* texture;
+    SDL_FRect    rect;
+};
+
+
+/* Predef */
+
+struct Texture* load_texture(const char* path, const SDL_FRect rect);
+void render_texture(const struct Texture* target);
+void free_texture(const struct Texture** target);
+
+
+/* Body */
+
+struct Texture* load_texture(const char* path, const SDL_FRect rect)
+{
+    /* Parameter checking */
+    if (path == NULL)
+    {
+        print_error("`load_texture()`: `path` arg is `NULL`", NON_SDL_ERROR);
+        return NULL;
+    }
+    if (rect.w == 0 || rect.h == 0)
+        print_warning("`load_texture()`: `rect`'s `x` or `y` is 0. Are you sure?", NON_SDL_ERROR);
+    if (exit_code == NULL)
+        print_warning("`load_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR)
+    
+    /* Texture loading */
+    struct Texture* result = malloc(sizeof(struct Texture));
+    if (result == NULL)
+    {
+        print_error("`load_texture()`: couldn't allocate memory to `result` texture", NON_SDL_ERROR);
+        return NULL;
+    }
+
+    result->texture = IMG_LoadTexture(graphics_layer.renderer, path);
+    if (result->texture == NULL)
+    {
+        print_error("`load_texture()`: couldn't load the texture", IS_SDL_ERROR);
+        free(result);
+        result = NULL;
+        return NULL;
+    }
+
+    result->rect = rect;
+    return result;
+}
+
+
+void render_texture(const struct Texture* target)
+{
+    /* Param checking */
+    if (target == NULL || target->texture == NULL)
+    {
+        print_error("`render_texture()` target or its `texture` is `NULL`", NON_SDL_ERROR);
+        return;
+    }
+    if (target->rect.w == 0 || target->rect.h == 0)
+        print_warning("`render_texture()`: target's `x` or `y` is 0. Are you sure?", NON_SDL_ERROR);
+    
+    /* Rendering */
+    SDL_RenderTexture(graphics_layer.renderer, target->texture, NULL, &target->rect);
+}
+
+
+void free_texture(const struct Texture** target)
+{
+    if (target == NULL || target->texture == NULL)
+        return;
+
+    SDL_DestroyTexture(target->texture);
+    target->texture = NULL;
+    free(*target);
+    *target = NULL;
+    return;
+}
+
+#endif /// TEXTURE_H

@@ -5,15 +5,12 @@
 #include <SDL3/SDL.h> /// SDL3.
 #include <SDL3_ttf/SDL_ttf.h> /// SDL3_TTF.
 
-#include <stdio.h>
-
-#include "border.h"
-#include "../graphics/fps.h"
-#include "../graphics/graphics_layer.h"
-#include "../helpers/helpers.h"
-#include "../helpers/random.h"
-
-#define MAIN_FONT "res/fonts/MysteryQuest.ttf"
+#include "border.h"       /// Text w/ borders.
+#include "../resources.h" /// Font path(s).
+#include "../graphics/fps.h"            /// Text movement (NOTE: text movement may be redundant)
+#include "../graphics/graphics_layer.h" /// `SDL_CreateTextureFromSurface()`
+#include "../helpers/helpers.h" /// `struct Vec2` for text movement (NOTE 2: text movement may be redundant)
+#include "../helpers/random.h"  /// Randomized text direction (NOTE: text movement may be redundant)
 
 
 /* Struct */
@@ -43,12 +40,12 @@ struct Text_IMG create_text(const char* text, const SDL_Color color, const unsig
     struct Text_IMG result;
     if (size == 0)
     {
-        print_warning("`create_text()`: `size` is 0. Terminating text creation", NON_SDL_ERROR);
+        print_error("`create_text()`: `size` is 0", NON_SDL_ERROR);
         return result;
     }
 
     /// `0` arg for auto-determined length.
-    SDL_Surface* text_surf = bordered_text_surface_create(text, size, border_thickness, (SDL_Color){255, 255, 255, 255}, color);
+    SDL_Surface* text_surf = create_bordered_text_surface(text, size, border_thickness, (SDL_Color){255, 255, 255, 255}, color);
     if (text_surf == NULL)
     {
         print_error("`create_text()`: couldn't create `text_surf`", IS_SDL_ERROR);
@@ -100,12 +97,12 @@ void rebake_text(struct Text_IMG* target, const char* new_text, const SDL_Color 
 {
     if (new_size == 0)
     {
-        print_warning("`rebake_text()`: `new_size` parameter set as 0. Terminating text rebaking", NON_SDL_ERROR);
+        print_error("`rebake_text()`: `new_size` parameter set as 0", NON_SDL_ERROR);
         return;
     }
 
     /// `0` arg for auto-determined length.
-    SDL_Surface* text_surf = bordered_text_surface_create(new_text, new_size, new_border_thickness, (SDL_Color){255, 255, 255, 255}, new_color);
+    SDL_Surface* text_surf = create_bordered_text_surface(new_text, new_size, new_border_thickness, (SDL_Color){255, 255, 255, 255}, new_color);
     if (text_surf == NULL)
     {
         print_error("`rebake_text()`: couldn't create `text_surf`", IS_SDL_ERROR);
@@ -136,7 +133,7 @@ void move_text(struct Text_IMG* target)
 {
     if (target == NULL)
     {
-        print_warning("`move_text`: `target` arg is `NULL`. Terminating text movement", NON_SDL_ERROR);
+        print_error("`move_text`: `target` arg is `NULL`", NON_SDL_ERROR);
         return;
     }
 

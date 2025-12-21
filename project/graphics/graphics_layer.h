@@ -3,8 +3,8 @@
 #define GRAPHICS_LAYER_H
 
 #define WINDOW_TITLE "Renault Sport: The Game"
-#define WINDOW_WIDTH  1280
-#define WINDOW_HEIGHT  720
+#define WINDOW_WIDTH  720
+#define WINDOW_HEIGHT 960
 
 
 /* Predef */

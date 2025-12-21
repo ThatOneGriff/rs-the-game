@@ -8,7 +8,8 @@
 
 #include <stdio.h>  /// I/O
 
-#include "debug.h"  /// Error / warning output.
+#include "debug.h"     /// Error / warning output.
+#include "resources.h" /// Texture & font paths.
 #include "audio/audio.h"             /// Initialization
 #include "logic/logic_layer.h"       /// of
 #include "graphics/fps.h"            /// various
@@ -63,7 +64,7 @@ void init(int* exit_code)
     }
     
     /// Null texture (debug purposes)
-    graphics_layer.null_texture = IMG_LoadTexture(graphics_layer.renderer, "res/images/null.png");
+    graphics_layer.null_texture = IMG_LoadTexture(graphics_layer.renderer, NULL_TEXTURE);
     if (graphics_layer.null_texture == NULL)
         print_warning("`init()`: failed to load the null texture (not critical)", IS_SDL_ERROR);
 
@@ -96,7 +97,7 @@ void init(int* exit_code)
     test_main_font_load = NULL;
 
     /// Icon
-    SDL_Surface* icon = IMG_Load("res/images/icon.png");
+    SDL_Surface* icon = IMG_Load(ICON_TEXTURE);
     if (icon == NULL)
     {
         print_error("`init()`: failed to load the program icon", IS_SDL_ERROR);

@@ -14,6 +14,7 @@
 /* Main headers */
 #include "debug.h"
 #include "init_quit.h"
+#include "resources.h"
 
 /* Audio */
 #include "audio/audio.h"

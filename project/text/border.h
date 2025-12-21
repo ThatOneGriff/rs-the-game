@@ -5,26 +5,24 @@
 #include <SDL3/SDL.h> /// SDL3.
 #include <SDL3_ttf/SDL_ttf.h> /// SDL3_TFF.
 
-#include "../debug.h"
-#include "../graphics/graphics_layer.h"
-
-#define MAIN_FONT "res/fonts/MysteryQuest.ttf"
+#include "../debug.h"     /// Error output
+#include "../resources.h" /// Font path(s)
 
 
 /* Predef */
 
 void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius, const int x, const int y);
-SDL_Surface* bordered_text_surface_create(const char* text, const float text_size, const unsigned int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color);
+SDL_Surface* create_bordered_text_surface(const char* text, const float text_size, const unsigned int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color);
 
 
 /* Body */
 
-/// Helper for midpoint cicle algorithm. Explanation in `bordered_text_surface_create()`.
+/// Helper for midpoint cicle algorithm. Explanation in `create_bordered_text_surface()`.
 void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius, const int x, const int y)
 {
     if (surf_out == NULL || surf_target == NULL)
     {
-        print_warning("`_blit_8x()`: `NULL` surface arg(s). Terminating `_blit_8x()`", NON_SDL_ERROR);
+        print_error("`_blit_8x()`: `NULL` surface arg(s)", NON_SDL_ERROR);
         return;
     }
     if (radius == 0)
@@ -40,12 +38,12 @@ void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius,
 }
 
 
-SDL_Surface* bordered_text_surface_create(const char* text, const float text_size, const unsigned int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color)
+SDL_Surface* create_bordered_text_surface(const char* text, const float text_size, const unsigned int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color)
 {
     TTF_Font *font = TTF_OpenFont(MAIN_FONT, text_size);
     if (font == NULL)
     {
-        print_error("`bordered_text_surface_create()`: error loading the font", IS_SDL_ERROR);
+        print_error("`create_bordered_text_surface()`: error loading the font", IS_SDL_ERROR);
         return NULL;
     }
 
@@ -53,7 +51,7 @@ SDL_Surface* bordered_text_surface_create(const char* text, const float text_siz
     SDL_Surface* surf_in = TTF_RenderText_Blended(font, text, 0, inner_color);
     if (surf_in == NULL)
     {
-        print_error("`bordered_text_surface_create()`: couldn't render `surf_in`", IS_SDL_ERROR);
+        print_error("`create_bordered_text_surface()`: couldn't render `surf_in`", IS_SDL_ERROR);
         TTF_CloseFont(font);
         font = NULL;
         return NULL;
@@ -69,7 +67,7 @@ SDL_Surface* bordered_text_surface_create(const char* text, const float text_siz
     SDL_Surface* surf_out = TTF_RenderText_Blended(font, text, 0, outer_color);
     if (surf_out == NULL)
     {
-        print_error("`bordered_text_surface_create()`: couldn't render `surf_out`", IS_SDL_ERROR);
+        print_error("`create_bordered_text_surface()`: couldn't render `surf_out`", IS_SDL_ERROR);
         TTF_CloseFont(font);
         font = NULL;
         SDL_DestroySurface(surf_in);
@@ -81,7 +79,7 @@ SDL_Surface* bordered_text_surface_create(const char* text, const float text_siz
     SDL_Surface* result = SDL_CreateSurface(surf_out->w + border_thickness*2, surf_out->h + border_thickness*2, SDL_PIXELFORMAT_ARGB32);
     if (result == NULL)
     {
-        print_error("`bordered_text_surface_create()`: couldn't render `result`", IS_SDL_ERROR);
+        print_error("`create_bordered_text_surface()`: couldn't render `result`", IS_SDL_ERROR);
         TTF_CloseFont(font);
         font = NULL;
         SDL_DestroySurface(surf_in);
