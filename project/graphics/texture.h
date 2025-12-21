@@ -15,8 +15,8 @@ struct Texture
     SDL_Texture* texture;
     SDL_FRect    rect;
 };
-struct Texture* load_texture(const char* path, const SDL_FRect rect);
-void free_texture(struct Texture** target);
+struct Texture load_texture(const char* path, const SDL_FRect rect, int* exit_code);
+void free_texture(struct Texture* target);
 
 
 /* Predef */
@@ -26,35 +26,35 @@ void render_texture(const struct Texture* target);
 
 /* Body */
 
-struct Texture* load_texture(const char* path, const SDL_FRect rect)
+struct Texture load_texture(const char* path, const SDL_FRect rect, int* exit_code)
 {
+    struct Texture result;
+
     /* Parameter checking */
+    
     if (path == NULL)
     {
         print_error("`load_texture()`: `path` arg is `NULL`", NON_SDL_ERROR);
-        return NULL;
+        *exit_code = EXIT_FAILURE;
+        return result;
     }
+    if (exit_code == NULL)
+        print_warning("`load_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     if (rect.w == 0 || rect.h == 0)
         print_warning("`load_texture()`: `rect`'s `x` or `y` is 0. Are you sure?", NON_SDL_ERROR);
     
     /* Texture loading */
-    struct Texture* result = malloc(sizeof(struct Texture));
-    if (result == NULL)
-    {
-        print_error("`load_texture()`: couldn't allocate memory to `result` texture", NON_SDL_ERROR);
-        return NULL;
-    }
 
-    result->texture = IMG_LoadTexture(graphics_layer.renderer, path);
-    if (result->texture == NULL)
+    result.texture = IMG_LoadTexture(graphics_layer.renderer, path);
+    if (result.texture == NULL)
     {
         print_error("`load_texture()`: couldn't load the texture", IS_SDL_ERROR);
-        free(result);
-        result = NULL;
-        return NULL;
+        *exit_code = EXIT_FAILURE;
+        return result;
     }
 
-    result->rect = rect;
+    result.rect = rect;
+    *exit_code = EXIT_SUCCESS;
     return result;
 }
 
@@ -75,16 +75,14 @@ void render_texture(const struct Texture* target)
 }
 
 
-void free_texture(struct Texture** target)
+void free_texture(struct Texture* target)
 {
-    if (*target == NULL || (*target)->texture == NULL)
+    if (target == NULL || target->texture == NULL)
         return;
 
-    SDL_DestroyTexture((*target)->texture);
-    (*target)->texture = NULL;
-    (*target)->rect = (SDL_FRect){0.0, 0.0, 0.0, 0.0};
-    free(*target);
-    *target = NULL;
+    SDL_DestroyTexture(target->texture);
+    target->texture = NULL;
+    target->rect = (SDL_FRect){0.0, 0.0, 0.0, 0.0};
     return;
 }
 

@@ -16,10 +16,13 @@
 #include "init_quit.h"
 #include "resources.h"
 
-#ifdef USING_AUDIO
 /* Audio */
+#ifdef USING_AUDIO
 #include "audio/audio.h"
 #endif /// USING_AUDIO
+
+/* Game components */
+//#include "game_components/scehe.h"
 
 /* Graphics */
 #include "graphics/fps.h"
@@ -90,17 +93,23 @@ int main(int argc, char *argv[])
 
 void game_loop()
 {
-    struct Texture* test_text = create_text("Test", (SDL_Color){255,255,255,0}, rand_color(), 150, 15);
+    int exit_code = EXIT_SUCCESS;
+    struct Texture test_text    = create_text("Test", (SDL_Color){255,255,255,0}, rand_color(), 150, 15, &exit_code);
+    struct Texture test_texture = load_texture(ICON_TEXTURE, (SDL_FRect){300,300,300,300}, &exit_code);
+
     while (logic_layer.game_is_running)
     {
         SDL_RenderClear(graphics_layer.renderer);
 
         process_events();
-
         SDL_RenderTexture(graphics_layer.renderer, graphics_layer.null_texture, NULL, NULL);
-        render_texture(test_text);
+        render_texture(&test_text);
+        render_texture(&test_texture);
         SDL_RenderPresent(graphics_layer.renderer);
 
         SDL_Delay(16);
     }
+
+    free_texture(&test_texture);
+    free_texture(&test_text);
 }
