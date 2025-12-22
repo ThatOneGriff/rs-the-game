@@ -77,11 +77,14 @@ void render_texture(const struct Texture* target)
 
 void free_texture(struct Texture* target)
 {
-    if (target == NULL || target->texture == NULL)
+    if (target == NULL)
         return;
 
-    SDL_DestroyTexture(target->texture);
-    target->texture = NULL;
+    if (target->texture != NULL)
+    {
+        SDL_DestroyTexture(target->texture);
+        target->texture = NULL;
+    }
     target->rect = (SDL_FRect){0.0, 0.0, 0.0, 0.0};
     return;
 }

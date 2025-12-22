@@ -21,9 +21,6 @@
 #include "audio/audio.h"
 #endif /// USING_AUDIO
 
-/* Game components */
-//#include "game_components/scehe.h"
-
 /* Graphics */
 #include "graphics/fps.h"
 #include "graphics/graphics_layer.h"
@@ -36,6 +33,9 @@
 /* Logic */
 #include "logic/input.h"
 #include "logic/logic_layer.h"
+
+/* Scenes */
+#include "scenes/gameplay/car.h" /// For test; will include the rest later.
 
 /* Text */
 #include "text/border.h"
@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
     game_loop();
 
     program_exit(EXIT_SUCCESS); /// Actual quitting of the program.
-    return EXIT_SUCCESS; /// Solely for `-Wall -Wextra` compliance.
+    return EXIT_SUCCESS;        /// Solely for `-Wall -Wextra` compliance.
 }
 
 
@@ -96,6 +96,7 @@ void game_loop()
     int exit_code = EXIT_SUCCESS;
     struct Texture test_text    = create_text("Test", (SDL_Color){255,255,255,0}, rand_color(), 150, 15, &exit_code);
     struct Texture test_texture = load_texture(ICON_TEXTURE, (SDL_FRect){300,300,300,300}, &exit_code);
+    struct Car car = load_car("res/data/clio-williams.rscdt", &exit_code);
 
     while (logic_layer.game_is_running)
     {
@@ -105,11 +106,13 @@ void game_loop()
         SDL_RenderTexture(graphics_layer.renderer, graphics_layer.null_texture, NULL, NULL);
         render_texture(&test_text);
         render_texture(&test_texture);
+        render_texture(&car.texture);
         SDL_RenderPresent(graphics_layer.renderer);
 
         SDL_Delay(16);
     }
 
+    free_car(&car);
     free_texture(&test_texture);
     free_texture(&test_text);
 }
