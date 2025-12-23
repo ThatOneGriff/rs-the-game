@@ -2,15 +2,21 @@
 #ifndef GRAPHICS_LAYER_H
 #define GRAPHICS_LAYER_H
 
+#include <SDL3/SDL.h> /// SDL3.
+
 #define WINDOW_TITLE "Renault Sport: The Game"
 #define WINDOW_WIDTH  720
 #define WINDOW_HEIGHT 960
+#define BUFFER_WIDTH  180 /// = 720 / 4
+#define BUFFER_HEIGHT 240 /// = 960 / 4
 
 
 /* Predef */
 
 struct Graphics_Layer;
-void _init_graphics_layer(void);
+static struct Graphics_Layer graphics_layer; /// Singleton.
+void _init_graphics_layer(int* exit_code);
+void _free_graphics_layer(void);
 
 
 /* Struct */
@@ -20,13 +26,87 @@ struct Graphics_Layer
     SDL_Window*   window;
     SDL_Renderer* renderer;
     SDL_Texture*  null_texture;
+    SDL_Texture*  buffer;
 };
-static struct Graphics_Layer graphics_layer; /// Singleton.
-void _init_graphics_layer(void)
+
+/// [!!!] Assumes SDL has been initialized.
+/// Doesn't check for accidental double initialization.
+void _init_graphics_layer(int* exit_code)
 {
-    graphics_layer.window   = NULL;
-    graphics_layer.renderer = NULL;
-    graphics_layer.null_texture = NULL;
+    if (exit_code == NULL)
+        print_warning("`_init_graphics_layer()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+    
+    /* Window */
+    graphics_layer.window = SDL_CreateWindow(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+    if (graphics_layer.window == NULL)
+    {
+        print_error("`_init_graphics_layer()`: failed to create a window", IS_SDL_ERROR);
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
+
+    /* Renderer */
+    graphics_layer.renderer = SDL_CreateRenderer(graphics_layer.window, NULL); /// `name` is related to drivers; SDL determines it automatically on `NULL`.
+    if (graphics_layer.renderer == NULL)
+    {
+        print_error("`_init_graphics_layer()`: failed to create a renderer", IS_SDL_ERROR);
+        SDL_DestroyWindow(graphics_layer.window);
+        graphics_layer.window = NULL;
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
+    //SDL_SetRenderScale(graphics_layer.renderer, SDL_SCALEMODE_NEAREST);
+    
+    /* Null texture (debug purposes) */
+    graphics_layer.null_texture = IMG_LoadTexture(graphics_layer.renderer, NULL_TEXTURE);
+    if (graphics_layer.null_texture == NULL)
+        print_warning("`_init_graphics_layer()`: failed to load the null texture (not critical)", IS_SDL_ERROR);
+    
+    /* Buffer (for scaled rendering) */
+    graphics_layer.buffer = SDL_CreateTexture(graphics_layer.renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, BUFFER_WIDTH, BUFFER_HEIGHT);
+    if (graphics_layer.buffer == NULL)
+    {
+        print_error("`_init_graphics_layer()`: failed to create rendering buffer texture", IS_SDL_ERROR);
+        if (graphics_layer.null_texture != NULL)
+        {
+            SDL_DestroyTexture(graphics_layer.null_texture);
+            graphics_layer.null_texture = NULL;
+        }
+        SDL_DestroyRenderer(graphics_layer.renderer);
+        graphics_layer.renderer = NULL;
+        SDL_DestroyWindow(graphics_layer.window);
+        graphics_layer.window = NULL;
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
+    SDL_SetTextureScaleMode(graphics_layer.buffer, SDL_SCALEMODE_NEAREST);
+
+    *exit_code = EXIT_SUCCESS;
+    return;
+}
+
+void _free_graphics_layer(void)
+{
+    if (graphics_layer.renderer != NULL)
+    {
+        SDL_DestroyRenderer(graphics_layer.renderer);
+        graphics_layer.renderer = NULL;
+    }
+    if (graphics_layer.window != NULL)
+    {
+        SDL_DestroyWindow(graphics_layer.window);
+        graphics_layer.window = NULL;
+    }
+    if (graphics_layer.null_texture != NULL)
+    {
+        SDL_DestroyTexture(graphics_layer.null_texture);
+        graphics_layer.null_texture = NULL;
+    }
+    if (graphics_layer.buffer != NULL)
+    {
+        SDL_DestroyTexture(graphics_layer.buffer);
+        graphics_layer.buffer = NULL;
+    }
 }
 
 #endif /// GRAPHICS_LAYER_H

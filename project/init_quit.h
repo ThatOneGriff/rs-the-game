@@ -37,7 +37,7 @@ void init(int* exit_code)
     if (exit_code == NULL)
         print_warning("`init()`: `*exit_code` arg is `NULL`", NON_SDL_ERROR);
 
-    /// Initialization
+    /// SDL3 initialization
     if (! SDL_Init(SDL_FLAGS))
     {
         print_error("`init()`: failed SDL3 initialization", IS_SDL_ERROR);
@@ -45,30 +45,19 @@ void init(int* exit_code)
         return;
     }
 
-    /// Window
-    graphics_layer.window = SDL_CreateWindow(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
-    if (graphics_layer.window == NULL)
+    /// Graphics layer
+    _init_graphics_layer(exit_code);
+    if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init()`: failed to create a window", IS_SDL_ERROR);
-        *exit_code = EXIT_FAILURE;
+        print_error("`init()`: failed to init `graphics_layer`", NON_SDL_ERROR);
         return;
     }
-
-    /// Renderer
-    graphics_layer.renderer = SDL_CreateRenderer(graphics_layer.window, NULL); /// `name` is related to drivers; SDL determines it automatically on `NULL`.
-    if (graphics_layer.renderer == NULL)
+    _init_logic_layer(exit_code);
+    if (*exit_code == EXIT_FAILURE) /// NOTE: never happens for now.
     {
-        print_error("`init()`: failed to create a renderer", IS_SDL_ERROR);
-        SDL_DestroyWindow(graphics_layer.window);
-        graphics_layer.window = NULL;
-        *exit_code = EXIT_FAILURE;
+        print_error("`init()`: failed to init `logic_layer`", NON_SDL_ERROR);
         return;
     }
-    
-    /// Null texture (debug purposes)
-    graphics_layer.null_texture = IMG_LoadTexture(graphics_layer.renderer, NULL_TEXTURE);
-    if (graphics_layer.null_texture == NULL)
-        print_warning("`init()`: failed to load the null texture (not critical)", IS_SDL_ERROR);
 
     /// TTF initialization
     if (! TTF_Init())
@@ -139,29 +128,13 @@ void init(int* exit_code)
 /// Works by FILO principle. IDEA: de-init with a stack? Could greatly shorten the code.
 void quit(void)
 {
-    if (graphics_layer.renderer != NULL)
-    {
-        SDL_DestroyRenderer(graphics_layer.renderer);
-        graphics_layer.renderer = NULL;
-    }
-    if (graphics_layer.window != NULL)
-    {
-        SDL_DestroyWindow(graphics_layer.window);
-        graphics_layer.window = NULL;
-    }
-    if (graphics_layer.null_texture != NULL)
-    {
-        SDL_DestroyTexture(graphics_layer.null_texture);
-        graphics_layer.null_texture = NULL;
-    }
-
-    //if (logic_layer.key_state != NULL)
-    //    logic_layer.key_state  = NULL;
+    _free_graphics_layer();
+    _free_logic_layer();
 
     TTF_Quit();
     SDL_Quit();
     #ifdef USING_AUDIO
-    //ma_sound_uninit (&audio.bg_music);
+    //ma_sound_uninit (&audio.bg_music); /// Sounds will be added.
     ma_engine_uninit(&audio.engine);
     #endif /// USING_AUDIO
     print_success("`quit()`");

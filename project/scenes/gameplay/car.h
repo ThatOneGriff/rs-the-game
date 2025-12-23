@@ -45,7 +45,7 @@ struct Car load_car(const char path[], int* exit_code)
         return result;
     }
 
-    /// REDO: This approach is very static.
+    /// REDO: This approach is very static. Use JSON.
     char* data_line = malloc(64*sizeof(char));
     if (data_line == NULL)
     {

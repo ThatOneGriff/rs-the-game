@@ -54,6 +54,7 @@ gcc -Ofast -Wall -Wextra -Werror -std=c17 project/main.c -o ./main.exe -lSDL3 -l
 */
 
 /// NOTE: use texture scaling mode `SDL_SCALING_PIXELART`.
+/// REDO: error resource un-allocation almost never follows FILO pattern. As `miniaudio` has shown, this is bad.
 
 
 /* Predef */
@@ -73,17 +74,13 @@ int main(int argc, char *argv[])
     /// [!!!] STRICTLY ON TOP [!!!]
     int exit_code = EXIT_SUCCESS;
     SDL_SetMainReady();
-    _init_graphics_layer();
-    _init_logic_layer();
-    /// , because you don't want to use uninitialized `layer`'s.
-
-    /// SDL init
     init(&exit_code);
     if (exit_code == EXIT_FAILURE)
     {
         print_error("Failure initializing the program", NON_SDL_ERROR);
         program_exit(exit_code);
     }
+    /// , because you don't want to work uninitialized.
 
     game_loop(&exit_code);
 
@@ -96,29 +93,31 @@ void game_loop(int* exit_code)
 {
     if (exit_code == NULL)
         print_warning("`game_loop()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    else
-        *exit_code = EXIT_SUCCESS;
     struct Texture test_text    = create_text("Test", (SDL_Color){255,255,255,0}, rand_color(), 150, 15, exit_code);
     struct Texture test_texture = load_texture(ICON_TEXTURE, (SDL_FRect){300,300,300,300}, exit_code);
-    struct Car car = load_car("res/data/clio-williams.rscdt", exit_code);
+    struct Car car = load_car("res/car_data/clio-williams.rscdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
         return;
 
     while (logic_layer.game_is_running)
     {
         SDL_RenderClear(graphics_layer.renderer);
+        SDL_SetRenderTarget(graphics_layer.renderer, graphics_layer.buffer);
 
         process_events();
-        SDL_RenderTexture(graphics_layer.renderer, graphics_layer.null_texture, NULL, NULL);
+        SDL_RenderTexture(graphics_layer.renderer, graphics_layer.null_texture, NULL, NULL); /// TEMP bg
         render_texture(&test_text);
         render_texture(&test_texture);
         render_texture(&car.texture);
+        
+        SDL_SetRenderTarget(graphics_layer.renderer, NULL);
+        SDL_RenderTexture(graphics_layer.renderer, graphics_layer.buffer, NULL, NULL);
         SDL_RenderPresent(graphics_layer.renderer);
-
         SDL_Delay(16);
     }
 
     free_car(&car);
     free_texture(&test_texture);
     free_texture(&test_text);
+    *exit_code = EXIT_SUCCESS;
 }
