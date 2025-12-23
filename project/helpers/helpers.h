@@ -11,13 +11,6 @@
 #define YELLOW 6
 
 
-struct Vec2
-{
-    int x;
-    int y;
-};
-
-
 void textcolor(const short int color_code)
 {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color_code);

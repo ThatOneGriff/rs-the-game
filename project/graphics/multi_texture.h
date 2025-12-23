@@ -27,8 +27,8 @@ struct Multi_Texture
 
 /* Predef */
 
-struct Multi_Texture new_multi_texture(const char* texture_name, const size_t initial_count, int* exit_code);
-void                 del_multi_texture(struct Multi_Texture* target);
+struct Multi_Texture load_multi_texture(const char* texture_name, const size_t initial_count, int* exit_code);
+void                 free_multi_texture(struct Multi_Texture* target);
 
 void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_coords, int* exit_code);
 void render_multi_texture(const struct Multi_Texture* target);
@@ -36,7 +36,7 @@ void render_multi_texture(const struct Multi_Texture* target);
 
 /* Body */
 
-struct Multi_Texture new_multi_texture(const char* texture_name, const size_t initial_count, int* exit_code)
+struct Multi_Texture load_multi_texture(const char* texture_name, const size_t initial_count, int* exit_code)
 {
     struct Multi_Texture result;
     result.coords = NULL;
@@ -81,7 +81,7 @@ struct Multi_Texture new_multi_texture(const char* texture_name, const size_t in
 }
 
 
-void del_multi_texture(struct Multi_Texture* target)
+void free_multi_texture(struct Multi_Texture* target)
 {
     if (target == NULL)
         return;
@@ -128,9 +128,9 @@ void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_coords, 
     {
         void* temp = NULL;
         if (to->max_count * 1.5 == to->max_count) /// i.e. minimal memory allocation is 1.
-            temp = realloc(to->coords, to->max_count + 1);
+            temp = realloc(to->coords, (to->max_count += 1));
         else
-            temp = realloc(to->coords, to->max_count * 1.5);
+            temp = realloc(to->coords, (to->max_count *= 1.5));
         
         if (temp == NULL)
         {

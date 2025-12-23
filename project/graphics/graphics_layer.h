@@ -5,10 +5,10 @@
 #include <SDL3/SDL.h> /// SDL3.
 
 #define WINDOW_TITLE "Renault Sport: The Game"
-#define WINDOW_WIDTH  720
-#define WINDOW_HEIGHT 960
-#define BUFFER_WIDTH  180 /// = 720 / 4
-#define BUFFER_HEIGHT 240 /// = 960 / 4
+#define WINDOW_WIDTH  960
+#define WINDOW_HEIGHT 720
+#define RENDER_WIDTH  240 /// = 960 / 4
+#define RENDER_HEIGHT 180 /// = 720 / 4
 
 
 /* Predef */
@@ -65,7 +65,7 @@ void _init_graphics_layer(int* exit_code)
         print_warning("`_init_graphics_layer()`: failed to load the null texture (not critical)", IS_SDL_ERROR);
     
     /* Buffer (for scaled rendering) */
-    graphics_layer.buffer = SDL_CreateTexture(graphics_layer.renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, BUFFER_WIDTH, BUFFER_HEIGHT);
+    graphics_layer.buffer = SDL_CreateTexture(graphics_layer.renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, RENDER_WIDTH, RENDER_HEIGHT);
     if (graphics_layer.buffer == NULL)
     {
         print_error("`_init_graphics_layer()`: failed to create rendering buffer texture", IS_SDL_ERROR);
@@ -116,12 +116,12 @@ void _free_graphics_layer(void)
 
 float center_x(const float w)
 {
-    return (BUFFER_WIDTH - w) / 2.0;
+    return (RENDER_WIDTH - w) / 2.0;
 }
 
 float center_y(const float h)
 {
-    return (BUFFER_HEIGHT - h) / 2.0;
+    return (RENDER_HEIGHT - h) / 2.0;
 }
 
 #endif /// GRAPHICS_LAYER_H

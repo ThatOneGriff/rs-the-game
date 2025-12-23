@@ -29,6 +29,7 @@
 #include "graphics/texture.h"
 
 /* Helpers */
+#include "helpers/geometry.h"
 #include "helpers/helpers.h"
 #include "helpers/random.h"
 
@@ -37,7 +38,9 @@
 #include "logic/logic_layer.h"
 
 /* Scenes */
-#include "scenes/gameplay/car.h" /// For test; will include the rest later.
+#include "scenes/gameplay/car.h"
+#include "scenes/gameplay/gameplay_controls.h"
+#include "scenes/gameplay/gameplay_scene.h"
 
 /* Text */
 #include "text/border.h"
@@ -49,13 +52,12 @@ miniaudio version: 0.11.23 (last updated 12.12.25)
 nlohmann/json version: TBA
 
  = Compiler args (1: w/ audio, 2: w/o audio) =
-gcc -Ofast -Wall -Wextra -Werror -std=c17 project/main.c project/audio/audio.c -o ./main.exe -lSDL3 -lSDL3_image -lSDL3_ttf -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
-gcc -Ofast -Wall -Wextra -Werror -std=c17 project/main.c -o ./main.exe -lSDL3 -lSDL3_image -lSDL3_ttf -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
+gcc -Ofast -Wall -Wextra -Werror -Wno-discarded-qualifiers -std=c17 project/main.c project/audio/audio.c -o ./main.exe -lSDL3 -lSDL3_image -lSDL3_ttf -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
+gcc -Ofast -Wall -Wextra -Werror -Wno-discarded-qualifiers -std=c17 project/main.c -o ./main.exe -lSDL3 -lSDL3_image -lSDL3_ttf -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
 ./main.exe
 */
 
-/// NOTE: use texture scaling mode `SDL_SCALING_PIXELART`.
-/// REDO: error resource un-allocation almost never follows FILO pattern. As `miniaudio` has shown, this is bad.
+/// REDO: error resource un-allocation almost never follows FILO pattern. As `miniaudio` has shown, this may turn out in an error.
 
 
 /* Predef */
@@ -94,9 +96,14 @@ void game_loop(int* exit_code)
 {
     if (exit_code == NULL)
         print_warning("`game_loop()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    /* TEMP: test textures & structs */
-    struct Texture test_text    = create_text("Test", (SDL_Color){255,255,255,0}, rand_color(), 150, 15, exit_code);
-    struct Texture test_texture = load_texture(ICON_TEXTURE, (SDL_FRect){300,300,300,300}, exit_code);
+    
+    /* Loading & preparing the scene */
+    struct Gameplay_Scene scene = load_gameplay_scene("res/images/environment/sky.png",
+                                                      "res/images/environment/ground.png",
+                                                      "res/images/environment/tree.png",
+                                                      exit_code);
+    if (*exit_code == EXIT_FAILURE)
+        return;
     struct Car car = load_car("res/car_data/clio-williams.rscdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
         return;
@@ -114,11 +121,11 @@ void game_loop(int* exit_code)
         SDL_RenderClear(graphics_layer.renderer);
         SDL_SetRenderTarget(graphics_layer.renderer, graphics_layer.buffer);
 
-        process_events();
-        SDL_RenderTexture(graphics_layer.renderer, graphics_layer.null_texture, NULL, NULL); /// TEMP background
-        render_texture(&test_text);
-        render_texture(&test_texture);
-        render_texture(&car.texture);
+        process_global_events();
+        process_gameplay_input(&car);
+        render_gameplay_scene(&scene, &car, exit_code);
+        if (*exit_code == EXIT_FAILURE)
+            return;
         
         SDL_SetRenderTarget(graphics_layer.renderer, NULL);
         SDL_RenderTexture(graphics_layer.renderer, graphics_layer.buffer, NULL, NULL);
@@ -128,7 +135,10 @@ void game_loop(int* exit_code)
         ++curr_fps;
         FPS_manager.delta_ns = SDL_GetTicksNS() - render_start_time;
         if (FPS_manager.fps_capped && FPS_manager.target_delta_ns > FPS_manager.delta_ns)
+        {
             SDL_DelayNS(FPS_manager.target_delta_ns - FPS_manager.delta_ns);
+            FPS_manager.delta_ns = FPS_manager.target_delta_ns;
+        }
         
         /* FPS output */
         if (SDL_GetTicks() - fps_render_start_tick >= 1000) /// 1s elapsed.
@@ -140,8 +150,6 @@ void game_loop(int* exit_code)
         } 
     }
 
-    free_car(&car);
-    free_texture(&test_texture);
-    free_texture(&test_text);
+    free_gameplay_scene(&scene);
     *exit_code = EXIT_SUCCESS;
 }

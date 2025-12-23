@@ -3,7 +3,7 @@
 #define LOGIC_LAYER_H
 
 #include <SDL3/SDL.h> /// `SDL_Event`.
-#include <stdbool.h>  /// `bool game_is_running`.
+#include <stdbool.h>  /// `bool game_is_running, *key_state`.
 #include "../debug.h" ///  Error printing.
 
 
@@ -20,7 +20,8 @@ void _free_logic_layer(void);
 struct Logic_Layer
 {
     SDL_Event event;
-    bool game_is_running;
+    bool  game_is_running;
+    bool* key_state;
 };
 
 /// Doesn't check for accidental double initialization.
@@ -29,6 +30,7 @@ void _init_logic_layer(int* exit_code)
     if (exit_code == NULL)
         print_warning("`_init_logic_layer()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     logic_layer.game_is_running = true;
+    logic_layer.key_state = NULL;
     *exit_code = EXIT_SUCCESS;
     return;
 }
@@ -36,6 +38,7 @@ void _init_logic_layer(int* exit_code)
 void _free_logic_layer(void)
 {
     logic_layer.game_is_running = false;
+    logic_layer.key_state = NULL;
     return;
 }
 
