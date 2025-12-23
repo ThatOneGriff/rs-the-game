@@ -8,6 +8,7 @@
 #include <SDL3_ttf/SDL_ttf.h>
 
 /*- C headers -*/
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -100,13 +101,13 @@ void game_loop(int* exit_code)
     if (*exit_code == EXIT_FAILURE)
         return;
 
-    /* The action */
+    /* FPS measurement preparations */
     unsigned long long int render_start_time = 0;
-    unsigned long long int delay_ns = 0;
-
     unsigned int curr_fps = 0;
-    unsigned int prev_fps = 0;
+    unsigned int prev_fps = UINT_MAX;
     unsigned int fps_render_start_tick = SDL_GetTicks();
+
+    /* The loop */
     while (logic_layer.game_is_running)
     {
         render_start_time = SDL_GetTicksNS();
@@ -123,58 +124,20 @@ void game_loop(int* exit_code)
         SDL_RenderTexture(graphics_layer.renderer, graphics_layer.buffer, NULL, NULL);
         SDL_RenderPresent(graphics_layer.renderer);
 
-        /* FPS output */
+        /* FPS & delay managing */
         ++curr_fps;
+        FPS_manager.delta_ns = SDL_GetTicksNS() - render_start_time;
+        if (FPS_manager.fps_capped && FPS_manager.target_delta_ns > FPS_manager.delta_ns)
+            SDL_DelayNS(FPS_manager.target_delta_ns - FPS_manager.delta_ns);
+        
+        /* FPS output */
         if (SDL_GetTicks() - fps_render_start_tick >= 1000) /// 1s elapsed.
         {
-            if (curr_fps == prev_fps || prev_fps == 0)
-            {
-                textcolor(GRAY);
-                printf("[~]");
-                textcolor(WHITE);
-            }
-            else if (curr_fps > prev_fps)
-            {
-                textcolor(GREEN);
-                printf("[+]");
-                textcolor(WHITE);
-            }
-            else if (curr_fps < prev_fps)
-            {
-                textcolor(RED);
-                printf("[-]");
-                textcolor(WHITE);
-            }
-            printf(" %u FPS\n", curr_fps);
+            print_compare_fps(curr_fps, prev_fps);
             fps_render_start_tick = SDL_GetTicks();
             prev_fps = curr_fps;
             curr_fps = 0;
         } 
-
-        /* FPS & delay managing */
-        FPS_manager.delta_ns = SDL_GetTicksNS() - render_start_time;
-        if (! FPS_manager.fps_capped)
-            continue;
-        
-        if (FPS_manager.delta_ns > FPS_manager.target_delta_ns)
-        {
-            FPS_manager.lag_compensation_ns += FPS_manager.delta_ns - FPS_manager.target_delta_ns;
-            continue; /// No need to wait if we're already over target delta.
-        }
-
-        delay_ns = FPS_manager.target_delta_ns - FPS_manager.delta_ns;
-        if (delay_ns > FPS_manager.lag_compensation_ns)
-        {
-            delay_ns -= FPS_manager.lag_compensation_ns;
-            FPS_manager.lag_compensation_ns = 0;
-        }
-        else
-        {
-            FPS_manager.lag_compensation_ns -= delay_ns;
-            delay_ns = 0;
-        }
-        if (delay_ns != 0)
-            SDL_DelayNS(delay_ns);
     }
 
     free_car(&car);

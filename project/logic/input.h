@@ -27,7 +27,6 @@ void process_events(void)
     //_process_input(); /// Seems logical to put it into `SDL_EVENT_KEY_DOWN`. However, this means a fraction-of-second input lag.
     while (SDL_PollEvent(&logic_layer.event))
     {
-
         switch (logic_layer.event.type)
         {
         /// Key press
@@ -78,10 +77,9 @@ void process_events(void)
 
 void _process_keyboard(const SDL_Keycode event_key)
 {
-    int exit_code = EXIT_SUCCESS;
     switch(event_key)
     {
-    /// Frame cap on / off
+    /* Frame cap on / off */
     case SDLK_F:
         FPS_manager.fps_capped = ! FPS_manager.fps_capped;
         if (FPS_manager.fps_capped)
@@ -100,15 +98,7 @@ void _process_keyboard(const SDL_Keycode event_key)
         }
         break; /// WARNING: with an esoteric-enough fall-through,
                /// case(smth1)'s `EXIT_FAILURE` may be overshadowed by case(smth2)'s `EXIT_SUCCESS`.
-    
-    /// Exit
-    case SDLK_ESCAPE:
-        logic_layer.game_is_running = false;
-        break;
     }
-
-    if (exit_code == EXIT_FAILURE)
-        program_exit(exit_code);
 }
 
 #endif /// INPUT_H

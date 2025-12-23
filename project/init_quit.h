@@ -57,7 +57,6 @@ void init(int* exit_code)
         return;
     }
     set_fps_cap(60);
-    FPS_manager.lag_compensation_ns = 0;
 
     /// TTF initialization
     if (! TTF_Init())

@@ -16,7 +16,6 @@ struct FPS_Manager
     unsigned int fps_cap;
     unsigned long long int        delta_ns;
     unsigned long long int target_delta_ns;
-    unsigned long long int lag_compensation_ns;
 };
 static struct FPS_Manager FPS_manager; /// Singleton.
 
@@ -25,6 +24,7 @@ static struct FPS_Manager FPS_manager; /// Singleton.
 
 void set_fps_cap(const unsigned int new_fps_cap);
 void rem_fps_cap(void);
+void print_compare_fps(const unsigned int curr_fps, const unsigned int prev_fps);
 
 
 /* Body */
@@ -50,6 +50,30 @@ void set_fps_cap(const unsigned int new_fps_cap)
 void rem_fps_cap(void)
 {
     FPS_manager.fps_capped = false;
+}
+
+
+void print_compare_fps(const unsigned int curr_fps, const unsigned int prev_fps)
+{
+    if (curr_fps == prev_fps || prev_fps == UINT_MAX) /// `prev_fps == 0` means it's the first FPS measurement
+    {
+        textcolor(GRAY);
+        printf("[~]");
+        textcolor(WHITE);
+    }
+    else if (curr_fps > prev_fps)
+    {
+        textcolor(GREEN);
+        printf("[+]");
+        textcolor(WHITE);
+    }
+    else if (curr_fps < prev_fps)
+    {
+        textcolor(RED);
+        printf("[-]");
+        textcolor(WHITE);
+    }
+    printf(" %u FPS\n", curr_fps);
 }
 
 #endif /// FPS_H
