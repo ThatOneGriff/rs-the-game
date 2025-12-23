@@ -51,7 +51,7 @@ struct Gameplay_Scene load_gameplay_scene(const char* sky_bg_path, const char* g
         return result;
     }
 
-    result.ground = load_texture(ground_path, (SDL_FRect){0, RENDER_HEIGHT - 78, 240, 78}, exit_code); /// TODO: h=80 && better picture
+    result.ground = load_texture(ground_path, (SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, exit_code); /// TODO: h=80 && better picture
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the ground texture", NON_SDL_ERROR);
