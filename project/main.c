@@ -111,14 +111,9 @@ void game_loop(int* exit_code)
     
     /* `Shifting_Texture` test */
     struct Shifting_Texture st = init_shifting_texture((SDL_FRect){0,0,100,100}, 2, exit_code); /// TEMP: for test.
-    if (*exit_code == EXIT_FAILURE)
-        return;
-    add_to_shifting_texture(&st, "res/images/null.png", exit_code);
-    if (*exit_code == EXIT_FAILURE)
-        return;
-    add_to_shifting_texture(&st, "res/images/icon.png", exit_code);
-    if (*exit_code == EXIT_FAILURE)
-        return;
+    add_to_shifting_texture(&st, "res/images/noise-test1.png", exit_code);
+    add_to_shifting_texture(&st, "res/images/noise-test2.png", exit_code);
+    add_to_shifting_texture(&st, "res/images/noise-test3.png", exit_code);
 
     /* FPS measurement preparations */
     unsigned long long int render_start_time = 0;
@@ -136,7 +131,7 @@ void game_loop(int* exit_code)
         process_global_events();
         process_gameplay_input(&car);
         render_gameplay_scene(&scene, &car, exit_code);
-        render_shifting_texture(&st);
+        //render_shifting_texture(&st);
         if (*exit_code == EXIT_FAILURE)
             return;
         

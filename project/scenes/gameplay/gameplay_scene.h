@@ -117,7 +117,15 @@ void render_gameplay_scene(struct Gameplay_Scene* scene, struct Car* car, int* e
     SDL_RenderTexture(graphics_layer.renderer, scene->sky_bg, NULL, NULL);
     render_texture(&scene->ground);
     render_multi_texture(&scene->trees);
-    render_texture(&car->texture);
+
+    /* Car rendering */
+    car->coords.x += car->direction_x * car->handling * (FPS_manager.delta_ns / SEC_IN_NS);
+    if (car->direction_x == 1)
+        SDL_RenderTexture(graphics_layer.renderer, car->texture_right, NULL, &car->coords);
+    else if (car->direction_x == -1)
+        SDL_RenderTexture(graphics_layer.renderer, car->texture_left,  NULL, &car->coords);
+    else if (car->direction_x == 0)
+        SDL_RenderTexture(graphics_layer.renderer, car->texture_main,  NULL, &car->coords);
     *exit_code = EXIT_SUCCESS;
     return;
 }
