@@ -17,13 +17,14 @@ void process_gameplay_input(struct Car* car)
     }
     /// Player movement
     logic_layer.key_state = SDL_GetKeyboardState(NULL);
-    float direction_dx = - logic_layer.key_state[SDL_SCANCODE_LEFT] + logic_layer.key_state[SDL_SCANCODE_RIGHT];
-    if (direction_dx < 0 && car->coords.x <= 0)
+    size_t prev_car_direction_x = car->direction_x;
+    car->direction_x = - logic_layer.key_state[SDL_SCANCODE_LEFT] + logic_layer.key_state[SDL_SCANCODE_RIGHT];
+    if (car->direction_x == -1 && car->coords.x <= 0)
         car->direction_x = 0;
-    else if (direction_dx > 0 && car->coords.x + car->coords.w >= RENDER_WIDTH)
+    else if (car->direction_x == 1 && car->coords.x + car->coords.w >= RENDER_WIDTH)
         car->direction_x = 0;
-    else
-        car->direction_x = direction_dx;
+    
+    car->base_texture = 2 + (car->direction_x + prev_car_direction_x);
     return;
 }
 

@@ -118,7 +118,6 @@ void init(int* exit_code)
     }
     #endif /// USING_AUDIO
 
-    set_fps_cap(60);
     print_success("`init()`");
     *exit_code = EXIT_SUCCESS;
 }

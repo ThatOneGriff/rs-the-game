@@ -46,15 +46,18 @@ void _process_global_keyboard(const SDL_Keycode event_key)
     {
     /* Frame cap on / off */
     case SDLK_F:
-        FPS_manager.fps_capped = ! FPS_manager.fps_capped;
-        if (FPS_manager.fps_capped)
+        ++curr_fps_cap_i;
+        if (curr_fps_cap_i == 5)
+            curr_fps_cap_i = 0;
+        
+        if (curr_fps_cap_i != 4) /// Non-inf FPS cap
         {
             textcolor(GRAY);
-            printf("+ [FPS cap] %u\n", 60);
+            printf("+ [FPS cap] %u\n", fps_cap_options[curr_fps_cap_i]);
             textcolor(WHITE);
-            set_fps_cap(60);
+            set_fps_cap(fps_cap_options[curr_fps_cap_i]);
         }
-        else
+        else /// Inf FPS cap
         {
             textcolor(GRAY);
             printf("- [FPS cap] Disabled\n");
