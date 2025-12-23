@@ -130,7 +130,15 @@ void add_to_shifting_texture(struct Shifting_Texture* to, const char* new_path, 
     }
 
     /* Insertion */
-    to->textures[to->count++] = IMG_LoadTexture(graphics_layer.renderer, new_path);
+    to->textures[to->count] = IMG_LoadTexture(graphics_layer.renderer, new_path);
+    if (to->textures[to->count] == NULL)
+    {
+        print_error("`add_to_shifting_texture()`: error loading texture", IS_SDL_ERROR);
+        *exit_code = EXIT_FAILURE;
+    }
+    else
+        ++to->count;
+    return;
 }
 
 
