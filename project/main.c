@@ -24,6 +24,7 @@
 /* Graphics */
 #include "graphics/fps.h"
 #include "graphics/graphics_layer.h"
+#include "graphics/multi_texture.h"
 #include "graphics/texture.h"
 
 /* Helpers */
@@ -58,7 +59,7 @@ gcc -Ofast -Wall -Wextra -Werror -std=c17 project/main.c -o ./main.exe -lSDL3 -l
 /* Predef */
 
 int  main(int argc, char *argv[]);
-void game_loop();
+void game_loop(int* exit_code);
 
 
 /* Body */
@@ -84,19 +85,24 @@ int main(int argc, char *argv[])
         program_exit(exit_code);
     }
 
-    game_loop();
+    game_loop(&exit_code);
 
-    program_exit(EXIT_SUCCESS); /// Actual quitting of the program.
-    return EXIT_SUCCESS;        /// Solely for `-Wall -Wextra` compliance.
+    program_exit(exit_code); /// Actual quitting of the program.
+    return exit_code;        /// Solely for `-Wall -Wextra` compliance.
 }
 
 
-void game_loop()
+void game_loop(int* exit_code)
 {
-    int exit_code = EXIT_SUCCESS;
-    struct Texture test_text    = create_text("Test", (SDL_Color){255,255,255,0}, rand_color(), 150, 15, &exit_code);
-    struct Texture test_texture = load_texture(ICON_TEXTURE, (SDL_FRect){300,300,300,300}, &exit_code);
-    struct Car car = load_car("res/data/clio-williams.rscdt", &exit_code);
+    if (exit_code == NULL)
+        print_warning("`game_loop()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+    else
+        *exit_code = EXIT_SUCCESS;
+    struct Texture test_text    = create_text("Test", (SDL_Color){255,255,255,0}, rand_color(), 150, 15, exit_code);
+    struct Texture test_texture = load_texture(ICON_TEXTURE, (SDL_FRect){300,300,300,300}, exit_code);
+    struct Car car = load_car("res/data/clio-williams.rscdt", exit_code);
+    if (*exit_code == EXIT_FAILURE)
+        return;
 
     while (logic_layer.game_is_running)
     {
