@@ -66,7 +66,7 @@ struct Car load_car(const char path[], int* exit_code)
     else
     {
         data_line[strcspn(data_line, "\n")] = 0; /// `\n` sanitization
-        result.texture = load_texture(data_line, (SDL_FRect){100, 100, 300, 300}, exit_code);
+        result.texture = load_texture(data_line, (SDL_FRect){center_x(30.0), center_y(30.0), 30, 30}, exit_code);
         if (*exit_code == EXIT_FAILURE)
             return result;
     }

@@ -17,7 +17,6 @@
 #include "graphics/fps.h"            /// various
 #include "graphics/graphics_layer.h" /// game
 #include "text/text.h"               /// components.
-//#include "game_components/scene.h"
 
 #define SDL_FLAGS (SDL_INIT_VIDEO)
 
@@ -30,7 +29,6 @@ void program_exit(const int exit_code);
 
 
 /* Body */
-
 
 void init(int* exit_code)
 {
@@ -58,6 +56,8 @@ void init(int* exit_code)
         print_error("`init()`: failed to init `logic_layer`", NON_SDL_ERROR);
         return;
     }
+    set_fps_cap(60);
+    FPS_manager.lag_compensation_ns = 0;
 
     /// TTF initialization
     if (! TTF_Init())

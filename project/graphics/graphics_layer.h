@@ -18,6 +18,9 @@ static struct Graphics_Layer graphics_layer; /// Singleton.
 void _init_graphics_layer(int* exit_code);
 void _free_graphics_layer(void);
 
+float center_x(const float w);
+float center_y(const float h);
+
 
 /* Struct */
 
@@ -55,7 +58,6 @@ void _init_graphics_layer(int* exit_code)
         *exit_code = EXIT_FAILURE;
         return;
     }
-    //SDL_SetRenderScale(graphics_layer.renderer, SDL_SCALEMODE_NEAREST);
     
     /* Null texture (debug purposes) */
     graphics_layer.null_texture = IMG_LoadTexture(graphics_layer.renderer, NULL_TEXTURE);
@@ -107,6 +109,19 @@ void _free_graphics_layer(void)
         SDL_DestroyTexture(graphics_layer.buffer);
         graphics_layer.buffer = NULL;
     }
+}
+
+
+/* Body */
+
+float center_x(const float w)
+{
+    return (BUFFER_WIDTH - w) / 2.0;
+}
+
+float center_y(const float h)
+{
+    return (BUFFER_HEIGHT - h) / 2.0;
 }
 
 #endif /// GRAPHICS_LAYER_H

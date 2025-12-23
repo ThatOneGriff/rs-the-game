@@ -7,7 +7,9 @@
 #include <stdbool.h> /// For `logic_layer` manipulation.
 #include <stdio.h>   /// I/O.
 
-#include "logic_layer.h" /// Exiting the game.
+#include "../graphics/fps.h"    /// Frame cap control.
+#include "../helpers/helpers.h" /// Colored output.
+#include "logic_layer.h"        /// Exiting the game.
 //#include "game_components/scene.h"
 
 
@@ -81,15 +83,19 @@ void _process_keyboard(const SDL_Keycode event_key)
     {
     /// Frame cap on / off
     case SDLK_F:
-        rendering_FPS_manager.fps_capped = ! rendering_FPS_manager.fps_capped;
-        if (rendering_FPS_manager.fps_capped)
+        FPS_manager.fps_capped = ! FPS_manager.fps_capped;
+        if (FPS_manager.fps_capped)
         {
+            textcolor(GRAY);
             printf("+ [FPS cap] %u\n", 60);
+            textcolor(WHITE);
             set_fps_cap(60);
         }
         else
         {
+            textcolor(GRAY);
             printf("- [FPS cap] Disabled\n");
+            textcolor(WHITE);
             rem_fps_cap();
         }
         break; /// WARNING: with an esoteric-enough fall-through,
