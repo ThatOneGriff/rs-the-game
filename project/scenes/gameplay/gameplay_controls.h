@@ -25,6 +25,20 @@ void process_gameplay_input(struct Car* car)
         car->direction_x = 0;
     
     car->base_texture = 2 + (car->direction_x + prev_car_direction_x);
+    if (car->coords.x <= 80)
+        ++car->base_texture;
+    else if (car->coords.x + car->coords.w >= 160)
+        --car->base_texture;
+    
+    if (car->base_texture >= UINT_MAX - 100) /// Overflow happened; 100 just to account for potential future changes,
+        car->base_texture = 0;
+    else if (car->base_texture >= 5)
+        car->base_texture = 4;
+    
+    /*if (SDL_GetTicks() - car->latest_jump_tick >= (90.0 / 60.0 * 2)*1000 + 250) /// NOTE: can be synchronized with a track's BPM.
+        car->coords.y = 45;
+    else
+        car->coords.y = 50;*/
     return;
 }
 

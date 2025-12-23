@@ -20,6 +20,7 @@ struct Car
     float handling;
     float top_speed;
     float direction_x;
+    ///unsigned int latest_jump_tick;
 };
 struct Car load_car(const char path[], int* exit_code);
 void       free_car(struct Car* target);
@@ -34,6 +35,7 @@ struct Car load_car(const char path[], int* exit_code)
     result.top_speed = 0.0;
     result.direction_x = 0.0;
     result.base_texture = 2; /// main texture
+    ///result.latest_jump_tick = SDL_GetTicks();
 
     /* Checking params */
     if (exit_code == NULL)
