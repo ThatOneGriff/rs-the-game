@@ -8,6 +8,7 @@
 #include <stdlib.h> /// `calloc()`, `realloc()`.
 
 #include "../graphics/graphics_layer.h" /// `graphics_layer`.
+#include "../debug.h"                   /// Error printing.
 
 
 /// NOTE: NOT AT ALL RELATED to `texture.h`:
@@ -128,9 +129,9 @@ void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_coords, 
     {
         void* temp = NULL;
         if (to->max_count * 1.5 == to->max_count) /// i.e. minimal memory allocation is 1.
-            temp = realloc(to->coords, (to->max_count += 1));
+            temp = realloc(to->coords, sizeof(SDL_FRect) * (to->max_count += 1));
         else
-            temp = realloc(to->coords, (to->max_count *= 1.5));
+            temp = realloc(to->coords, sizeof(SDL_FRect) * (to->max_count *= 1.5));
         
         if (temp == NULL)
         {
@@ -158,6 +159,5 @@ void render_multi_texture(const struct Multi_Texture* target)
     for (size_t i = 0; i < target->count; i++)
         SDL_RenderTexture(graphics_layer.renderer, target->texture, NULL, &target->coords[i]);
 }
-
 
 #endif /// MULTI_TEXTURE_H

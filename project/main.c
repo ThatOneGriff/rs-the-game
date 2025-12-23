@@ -26,6 +26,7 @@
 #include "graphics/fps.h"
 #include "graphics/graphics_layer.h"
 #include "graphics/multi_texture.h"
+#include "graphics/shifting_texture.h"
 #include "graphics/texture.h"
 
 /* Helpers */
@@ -107,6 +108,17 @@ void game_loop(int* exit_code)
     struct Car car = load_car("res/car_data/clio-williams.rscdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
         return;
+    
+    /* `Shifting_Texture` test */
+    struct Shifting_Texture st = init_shifting_texture((SDL_FRect){0,0,100,100}, 2, exit_code); /// TEMP: for test.
+    if (*exit_code == EXIT_FAILURE)
+        return;
+    add_to_shifting_texture(&st, "res/images/null.png", exit_code);
+    if (*exit_code == EXIT_FAILURE)
+        return;
+    add_to_shifting_texture(&st, "res/images/icon.png", exit_code);
+    if (*exit_code == EXIT_FAILURE)
+        return;
 
     /* FPS measurement preparations */
     unsigned long long int render_start_time = 0;
@@ -124,6 +136,7 @@ void game_loop(int* exit_code)
         process_global_events();
         process_gameplay_input(&car);
         render_gameplay_scene(&scene, &car, exit_code);
+        render_shifting_texture(&st);
         if (*exit_code == EXIT_FAILURE)
             return;
         

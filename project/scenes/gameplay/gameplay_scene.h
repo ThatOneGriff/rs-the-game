@@ -10,6 +10,7 @@
 #include "car.h"               /// Car (player).
 
 #include "../../graphics/multi_texture.h" /// Textures
+#include "../../graphics/shifting_texture.h"
 #include "../../graphics/texture.h"       /// Multi-textures
 
 

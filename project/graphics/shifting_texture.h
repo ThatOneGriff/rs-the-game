@@ -1,0 +1,150 @@
+#pragma once
+#ifndef SHIFTING_TEXTURE_H
+#define SHIFTING_TEXTURE_H
+
+#include <SDL3/SDL.h>             /// `SDL_DestroyTexture()`.
+#include <SDL3_image/SDL_image.h> /// `IMG_Load()`.
+
+#include <stdlib.h> /// `calloc()`, `realloc()`.
+
+#include "../graphics/graphics_layer.h" /// `graphics_layer`.
+#include "../debug.h"                   /// Error printing.
+
+
+/// NOTE: NOT AT ALL RELATED to `texture.h`:
+///  this presents an array of raw `SDL_Texture`'s with fixed coordinates.
+
+
+/* Struct */
+
+struct Shifting_Texture
+{
+    SDL_Texture** textures;
+    SDL_FRect     coords;
+    size_t count;
+    size_t max_count;
+    size_t i;
+};
+
+
+/* Predef */
+
+struct Shifting_Texture init_shifting_texture(const SDL_FRect coords, const size_t initial_count, int* exit_code);
+void                    free_shifting_texture(struct Shifting_Texture* target);
+
+void add_to_shifting_texture(struct Shifting_Texture* to, const char* new_path, int* exit_code);
+void render_shifting_texture(struct Shifting_Texture* target);
+
+
+/* Body */
+
+struct Shifting_Texture init_shifting_texture(const SDL_FRect coords, const size_t initial_count, int* exit_code)
+{
+    /* Param checking */
+    if (exit_code == NULL)
+        print_warning("`new_shifting_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+    if (initial_count == 0)
+        print_warning("`new_shifting_texture()`: `initial_count` arg is 0. Do you really want that?", NON_SDL_ERROR);
+    
+    /* Object creation */
+    struct Shifting_Texture result;
+    result.coords = coords;
+    result.count = 0;
+    result.max_count = initial_count;
+    result.i = 0;
+
+    /// Malloc without filling it.
+    result.textures = malloc(initial_count * sizeof(SDL_Texture*));
+    if (result.textures == NULL)
+    {
+        print_error("`new_shifting_texture()`: couldn't allocate memory to texture array", NON_SDL_ERROR);
+        *exit_code = EXIT_FAILURE;
+        return result;
+    }
+    
+    *exit_code = EXIT_SUCCESS;
+    return result;
+}
+
+
+void free_shifting_texture(struct Shifting_Texture* target)
+{
+    if (target == NULL)
+        return;
+    
+    if (target->textures != NULL)
+    {
+        for (size_t i = 0; i < target->count; i++)
+        {
+            SDL_DestroyTexture(target->textures[i]);
+            target->textures[i] = NULL;
+        }
+        free(target->textures);
+        target->textures = NULL;
+    }
+    
+    target->coords = (SDL_FRect){0,0,0,0};
+    target->count = 0;
+    target->max_count = 0;
+    target->i = 0;
+}
+
+
+/* Functions */
+
+void add_to_shifting_texture(struct Shifting_Texture* to, const char* new_path, int* exit_code)
+{
+    /* Param checking */
+    if (exit_code == NULL)
+        print_warning("`add_to_shifting_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+    if (to == NULL)
+    {
+        print_error("`add_to_shifting_texture()`: `to` arg is `NULL`", NON_SDL_ERROR);
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
+    if (to->textures == NULL)
+    {
+        print_error("`add_to_shifting_texture()`: `to->textures` is `NULL`", NON_SDL_ERROR);
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
+
+    /* Realloc if needed */
+    if (to->max_count <= to->count)
+    {
+        void* temp = NULL;
+        if (to->max_count * 1.5 == to->max_count) /// i.e. minimal memory allocation is 1.
+            temp = realloc(to->textures, sizeof(SDL_Texture*) * (to->max_count += 1));
+        else
+            temp = realloc(to->textures, sizeof(SDL_Texture*) * (to->max_count *= 1.5));
+        
+        if (temp == NULL)
+        {
+            print_error("`add_to_shifting_texture()`: couldn't reallocate more memory", NON_SDL_ERROR);
+            *exit_code = EXIT_FAILURE;
+            return;
+        }
+        else
+            to->textures = temp;
+    }
+
+    /* Insertion */
+    to->textures[to->count++] = IMG_LoadTexture(graphics_layer.renderer, new_path);
+}
+
+
+void render_shifting_texture(struct Shifting_Texture* target)
+{
+    if (target == NULL || target->textures == NULL || target->count == 0)
+    {
+        print_error("`render_shifting_texture()`: `target` or its members are invalid", NON_SDL_ERROR);
+        return;
+    }
+    
+    if (++target->i == target->count)
+        target->i = 0;
+    SDL_RenderTexture(graphics_layer.renderer, target->textures[target->i], NULL, &target->coords);
+}
+
+#endif /// SHIFTING_TEXTURE_H
