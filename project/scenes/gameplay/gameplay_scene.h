@@ -13,6 +13,8 @@
 #include "../../graphics/shifting_texture.h"
 #include "../../graphics/texture.h"       /// Multi-textures
 
+#define RSGSDT_LINES 3 /// R.S. Gameplay Scene Data.
+
 
 /* Struct */
 
@@ -22,47 +24,85 @@ struct Gameplay_Scene
     struct Texture ground;
     struct Multi_Texture trees;
 };
-struct Gameplay_Scene load_gameplay_scene(const char* sky_bg_path, const char* ground_path, const char* tree_path, int* exit_code);
+struct Gameplay_Scene load_gameplay_scene(const char path[], int* exit_code);
 void                  free_gameplay_scene(struct Gameplay_Scene* target);
 void                render_gameplay_scene(struct Gameplay_Scene* scene, struct Car* car, int* exit_code);
 
 
 /* Body */
 
-struct Gameplay_Scene load_gameplay_scene(const char* sky_bg_path, const char* ground_path, const char* tree_path, int* exit_code)
+struct Gameplay_Scene load_gameplay_scene(const char path[], int* exit_code)
 {
     struct Gameplay_Scene result;
+    result.sky_bg = NULL;
 
     /* Param checking*/
     if (exit_code == NULL)
         print_warning("`load_gameplay_scene()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    if (sky_bg_path == NULL || ground_path == NULL || tree_path == NULL)
+    if (path == NULL)
     {
-        print_error("`load_gameplay_scene()`: 1 or more path args is `NULL`", NON_SDL_ERROR);
+        print_error("`load_gameplay_scene()`: `path` arg is `NULL`", NON_SDL_ERROR);
+        *exit_code = EXIT_FAILURE;
+        return result;
+    }
+
+    /* Reading the file */
+    char** scene_data = read_file_by_line(path, RSGSDT_LINES);
+    if (scene_data == NULL)
+    {
+        print_error("`load_gameplay_scene()`: couldn't read data from file", NON_SDL_ERROR);
         *exit_code = EXIT_FAILURE;
         return result;
     }
 
     /* Resource loading*/
-    result.sky_bg = IMG_LoadTexture(graphics_layer.renderer, sky_bg_path);
+    result.sky_bg = IMG_LoadTexture(graphics_layer.renderer, scene_data[0]);
     if (result.sky_bg == NULL)
     {
         print_error("`load_gameplay_scene()`: couldn't load the sky texture", IS_SDL_ERROR);
+        for (size_t i = 0; i < RSGSDT_LINES; i++)
+        {
+            free(scene_data[i]);
+            scene_data[i] = NULL;
+        }
+        free(scene_data);
+        scene_data = NULL;
         *exit_code = EXIT_FAILURE;
         return result;
     }
 
-    result.ground = load_texture(ground_path, (SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, exit_code); /// TODO: h=80 && better picture
+    result.ground = load_texture(scene_data[1], (SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, exit_code); /// TODO: h=80 && better picture
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the ground texture", NON_SDL_ERROR);
+        SDL_DestroyTexture(result.sky_bg);
+        result.sky_bg = NULL;
+        for (size_t i = 0; i < RSGSDT_LINES; i++)
+        {
+            free(scene_data[i]);
+            scene_data[i] = NULL;
+        }
+        free(scene_data);
+        scene_data = NULL;
+        *exit_code = EXIT_FAILURE;
         return result;
     }
 
-    result.trees = load_multi_texture(tree_path, 1, exit_code);
+    result.trees = load_multi_texture(scene_data[2], 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the trees", NON_SDL_ERROR);
+        free_texture(&result.ground);
+        SDL_DestroyTexture(result.sky_bg);
+        result.sky_bg = NULL;
+        for (size_t i = 0; i < RSGSDT_LINES; i++)
+        {
+            free(scene_data[i]);
+            scene_data[i] = NULL;
+        }
+        free(scene_data);
+        scene_data = NULL;
+        *exit_code = EXIT_FAILURE;
         return result;
     }
 
@@ -70,11 +110,28 @@ struct Gameplay_Scene load_gameplay_scene(const char* sky_bg_path, const char* g
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't add coordinates to the trees", NON_SDL_ERROR);
+        free_multi_texture(&result.trees);
+        free_texture(&result.ground);
+        SDL_DestroyTexture(result.sky_bg);
+        result.sky_bg = NULL;
+        for (size_t i = 0; i < RSGSDT_LINES; i++)
+        {
+            free(scene_data[i]);
+            scene_data[i] = NULL;
+        }
+        free(scene_data);
+        scene_data = NULL;
+        *exit_code = EXIT_FAILURE;
         return result;
     }
 
-    /// TODO: load the rest.
-
+    for (size_t i = 0; i < RSGSDT_LINES; i++)
+    {
+        free(scene_data[i]);
+        scene_data[i] = NULL;
+    }
+    free(scene_data);
+    scene_data = NULL;
     *exit_code = EXIT_SUCCESS;
     return result;
 }

@@ -9,6 +9,8 @@
 #include "../../resources.h" /// File reading.
 #include "../../graphics/texture.h" /// Car texture.
 
+#define RSCDT_LINES 7 /// R.S. Car Data.
+
 
 /* Struct */
 
@@ -82,6 +84,13 @@ struct Car load_car(const char path[], int* exit_code)
     result.handling  = atoi(car_data[i++]);
     result.top_speed = atoi(car_data[i++]);
     
+    for (size_t i = 0; i < RSCDT_LINES; i++)
+    {
+        free(car_data[i]);
+        car_data[i] = NULL;
+    }
+    free(car_data);
+    car_data = NULL;
     *exit_code = EXIT_SUCCESS;
     return result;
 }

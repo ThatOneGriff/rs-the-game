@@ -61,7 +61,8 @@ gcc -Ofast -Wall -Wextra -Werror -Wno-discarded-qualifiers -std=c17 project/main
 ./main.exe
 */
 
-/// REDO: error resource un-allocation almost never follows FILO pattern. As `miniaudio` has shown, this may turn out in an error.
+/// REDO: error resource de-allocation almost never follows FILO pattern. As `miniaudio` has shown, this may turn out in an error.
+/// IDEA: error resource de-allocation through `free_*()` functions.
 
 
 /* Predef */
@@ -101,13 +102,12 @@ void game_loop(int* exit_code)
     if (exit_code == NULL)
         print_warning("`game_loop()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
-    struct Gameplay_Scene gameplay_scene;
     /* Loading & preparing the scene */
+    struct Gameplay_Scene gameplay_scene;
     struct Car car = load_car("res/car_data/clio-williams.rscdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
         return;
-
-    struct Menu_Scene menu_scene = load_menu_scene(exit_code);
+    struct Menu_Scene menu_scene = load_menu_scene("res/scene_data/menu.rsmsdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
         return;
     logic_layer.curr_scene = &menu_scene;
@@ -133,7 +133,9 @@ void game_loop(int* exit_code)
             if (! logic_layer.remain_in_scene)
             {
                 free_gameplay_scene(&gameplay_scene);
-                menu_scene = load_menu_scene(exit_code);
+                menu_scene = load_menu_scene("res/scene_data/menu.rsmsdt", exit_code);
+                if (*exit_code == EXIT_FAILURE)
+                    return;
                 logic_layer.curr_scene = &menu_scene;
                 logic_layer.remain_in_scene = true;
             }
@@ -145,10 +147,9 @@ void game_loop(int* exit_code)
             if (! logic_layer.remain_in_scene)
             {
                 free_menu_scene(&menu_scene);
-                gameplay_scene = load_gameplay_scene("res/images/environment/sky.png",
-                                                     "res/images/environment/ground.png",
-                                                     "res/images/environment/tree.png",
-                                                     exit_code);
+                gameplay_scene = load_gameplay_scene("res/scene_data/plains.rsgsdt", exit_code);
+                if (*exit_code == EXIT_FAILURE)
+                    return;
                 logic_layer.curr_scene = &gameplay_scene;
                 logic_layer.remain_in_scene = true;
             }

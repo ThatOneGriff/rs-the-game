@@ -9,8 +9,6 @@
 #define NULL_TEXTURE "res/images/null.png"
 #define MAIN_FONT    "res/fonts/MysteryQuest.ttf"
 
-#define RSCDT_LINES 7
-
 
 /* Body */
 
