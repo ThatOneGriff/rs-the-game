@@ -128,8 +128,7 @@ void game_loop(int* exit_code)
         if (logic_layer.curr_scene == &gameplay_scene)
         {
             process_global_events(&process_gameplay_event);
-            process_gameplay_input(&car); /// REDO: should instead be a car-related function.
-            render_gameplay_scene(&gameplay_scene, &car, exit_code);
+            render_gameplay_scene(&gameplay_scene, exit_code);
             if (! logic_layer.remain_in_scene)
             {
                 free_gameplay_scene(&gameplay_scene);
@@ -147,15 +146,13 @@ void game_loop(int* exit_code)
             if (! logic_layer.remain_in_scene)
             {
                 free_menu_scene(&menu_scene);
-                gameplay_scene = load_gameplay_scene("res/scene_data/plains.rsgsdt", exit_code);
+                gameplay_scene = load_gameplay_scene("res/scene_data/plains.rsgsdt", &car, exit_code);
                 if (*exit_code == EXIT_FAILURE)
                     return;
                 logic_layer.curr_scene = &gameplay_scene;
                 logic_layer.remain_in_scene = true;
             }
         }
-        //if (*exit_code == EXIT_FAILURE)
-        //    return;
         
         SDL_SetRenderTarget(graphics_layer.renderer, NULL);
         SDL_RenderTexture(graphics_layer.renderer, graphics_layer.buffer, NULL, NULL);

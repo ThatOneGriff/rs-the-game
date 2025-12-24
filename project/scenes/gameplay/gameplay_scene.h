@@ -7,13 +7,13 @@
 
 #include "../../debug.h" /// Error printing.
 #include "gameplay_controls.h" /// Controls.
-#include "car.h"               /// Car (player).
+#include "car.h"               /// car_ptr (player).
 
 #include "../../graphics/multi_texture.h" /// Textures
 #include "../../graphics/shifting_texture.h"
 #include "../../graphics/texture.h"       /// Multi-textures
 
-#define RSGSDT_LINES 3 /// R.S. Gameplay Scene Data.
+#define RSGSDT_LINES 3 /// R.S. Gameplay target Data.
 
 
 /* Struct */
@@ -23,15 +23,17 @@ struct Gameplay_Scene
     SDL_Texture* sky_bg; /// Not a `Texture`, because it's rendered on the whole screen.
     struct Texture ground;
     struct Multi_Texture trees;
+
+    struct Car* car_ptr;
 };
-struct Gameplay_Scene load_gameplay_scene(const char path[], int* exit_code);
+struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr, int* exit_code);
 void                  free_gameplay_scene(struct Gameplay_Scene* target);
-void                render_gameplay_scene(struct Gameplay_Scene* scene, struct Car* car, int* exit_code);
+void                render_gameplay_scene(struct Gameplay_Scene* target, int* exit_code);
 
 
 /* Body */
 
-struct Gameplay_Scene load_gameplay_scene(const char path[], int* exit_code)
+struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr, int* exit_code)
 {
     struct Gameplay_Scene result;
     result.sky_bg = NULL;
@@ -45,6 +47,14 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], int* exit_code)
         *exit_code = EXIT_FAILURE;
         return result;
     }
+    if (car_ptr == NULL)
+    {
+        print_error("`load_gameplay_scene()`: `car_ptr` arg is `NULL`", NON_SDL_ERROR);
+        *exit_code = EXIT_FAILURE;
+        return result;
+    }
+    else
+        result.car_ptr = car_ptr;
 
     /* Reading the file */
     char** scene_data = read_file_by_line(path, RSGSDT_LINES);
@@ -146,38 +156,32 @@ void free_gameplay_scene(struct Gameplay_Scene* target)
         SDL_DestroyTexture(target->sky_bg);
         target->sky_bg = NULL;
     }
+    target->car_ptr->coords.x = center_x(target->car_ptr->coords.w);
     free_texture(&target->ground);
     free_multi_texture(&target->trees);
 }
 
 
 /// Renders into `graphics_layer`'s `buffer` texture.
-void render_gameplay_scene(struct Gameplay_Scene* scene, struct Car* car, int* exit_code)
+void render_gameplay_scene(struct Gameplay_Scene* target, int* exit_code)
 {
     /* Param checking*/
     if (exit_code == NULL)
         print_warning("`render_gameplay_scene()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    if (scene == NULL || scene->sky_bg == NULL) /// TODO: take all members into account.
+    if (target == NULL || target->sky_bg == NULL) /// TODO: take all members into account.
     {
-        print_error("`render_gameplay_scene()`: `scene` arg or one of its members is `NULL`", NON_SDL_ERROR);
+        print_error("`render_gameplay_scene()`: `target` arg or one of its members is `NULL`", NON_SDL_ERROR);
         *exit_code = EXIT_FAILURE;
         return;
     }
-    if (car == NULL)
-    {
-        print_error("`render_gameplay_scene()`: `car` is `NULL`", NON_SDL_ERROR);
-        *exit_code = EXIT_FAILURE;
-        return;
-    }
+
+    process_gameplay_car_input(target->car_ptr);
 
     /* Rendering */
-    SDL_RenderTexture(graphics_layer.renderer, scene->sky_bg, NULL, NULL);
-    render_texture(&scene->ground);
-    render_multi_texture(&scene->trees);
-
-    /* Car rendering */
-    car->coords.x += car->direction_x * car->handling * (FPS_manager.delta_ns / SEC_IN_NS);
-    SDL_RenderTexture(graphics_layer.renderer, car->textures[car->base_texture], NULL, &car->coords);
+    SDL_RenderTexture(graphics_layer.renderer, target->sky_bg, NULL, NULL);
+    render_texture(&target->ground);
+    render_multi_texture(&target->trees);
+    SDL_RenderTexture(graphics_layer.renderer, target->car_ptr->textures[target->car_ptr->base_texture], NULL, &target->car_ptr->coords);
     *exit_code = EXIT_SUCCESS;
     return;
 }
