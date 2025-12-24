@@ -6,6 +6,38 @@
 #include "car.h"                     /// Car controls.
 #include "../../graphics/fps.h"      /// FPS-based movement.
 #include "../../logic/logic_layer.h" /// Key state.
+#include "../../logic/input.h"       /// Global keyboard processing.
+
+
+/* Predef */
+
+void  process_gameplay_event(const SDL_Event event);
+void _process_gameplay_keyboard(const SDL_Keycode event_key);
+
+
+void process_gameplay_event(const SDL_Event event)
+{
+    switch (event.type)
+    {
+    /* Key press */
+    case SDL_EVENT_KEY_DOWN:
+        _process_gameplay_keyboard(event.key.key);
+        break;
+    }
+}
+
+
+void _process_gameplay_keyboard(const SDL_Keycode event_key)
+{
+    switch(event_key)
+    {
+        case SDLK_D:
+            logic_layer.remain_in_scene = false;
+            break;
+        default:
+            _process_global_keyboard(event_key);
+    }
+}
 
 
 void process_gameplay_input(struct Car* car)

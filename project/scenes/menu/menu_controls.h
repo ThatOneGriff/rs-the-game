@@ -3,33 +3,26 @@
 #define MENU_CONTROLS_H
 
 #include <SDL3/SDL.h> /// Keyboard processing.
+#include "../../logic/logic_layer.h" /// Key state.
+#include "../../logic/input.h"       /// Global keyboard processing.
 
 
 /* Predef */
 
-void  process_menu_events(void);
+void  process_menu_event(const SDL_Event event);
 void _process_menu_keyboard(const SDL_Keycode event_key);
 
 
 /* Body */
 
-void process_menu_events(void)
+void process_menu_event(const SDL_Event event)
 {
-    while (SDL_PollEvent(&logic_layer.event))
+    switch (event.type)
     {
-        switch (logic_layer.event.type)
-        {
-        /* Key press */
-        case SDL_EVENT_KEY_DOWN:
-            printf("0.7");
-            _process_menu_keyboard(logic_layer.event.key.key);
-            break;
-        
-        /* Quit */
-        case SDL_EVENT_QUIT:
-            logic_layer.game_is_running = false;
-            break;
-        }
+    /* Key press */
+    case SDL_EVENT_KEY_DOWN:
+        _process_menu_keyboard(event.key.key);
+        break;
     }
 }
 
@@ -39,9 +32,10 @@ void _process_menu_keyboard(const SDL_Keycode event_key)
     switch(event_key)
     {
         case SDLK_D:
-            printf("1");
             logic_layer.remain_in_scene = false;
             break;
+        default:
+            _process_global_keyboard(event_key);
     }
 }
 

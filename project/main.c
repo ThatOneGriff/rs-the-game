@@ -101,13 +101,8 @@ void game_loop(int* exit_code)
     if (exit_code == NULL)
         print_warning("`game_loop()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
+    struct Gameplay_Scene gameplay_scene;
     /* Loading & preparing the scene */
-    struct Gameplay_Scene gameplay_scene = load_gameplay_scene("res/images/environment/sky.png",
-                                                      "res/images/environment/ground.png",
-                                                      "res/images/environment/tree.png",
-                                                      exit_code);
-    if (*exit_code == EXIT_FAILURE)
-        return;
     struct Car car = load_car("res/car_data/clio-williams.rscdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
         return;
@@ -130,23 +125,30 @@ void game_loop(int* exit_code)
         SDL_RenderClear(graphics_layer.renderer);
         SDL_SetRenderTarget(graphics_layer.renderer, graphics_layer.buffer);
 
-        //process_global_events();
         if (logic_layer.curr_scene == &gameplay_scene)
         {
-            process_gameplay_input(&car);
+            process_global_events(&process_gameplay_event);
+            process_gameplay_input(&car); /// REDO: should instead be a car-related function.
             render_gameplay_scene(&gameplay_scene, &car, exit_code);
             if (! logic_layer.remain_in_scene)
             {
+                free_gameplay_scene(&gameplay_scene);
+                menu_scene = load_menu_scene(exit_code);
                 logic_layer.curr_scene = &menu_scene;
                 logic_layer.remain_in_scene = true;
             }
         }
         else if (logic_layer.curr_scene == &menu_scene)
         {
-            process_menu_events();
+            process_global_events(&process_menu_event);
             render_menu_scene(&menu_scene, exit_code);
             if (! logic_layer.remain_in_scene)
             {
+                free_menu_scene(&menu_scene);
+                gameplay_scene = load_gameplay_scene("res/images/environment/sky.png",
+                                                     "res/images/environment/ground.png",
+                                                     "res/images/environment/tree.png",
+                                                     exit_code);
                 logic_layer.curr_scene = &gameplay_scene;
                 logic_layer.remain_in_scene = true;
             }

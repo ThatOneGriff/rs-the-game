@@ -14,30 +14,25 @@
 
 /* Predef */
 
-/*void  process_global_events(void);
+void  process_global_events(void (*curr_event_processer)(const SDL_Event));
 void _process_global_keyboard(const SDL_Keycode event_key);
 
 
-/// Body
+/* Body */
 
-void process_global_events(void)
+void process_global_events(void (*curr_event_processer)(const SDL_Event))
 {
     while (SDL_PollEvent(&logic_layer.event))
     {
         switch (logic_layer.event.type)
         {
-        /// Key press
-        case SDL_EVENT_KEY_DOWN:
-            _process_global_keyboard(logic_layer.event.key.key);
-            break;
-        
         /// Quit
         case SDL_EVENT_QUIT:
             logic_layer.game_is_running = false;
             break;
         
-        //default:
-            /// NOTE: `process_menu_events()` and `process_gameplay_input()` need to have the same type & args.
+        default:
+            curr_event_processer(logic_layer.event);
         }
     }
 }
@@ -73,6 +68,6 @@ void _process_global_keyboard(const SDL_Keycode event_key)
     /// WARNING: with an esoteric-enough fall-through,
     /// case(smth1)'s `EXIT_FAILURE` may be overshadowed by case(smth2)'s `EXIT_SUCCESS`.
     }
-}*/
+}
 
 #endif /// INPUT_H

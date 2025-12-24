@@ -45,10 +45,17 @@ struct Menu_Scene load_menu_scene(int* exit_code)
 {
     struct Menu_Scene result;
     result.bg = IMG_LoadTexture(graphics_layer.renderer, "res/images/menu/bg.png");
-    result.car_name_text = create_text("Renault Clio Williams", SDL_WHITE, SDL_WHITE, 20, 0, exit_code);
+    result.car_name_text = create_text("Renault Clio Williams", SDL_WHITE, SDL_WHITE, 200, 0, exit_code);
     //result.main_car_picture = load_texture("")
     *exit_code = EXIT_SUCCESS;
     return result;
+}
+
+
+void free_menu_scene(struct Menu_Scene* target)
+{
+    SDL_DestroyTexture(target->bg);
+    free_texture(&target->car_name_text);
 }
 
 
