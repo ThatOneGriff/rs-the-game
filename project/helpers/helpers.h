@@ -10,10 +10,14 @@
 #define GREEN  2
 #define YELLOW 6
 
-
 void textcolor(const short int color_code)
 {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color_code);
 }
+
+
+/// For everything-else colouring.
+#include <SDL3/SDL.h> /// `SDL_Color`s
+#define SDL_WHITE (SDL_Color){255,255,255,0}
 
 #endif /// HELPERS_H

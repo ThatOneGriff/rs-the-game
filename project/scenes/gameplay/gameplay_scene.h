@@ -22,7 +22,7 @@ struct Gameplay_Scene
     struct Texture ground;
     struct Multi_Texture trees;
 };
-struct Gameplay_Scene load_gameplay_scene(const char* sky_bg_path, const char* ground_path, const char*, int* exit_code);
+struct Gameplay_Scene load_gameplay_scene(const char* sky_bg_path, const char* ground_path, const char* tree_path, int* exit_code);
 void                  free_gameplay_scene(struct Gameplay_Scene* target);
 void                render_gameplay_scene(struct Gameplay_Scene* scene, struct Car* car, int* exit_code);
 

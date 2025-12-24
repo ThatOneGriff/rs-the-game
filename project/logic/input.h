@@ -14,11 +14,11 @@
 
 /* Predef */
 
-void  process_global_events(void);
+/*void  process_global_events(void);
 void _process_global_keyboard(const SDL_Keycode event_key);
 
 
-/* Body */
+/// Body
 
 void process_global_events(void)
 {
@@ -26,15 +26,18 @@ void process_global_events(void)
     {
         switch (logic_layer.event.type)
         {
-        /* Key press */
+        /// Key press
         case SDL_EVENT_KEY_DOWN:
             _process_global_keyboard(logic_layer.event.key.key);
             break;
         
-        /* Quit */
+        /// Quit
         case SDL_EVENT_QUIT:
             logic_layer.game_is_running = false;
             break;
+        
+        //default:
+            /// NOTE: `process_menu_events()` and `process_gameplay_input()` need to have the same type & args.
         }
     }
 }
@@ -44,7 +47,7 @@ void _process_global_keyboard(const SDL_Keycode event_key)
 {
     switch(event_key)
     {
-    /* Frame cap on / off */
+    /// Frame cap on / off
     case SDLK_F:
         ++curr_fps_cap_i;
         if (curr_fps_cap_i == 5)
@@ -65,10 +68,11 @@ void _process_global_keyboard(const SDL_Keycode event_key)
             rem_fps_cap();
         }
         break;
+        
 
     /// WARNING: with an esoteric-enough fall-through,
     /// case(smth1)'s `EXIT_FAILURE` may be overshadowed by case(smth2)'s `EXIT_SUCCESS`.
     }
-}
+}*/
 
 #endif /// INPUT_H

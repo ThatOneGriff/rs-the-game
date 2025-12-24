@@ -19,8 +19,12 @@ void _free_logic_layer(void);
 
 struct Logic_Layer
 {
-    SDL_Event event;
     bool  game_is_running;
+
+    bool  remain_in_scene;
+    void* curr_scene;
+
+    SDL_Event event;
     bool* key_state;
 };
 
@@ -30,7 +34,9 @@ void _init_logic_layer(int* exit_code)
     if (exit_code == NULL)
         print_warning("`_init_logic_layer()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     logic_layer.game_is_running = true;
-    logic_layer.key_state = NULL;
+    logic_layer.remain_in_scene = true;
+    logic_layer.curr_scene = NULL;
+    logic_layer.key_state  = NULL;
     *exit_code = EXIT_SUCCESS;
     return;
 }
@@ -38,7 +44,9 @@ void _init_logic_layer(int* exit_code)
 void _free_logic_layer(void)
 {
     logic_layer.game_is_running = false;
-    logic_layer.key_state = NULL;
+    logic_layer.remain_in_scene = false;
+    logic_layer.curr_scene = NULL;
+    logic_layer.key_state  = NULL;
     return;
 }
 

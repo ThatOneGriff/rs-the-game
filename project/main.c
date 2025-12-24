@@ -43,14 +43,17 @@
 #include "scenes/gameplay/gameplay_controls.h"
 #include "scenes/gameplay/gameplay_scene.h"
 
+#include "scenes/menu/menu_scene.h"
+#include "scenes/menu/menu_controls.h"
+
 /* Text */
 #include "text/border.h"
 #include "text/text.h"
 
 /* = Library information =
-SDL3 version: 3.2.28       (last updated  6.12.25)
-miniaudio version: 0.11.23 (last updated 12.12.25)
-nlohmann/json version: TBA
+SDL3 version:          3.2. 28 (last updated  6.12.25)
+miniaudio version:     0.11.23 (last updated 12.12.25)
+nlohmann/json version: 3.12.0  (last updated 24.12.25)
 
  = Compiler args (1: w/ audio, 2: w/o audio) =
 gcc -Ofast -Wall -Wextra -Werror -Wno-discarded-qualifiers -std=c17 project/main.c project/audio/audio.c -o ./main.exe -lSDL3 -lSDL3_image -lSDL3_ttf -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
@@ -99,7 +102,7 @@ void game_loop(int* exit_code)
         print_warning("`game_loop()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
     /* Loading & preparing the scene */
-    struct Gameplay_Scene scene = load_gameplay_scene("res/images/environment/sky.png",
+    struct Gameplay_Scene gameplay_scene = load_gameplay_scene("res/images/environment/sky.png",
                                                       "res/images/environment/ground.png",
                                                       "res/images/environment/tree.png",
                                                       exit_code);
@@ -108,12 +111,11 @@ void game_loop(int* exit_code)
     struct Car car = load_car("res/car_data/clio-williams.rscdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
         return;
-    
-    /* `Shifting_Texture`: TEMP test */
-    struct Shifting_Texture st = init_shifting_texture((SDL_FRect){0,0,100,100}, 2, exit_code);
-    add_to_shifting_texture(&st, "res/images/noise-test1.png", exit_code);
-    add_to_shifting_texture(&st, "res/images/noise-test2.png", exit_code);
-    add_to_shifting_texture(&st, "res/images/noise-test3.png", exit_code);
+
+    struct Menu_Scene menu_scene = load_menu_scene(exit_code);
+    if (*exit_code == EXIT_FAILURE)
+        return;
+    logic_layer.curr_scene = &menu_scene;
 
     /* FPS measurement preparations */
     unsigned long long int render_start_time = 0;
@@ -128,12 +130,29 @@ void game_loop(int* exit_code)
         SDL_RenderClear(graphics_layer.renderer);
         SDL_SetRenderTarget(graphics_layer.renderer, graphics_layer.buffer);
 
-        process_global_events();
-        process_gameplay_input(&car);
-        render_gameplay_scene(&scene, &car, exit_code);
-        //render_shifting_texture(&st);
-        if (*exit_code == EXIT_FAILURE)
-            return;
+        //process_global_events();
+        if (logic_layer.curr_scene == &gameplay_scene)
+        {
+            process_gameplay_input(&car);
+            render_gameplay_scene(&gameplay_scene, &car, exit_code);
+            if (! logic_layer.remain_in_scene)
+            {
+                logic_layer.curr_scene = &menu_scene;
+                logic_layer.remain_in_scene = true;
+            }
+        }
+        else if (logic_layer.curr_scene == &menu_scene)
+        {
+            process_menu_events();
+            render_menu_scene(&menu_scene, exit_code);
+            if (! logic_layer.remain_in_scene)
+            {
+                logic_layer.curr_scene = &gameplay_scene;
+                logic_layer.remain_in_scene = true;
+            }
+        }
+        //if (*exit_code == EXIT_FAILURE)
+        //    return;
         
         SDL_SetRenderTarget(graphics_layer.renderer, NULL);
         SDL_RenderTexture(graphics_layer.renderer, graphics_layer.buffer, NULL, NULL);
@@ -158,6 +177,7 @@ void game_loop(int* exit_code)
         } 
     }
 
-    free_gameplay_scene(&scene);
+    //free_menu_scene(&menu_scene);
+    free_gameplay_scene(&gameplay_scene);
     *exit_code = EXIT_SUCCESS;
 }
