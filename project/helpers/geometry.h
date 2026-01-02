@@ -7,13 +7,24 @@
 #include "../debug.h" /// Error printing.
 
 
-/// Structs */
+/* Structs */
 
 struct Vec2
 {
     int x;
     int y;
 };
+
+
+/* Body */
+
+struct Vec2 vec2(const float x, const float y)
+{
+    struct Vec2 result;
+    result.x = x;
+    result.y = y;
+    return result;
+}
 
 /*struct Path
 {

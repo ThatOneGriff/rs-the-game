@@ -27,8 +27,8 @@ struct Gameplay_Scene
     struct Car* car_ptr;
 };
 struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr, int* exit_code);
+void                  gameplay_scene_tick(struct Gameplay_Scene* target, int* exit_code);
 void                  free_gameplay_scene(struct Gameplay_Scene* target);
-void                render_gameplay_scene(struct Gameplay_Scene* target, int* exit_code);
 
 
 /* Body */
@@ -147,23 +147,8 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
 }
 
 
-void free_gameplay_scene(struct Gameplay_Scene* target)
-{
-    if (target == NULL)
-        return;
-    if (target->sky_bg != NULL)
-    {
-        SDL_DestroyTexture(target->sky_bg);
-        target->sky_bg = NULL;
-    }
-    target->car_ptr->coords.x = center_x(target->car_ptr->coords.w);
-    free_texture(&target->ground);
-    free_multi_texture(&target->trees);
-}
-
-
 /// Renders into `graphics_layer`'s `buffer` texture.
-void render_gameplay_scene(struct Gameplay_Scene* target, int* exit_code)
+void gameplay_scene_tick(struct Gameplay_Scene* target, int* exit_code)
 {
     /* Param checking*/
     if (exit_code == NULL)
@@ -184,6 +169,21 @@ void render_gameplay_scene(struct Gameplay_Scene* target, int* exit_code)
     SDL_RenderTexture(graphics_layer.renderer, target->car_ptr->textures[target->car_ptr->base_texture], NULL, &target->car_ptr->coords);
     *exit_code = EXIT_SUCCESS;
     return;
+}
+
+
+void free_gameplay_scene(struct Gameplay_Scene* target)
+{
+    if (target == NULL)
+        return;
+    if (target->sky_bg != NULL)
+    {
+        SDL_DestroyTexture(target->sky_bg);
+        target->sky_bg = NULL;
+    }
+    target->car_ptr->coords.x = center_x(target->car_ptr->coords.w);
+    free_texture(&target->ground);
+    free_multi_texture(&target->trees);
 }
 
 #endif /// GAMEPLAY_SCENE_H

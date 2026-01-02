@@ -69,7 +69,7 @@ void render_texture(const struct Texture* target)
         return;
     }
     if (target->rect.w == 0 || target->rect.h == 0)
-        print_warning("`render_texture()`: target's `x` or `y` is 0. Are you sure?", NON_SDL_ERROR);
+        print_warning("`render_texture()`: target's `w` or `h` is 0. Are you sure this was supposed to happen?", NON_SDL_ERROR);
     
     /* Rendering */
     SDL_RenderTexture(graphics_layer.renderer, target->texture, NULL, &target->rect);

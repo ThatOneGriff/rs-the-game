@@ -6,6 +6,8 @@
 #include "../debug.h" /// Error printing.
 
 #define SEC_IN_NS 1000000000.0
+#define time_tick_ns unsigned long long int
+#define time_tick_ms unsigned long long int /// Purely for code clarity.
 
 static unsigned int fps_cap_options[5] = {15, 30, 60, 120, UINT_MAX};
 static unsigned int curr_fps_cap_i = 2;
@@ -17,8 +19,8 @@ struct FPS_Manager
 {
     bool fps_capped;
     unsigned int fps_cap;
-    unsigned long long int        delta_ns;
-    unsigned long long int target_delta_ns;
+    time_tick_ns        delta_ns;
+    time_tick_ns target_delta_ns;
 };
 static struct FPS_Manager FPS_manager; /// Singleton.
 

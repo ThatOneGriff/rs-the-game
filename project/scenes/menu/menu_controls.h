@@ -31,7 +31,7 @@ void _process_menu_keyboard(const SDL_Keycode event_key)
 {
     switch(event_key)
     {
-        case SDLK_D:
+        case SDLK_RETURN:
             logic_layer.remain_in_scene = false;
             break;
         default:

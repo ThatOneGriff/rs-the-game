@@ -113,22 +113,22 @@ void game_loop(int* exit_code)
     logic_layer.curr_scene = &menu_scene;
 
     /* FPS measurement preparations */
-    unsigned long long int render_start_time = 0;
+    time_tick_ns render_start_tick   = 0; /// Temporary value.
+    time_tick_ms fps_measure_1s_tick = SDL_GetTicks();
     unsigned int curr_fps = 0;
     unsigned int prev_fps = UINT_MAX;
-    unsigned int fps_render_start_tick = SDL_GetTicks();
 
     /* The loop */
     while (logic_layer.game_is_running)
     {
-        render_start_time = SDL_GetTicksNS();
+        render_start_tick = SDL_GetTicksNS();
         SDL_RenderClear(graphics_layer.renderer);
         SDL_SetRenderTarget(graphics_layer.renderer, graphics_layer.buffer);
 
+        process_global_events(&process_menu_event);
         if (logic_layer.curr_scene == &gameplay_scene)
         {
-            process_global_events(&process_gameplay_event);
-            render_gameplay_scene(&gameplay_scene, exit_code);
+            gameplay_scene_tick(&gameplay_scene, exit_code);
             if (! logic_layer.remain_in_scene)
             {
                 free_gameplay_scene(&gameplay_scene);
@@ -141,8 +141,7 @@ void game_loop(int* exit_code)
         }
         else if (logic_layer.curr_scene == &menu_scene)
         {
-            process_global_events(&process_menu_event);
-            render_menu_scene(&menu_scene, exit_code);
+            menu_scene_tick(&menu_scene, exit_code);
             if (! logic_layer.remain_in_scene)
             {
                 free_menu_scene(&menu_scene);
@@ -160,7 +159,7 @@ void game_loop(int* exit_code)
 
         /* FPS & delay managing */
         ++curr_fps;
-        FPS_manager.delta_ns = SDL_GetTicksNS() - render_start_time;
+        FPS_manager.delta_ns = SDL_GetTicksNS() - render_start_tick;
         if (FPS_manager.fps_capped && FPS_manager.target_delta_ns > FPS_manager.delta_ns)
         {
             SDL_DelayNS(FPS_manager.target_delta_ns - FPS_manager.delta_ns);
@@ -168,10 +167,10 @@ void game_loop(int* exit_code)
         }
         
         /* FPS output */
-        if (SDL_GetTicks() - fps_render_start_tick >= 1000) /// 1s elapsed.
+        if (SDL_GetTicks() - fps_measure_1s_tick >= 1000) /// 1s elapsed.
         {
             print_compare_fps(curr_fps, prev_fps);
-            fps_render_start_tick = SDL_GetTicks();
+            fps_measure_1s_tick = SDL_GetTicks();
             prev_fps = curr_fps;
             curr_fps = 0;
         } 
@@ -179,5 +178,6 @@ void game_loop(int* exit_code)
 
     //free_menu_scene(&menu_scene);
     free_gameplay_scene(&gameplay_scene);
+    free_menu_scene(&menu_scene);
     *exit_code = EXIT_SUCCESS;
 }
