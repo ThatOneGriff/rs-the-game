@@ -62,7 +62,11 @@ gcc -Ofast -Wall -Wextra -Werror -Wno-discarded-qualifiers -std=c17 project/main
 */
 
 /// REDO: error resource de-allocation almost never follows FILO pattern. As `miniaudio` has shown, this may turn out in an error.
-/// IDEA: error resource de-allocation through `free_*()` functions.
+/// TODO: deallocation via stack.
+
+/// Visual TODOs:
+/// - fix Clio Williams texture (exhaust pipe mirroring);
+/// - find an adequate font (pixel-art one may provide pixel perfection difficulties; try to find the one R.S. logo uses).
 
 
 /* Predef */

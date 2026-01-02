@@ -70,6 +70,14 @@ void render_texture(const struct Texture* target)
     }
     if (target->rect.w == 0 || target->rect.h == 0)
         print_warning("`render_texture()`: target's `w` or `h` is 0. Are you sure this was supposed to happen?", NON_SDL_ERROR);
+    if (target->rect.x + target->rect.w <= 0 ||
+        target->rect.y + target->rect.h <= 0 ||
+        target->rect.x >= RENDER_WIDTH ||
+        target->rect.y >= RENDER_HEIGHT)
+    {
+        print_warning("`render_texture()`: texture rendering out of bounds", NON_SDL_ERROR);
+        return; /// While it's not an error, why waste a draw call on something not seen anyway?
+    }
     
     /* Rendering */
     SDL_RenderTexture(graphics_layer.renderer, target->texture, NULL, &target->rect);
