@@ -4,6 +4,7 @@
 
 #include <SDL3/SDL.h> /// Keyboard controls.
 #include "car.h"                     /// Car controls.
+#include "gameplay_scene.h" /// Gameplay scene manipulation.
 #include "../../graphics/fps.h"      /// FPS-based movement.
 #include "../../logic/logic_layer.h" /// Key state.
 #include "../../logic/input.h"       /// Global keyboard processing.
@@ -11,36 +12,46 @@
 
 /* Predef */
 
-void  process_gameplay_event(const SDL_Event event);
-void _process_gameplay_keyboard(const SDL_Keycode event_key);
+void  process_gameplay_events  (struct Gameplay_Scene* scene);
+void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode event_key);
+void _process_gameplay_car_input(struct Car* car);
 
 
-void process_gameplay_event(const SDL_Event event)
+void process_gameplay_events(struct Gameplay_Scene* scene)
 {
-    switch (event.type)
+    _process_gameplay_car_input(scene->car_ptr);
+    while (SDL_PollEvent(&logic_layer.event))
     {
-    /* Key press */
-    case SDL_EVENT_KEY_DOWN:
-        _process_gameplay_keyboard(event.key.key);
-        break;
+        switch (logic_layer.event.type)
+        {
+        /// Key press.
+        case SDL_EVENT_KEY_DOWN:
+            _process_gameplay_keyboard(scene, logic_layer.event.key.key);
+            break;
+        /// Other event.
+        default:
+            process_global_events(logic_layer.event);
+        }
     }
 }
 
 
-void _process_gameplay_keyboard(const SDL_Keycode event_key)
+void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode event_key)
 {
+    UNUSED(scene); /// I'm not sure if it ever will be used. Let's keep it for now.
     switch(event_key)
     {
-        case SDLK_D:
+        case SDLK_RETURN:
             logic_layer.remain_in_scene = false;
             break;
+        
         default:
             _process_global_keyboard(event_key);
     }
 }
 
 
-void process_gameplay_car_input(struct Car* car)
+void _process_gameplay_car_input(struct Car* car)
 {
     if (car == NULL)
     {

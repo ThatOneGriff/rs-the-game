@@ -160,8 +160,6 @@ void gameplay_scene_tick(struct Gameplay_Scene* target, int* exit_code)
         return;
     }
 
-    process_gameplay_car_input(target->car_ptr);
-
     /* Rendering */
     SDL_RenderTexture(graphics_layer.renderer, target->sky_bg, NULL, NULL);
     render_texture(&target->ground);

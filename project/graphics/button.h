@@ -18,6 +18,7 @@
 
 struct Button;
 struct Button create_button(const char* text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned int size, int* exit_code);
+
 void            free_button(struct Button* target);
 
 
@@ -27,15 +28,16 @@ void            free_button(struct Button* target);
 /// IDEA: can instead be 2 `SDL_Texture`'s, as they (presumably) share coords. "Presumably" because coords may be slightly diff due to the text border.
 struct Button
 {
-    struct Texture regular;
-    struct Texture focused;
+    struct Texture regular_texture;
+    struct Texture focused_texture;
+    struct Texture* curr;
     bool is_focused;
 };
 
 
 /* Body */
 
-struct Button create_button(const char* text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned int size, int* exit_code)
+struct Button create_button(const char* text, const SDL_Color inner_color, struct Vec2 screen_pos, const unsigned int size, int* exit_code)
 {
     struct Button result;
     result.is_focused = false;
@@ -50,32 +52,51 @@ struct Button create_button(const char* text, const SDL_Color inner_color, const
     if (exit_code == NULL)
         print_warning("`init_button()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
-    /* Regular texture */
-    result.regular = create_text(text, inner_color, SDL_WHITE, screen_pos, size, 0,       exit_code);
+    /* regular_texture texture */
+    result.regular_texture = create_text(text, inner_color, SDL_WHITE, screen_pos, size, 0, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_button()`: regular texture creation failure", NON_SDL_ERROR);
+        print_error("`init_button()`: regular_texture texture creation failure", NON_SDL_ERROR);
         return result;
     }
 
-    /* Focused texture */
-    result.focused = create_text(text, inner_color, SDL_WHITE, screen_pos, size, size/10, exit_code); /// WARNING: may result in a `0` border thickness, making the button appear not selected.
+    /* focused_texture texture */
+    const struct Vec2 border_adjusted_screen_pos = vec2(screen_pos.x - size/10, screen_pos.y - size/10); /// So that focusing doesn't make the button jitter.
+    result.focused_texture = create_text(text, inner_color, SDL_WHITE, border_adjusted_screen_pos, size, size/10, exit_code); /// WARNING: may result in a `0` border thickness, making the button appear not selected.
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_button()`: focused texture creation failure", NON_SDL_ERROR);
+        print_error("`init_button()`: focused_texture texture creation failure", NON_SDL_ERROR);
         return result;
     }
 
+    result.curr = &result.regular_texture;
     *exit_code = EXIT_SUCCESS;
     return result;
+}
+
+
+void render_button(const struct Button* target)
+{
+    /* Param checking */
+    if (target == NULL)
+    {
+        print_error("`render_button()` target is `NULL`", NON_SDL_ERROR);
+        return;
+    }
+    
+    /* Rendering */
+    if (target->is_focused)
+        render_texture(&target->focused_texture);
+    else
+        render_texture(&target->regular_texture);
 }
 
 
 void free_button(struct Button* target)
 {
     target->is_focused = false;
-    free_texture(&target->regular);
-    free_texture(&target->focused);
+    free_texture(&target->regular_texture);
+    free_texture(&target->focused_texture);
 }
 
 #endif /// BUTTON_H

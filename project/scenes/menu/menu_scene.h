@@ -7,7 +7,6 @@
 
 #include <stdlib.h> /// `malloc()`
 
-#include "menu_controls.h" /// Controls.
 #include "../../debug.h"   /// Error printing.
 #include "../../helpers/helpers.h" /// Colors.
 #include "../../graphics/graphics_layer.h" /// `graphics_layer`.
@@ -27,6 +26,9 @@ struct Menu_Scene
     
     struct Texture car_name_text; /// TEMP, or to be moved into menu car management.
     struct Button play_button;
+    struct Button dummy_button;
+    //struct Button* buttons[2];
+    //size_t button_focus_i;
     /*struct Texture main_car_picture;
     struct Texture extra_car_pictures[4];
 
@@ -47,6 +49,7 @@ struct Menu_Scene load_menu_scene(const char path[], int* exit_code)
 {
     struct Menu_Scene result;
     result.bg = NULL;
+    //result.button_focus_i = 0;
 
     /* Param checking*/
     if (exit_code == NULL)
@@ -97,11 +100,11 @@ struct Menu_Scene load_menu_scene(const char path[], int* exit_code)
         scene_data = NULL;
         *exit_code = EXIT_FAILURE;
     }
-
-    result.play_button = create_button("PLAY", rand_color(), vec2(150, 150), 20, exit_code);
+    
+    result.dummy_button = create_button("dummy", rand_color(), vec2(20, 20), 10, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_menu_scene()`: couldn't create play button", IS_SDL_ERROR);
+        print_error("`load_menu_scene()`: couldn't create dummy button", IS_SDL_ERROR);
         free_texture(&result.car_name_text);
         SDL_DestroyTexture(result.bg);
         result.bg = NULL;
@@ -114,6 +117,27 @@ struct Menu_Scene load_menu_scene(const char path[], int* exit_code)
         scene_data = NULL;
         *exit_code = EXIT_FAILURE;
     }
+    result.dummy_button.is_focused = true; /// TEMP??
+    //result.buttons[0] = &result.dummy_button;
+
+    result.play_button = create_button("PLAY", rand_color(), vec2(150, 150), 20, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`load_menu_scene()`: couldn't create play button", IS_SDL_ERROR);
+        free_button(&result.dummy_button);
+        free_texture(&result.car_name_text);
+        SDL_DestroyTexture(result.bg);
+        result.bg = NULL;
+        for (size_t i = 0; i < RSMSDT_LINES; i++)
+        {
+            free(scene_data[i]);
+            scene_data[i] = NULL;
+        }
+        free(scene_data);
+        scene_data = NULL;
+        *exit_code = EXIT_FAILURE;
+    }
+    //result.buttons[1] = &result.play_button;
 
     //result.main_car_picture = load_texture("")
     *exit_code = EXIT_SUCCESS;
@@ -125,7 +149,8 @@ void menu_scene_tick(struct Menu_Scene* target, int* exit_code)
 {
     SDL_RenderTexture(graphics_layer.renderer, target->bg, NULL, NULL);
     render_texture(&target->car_name_text);
-    render_texture(&target->play_button.focused);
+    render_button(&target->play_button);
+    render_button(&target->dummy_button);
 
     *exit_code = EXIT_SUCCESS;
     return;
@@ -136,6 +161,7 @@ void free_menu_scene(struct Menu_Scene* target)
 {
     SDL_DestroyTexture(target->bg);
     free_texture(&target->car_name_text);
+    free_button(&target->dummy_button);
     free_button(&target->play_button);
 }
 

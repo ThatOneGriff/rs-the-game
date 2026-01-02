@@ -14,26 +14,20 @@
 
 /* Predef */
 
-void  process_global_events(void (*curr_event_processer)(const SDL_Event));
+void  process_global_events(const SDL_Event event);
 void _process_global_keyboard(const SDL_Keycode event_key);
 
 
 /* Body */
 
-void process_global_events(void (*curr_event_processer)(const SDL_Event))
+void process_global_events(const SDL_Event event)
 {
-    while (SDL_PollEvent(&logic_layer.event))
+    switch (event.type)
     {
-        switch (logic_layer.event.type)
-        {
-        /// Quit
-        case SDL_EVENT_QUIT:
-            logic_layer.game_is_running = false;
-            break;
-        
-        default:
-            curr_event_processer(logic_layer.event);
-        }
+    /// Quit
+    case SDL_EVENT_QUIT:
+        logic_layer.game_is_running = false;
+        break;
     }
 }
 
@@ -55,7 +49,7 @@ void _process_global_keyboard(const SDL_Keycode event_key)
             textcolor(WHITE);
             set_fps_cap(fps_cap_options[curr_fps_cap_i]);
         }
-        else /// Inf FPS cap
+        else /// Inf FPS cap (=> turned off)
         {
             textcolor(GRAY);
             printf("- [FPS cap] Disabled\n");

@@ -56,18 +56,21 @@ miniaudio version:     0.11.23 (last updated 12.12.25)
 nlohmann/json version: 3.12.0  (last updated 24.12.25)
 
  = Compiler args (1: w/ audio, 2: w/o audio) =
-gcc -Ofast -Wall -Wextra -Werror -Wno-discarded-qualifiers -std=c17 project/main.c project/audio/audio.c -o ./main.exe -lSDL3 -lSDL3_image -lSDL3_ttf -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
-gcc -Ofast -Wall -Wextra -Werror -Wno-discarded-qualifiers -std=c17 project/main.c -o ./main.exe -lSDL3 -lSDL3_image -lSDL3_ttf -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
+gcc -Ofast -Wall -Wextra -Werror -Wno-discarded-qualifiers -Wno-implicit-fallthrough -std=c17 project/main.c project/audio/audio.c -o ./main.exe -lSDL3 -lSDL3_image -lSDL3_ttf -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
+gcc -Ofast -Wall -Wextra -Werror -Wno-discarded-qualifiers -Wno-implicit-fallthrough -std=c17 project/main.c -o ./main.exe -lSDL3 -lSDL3_image -lSDL3_ttf -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
 ./main.exe
 */
 
-/// REDO: error resource de-allocation almost never follows FILO pattern. As `miniaudio` has shown, this may turn out in an error.
 /// TODO: deallocation via stack.
 
-/// Visual TODOs:
-/// - fix Clio Williams texture (exhaust pipe mirroring);
-/// - find an adequate font (pixel-art one may provide pixel perfection difficulties; try to find the one R.S. logo uses).
+/* Visual TODOs: */
+/// - Fix Clio Williams texture (exhaust pipe mirroring);
+/// - Find an adequate font (pixel-art one may provide pixel perfection difficulties; try to find the one R.S. logo uses).
 
+/* Structural IDEAs: */
+/// - rename `input.h` to `global_input.h` (make according code & naming changes if needed).
+/// ? `struct Button_Manager`
+/// ? `null_*_scene()` just for error resistance
 
 /* Predef */
 
@@ -108,9 +111,12 @@ void game_loop(int* exit_code)
     
     /* Loading & preparing the scene */
     struct Gameplay_Scene gameplay_scene;
+    bool gameplay_scene_opened = false; /// TEMP: just not to get an error while deinitializing BEFORE loading the gameplay scene.
+    
     struct Car car = load_car("res/car_data/clio-williams.rscdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
         return;
+    
     struct Menu_Scene menu_scene = load_menu_scene("res/scene_data/menu.rsmsdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
         return;
@@ -129,9 +135,10 @@ void game_loop(int* exit_code)
         SDL_RenderClear(graphics_layer.renderer);
         SDL_SetRenderTarget(graphics_layer.renderer, graphics_layer.buffer);
 
-        process_global_events(&process_menu_event);
         if (logic_layer.curr_scene == &gameplay_scene)
         {
+            gameplay_scene_opened = true; /// TEMP: just not to get an error while deinitializing BEFORE loading the gameplay scene.
+            process_gameplay_events(&gameplay_scene);
             gameplay_scene_tick(&gameplay_scene, exit_code);
             if (! logic_layer.remain_in_scene)
             {
@@ -145,6 +152,7 @@ void game_loop(int* exit_code)
         }
         else if (logic_layer.curr_scene == &menu_scene)
         {
+            process_menu_events(&menu_scene);
             menu_scene_tick(&menu_scene, exit_code);
             if (! logic_layer.remain_in_scene)
             {
@@ -180,8 +188,8 @@ void game_loop(int* exit_code)
         } 
     }
 
-    //free_menu_scene(&menu_scene);
-    free_gameplay_scene(&gameplay_scene);
+    if (gameplay_scene_opened)
+        free_gameplay_scene(&gameplay_scene);
     free_menu_scene(&menu_scene);
     *exit_code = EXIT_SUCCESS;
 }
