@@ -2,9 +2,9 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-#include <SDL3/SDL.h> /// `SDL_FRect`
-#include <stdlib.h>   /// `calloc()` / `realloc()`
-#include "../debug.h" /// Error printing.
+//#include <SDL3/SDL.h> /// `SDL_FRect`
+//#include <stdlib.h>   /// `calloc()` / `realloc()`
+//#include "../debug.h" /// Error printing.
 
 
 /* Structs */

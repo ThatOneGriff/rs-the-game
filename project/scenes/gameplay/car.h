@@ -7,7 +7,7 @@
 #include <stdio.h>       /// `getline()`.
 #include "../../debug.h"     /// Error printing.
 #include "../../resources.h" /// File reading.
-#include "../../graphics/texture.h" /// Car texture.
+#include "../../game_components/texture.h" /// Car texture.
 
 #define RSCDT_LINES 7 /// R.S. Car Data.
 

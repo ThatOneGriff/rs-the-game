@@ -22,12 +22,15 @@
 #include "audio/audio.h"
 #endif /// USING_AUDIO
 
+/* Game components */
+#include "game_components/button.h"
+#include "game_components/multi_texture.h"
+#include "game_components/shifting_texture.h"
+#include "game_components/texture.h"
+
 /* Graphics */
 #include "graphics/fps.h"
 #include "graphics/graphics_layer.h"
-#include "graphics/multi_texture.h"
-#include "graphics/shifting_texture.h"
-#include "graphics/texture.h"
 
 /* Helpers */
 #include "helpers/geometry.h"
@@ -69,6 +72,7 @@ gcc -Ofast -Wall -Wextra -Werror -Wno-discarded-qualifiers -Wno-implicit-fallthr
 
 /* Structural IDEAs: */
 /// - rename `input.h` to `global_input.h` (make according code & naming changes if needed).
+/// - do something about the include mess;
 /// ? `struct Button_Manager`
 /// ? `null_*_scene()` just for error resistance
 

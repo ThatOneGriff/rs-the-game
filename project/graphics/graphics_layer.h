@@ -3,6 +3,7 @@
 #define GRAPHICS_LAYER_H
 
 #include <SDL3/SDL.h> /// SDL3.
+#include <SDL3_image/SDL_image.h> /// SDL3_image.
 
 #define WINDOW_TITLE "Renault Sport: The Game"
 #define WINDOW_WIDTH  960

@@ -11,14 +11,14 @@
 
 #include "../text/border.h" /// Text w/ borders.
 #include "../text/text.h"   /// Text.
-#include "../graphics/texture.h" /// Rendering text into a texture.
+#include "texture.h" /// Rendering text into a texture.
 
 
 /* Predef */
 
 struct Button;
 struct Button create_button(const char* text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned int size, int* exit_code);
-void          render_button(const struct Button* target)
+void          render_button(const struct Button* target);
 void            free_button(struct Button* target);
 
 

@@ -8,7 +8,7 @@
 #include "border.h"       /// Text w/ borders.
 #include "../helpers/geometry.h" /// `Vec2`.
 #include "../graphics/graphics_layer.h" /// `SDL_CreateTextureFromSurface()`.
-#include "../graphics/texture.h" /// Rendering text into a texture.
+#include "../game_components/texture.h" /// Rendering text into a texture.
 #include "../resources.h" /// Font path(s).
 
 

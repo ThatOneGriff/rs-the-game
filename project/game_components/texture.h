@@ -5,7 +5,7 @@
 #include <SDL3/SDL.h> /// SDL3.
 #include <SDL3_image/SDL_image.h> /// SDL3_image.
 
-#include "graphics_layer.h" /// Rendering of the texture.
+#include "../graphics/graphics_layer.h" /// Rendering of the texture.
 #include "../debug.h"       /// Error printing.
 
 

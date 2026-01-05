@@ -9,9 +9,9 @@
 #include "gameplay_controls.h" /// Controls.
 #include "car.h"               /// car_ptr (player).
 
-#include "../../graphics/multi_texture.h" /// Textures
-#include "../../graphics/shifting_texture.h"
-#include "../../graphics/texture.h"       /// Multi-textures
+#include "../../game_components/multi_texture.h" /// Textures
+#include "../../game_components/shifting_texture.h"
+#include "../../game_components/texture.h"       /// Multi-textures
 
 #define RSGSDT_LINES 3 /// R.S. Gameplay target Data.
 

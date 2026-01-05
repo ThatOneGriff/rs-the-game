@@ -4,7 +4,7 @@
 
 #include <SDL3/SDL.h> /// Keyboard processing.
 #include "menu_scene.h" /// Menu scene manipulation.
-#include "../../graphics/button.h"   /// Button manipulation.
+#include "../../game_components/button.h"   /// Button manipulation.
 #include "../../logic/logic_layer.h" /// Key state.
 #include "../../logic/input.h"       /// Global keyboard processing.
 

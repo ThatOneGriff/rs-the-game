@@ -10,8 +10,8 @@
 #include "../../debug.h"   /// Error printing.
 #include "../../helpers/helpers.h" /// Colors.
 #include "../../graphics/graphics_layer.h" /// `graphics_layer`.
-#include "../../graphics/button.h"         /// Button
-#include "../../graphics/texture.h"        /// Texture
+#include "../../game_components/button.h"  /// Button.
+#include "../../game_components/texture.h" /// Texture.
 #include "../../text/border.h" /// Selected text highlighting.
 #include "../../text/text.h"   /// Text.
 
