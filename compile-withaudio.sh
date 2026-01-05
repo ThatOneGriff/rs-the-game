@@ -1,4 +1,4 @@
-gcc -Ofast -Wall -Wextra -Werror -Wno-discarded-qualifiers -Wno-implicit-fallthrough -std=c23 \
-project/main.c -o ./main.exe -lSDL3 -lSDL3_image -lSDL3_ttf \
+gcc -Ofast -Wall -Wextra -Werror -Wno-discarded-qualifiers -Wno-implicit-fallthrough -Wno-stringop-overflow -std=c23 \
+project/main.c project/audio/audio.c -o ./main.exe -lSDL3 -lSDL3_image -lSDL3_ttf \
 -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" \
 -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"

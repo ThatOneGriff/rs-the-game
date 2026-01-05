@@ -57,11 +57,6 @@
 SDL3 version:          3.2. 28 (last updated  6.12.25)
 miniaudio version:     0.11.23 (last updated 12.12.25)
 nlohmann/json version: 3.12.0  (last updated 24.12.25)
-
- = Compiler args (1: w/ audio, 2: w/o audio) =
-gcc -Ofast -Wall -Wextra -Werror -Wno-discarded-qualifiers -Wno-implicit-fallthrough -std=c17 project/main.c project/audio/audio.c -o ./main.exe -lSDL3 -lSDL3_image -lSDL3_ttf -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
-gcc -Ofast -Wall -Wextra -Werror -Wno-discarded-qualifiers -Wno-implicit-fallthrough -std=c17 project/main.c -o ./main.exe -lSDL3 -lSDL3_image -lSDL3_ttf -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
-./main.exe
 */
 
 /// TODO: deallocation via stack.
