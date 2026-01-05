@@ -119,7 +119,7 @@ struct Menu_Scene load_menu_scene(const char path[], int* exit_code)
     result.dummy_button.is_focused = true; /// TEMP??
     //result.buttons[0] = &result.dummy_button;
 
-    result.play_button = create_button("PLAY", (SDL_Color){229,186,65,255}, vec2(150, 150), 25, exit_code);
+    result.play_button = create_button("PLAY", (SDL_Color){255,214,90,255}, vec2(150, 150), 25, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_menu_scene()`: couldn't create play button", IS_SDL_ERROR);

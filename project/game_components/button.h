@@ -52,7 +52,7 @@ struct Button create_button(const char* text, const SDL_Color inner_color, struc
         print_warning("`init_button()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
     /* regular_texture texture */
-    result.regular_texture = create_text(text, inner_color, (SDL_Color){255,255,255,255}, screen_pos, size, size/20, exit_code);
+    result.regular_texture = create_text(text, inner_color, (SDL_Color){188,204,220,255}, screen_pos, size, size/20, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_button()`: regular_texture texture creation failure", NON_SDL_ERROR);
