@@ -19,9 +19,6 @@ static struct Graphics_Layer graphics_layer; /// Singleton.
 void _init_graphics_layer(int* exit_code);
 void _free_graphics_layer(void);
 
-float center_x(const float w);
-float center_y(const float h);
-
 
 /* Struct */
 
@@ -110,19 +107,6 @@ void _free_graphics_layer(void)
         SDL_DestroyTexture(graphics_layer.buffer);
         graphics_layer.buffer = NULL;
     }
-}
-
-
-/* Body */
-
-float center_x(const float w)
-{
-    return (RENDER_WIDTH - w) / 2.0;
-}
-
-float center_y(const float h)
-{
-    return (RENDER_HEIGHT - h) / 2.0;
 }
 
 #endif /// GRAPHICS_LAYER_H

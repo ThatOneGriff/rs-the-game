@@ -7,7 +7,7 @@
 
 #define ICON_TEXTURE "res/images/icon.png"
 #define NULL_TEXTURE "res/images/null.png"
-#define MAIN_FONT    "res/fonts/MysteryQuest.ttf"
+#define MAIN_FONT    "res/fonts/Neighbor-LightItalic.ttf"
 
 
 /* Body */

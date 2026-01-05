@@ -2,9 +2,7 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-//#include <SDL3/SDL.h> /// `SDL_FRect`
-//#include <stdlib.h>   /// `calloc()` / `realloc()`
-//#include "../debug.h" /// Error printing.
+#include "../graphics/graphics_layer.h" /// `RENDER_WIDTH` and `RENDER_HEIGHT`.
 
 
 /* Structs */
@@ -14,9 +12,28 @@ struct Vec2
     int x;
     int y;
 };
+#define X_AUTO_CENTER -1
+#define Y_AUTO_CENTER -1
+
+
+/* Predef */
+
+float center_x  (const float w);
+float center_y  (const float h);
+struct Vec2 vec2(const float x, const float y);
 
 
 /* Body */
+
+float center_x(const float w)
+{
+    return (RENDER_WIDTH - w) / 2.0;
+}
+
+float center_y(const float h)
+{
+    return (RENDER_HEIGHT - h) / 2.0;
+}
 
 struct Vec2 vec2(const float x, const float y)
 {

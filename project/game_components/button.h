@@ -6,7 +6,6 @@
 #include <SDL3_ttf/SDL_ttf.h> /// SDL3_TTF.
 
 #include "../debug.h"            /// Error printing.
-#include "../helpers/helpers.h"  /// Helpers (`SDL_WHITE`).
 #include "../helpers/geometry.h" /// `Vec2`.
 
 #include "../text/border.h" /// Text w/ borders.
@@ -53,7 +52,7 @@ struct Button create_button(const char* text, const SDL_Color inner_color, struc
         print_warning("`init_button()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
     /* regular_texture texture */
-    result.regular_texture = create_text(text, inner_color, SDL_WHITE, screen_pos, size, 0, exit_code);
+    result.regular_texture = create_text(text, inner_color, (SDL_Color){255,255,255,255}, screen_pos, size, size/20, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_button()`: regular_texture texture creation failure", NON_SDL_ERROR);
@@ -61,8 +60,8 @@ struct Button create_button(const char* text, const SDL_Color inner_color, struc
     }
 
     /* focused_texture texture */
-    const struct Vec2 border_adjusted_screen_pos = vec2(screen_pos.x - size/10, screen_pos.y - size/10); /// So that focusing doesn't make the button jitter.
-    result.focused_texture = create_text(text, inner_color, SDL_WHITE, border_adjusted_screen_pos, size, size/10, exit_code); /// WARNING: may result in a `0` border thickness, making the button appear not selected.
+    const struct Vec2 border_adjusted_screen_pos = vec2(screen_pos.x - size/20, screen_pos.y - size/20); /// So that focusing doesn't make the button jitter.
+    result.focused_texture = create_text(text, inner_color, (SDL_Color){255,255,255,255}, border_adjusted_screen_pos, size, size/10, exit_code); /// WARNING: may result in a `0` border thickness, making the button appear not selected.
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_button()`: focused_texture texture creation failure", NON_SDL_ERROR);

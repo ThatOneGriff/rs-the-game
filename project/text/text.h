@@ -53,13 +53,21 @@ struct Texture create_text(const char* text, const SDL_Color inner_color, const 
         *exit_code = EXIT_FAILURE;
         return result;
     }
+
     result.rect.w = (float)text_surf->w;
     result.rect.h = (float)text_surf->h;
-
     SDL_DestroySurface(text_surf);
     text_surf = NULL;
-    result.rect.x = screen_pos.x;
-    result.rect.y = screen_pos.y;
+
+    if (screen_pos.x == X_AUTO_CENTER)
+        result.rect.x = center_x(result.rect.w);
+    else
+        result.rect.x = screen_pos.x;
+    
+    if (screen_pos.y == Y_AUTO_CENTER)
+        result.rect.y = center_y(result.rect.h);
+    else
+        result.rect.y = screen_pos.y;
 
     *exit_code = EXIT_SUCCESS;
     return result;
