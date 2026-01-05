@@ -1,12 +1,12 @@
 #pragma once
-#ifndef MENU_CONTROLS_H
-#define MENU_CONTROLS_H
+#ifndef MENU_EVENTS_H
+#define MENU_EVENTS_H
 
 #include <SDL3/SDL.h> /// Keyboard processing.
 #include "menu_scene.h" /// Menu scene manipulation.
 #include "../../game_components/button.h"   /// Button manipulation.
-#include "../../logic/logic_layer.h" /// Key state.
-#include "../../logic/input.h"       /// Global keyboard processing.
+#include "../../logic/logic_layer.h"   /// Key state.
+#include "../../logic/global_events.h" /// Global event processing.
 
 
 /* Predef */
@@ -55,4 +55,4 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
     }
 }
 
-#endif /// MENU_CONTROLS_H
+#endif /// MENU_EVENTS_H

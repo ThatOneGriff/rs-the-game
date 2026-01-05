@@ -6,7 +6,6 @@
 #include <SDL3_image/SDL_image.h> /// SDL3_image
 
 #include "../../debug.h" /// Error printing.
-#include "gameplay_controls.h" /// Controls.
 #include "car.h"               /// car_ptr (player).
 
 #include "../../game_components/multi_texture.h" /// Textures

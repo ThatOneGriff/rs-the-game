@@ -1,6 +1,6 @@
 #pragma once
-#ifndef INPUT_H
-#define INPUT_H
+#ifndef GLOBAL_EVENTS_H
+#define GLOBAL_EVENTS_H
 
 #include <SDL3/SDL.h> /// SDL3.
 
@@ -14,12 +14,14 @@
 
 /* Predef */
 
-void  process_global_events(const SDL_Event event);
+void  process_global_events  (const SDL_Event   event);
 void _process_global_keyboard(const SDL_Keycode event_key);
 
 
 /* Body */
 
+/// Receives an `event`, because it gets called from scene-related event functions
+/// (i.e. doesn't read an event on its own because of the *lower priority*).
 void process_global_events(const SDL_Event event)
 {
     switch (event.type)
@@ -57,11 +59,7 @@ void _process_global_keyboard(const SDL_Keycode event_key)
             rem_fps_cap();
         }
         break;
-        
-
-    /// WARNING: with an esoteric-enough fall-through,
-    /// case(smth1)'s `EXIT_FAILURE` may be overshadowed by case(smth2)'s `EXIT_SUCCESS`.
     }
 }
 
-#endif /// INPUT_H
+#endif /// GLOBAL_EVENTS_H

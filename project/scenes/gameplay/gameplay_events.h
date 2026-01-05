@@ -1,19 +1,19 @@
 #pragma once
-#ifndef GAMEPLAY_CONTROLS_H
-#define GAMEPLAY_CONTROLS_H
+#ifndef GAMEPLAY_EVENTS_H
+#define GAMEPLAY_EVENTS_H
 
 #include <SDL3/SDL.h> /// Keyboard controls.
 #include "car.h"                     /// Car controls.
 #include "gameplay_scene.h" /// Gameplay scene manipulation.
 #include "../../graphics/fps.h"      /// FPS-based movement.
-#include "../../logic/logic_layer.h" /// Key state.
-#include "../../logic/input.h"       /// Global keyboard processing.
+#include "../../logic/logic_layer.h"   /// Key state.
+#include "../../logic/global_events.h" /// Global event processing.
 
 
 /* Predef */
 
-void  process_gameplay_events  (struct Gameplay_Scene* scene);
-void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode event_key);
+void  process_gameplay_events   (struct Gameplay_Scene* scene);
+void _process_gameplay_keyboard (struct Gameplay_Scene* scene, const SDL_Keycode event_key);
 void _process_gameplay_car_input(struct Car* car);
 
 
@@ -92,4 +92,4 @@ void _process_gameplay_car_input(struct Car* car)
     return;
 }
 
-#endif /// GAMEPLAY_CONTROLS_H
+#endif /// GAMEPLAY_EVENTS_H

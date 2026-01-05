@@ -38,16 +38,16 @@
 #include "helpers/random.h"
 
 /* Logic */
-#include "logic/input.h"
+#include "logic/global_events.h"
 #include "logic/logic_layer.h"
 
 /* Scenes */
 #include "scenes/gameplay/car.h"
-#include "scenes/gameplay/gameplay_controls.h"
+#include "scenes/gameplay/gameplay_events.h"
 #include "scenes/gameplay/gameplay_scene.h"
 
 #include "scenes/menu/menu_scene.h"
-#include "scenes/menu/menu_controls.h"
+#include "scenes/menu/menu_events.h"
 
 /* Text */
 #include "text/border.h"
@@ -66,7 +66,6 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 /// - Find an adequate font (pixel-art one may provide pixel perfection difficulties; try to find the one R.S. logo uses).
 
 /* Structural IDEAs: */
-/// - rename `input.h` to `global_input.h` (make according code & naming changes if needed).
 /// - do something about the include mess;
 /// ? `struct Button_Manager`
 /// ? `null_*_scene()` just for error resistance
