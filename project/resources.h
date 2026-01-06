@@ -26,7 +26,7 @@ static char       MAIN_FONT_PATH[64];
 /* Predef */
 
 void  _load_global_resources(int* exit_code);
-void  _free_global_resources(void); /// TODO
+void  _free_global_resources(void);
 char** read_file_by_line(const char* path, const size_t target_lines);
 
 
@@ -38,13 +38,6 @@ void _load_global_resources(int* exit_code)
 {
     if (exit_code == NULL)
         print_warning("`load_global_resources()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    
-    struct Deinit_Stack deinit_stack = new_deinit_stack(2, exit_code); /// Not adding the last element (font loading). Also, `global_data` needs its own treatment.
-    if (*exit_code == EXIT_FAILURE)
-    {
-        print_error("`load_global_resources()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
-        return;
-    }
 
     /// Reading global data file
     char** global_data = read_file_by_line(GLOBAL_DATA_PATH, GLOBAL_DATA_LINES);
@@ -55,11 +48,21 @@ void _load_global_resources(int* exit_code)
         return;
     }
 
+    /// Deinit stack
+    struct Deinit_Stack deinit_stack = new_deinit_stack(2, exit_code); /// Not adding the last element (font loading). Also, `global_data` needs its own treatment.
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`load_global_resources()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        free_deinit_stack(&deinit_stack);
+        return;
+    }
+
     /// Icon
     ICON_TEXTURE = IMG_Load(global_data[0]);
     if (ICON_TEXTURE == NULL)
     {
         print_error("`load_global_resources()`: couldn't load app icon", IS_SDL_ERROR);
+        free_deinit_stack(&deinit_stack);
         free_ptr_array((void**)global_data, GLOBAL_DATA_LINES);
         *exit_code = EXIT_FAILURE;
         return;
@@ -91,8 +94,25 @@ void _load_global_resources(int* exit_code)
     }
 
     free_ptr_array((void**)global_data, GLOBAL_DATA_LINES);
+    free_deinit_stack(&deinit_stack);
     *exit_code = EXIT_SUCCESS;
     return;
+}
+
+
+void _free_global_resources(void)
+{
+    if (ICON_TEXTURE != NULL)
+    {
+        SDL_DestroySurface(ICON_TEXTURE);
+        ICON_TEXTURE = NULL;
+    }
+    
+    if (NULL_TEXTURE != NULL)
+    {
+        SDL_DestroyTexture(NULL_TEXTURE);
+        NULL_TEXTURE = NULL;
+    }
 }
 
 

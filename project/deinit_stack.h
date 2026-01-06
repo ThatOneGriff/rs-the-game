@@ -88,11 +88,8 @@ void free_deinit_stack(struct Deinit_Stack* target)
     
     if (target->elements != NULL)
     {
-        for (size_t i = 0; i < target->max; i++)
-        {
-            free(target->elements[i]);
-            target->elements[i] = NULL;
-        }
+        /// NOTE: we are not freeing members,
+        /// because they're pointers to to-be-used parts of program.
         free(target->elements);
         target->elements = NULL;
     }
@@ -139,6 +136,7 @@ void add_to_deinit_stack(struct Deinit_Stack* target, void* new_element, void (*
 }
 
 
+/// `free`'s at the end, too.
 void flush_deinit_stack(struct Deinit_Stack* target)
 {
     if (target == NULL || target->elements == NULL || target->free_functions == NULL)
@@ -149,6 +147,7 @@ void flush_deinit_stack(struct Deinit_Stack* target)
 
     while (target->cur > 0)
         pop_from_deinit_stack(target);
+    free_deinit_stack(target);
 }
 
 
@@ -166,7 +165,11 @@ void pop_from_deinit_stack(struct Deinit_Stack* target)
     }
 
     --target->cur;
-    target->free_functions[target->cur](target->elements[target->cur]);
+    if (target->elements[target->cur] != NULL)
+    {
+        target->free_functions[target->cur](target->elements[target->cur]);
+        printf("[freed] "); /// TEMP
+    }
     return;
 }
 
