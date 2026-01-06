@@ -9,6 +9,7 @@
 
 #include "../graphics/graphics_layer.h" /// `graphics_layer`.
 #include "../debug.h"                   /// Error printing.
+#include "../resources.h"               /// Null texture.
 
 
 /// NOTE: NOT AT ALL RELATED to `texture.h`:
@@ -76,8 +77,11 @@ void free_shifting_texture(struct Shifting_Texture* target)
     {
         for (size_t i = 0; i < target->count; i++)
         {
-            SDL_DestroyTexture(target->textures[i]);
-            target->textures[i] = NULL;
+            if (target->textures[i] != NULL_TEXTURE)
+            {
+                SDL_DestroyTexture(target->textures[i]);
+                target->textures[i] = NULL;
+            }
         }
         free(target->textures);
         target->textures = NULL;
@@ -133,11 +137,21 @@ void add_to_shifting_texture(struct Shifting_Texture* to, const char* new_path, 
     to->textures[to->count] = IMG_LoadTexture(graphics_layer.renderer, new_path);
     if (to->textures[to->count] == NULL)
     {
-        print_error("`add_to_shifting_texture()`: error loading texture", IS_SDL_ERROR);
-        *exit_code = EXIT_FAILURE;
+        if (NULL_TEXTURE == NULL)
+        {
+            print_error("`add_to_shifting_texture()`: couldn't load the texture, and null texture is empty", IS_SDL_ERROR);
+            *exit_code = EXIT_FAILURE;
+            return;
+        }
+        else
+        {
+            print_warning("`add_to_shifting_texture()`: couldn't load the texture, replaced with null texture", IS_SDL_ERROR);
+            to->textures[to->count] = NULL_TEXTURE;
+        }
     }
-    else
-        ++to->count;
+    
+    ++to->count;
+    *exit_code = EXIT_SUCCESS;
     return;
 }
 

@@ -9,6 +9,7 @@
 
 #include "../graphics/graphics_layer.h" /// `graphics_layer`.
 #include "../debug.h"                   /// Error printing.
+#include "../resources.h"               /// Null texture.
 
 
 /// NOTE: NOT AT ALL RELATED to `texture.h`:
@@ -28,7 +29,7 @@ struct Multi_Texture
 
 /* Predef */
 
-struct Multi_Texture load_multi_texture(const char* texture_name, const size_t initial_count, int* exit_code);
+struct Multi_Texture load_multi_texture(const char* texture_path, const size_t initial_count, int* exit_code);
 void                 free_multi_texture(struct Multi_Texture* target);
 
 void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_coords, int* exit_code);
@@ -37,7 +38,7 @@ void render_multi_texture(const struct Multi_Texture* target);
 
 /* Body */
 
-struct Multi_Texture load_multi_texture(const char* texture_name, const size_t initial_count, int* exit_code)
+struct Multi_Texture load_multi_texture(const char* texture_path, const size_t initial_count, int* exit_code)
 {
     struct Multi_Texture result;
     result.coords = NULL;
@@ -50,7 +51,7 @@ struct Multi_Texture load_multi_texture(const char* texture_name, const size_t i
     if (initial_count == 0)
         print_warning("`new_multi_texture()`: `initial_count` arg is 0. Do you really want that?", NON_SDL_ERROR);
     
-    if (texture_name == NULL)
+    if (texture_path == NULL)
     {
         print_error("`new_multi_texture()`: `texture_path` arg is `NULL`", NON_SDL_ERROR);
         result.texture = NULL;
@@ -59,12 +60,20 @@ struct Multi_Texture load_multi_texture(const char* texture_name, const size_t i
     }
 
     /* Object creation */
-    result.texture = IMG_LoadTexture(graphics_layer.renderer, texture_name);
+    result.texture = IMG_LoadTexture(graphics_layer.renderer, texture_path);
     if (result.texture == NULL)
     {
-        print_error("`new_multi_texture()`: couldn't load texture", IS_SDL_ERROR);
-        *exit_code = EXIT_FAILURE;
-        return result;
+        if (NULL_TEXTURE == NULL)
+        {
+            print_error("`new_multi_texture()`: couldn't load the texture, and null texture is empty", IS_SDL_ERROR);
+            *exit_code = EXIT_FAILURE;
+            return result;
+        }
+        else
+        {
+            print_warning("`new_multi_texture()`: couldn't load the texture, replaced with null texture", IS_SDL_ERROR);
+            result.texture = NULL_TEXTURE;
+        }
     }
     result.max_count = initial_count;
     result.coords = calloc(initial_count, sizeof(SDL_FRect));
@@ -87,7 +96,7 @@ void free_multi_texture(struct Multi_Texture* target)
     if (target == NULL)
         return;
     
-    if (target->texture != NULL)
+    if (target->texture != NULL && target->texture != NULL_TEXTURE)
     {
         SDL_DestroyTexture(target->texture);
         target->texture = NULL;

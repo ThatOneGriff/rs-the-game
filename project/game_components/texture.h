@@ -6,7 +6,8 @@
 #include <SDL3_image/SDL_image.h> /// SDL3_image.
 
 #include "../graphics/graphics_layer.h" /// Rendering of the texture.
-#include "../debug.h"       /// Error printing.
+#include "../debug.h"     /// Error printing.
+#include "../resources.h" /// Null texture.
 
 
 /* Struct */
@@ -49,9 +50,17 @@ struct Texture load_texture(const char* path, const SDL_FRect rect, int* exit_co
     result.texture = IMG_LoadTexture(graphics_layer.renderer, path);
     if (result.texture == NULL)
     {
-        print_error("`load_texture()`: couldn't load the texture", IS_SDL_ERROR);
-        *exit_code = EXIT_FAILURE;
-        return result;
+        if (NULL_TEXTURE == NULL)
+        {
+            print_error("`load_texture()`: couldn't load the texture, and null texture is empty", IS_SDL_ERROR);
+            *exit_code = EXIT_FAILURE;
+            return result;
+        }
+        else
+        {
+            print_warning("`load_texture()`: couldn't load the texture, replaced with null texture", IS_SDL_ERROR);
+            result.texture = NULL_TEXTURE;
+        }
     }
 
     result.rect = rect;
@@ -86,7 +95,7 @@ void render_texture(const struct Texture* target)
 
 void free_texture(struct Texture* target)
 {
-    if (target == NULL)
+    if (target == NULL || target->texture == NULL_TEXTURE)
         return;
 
     if (target->texture != NULL)

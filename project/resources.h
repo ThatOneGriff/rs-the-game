@@ -63,7 +63,7 @@ void _load_global_resources(int* exit_code)
     }
 
     /// Null texture
-    NULL_TEXTURE = IMG_LoadTexture(graphics_layer.renderer, global_data[0]);
+    NULL_TEXTURE = IMG_LoadTexture(graphics_layer.renderer, global_data[1]);
     if (NULL_TEXTURE == NULL)
         print_warning("`load_global_resources()`: couldn't load null texture (not critical)", IS_SDL_ERROR);
 

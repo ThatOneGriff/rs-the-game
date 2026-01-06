@@ -6,7 +6,7 @@
 #include <SDL3_image/SDL_image.h> /// SDL_image.
 #include <stdio.h>       /// `getline()`.
 #include "../../debug.h"     /// Error printing.
-#include "../../resources.h" /// File reading.
+#include "../../resources.h" /// File reading & null texture.
 #include "../../game_components/texture.h" /// Car texture.
 
 #define CAR_DATA_LINES 7
@@ -69,14 +69,22 @@ struct Car load_car(const char path[], int* exit_code)
         result.textures[i] = IMG_LoadTexture(graphics_layer.renderer, car_data[i]);
         if (result.textures[i] == NULL)
         {
-            print_error("`load_car()`: couldn't load texture", IS_SDL_ERROR);
-            for (size_t j = 0; j < i; i++)
+            if (NULL_TEXTURE == NULL)
             {
-                SDL_DestroyTexture(result.textures[j]);
-                result.textures[j] = NULL;
+                print_error("`load_car()`: couldn't load texture, and null texture is empty", IS_SDL_ERROR);
+                for (size_t j = 0; j < i; i++)
+                {
+                    SDL_DestroyTexture(result.textures[j]);
+                    result.textures[j] = NULL;
+                }
+                *exit_code = EXIT_FAILURE;
+                return result;
             }
-            *exit_code = EXIT_FAILURE;
-            return result;
+            else
+            {
+                print_warning("`load_car()`: couldn't load texture, replaced with null texture", IS_SDL_ERROR);
+                result.textures[i] = NULL_TEXTURE;
+            }
         }
     }
 
@@ -101,11 +109,13 @@ void free_car(struct Car* target)
     if (target == NULL)
         return;
     
-    /// TODO: check for `NULL`.
     for (size_t i = 0; i < 5; i++)
     {
-        SDL_DestroyTexture(target->textures[i]);
-        target->textures[i] = NULL;
+        if (target->textures[i] != NULL_TEXTURE)
+        {
+            SDL_DestroyTexture(target->textures[i]);
+            target->textures[i] = NULL;
+        }
     }
     free(target->textures);
     target->handling  = 0.0;

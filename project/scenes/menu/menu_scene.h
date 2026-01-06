@@ -7,7 +7,8 @@
 
 #include <stdlib.h> /// `malloc()`
 
-#include "../../debug.h"   /// Error printing.
+#include "../../debug.h"     /// Error printing.
+#include "../../resources.h" /// Null texture.
 #include "../../graphics/graphics_layer.h" /// `graphics_layer`.
 #include "../../game_components/button.h"  /// Button.
 #include "../../game_components/texture.h" /// Texture.
@@ -67,16 +68,24 @@ struct Menu_Scene load_menu_scene(int* exit_code)
     result.bg = IMG_LoadTexture(graphics_layer.renderer, scene_data[0]);
     if (result.bg == NULL)
     {
-        print_error("`load_menu_scene()`: couldn't load the bg texture", IS_SDL_ERROR);
-        for (size_t i = 0; i < MENU_DATA_LINES; i++)
+        if (NULL_TEXTURE == NULL)
         {
-            free(scene_data[i]);
-            scene_data[i] = NULL;
+            print_error("`load_menu_scene()`: couldn't load the bg texture, and null texture is empty", IS_SDL_ERROR);
+            for (size_t i = 0; i < MENU_DATA_LINES; i++)
+            {
+                free(scene_data[i]);
+                scene_data[i] = NULL;
+            }
+            free(scene_data);
+            scene_data = NULL;
+            *exit_code = EXIT_FAILURE;
+            return result;
         }
-        free(scene_data);
-        scene_data = NULL;
-        *exit_code = EXIT_FAILURE;
-        return result;
+        else
+        {
+            print_warning("`load_menu_scene()`: couldn't load the bg texture, replaced by null texture", IS_SDL_ERROR);
+            result.bg = NULL_TEXTURE;
+        }
     }
 
     result.car_name_text = create_text("Renault Clio Williams", (SDL_Color){255,255,255,255}, (SDL_Color){255,255,255,255}, vec2(X_AUTO_CENTER, 50), 15, 0, exit_code);
@@ -153,7 +162,11 @@ void menu_scene_tick(struct Menu_Scene* target, int* exit_code)
 
 void free_menu_scene(struct Menu_Scene* target)
 {
-    SDL_DestroyTexture(target->bg);
+    if (target->bg != NULL_TEXTURE)
+    {
+        SDL_DestroyTexture(target->bg);
+        target->bg = NULL;
+    }
     free_texture(&target->car_name_text);
     free_button(&target->dummy_button);
     free_button(&target->play_button);

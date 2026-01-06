@@ -2,15 +2,16 @@
 #ifndef GAMEPLAY_SCENE_H
 #define GAMEPLAY_SCENE_H
 
-#include <SDL3/SDL.h>             /// SDL3
-#include <SDL3_image/SDL_image.h> /// SDL3_image
+#include <SDL3/SDL.h>             /// SDL3.
+#include <SDL3_image/SDL_image.h> /// SDL3_image.
 
-#include "../../debug.h" /// Error printing.
-#include "car.h"               /// car_ptr (player).
+#include "../../resources.h" /// Null texture.
+#include "../../debug.h"     /// Error printing.
+#include "car.h"             /// car_ptr (player).
 
-#include "../../game_components/multi_texture.h" /// Textures
-#include "../../game_components/shifting_texture.h"
-#include "../../game_components/texture.h"       /// Multi-textures
+#include "../../game_components/multi_texture.h"    /// Textures.
+#include "../../game_components/shifting_texture.h" /// Shifting textures.
+#include "../../game_components/texture.h"          /// Multi-textures.
 
 #define GAMEPLAY_DATA_LINES 3
 
@@ -68,16 +69,24 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     result.sky_bg = IMG_LoadTexture(graphics_layer.renderer, scene_data[0]);
     if (result.sky_bg == NULL)
     {
-        print_error("`load_gameplay_scene()`: couldn't load the sky texture", IS_SDL_ERROR);
-        for (size_t i = 0; i < GAMEPLAY_DATA_LINES; i++)
+        if (NULL_TEXTURE == NULL)
         {
-            free(scene_data[i]);
-            scene_data[i] = NULL;
+            print_error("`load_gameplay_scene()`: couldn't load the sky texture, and null texture is empty", IS_SDL_ERROR);
+            for (size_t i = 0; i < GAMEPLAY_DATA_LINES; i++)
+            {
+                free(scene_data[i]);
+                scene_data[i] = NULL;
+            }
+            free(scene_data);
+            scene_data = NULL;
+            *exit_code = EXIT_FAILURE;
+            return result;
         }
-        free(scene_data);
-        scene_data = NULL;
-        *exit_code = EXIT_FAILURE;
-        return result;
+        else
+        {
+            print_warning("`load_gameplay_scene()`: couldn't load the sky texture, replaced with null texture", IS_SDL_ERROR);
+            result.sky_bg = NULL_TEXTURE;
+        }
     }
 
     result.ground = load_texture(scene_data[1], (SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, exit_code); /// TODO: h=80 && better picture
@@ -173,7 +182,7 @@ void free_gameplay_scene(struct Gameplay_Scene* target)
 {
     if (target == NULL)
         return;
-    if (target->sky_bg != NULL)
+    if (target->sky_bg != NULL && target->sky_bg != NULL_TEXTURE)
     {
         SDL_DestroyTexture(target->sky_bg);
         target->sky_bg = NULL;

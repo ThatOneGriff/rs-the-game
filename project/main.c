@@ -59,16 +59,17 @@ miniaudio version:     0.11.23 (last updated 12.12.25)
 nlohmann/json version: 3.12.0  (last updated 24.12.25)
 */
 
-/// TODO: deallocation via stack.
+/* TODOs: */
+/// -  deallocation via stack;
+/// - `free_string_arr()`.
 
 /* Visual TODOs: */
 /// - Fix Clio Williams texture (exhaust pipe mirroring);
 
 /* Structural IDEAs: */
-/// - do something about the include mess;
-/// - hot resource reload
-/// ? `struct Button_Manager`
-/// ? `null_*_scene()` just for error resistance
+/// -  do something about the include mess.
+/// ? `struct Button_Manager`;
+/// ? `null_*_scene()` just for error resistance.
 
 /* Predef */
 
