@@ -1,6 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <stdio.h> /// I/O.
 #include "deinit_stack.h"
+#include "test_functions.h"
 
 /*
 gcc test.c -o test.exe -Wall -Werror -Wextra -std=c23
@@ -11,6 +11,7 @@ gcc test.c -o test.exe -Wall -Werror -Wextra -std=c23
 int main()
 {
     int exit_code = EXIT_SUCCESS;
+
     struct Deinit_Stack test_stack = new_deinit_stack(5, &exit_code);
     if (exit_code == EXIT_FAILURE)
     {
@@ -18,16 +19,18 @@ int main()
         return EXIT_FAILURE;
     }
 
+    printf("Enter 5 elements:\n> ");
     char inp = '\0';
+    void (*functions[5])(int) = {&plus5, &mins5, &mult5, &divd5, &equal};
     for (int i = 0; i < 5; i++)
     {
         inp = getchar();
-        add_to_deinit_stack(&test_stack, (int)(inp - '0'));
+        add_to_deinit_stack(&test_stack, (int)(inp - '0'), functions[i]);
     }
 
     for (int i = 0; i < 5; i++)
     {
-        printf("%d ", pop_from_deinit_stack(&test_stack));
+        pop_from_deinit_stack(&test_stack);
     }
 
     return exit_code;
