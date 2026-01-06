@@ -23,8 +23,7 @@ struct Texture create_text(const char* text, const SDL_Color inner_color, const 
 {
     struct Texture result;
 
-    /* Checking args */
-
+    /// Checking args
     if (size == 0)
     {
         print_error("`create_text()`: `size` is 0", NON_SDL_ERROR);
@@ -34,8 +33,7 @@ struct Texture create_text(const char* text, const SDL_Color inner_color, const 
     if (exit_code == NULL)
         print_warning("`create_text()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
 
-    /* Creating the text */
-
+    /// Creating text surface
     SDL_Surface* text_surf = create_bordered_text_surface(text, size, border_thickness, inner_color, outer_color);
     if (text_surf == NULL)
     {
@@ -44,6 +42,7 @@ struct Texture create_text(const char* text, const SDL_Color inner_color, const 
         return result;
     }
 
+    /// Creating texture from text surface
     result.texture = SDL_CreateTextureFromSurface(graphics_layer.renderer, text_surf);
     if (result.texture == NULL)
     {
@@ -54,11 +53,13 @@ struct Texture create_text(const char* text, const SDL_Color inner_color, const 
         return result;
     }
 
+    /// Coords (size)
     result.rect.w = (float)text_surf->w;
     result.rect.h = (float)text_surf->h;
     SDL_DestroySurface(text_surf);
     text_surf = NULL;
 
+    /// Coords (position)
     if (screen_pos.x == X_AUTO_CENTER)
         result.rect.x = center_x(result.rect.w);
     else

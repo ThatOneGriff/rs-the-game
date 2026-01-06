@@ -168,7 +168,7 @@ void pop_from_deinit_stack(struct Deinit_Stack* target)
     if (target->elements[target->cur] != NULL)
     {
         target->free_functions[target->cur](target->elements[target->cur]);
-        printf("[freed] "); /// TEMP
+        ///printf("[freed] "); /// For debug purposes.
     }
     return;
 }
