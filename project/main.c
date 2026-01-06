@@ -61,15 +61,14 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 
 /* TODOs: */
 /// -  deallocation via stack;
-/// - `free_string_arr()`.
+/// - `free_ptr_arr()`.
 
 /* Visual TODOs: */
 /// - Fix Clio Williams texture (exhaust pipe mirroring);
 
 /* Structural IDEAs: */
 /// -  do something about the include mess.
-/// ? `struct Button_Manager`;
-/// ? `null_*_scene()` just for error resistance.
+/// ? `struct Button_Manager`.
 
 /* Predef */
 

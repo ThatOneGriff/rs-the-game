@@ -7,46 +7,30 @@
 
 /* Predef */
 
-void plus5(int n1);
-void mins5(int n2);
-void mult5(int n3);
-void divd5(int n4);
-void equal(int n5);
+void p_int(int*   n);
+void p_chr(char*  c);
+void p_flt(float* f);
 
 
 /* Body */
 
-void plus5(int n1)
+void p_int(int* n)
 {
-    printf("%d + 5 = %d\n", n1, (n1+5));
+    printf("p_int: %d\n", *n);
     return;
 }
 
 
-void mins5(int n2)
+void p_chr(char* c)
 {
-    printf("%d - 5 = %d\n", n2, (n2-5));
+    printf("p_chr: %c\n", *c);
     return;
 }
 
 
-void mult5(int n3)
+void p_flt(float* f)
 {
-    printf("%d * 5 = %d\n", n3, (n3*5));
-    return;
-}
-
-
-void divd5(int n4)
-{
-    printf("%d / 5 = %d\n", n4, (n4/5));
-    return;
-}
-
-
-void equal(int n5)
-{
-    printf("%d\n", n5);
+    printf("p_flt: %f\n", *f);
     return;
 }
 

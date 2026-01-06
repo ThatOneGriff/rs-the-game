@@ -19,19 +19,19 @@ int main()
         return EXIT_FAILURE;
     }
 
-    printf("Enter 5 elements:\n> ");
-    char inp = '\0';
-    void (*functions[5])(int) = {&plus5, &mins5, &mult5, &divd5, &equal};
-    for (int i = 0; i < 5; i++)
-    {
-        inp = getchar();
-        add_to_deinit_stack(&test_stack, (int)(inp - '0'), functions[i]);
-    }
+    printf("Enter int, char and float:\n> ");
+    int inp_i = (getchar() - '0');
+    add_to_deinit_stack(&test_stack, &inp_i, (void (*)(void*))p_int);
 
-    for (int i = 0; i < 5; i++)
-    {
+    char inp_c = getchar();
+    add_to_deinit_stack(&test_stack, &inp_c, (void (*)(void*))p_chr);
+
+    float inp_f;
+    scanf("%f", &inp_f);
+    add_to_deinit_stack(&test_stack, &inp_f, (void (*)(void*))p_flt);
+
+    for (size_t i = 0; i < 3; i++)
         pop_from_deinit_stack(&test_stack);
-    }
 
     return exit_code;
 }
