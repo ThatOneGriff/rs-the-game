@@ -63,16 +63,16 @@ struct Multi_Texture load_multi_texture(const char* texture_path, const size_t i
     result.texture = IMG_LoadTexture(graphics_layer.renderer, texture_path);
     if (result.texture == NULL)
     {
-        if (NULL_TEXTURE == NULL)
+        if (NULL_TEXTURE != NULL)
+        {
+            print_warning("`new_multi_texture()`: couldn't load the texture, replaced with null texture", IS_SDL_ERROR);
+            result.texture = NULL_TEXTURE;
+        }
+        else
         {
             print_error("`new_multi_texture()`: couldn't load the texture, and null texture is empty", IS_SDL_ERROR);
             *exit_code = EXIT_FAILURE;
             return result;
-        }
-        else
-        {
-            print_warning("`new_multi_texture()`: couldn't load the texture, replaced with null texture", IS_SDL_ERROR);
-            result.texture = NULL_TEXTURE;
         }
     }
     result.max_count = initial_count;

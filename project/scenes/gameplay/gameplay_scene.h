@@ -5,9 +5,11 @@
 #include <SDL3/SDL.h>             /// SDL3.
 #include <SDL3_image/SDL_image.h> /// SDL3_image.
 
+#include "../../deinit_stack.h"    /// Deinitialization stack.
+#include "../../helpers/helpers.h" /// `free_ptr_arr()`.
 #include "../../resources.h" /// Null texture.
 #include "../../debug.h"     /// Error printing.
-#include "car.h"             /// car_ptr (player).
+#include "car.h"             /// `*car_ptr` (player).
 
 #include "../../game_components/multi_texture.h"    /// Textures.
 #include "../../game_components/shifting_texture.h" /// Shifting textures.
@@ -38,7 +40,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     struct Gameplay_Scene result;
     result.sky_bg = NULL;
 
-    /* Param checking*/
+    /// Param checking
     if (exit_code == NULL)
         print_warning("`load_gameplay_scene()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     if (path == NULL)
@@ -56,7 +58,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     else
         result.car_ptr = car_ptr;
 
-    /* Reading the file */
+    /// Reading the file
     char** scene_data = read_file_by_line(path, GAMEPLAY_DATA_LINES);
     if (scene_data == NULL)
     {
@@ -65,91 +67,74 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         return result;
     }
 
-    /* Resource loading*/
+    /// Deinit stack
+    struct Deinit_Stack deinit_stack = new_deinit_stack(4, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        free_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
+        return result;
+    }
+
+    /// Sky
     result.sky_bg = IMG_LoadTexture(graphics_layer.renderer, scene_data[0]);
     if (result.sky_bg == NULL)
     {
-        if (NULL_TEXTURE == NULL)
-        {
-            print_error("`load_gameplay_scene()`: couldn't load the sky texture, and null texture is empty", IS_SDL_ERROR);
-            for (size_t i = 0; i < GAMEPLAY_DATA_LINES; i++)
-            {
-                free(scene_data[i]);
-                scene_data[i] = NULL;
-            }
-            free(scene_data);
-            scene_data = NULL;
-            *exit_code = EXIT_FAILURE;
-            return result;
-        }
-        else
+        if (NULL_TEXTURE != NULL)
         {
             print_warning("`load_gameplay_scene()`: couldn't load the sky texture, replaced with null texture", IS_SDL_ERROR);
             result.sky_bg = NULL_TEXTURE;
         }
+        else
+        {
+            print_error("`load_gameplay_scene()`: couldn't load the sky texture, and null texture is empty", IS_SDL_ERROR);
+            free_deinit_stack(&deinit_stack);
+            free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
+            *exit_code = EXIT_FAILURE;
+            return result;
+        }
     }
+    if (result.sky_bg != NULL_TEXTURE)
+        add_to_deinit_stack(&deinit_stack, result.sky_bg, (void (*)(void*))SDL_DestroyTexture);
 
+    /// Ground
     result.ground = load_texture(scene_data[1], (SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, exit_code); /// TODO: h=80 && better picture
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the ground texture", NON_SDL_ERROR);
-        SDL_DestroyTexture(result.sky_bg);
-        result.sky_bg = NULL;
-        for (size_t i = 0; i < GAMEPLAY_DATA_LINES; i++)
-        {
-            free(scene_data[i]);
-            scene_data[i] = NULL;
-        }
-        free(scene_data);
-        scene_data = NULL;
+        flush_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
         *exit_code = EXIT_FAILURE;
         return result;
     }
+    add_to_deinit_stack(&deinit_stack, &result.ground, (void (*)(void*))free_texture);
 
+    /// Trees
     result.trees = load_multi_texture(scene_data[2], 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the trees", NON_SDL_ERROR);
-        free_texture(&result.ground);
-        SDL_DestroyTexture(result.sky_bg);
-        result.sky_bg = NULL;
-        for (size_t i = 0; i < GAMEPLAY_DATA_LINES; i++)
-        {
-            free(scene_data[i]);
-            scene_data[i] = NULL;
-        }
-        free(scene_data);
-        scene_data = NULL;
+        flush_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
         *exit_code = EXIT_FAILURE;
         return result;
     }
-
-    add_to_multi_texture(&result.trees, (SDL_FRect){0, 0, 50, 50}, exit_code);
-    if (*exit_code == EXIT_FAILURE)
+    add_to_multi_texture(&result.trees, (SDL_FRect){0, 0, 50, 50}, exit_code); /// Will be more trees later
+    /// There must be some more elegant way to do this, than simply checking `*exit_code` after each tree's coordinates.
+    /// A cycle, maybe?
+    /*if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't add coordinates to the trees", NON_SDL_ERROR);
-        free_multi_texture(&result.trees);
-        free_texture(&result.ground);
-        SDL_DestroyTexture(result.sky_bg);
-        result.sky_bg = NULL;
-        for (size_t i = 0; i < GAMEPLAY_DATA_LINES; i++)
-        {
-            free(scene_data[i]);
-            scene_data[i] = NULL;
-        }
-        free(scene_data);
-        scene_data = NULL;
+        flush_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
         *exit_code = EXIT_FAILURE;
         return result;
-    }
+    }*/
+    add_to_deinit_stack(&deinit_stack, &result.trees, (void (*)(void*))free_multi_texture); /// Don't delete. More elements will be added later
 
-    for (size_t i = 0; i < GAMEPLAY_DATA_LINES; i++)
-    {
-        free(scene_data[i]);
-        scene_data[i] = NULL;
-    }
-    free(scene_data);
-    scene_data = NULL;
+    free_deinit_stack(&deinit_stack);
+    free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
     *exit_code = EXIT_SUCCESS;
     return result;
 }
@@ -182,6 +167,7 @@ void free_gameplay_scene(struct Gameplay_Scene* target)
 {
     if (target == NULL)
         return;
+    
     if (target->sky_bg != NULL && target->sky_bg != NULL_TEXTURE)
     {
         SDL_DestroyTexture(target->sky_bg);

@@ -32,8 +32,7 @@ struct Texture load_texture(const char* path, const SDL_FRect rect, int* exit_co
 {
     struct Texture result;
 
-    /* Parameter checking */
-    
+    /// Parameter checking
     if (path == NULL)
     {
         print_error("`load_texture()`: `path` arg is `NULL`", NON_SDL_ERROR);
@@ -45,21 +44,20 @@ struct Texture load_texture(const char* path, const SDL_FRect rect, int* exit_co
     if (rect.w == 0 || rect.h == 0)
         print_warning("`load_texture()`: `rect`'s `x` or `y` is 0. Are you sure?", NON_SDL_ERROR);
     
-    /* Texture loading */
-
+    /// Texture loading
     result.texture = IMG_LoadTexture(graphics_layer.renderer, path);
     if (result.texture == NULL)
     {
-        if (NULL_TEXTURE == NULL)
+        if (NULL_TEXTURE != NULL)
+        {
+            print_warning("`load_texture()`: couldn't load the texture, replaced with null texture", IS_SDL_ERROR);
+            result.texture = NULL_TEXTURE;
+        }
+        else
         {
             print_error("`load_texture()`: couldn't load the texture, and null texture is empty", IS_SDL_ERROR);
             *exit_code = EXIT_FAILURE;
             return result;
-        }
-        else
-        {
-            print_warning("`load_texture()`: couldn't load the texture, replaced with null texture", IS_SDL_ERROR);
-            result.texture = NULL_TEXTURE;
         }
     }
 

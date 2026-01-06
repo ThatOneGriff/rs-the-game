@@ -24,7 +24,6 @@ void            free_button(struct Button* target);
 /* Struct */
 
 /// As of now, `Button` is just a text, visually. TODO: add a bg rectangle.
-/// IDEA: can instead be 2 `SDL_Texture`'s, as they (presumably) share coords. "Presumably" because coords may be slightly diff due to the text border.
 struct Button
 {
     struct Texture regular_texture;

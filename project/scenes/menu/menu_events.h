@@ -44,7 +44,7 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
                 logic_layer.remain_in_scene = false;
             break;
 
-        /// TEMP is this shitass structure.
+        /// TEMP while I'm coming up with a better button management structure.
         case SDLK_UP:
         case SDLK_DOWN:
             scene->dummy_button.is_focused = ! scene->dummy_button.is_focused;

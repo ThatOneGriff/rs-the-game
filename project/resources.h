@@ -63,7 +63,7 @@ void _load_global_resources(int* exit_code)
     {
         print_error("`load_global_resources()`: couldn't load app icon", IS_SDL_ERROR);
         free_deinit_stack(&deinit_stack);
-        free_ptr_array((void**)global_data, GLOBAL_DATA_LINES);
+        free_ptr_arr((void**)global_data, GLOBAL_DATA_LINES);
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -83,7 +83,7 @@ void _load_global_resources(int* exit_code)
     {
         print_error("`load_global_resources()`: test font loading failed", IS_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
-        free_ptr_array((void**)global_data, GLOBAL_DATA_LINES);
+        free_ptr_arr((void**)global_data, GLOBAL_DATA_LINES);
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -93,7 +93,7 @@ void _load_global_resources(int* exit_code)
         test_main_font_load = NULL;
     }
 
-    free_ptr_array((void**)global_data, GLOBAL_DATA_LINES);
+    free_ptr_arr((void**)global_data, GLOBAL_DATA_LINES);
     free_deinit_stack(&deinit_stack);
     *exit_code = EXIT_SUCCESS;
     return;

@@ -2,9 +2,10 @@
 #ifndef HELPERS_H
 #define HELPERS_H
 
-#include <windows.h> /// Text colouring.
+#include <windows.h> /// Console text coloring.
 
-/* Text colouring. */
+
+/* Text coloring. */
 
 #define WHITE  7
 #define GRAY   8
@@ -20,7 +21,7 @@ void textcolor(const short int color_code)
 
 /* Memory */
 
-void free_ptr_array(void** target, const size_t len)
+void free_ptr_arr(void** target, const size_t len)
 {
     if (target == NULL)
         return;

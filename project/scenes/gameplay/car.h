@@ -3,13 +3,15 @@
 #define CAR_H
 
 #include <SDL3/SDL.h>             /// SDL3.
-#include <SDL3_image/SDL_image.h> /// SDL_image.
-#include <stdio.h>       /// `getline()`.
-#include "../../debug.h"     /// Error printing.
+#include <SDL3_image/SDL_image.h> /// SDL3_image.
+#include "../../debug.h"           /// Error printing.
+#include "../../deinit_stack.h"    /// Deinitialization stack.
+#include "../../helpers/helpers.h" /// `free_ptr_arr()`.
 #include "../../resources.h" /// File reading & null texture.
-#include "../../game_components/texture.h" /// Car texture.
 
 #define CAR_DATA_LINES 7
+
+/// NOTE: a split into `Player_Car` and `Traffic_Car` may happen later.
 
 
 /* Struct */
@@ -39,11 +41,9 @@ struct Car load_car(const char path[], int* exit_code)
     result.base_texture = 2; /// main texture
     ///result.latest_jump_tick = SDL_GetTicks();
 
-    /* Checking params */
+    /// Checking params
     if (exit_code == NULL)
         print_warning("`load_car()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    else
-        *exit_code = EXIT_SUCCESS;
     if (path == NULL)
     {
         print_error("`load_car()`: `path` arg is `NULL`", NON_SDL_ERROR);
@@ -53,7 +53,7 @@ struct Car load_car(const char path[], int* exit_code)
 
     result.coords = (SDL_FRect){center_x(50.0), RENDER_HEIGHT-50.0, 50.0, 50.0}; /// TODO: size determined by real-life size.
 
-    /* Reading data */
+    /// Reading data
     char** car_data = read_file_by_line(path, CAR_DATA_LINES);
     if (car_data == NULL)
     {
@@ -62,43 +62,47 @@ struct Car load_car(const char path[], int* exit_code)
         return result;
     }
 
-    /* Textures */
+    /// Deinit stack
+    struct Deinit_Stack deinit_stack = new_deinit_stack(5, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        free_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)car_data, CAR_DATA_LINES);
+        return result;
+    }
+
+    /// Textures
     size_t i = 0;
     for ( ; i < 5; i++)
     {
         result.textures[i] = IMG_LoadTexture(graphics_layer.renderer, car_data[i]);
         if (result.textures[i] == NULL)
         {
-            if (NULL_TEXTURE == NULL)
-            {
-                print_error("`load_car()`: couldn't load texture, and null texture is empty", IS_SDL_ERROR);
-                for (size_t j = 0; j < i; i++)
-                {
-                    SDL_DestroyTexture(result.textures[j]);
-                    result.textures[j] = NULL;
-                }
-                *exit_code = EXIT_FAILURE;
-                return result;
-            }
-            else
+            if (NULL_TEXTURE != NULL)
             {
                 print_warning("`load_car()`: couldn't load texture, replaced with null texture", IS_SDL_ERROR);
                 result.textures[i] = NULL_TEXTURE;
             }
+            else
+            {
+                print_error("`load_car()`: couldn't load texture, and null texture is empty", IS_SDL_ERROR);
+                flush_deinit_stack(&deinit_stack);
+                free_ptr_arr((void**)car_data, CAR_DATA_LINES);
+                *exit_code = EXIT_FAILURE;
+                return result;
+            }
         }
+        if (result.textures[i] != NULL_TEXTURE)
+            add_to_deinit_stack(&deinit_stack, result.textures[i], (void (*)(void*))SDL_DestroyTexture);
     }
 
-    /* Data */
+    /// Data
     result.handling  = atoi(car_data[i++]);
     result.top_speed = atoi(car_data[i++]);
     
-    for (size_t i = 0; i < CAR_DATA_LINES; i++)
-    {
-        free(car_data[i]);
-        car_data[i] = NULL;
-    }
-    free(car_data);
-    car_data = NULL;
+    free_ptr_arr((void**)car_data, CAR_DATA_LINES);
+    free_deinit_stack(&deinit_stack);
     *exit_code = EXIT_SUCCESS;
     return result;
 }
