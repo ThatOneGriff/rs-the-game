@@ -37,6 +37,7 @@ void _load_global_resources(int* exit_code)
     if (exit_code == NULL)
         print_warning("`load_global_resources()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
+    /// Reading global data file
     char** global_data = read_file_by_line(GLOBAL_DATA_PATH, GLOBAL_DATA_LINES);
     if (global_data == NULL)
     {
@@ -45,6 +46,7 @@ void _load_global_resources(int* exit_code)
         return;
     }
 
+    /// Icon
     ICON_TEXTURE = IMG_Load(global_data[0]);
     if (ICON_TEXTURE == NULL)
     {
@@ -60,11 +62,40 @@ void _load_global_resources(int* exit_code)
         return;
     }
 
+    /// Null texture
     NULL_TEXTURE = IMG_LoadTexture(graphics_layer.renderer, global_data[0]);
     if (NULL_TEXTURE == NULL)
         print_warning("`load_global_resources()`: couldn't load null texture (not critical)", IS_SDL_ERROR);
 
+    /// Font (+ test loading)
     strcpy(MAIN_FONT_PATH, global_data[2]);
+    TTF_Font* test_main_font_load = TTF_OpenFont(MAIN_FONT_PATH, 1);
+    if (test_main_font_load == NULL)
+    {
+        print_error("`load_global_resources()`: test font loading failed", IS_SDL_ERROR);
+        if (NULL_TEXTURE != NULL)
+        {
+            SDL_DestroyTexture(NULL_TEXTURE);
+            NULL_TEXTURE = NULL;
+        }
+        SDL_DestroySurface(ICON_TEXTURE);
+        ICON_TEXTURE = NULL;
+        for (size_t i = 0; i < GLOBAL_DATA_LINES; i++)
+        {
+            free(global_data[i]);
+            global_data[i] = NULL;
+        }
+        free(global_data);
+        global_data = NULL;
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
+    else
+    {
+        TTF_CloseFont(test_main_font_load);
+        test_main_font_load = NULL;
+    }
+
     *exit_code = EXIT_SUCCESS;
     return;
 }

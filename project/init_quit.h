@@ -82,23 +82,6 @@ void init(int* exit_code)
         *exit_code = EXIT_FAILURE;
         return;
     }
-
-    /// Font (test loading)
-    TTF_Font* test_main_font_load = TTF_OpenFont(MAIN_FONT_PATH, 1);
-    if (test_main_font_load == NULL)
-    {
-        print_error("`init()`: failed to load the main font", IS_SDL_ERROR);
-        SDL_DestroyWindow(graphics_layer.window);
-        graphics_layer.window = NULL;
-        SDL_DestroyRenderer(graphics_layer.renderer);
-        graphics_layer.renderer = NULL;
-        TTF_Quit();
-        *exit_code = EXIT_FAILURE;
-        return;
-    }
-    TTF_CloseFont(test_main_font_load);
-    test_main_font_load = NULL;
-
     SDL_SetWindowIcon(graphics_layer.window, ICON_TEXTURE);
 
     #ifdef USING_AUDIO
