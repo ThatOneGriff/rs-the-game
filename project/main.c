@@ -63,10 +63,10 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 
 /* Visual TODOs: */
 /// - Fix Clio Williams texture (exhaust pipe mirroring);
-/// - Find an adequate font (pixel-art one may provide pixel perfection difficulties; try to find the one R.S. logo uses).
 
 /* Structural IDEAs: */
 /// - do something about the include mess;
+/// - hot resource reload
 /// ? `struct Button_Manager`
 /// ? `null_*_scene()` just for error resistance
 
@@ -111,11 +111,11 @@ void game_loop(int* exit_code)
     struct Gameplay_Scene gameplay_scene;
     bool gameplay_scene_opened = false; /// TEMP: just not to get an error while deinitializing BEFORE loading the gameplay scene.
     
-    struct Car car = load_car("res/car_data/clio-williams.rscdt", exit_code);
+    struct Car car = load_car("./rsdt/car_data/clio-williams.rsdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
         return;
     
-    struct Menu_Scene menu_scene = load_menu_scene("res/scene_data/menu.rsmsdt", exit_code);
+    struct Menu_Scene menu_scene = load_menu_scene(exit_code);
     if (*exit_code == EXIT_FAILURE)
         return;
     logic_layer.curr_scene = &menu_scene;
@@ -141,7 +141,7 @@ void game_loop(int* exit_code)
             if (! logic_layer.remain_in_scene)
             {
                 free_gameplay_scene(&gameplay_scene);
-                menu_scene = load_menu_scene("res/scene_data/menu.rsmsdt", exit_code);
+                menu_scene = load_menu_scene(exit_code);
                 if (*exit_code == EXIT_FAILURE)
                     return;
                 logic_layer.curr_scene = &menu_scene;
@@ -155,7 +155,7 @@ void game_loop(int* exit_code)
             if (! logic_layer.remain_in_scene)
             {
                 free_menu_scene(&menu_scene);
-                gameplay_scene = load_gameplay_scene("res/scene_data/plains.rsgsdt", &car, exit_code);
+                gameplay_scene = load_gameplay_scene("./rsdt/scene_data/plains.rsdt", &car, exit_code);
                 if (*exit_code == EXIT_FAILURE)
                     return;
                 logic_layer.curr_scene = &gameplay_scene;

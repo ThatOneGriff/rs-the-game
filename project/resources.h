@@ -2,15 +2,73 @@
 #ifndef RESOURCES_H
 #define RESOURCES_H
 
-#include <stdlib.h> /// `malloc`
+#include <SDL3/SDL.h>             /// SDL3.
+#include <SDL3_image/SDL_image.h> /// SDL3_image.
+#include <SDL3_ttf/SDL_ttf.h>     /// SDL3_ttf.
+#include "graphics/graphics_layer.h" /// Texture loading (`renderer`).
+
+#include <stdio.h>  /// `strcpy()`
+#include <stdlib.h> /// `*alloc()`.
 #include "debug.h"  /// Error printing.
 
-#define ICON_TEXTURE "res/images/icon.png"
-#define NULL_TEXTURE "res/images/null.png"
-#define MAIN_FONT    "res/fonts/Neighbor-LightItalic.ttf"
+#define GLOBAL_DATA_PATH "./rsdt/global.rsdt"
+#define GLOBAL_DATA_LINES 3
+
+static SDL_Surface* ICON_TEXTURE = NULL;
+static SDL_Texture* NULL_TEXTURE = NULL;
+static char       MAIN_FONT_PATH[64];
+
+/// NOTE: `.rsdt` is a compromise born from a lack of time. JSON loading is preferable and will be eventually the mechanism.
+
+
+/* Predef */
+
+void  _load_global_resources(int* exit_code);
+void  _free_global_resources(void); /// TODO
+char** read_file_by_line(const char* path, const size_t target_lines);
 
 
 /* Body */
+
+/// Must be called after SDL, TTF, & `renderer` have been initialized.
+/// Called in `init()` or upon resource reloading.
+void _load_global_resources(int* exit_code)
+{
+    if (exit_code == NULL)
+        print_warning("`load_global_resources()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+    
+    char** global_data = read_file_by_line(GLOBAL_DATA_PATH, GLOBAL_DATA_LINES);
+    if (global_data == NULL)
+    {
+        print_error("`load_global_resources()`: couldn't read global data", NON_SDL_ERROR);
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
+
+    ICON_TEXTURE = IMG_Load(global_data[0]);
+    if (ICON_TEXTURE == NULL)
+    {
+        print_error("`load_global_resources()`: couldn't load app icon", IS_SDL_ERROR);
+        for (size_t i = 0; i < GLOBAL_DATA_LINES; i++)
+        {
+            free(global_data[i]);
+            global_data[i] = NULL;
+        }
+        free(global_data);
+        global_data = NULL;
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
+
+    NULL_TEXTURE = IMG_LoadTexture(graphics_layer.renderer, global_data[0]);
+    if (NULL_TEXTURE == NULL)
+        print_warning("`load_global_resources()`: couldn't load null texture (not critical)", IS_SDL_ERROR);
+
+    strcpy(MAIN_FONT_PATH, global_data[2]);
+    *exit_code = EXIT_SUCCESS;
+    return;
+}
+
 
 char** read_file_by_line(const char* path, const size_t target_lines)
 {

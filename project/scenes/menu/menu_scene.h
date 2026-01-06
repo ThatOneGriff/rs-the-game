@@ -14,7 +14,8 @@
 #include "../../text/border.h" /// Selected text highlighting.
 #include "../../text/text.h"   /// Text.
 
-#define RSMSDT_LINES 1 /// R.S. Menu Scene Data.
+#define MENU_DATA_PATH "./rsdt/scene_data/menu.rsdt" /// Unlike `Gameplay_Scene`'s, there's only one concrete file for the menu.
+#define MENU_DATA_LINES 1
 
 
 /* Struct */
@@ -37,14 +38,14 @@ struct Menu_Scene
     void* selectable;
     size_t selected;*/
 };
-struct Menu_Scene load_menu_scene(const char path[], int* exit_code);
+struct Menu_Scene load_menu_scene(int* exit_code);
 void              menu_scene_tick(struct Menu_Scene* target, int* exit_code);
 void              free_menu_scene(struct Menu_Scene* target);
 
 
 /* Functions */
 
-struct Menu_Scene load_menu_scene(const char path[], int* exit_code)
+struct Menu_Scene load_menu_scene(int* exit_code)
 {
     struct Menu_Scene result;
     result.bg = NULL;
@@ -53,15 +54,9 @@ struct Menu_Scene load_menu_scene(const char path[], int* exit_code)
     /* Param checking*/
     if (exit_code == NULL)
         print_warning("`load_menu_scene()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    if (path == NULL)
-    {
-        print_error("`load_menu_scene()`: `path` arg is `NULL`", NON_SDL_ERROR);
-        *exit_code = EXIT_FAILURE;
-        return result;
-    }
     
     /* Reading the file */
-    char** scene_data = read_file_by_line(path, RSMSDT_LINES);
+    char** scene_data = read_file_by_line(MENU_DATA_PATH, MENU_DATA_LINES);
     if (scene_data == NULL)
     {
         print_error("`load_gameplay_scene()`: couldn't read data from file", NON_SDL_ERROR);
@@ -73,7 +68,7 @@ struct Menu_Scene load_menu_scene(const char path[], int* exit_code)
     if (result.bg == NULL)
     {
         print_error("`load_menu_scene()`: couldn't load the bg texture", IS_SDL_ERROR);
-        for (size_t i = 0; i < RSMSDT_LINES; i++)
+        for (size_t i = 0; i < MENU_DATA_LINES; i++)
         {
             free(scene_data[i]);
             scene_data[i] = NULL;
@@ -90,7 +85,7 @@ struct Menu_Scene load_menu_scene(const char path[], int* exit_code)
         print_error("`load_menu_scene()`: couldn't create the text", IS_SDL_ERROR);
         SDL_DestroyTexture(result.bg);
         result.bg = NULL;
-        for (size_t i = 0; i < RSMSDT_LINES; i++)
+        for (size_t i = 0; i < MENU_DATA_LINES; i++)
         {
             free(scene_data[i]);
             scene_data[i] = NULL;
@@ -107,7 +102,7 @@ struct Menu_Scene load_menu_scene(const char path[], int* exit_code)
         free_texture(&result.car_name_text);
         SDL_DestroyTexture(result.bg);
         result.bg = NULL;
-        for (size_t i = 0; i < RSMSDT_LINES; i++)
+        for (size_t i = 0; i < MENU_DATA_LINES; i++)
         {
             free(scene_data[i]);
             scene_data[i] = NULL;
@@ -127,7 +122,7 @@ struct Menu_Scene load_menu_scene(const char path[], int* exit_code)
         free_texture(&result.car_name_text);
         SDL_DestroyTexture(result.bg);
         result.bg = NULL;
-        for (size_t i = 0; i < RSMSDT_LINES; i++)
+        for (size_t i = 0; i < MENU_DATA_LINES; i++)
         {
             free(scene_data[i]);
             scene_data[i] = NULL;

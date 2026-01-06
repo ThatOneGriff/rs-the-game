@@ -12,7 +12,7 @@
 #include "../../game_components/shifting_texture.h"
 #include "../../game_components/texture.h"       /// Multi-textures
 
-#define RSGSDT_LINES 3 /// R.S. Gameplay target Data.
+#define GAMEPLAY_DATA_LINES 3
 
 
 /* Struct */
@@ -56,7 +56,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         result.car_ptr = car_ptr;
 
     /* Reading the file */
-    char** scene_data = read_file_by_line(path, RSGSDT_LINES);
+    char** scene_data = read_file_by_line(path, GAMEPLAY_DATA_LINES);
     if (scene_data == NULL)
     {
         print_error("`load_gameplay_scene()`: couldn't read data from file", NON_SDL_ERROR);
@@ -69,7 +69,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     if (result.sky_bg == NULL)
     {
         print_error("`load_gameplay_scene()`: couldn't load the sky texture", IS_SDL_ERROR);
-        for (size_t i = 0; i < RSGSDT_LINES; i++)
+        for (size_t i = 0; i < GAMEPLAY_DATA_LINES; i++)
         {
             free(scene_data[i]);
             scene_data[i] = NULL;
@@ -86,7 +86,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         print_error("`load_gameplay_scene()`: couldn't load the ground texture", NON_SDL_ERROR);
         SDL_DestroyTexture(result.sky_bg);
         result.sky_bg = NULL;
-        for (size_t i = 0; i < RSGSDT_LINES; i++)
+        for (size_t i = 0; i < GAMEPLAY_DATA_LINES; i++)
         {
             free(scene_data[i]);
             scene_data[i] = NULL;
@@ -104,7 +104,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         free_texture(&result.ground);
         SDL_DestroyTexture(result.sky_bg);
         result.sky_bg = NULL;
-        for (size_t i = 0; i < RSGSDT_LINES; i++)
+        for (size_t i = 0; i < GAMEPLAY_DATA_LINES; i++)
         {
             free(scene_data[i]);
             scene_data[i] = NULL;
@@ -123,7 +123,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         free_texture(&result.ground);
         SDL_DestroyTexture(result.sky_bg);
         result.sky_bg = NULL;
-        for (size_t i = 0; i < RSGSDT_LINES; i++)
+        for (size_t i = 0; i < GAMEPLAY_DATA_LINES; i++)
         {
             free(scene_data[i]);
             scene_data[i] = NULL;
@@ -134,7 +134,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         return result;
     }
 
-    for (size_t i = 0; i < RSGSDT_LINES; i++)
+    for (size_t i = 0; i < GAMEPLAY_DATA_LINES; i++)
     {
         free(scene_data[i]);
         scene_data[i] = NULL;

@@ -9,7 +9,7 @@
 #include "../../resources.h" /// File reading.
 #include "../../game_components/texture.h" /// Car texture.
 
-#define RSCDT_LINES 7 /// R.S. Car Data.
+#define CAR_DATA_LINES 7
 
 
 /* Struct */
@@ -54,7 +54,7 @@ struct Car load_car(const char path[], int* exit_code)
     result.coords = (SDL_FRect){center_x(50.0), RENDER_HEIGHT-50.0, 50.0, 50.0}; /// TODO: size determined by real-life size.
 
     /* Reading data */
-    char** car_data = read_file_by_line("res/car_data/clio-williams.rscdt", RSCDT_LINES);
+    char** car_data = read_file_by_line(path, CAR_DATA_LINES);
     if (car_data == NULL)
     {
         print_error("`load_car()`: couldn't read the contents of car data file", NON_SDL_ERROR);
@@ -84,7 +84,7 @@ struct Car load_car(const char path[], int* exit_code)
     result.handling  = atoi(car_data[i++]);
     result.top_speed = atoi(car_data[i++]);
     
-    for (size_t i = 0; i < RSCDT_LINES; i++)
+    for (size_t i = 0; i < CAR_DATA_LINES; i++)
     {
         free(car_data[i]);
         car_data[i] = NULL;

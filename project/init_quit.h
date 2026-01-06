@@ -70,8 +70,21 @@ void init(int* exit_code)
         return;
     }
 
+    _load_global_resources(exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init()`: failed to load global resources", NON_SDL_ERROR);
+        TTF_Quit();
+        SDL_DestroyWindow(graphics_layer.window);
+        graphics_layer.window = NULL;
+        SDL_DestroyRenderer(graphics_layer.renderer);
+        graphics_layer.renderer = NULL;
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
+
     /// Font (test loading)
-    TTF_Font* test_main_font_load = TTF_OpenFont(MAIN_FONT, 1);
+    TTF_Font* test_main_font_load = TTF_OpenFont(MAIN_FONT_PATH, 1);
     if (test_main_font_load == NULL)
     {
         print_error("`init()`: failed to load the main font", IS_SDL_ERROR);
@@ -86,22 +99,7 @@ void init(int* exit_code)
     TTF_CloseFont(test_main_font_load);
     test_main_font_load = NULL;
 
-    /// Icon
-    SDL_Surface* icon = IMG_Load(ICON_TEXTURE);
-    if (icon == NULL)
-    {
-        print_error("`init()`: failed to load the program icon", IS_SDL_ERROR);
-        SDL_DestroyWindow(graphics_layer.window);
-        graphics_layer.window = NULL;
-        SDL_DestroyRenderer(graphics_layer.renderer);
-        graphics_layer.renderer = NULL;
-        TTF_Quit();
-        *exit_code = EXIT_FAILURE;
-        return;
-    }
-    SDL_SetWindowIcon(graphics_layer.window, icon);
-    SDL_DestroySurface(icon);
-    icon = NULL;
+    SDL_SetWindowIcon(graphics_layer.window, ICON_TEXTURE);
 
     #ifdef USING_AUDIO
     /// Audio

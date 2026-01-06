@@ -40,7 +40,7 @@ void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius,
 
 SDL_Surface* create_bordered_text_surface(const char* text, const float text_size, const unsigned int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color)
 {
-    TTF_Font *font = TTF_OpenFont(MAIN_FONT, text_size);
+    TTF_Font *font = TTF_OpenFont(MAIN_FONT_PATH, text_size);
     if (font == NULL)
     {
         print_error("`create_bordered_text_surface()`: error loading the font", IS_SDL_ERROR);

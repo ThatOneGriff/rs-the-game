@@ -26,7 +26,6 @@ struct Graphics_Layer
 {
     SDL_Window*   window;
     SDL_Renderer* renderer;
-    SDL_Texture*  null_texture;
     SDL_Texture*  buffer;
 };
 
@@ -57,21 +56,11 @@ void _init_graphics_layer(int* exit_code)
         return;
     }
     
-    /* Null texture (debug purposes) */
-    graphics_layer.null_texture = IMG_LoadTexture(graphics_layer.renderer, NULL_TEXTURE);
-    if (graphics_layer.null_texture == NULL)
-        print_warning("`_init_graphics_layer()`: failed to load the null texture (not critical)", IS_SDL_ERROR);
-    
     /* Buffer (for scaled rendering) */
     graphics_layer.buffer = SDL_CreateTexture(graphics_layer.renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, RENDER_WIDTH, RENDER_HEIGHT);
     if (graphics_layer.buffer == NULL)
     {
         print_error("`_init_graphics_layer()`: failed to create rendering buffer texture", IS_SDL_ERROR);
-        if (graphics_layer.null_texture != NULL)
-        {
-            SDL_DestroyTexture(graphics_layer.null_texture);
-            graphics_layer.null_texture = NULL;
-        }
         SDL_DestroyRenderer(graphics_layer.renderer);
         graphics_layer.renderer = NULL;
         SDL_DestroyWindow(graphics_layer.window);
@@ -96,11 +85,6 @@ void _free_graphics_layer(void)
     {
         SDL_DestroyWindow(graphics_layer.window);
         graphics_layer.window = NULL;
-    }
-    if (graphics_layer.null_texture != NULL)
-    {
-        SDL_DestroyTexture(graphics_layer.null_texture);
-        graphics_layer.null_texture = NULL;
     }
     if (graphics_layer.buffer != NULL)
     {
