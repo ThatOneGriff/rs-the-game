@@ -60,8 +60,6 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 */
 
 /* TODOs: */
-/// -  deallocation via stack;
-/// - `free_ptr_arr()`.
 
 /* Visual TODOs: */
 /// - Fix Clio Williams texture (exhaust pipe mirroring);

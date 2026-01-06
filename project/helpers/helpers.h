@@ -2,8 +2,10 @@
 #ifndef HELPERS_H
 #define HELPERS_H
 
-/// For text colouring.
 #include <windows.h> /// Text colouring.
+
+/* Text colouring. */
+
 #define WHITE  7
 #define GRAY   8
 #define RED    4
@@ -16,8 +18,19 @@ void textcolor(const short int color_code)
 }
 
 
-/// For everything-else colouring.
-#include <SDL3/SDL.h> /// `SDL_Color`s
-#define SDL_WHITE (SDL_Color){255,255,255,0}
+/* Memory */
+
+void free_ptr_array(void** target, const size_t len)
+{
+    if (target == NULL)
+        return;
+    
+    for (size_t i = 0; i < len; i++)
+    {
+        free(target[i]);
+        target[i] = NULL;
+    }
+    free(target);
+}
 
 #endif /// HELPERS_H

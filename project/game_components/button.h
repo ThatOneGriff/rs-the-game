@@ -29,7 +29,6 @@ struct Button
 {
     struct Texture regular_texture;
     struct Texture focused_texture;
-    struct Texture* curr;
     bool is_focused;
 };
 
@@ -44,18 +43,18 @@ struct Button create_button(const char* text, const SDL_Color inner_color, struc
     /* Param checking */
     if (size == 0)
     {
-        print_error("`init_button()`: `size` is 0", NON_SDL_ERROR);
+        print_error("`create_button()`: `size` is 0", NON_SDL_ERROR);
         *exit_code = EXIT_FAILURE;
         return result;
     }
     if (exit_code == NULL)
-        print_warning("`init_button()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`create_button()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
     /* regular_texture texture */
     result.regular_texture = create_text(text, inner_color, (SDL_Color){188,204,220,255}, screen_pos, size, size/20, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_button()`: regular_texture texture creation failure", NON_SDL_ERROR);
+        print_error("`create_button()`: `regular_texture` creation failure", NON_SDL_ERROR);
         return result;
     }
 
@@ -64,11 +63,11 @@ struct Button create_button(const char* text, const SDL_Color inner_color, struc
     result.focused_texture = create_text(text, inner_color, (SDL_Color){255,255,255,255}, border_adjusted_screen_pos, size, size/10, exit_code); /// WARNING: may result in a `0` border thickness, making the button appear not selected.
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_button()`: focused_texture texture creation failure", NON_SDL_ERROR);
+        print_error("`create_button()`: `focused_texture` creation failure", NON_SDL_ERROR);
+        free_texture(&result.regular_texture);
         return result;
     }
 
-    result.curr = &result.regular_texture;
     *exit_code = EXIT_SUCCESS;
     return result;
 }

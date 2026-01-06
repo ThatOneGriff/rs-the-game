@@ -30,8 +30,8 @@ int main()
     scanf("%f", &inp_f);
     add_to_deinit_stack(&test_stack, &inp_f, (void (*)(void*))p_flt);
 
-    for (size_t i = 0; i < 3; i++)
-        pop_from_deinit_stack(&test_stack);
+    flush_deinit_stack(&test_stack);
 
+    printf("success");
     return exit_code;
 }

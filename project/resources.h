@@ -10,6 +10,8 @@
 #include <stdio.h>  /// `strcpy()`
 #include <stdlib.h> /// `*alloc()`.
 #include "debug.h"  /// Error printing.
+#include "helpers/helpers.h" /// `free_ptr_array()`.
+#include "deinit_stack.h"    /// Deinitialization.
 
 #define GLOBAL_DATA_PATH "./rsdt/global.rsdt"
 #define GLOBAL_DATA_LINES 3
@@ -37,6 +39,13 @@ void _load_global_resources(int* exit_code)
     if (exit_code == NULL)
         print_warning("`load_global_resources()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
+    struct Deinit_Stack deinit_stack = new_deinit_stack(2, exit_code); /// Not adding the last element (font loading). Also, `global_data` needs its own treatment.
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`load_global_resources()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        return;
+    }
+
     /// Reading global data file
     char** global_data = read_file_by_line(GLOBAL_DATA_PATH, GLOBAL_DATA_LINES);
     if (global_data == NULL)
@@ -51,21 +60,18 @@ void _load_global_resources(int* exit_code)
     if (ICON_TEXTURE == NULL)
     {
         print_error("`load_global_resources()`: couldn't load app icon", IS_SDL_ERROR);
-        for (size_t i = 0; i < GLOBAL_DATA_LINES; i++)
-        {
-            free(global_data[i]);
-            global_data[i] = NULL;
-        }
-        free(global_data);
-        global_data = NULL;
+        free_ptr_array((void**)global_data, GLOBAL_DATA_LINES);
         *exit_code = EXIT_FAILURE;
         return;
     }
+    add_to_deinit_stack(&deinit_stack, ICON_TEXTURE, (void (*)(void*))SDL_DestroySurface);
 
     /// Null texture
     NULL_TEXTURE = IMG_LoadTexture(graphics_layer.renderer, global_data[1]);
     if (NULL_TEXTURE == NULL)
         print_warning("`load_global_resources()`: couldn't load null texture (not critical)", IS_SDL_ERROR);
+    else
+        add_to_deinit_stack(&deinit_stack, NULL_TEXTURE, (void (*)(void*))SDL_DestroyTexture);
 
     /// Font (+ test loading)
     strcpy(MAIN_FONT_PATH, global_data[2]);
@@ -73,20 +79,8 @@ void _load_global_resources(int* exit_code)
     if (test_main_font_load == NULL)
     {
         print_error("`load_global_resources()`: test font loading failed", IS_SDL_ERROR);
-        if (NULL_TEXTURE != NULL)
-        {
-            SDL_DestroyTexture(NULL_TEXTURE);
-            NULL_TEXTURE = NULL;
-        }
-        SDL_DestroySurface(ICON_TEXTURE);
-        ICON_TEXTURE = NULL;
-        for (size_t i = 0; i < GLOBAL_DATA_LINES; i++)
-        {
-            free(global_data[i]);
-            global_data[i] = NULL;
-        }
-        free(global_data);
-        global_data = NULL;
+        flush_deinit_stack(&deinit_stack);
+        free_ptr_array((void**)global_data, GLOBAL_DATA_LINES);
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -96,6 +90,7 @@ void _load_global_resources(int* exit_code)
         test_main_font_load = NULL;
     }
 
+    free_ptr_array((void**)global_data, GLOBAL_DATA_LINES);
     *exit_code = EXIT_SUCCESS;
     return;
 }

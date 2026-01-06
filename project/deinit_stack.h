@@ -2,7 +2,7 @@
 #ifndef DEINIT_STACK_H
 #define DEINIT_STACK_H
 
-//#include "debug.h" /// Error printing.
+#include "debug.h" /// Error printing.
 #include <stdlib.h> /// `*alloc()`.
 
 
@@ -11,7 +11,7 @@
 struct Deinit_Stack;
 struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code);
 void               free_deinit_stack(struct Deinit_Stack* target); 
-void             add_to_deinit_stack(struct Deinit_Stack* target, void* new_element, void (*new_function)(void*));
+void             add_to_deinit_stack(struct Deinit_Stack* target, void* new_element, void (*new_free_function)(void*));
 void              flush_deinit_stack(struct Deinit_Stack* target);
 void           pop_from_deinit_stack(struct Deinit_Stack* target);
 
@@ -23,23 +23,22 @@ struct Deinit_Stack
     size_t max;
     size_t cur;
     void**  elements;
-    void (**functions)(void*);
+    void (**free_functions)(void*);
 };
 
 struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code)
 {
     if (exit_code == NULL)
-        {;} /// TEMP
-    //    print_warning("`new_deinit_stack()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`new_deinit_stack()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     struct Deinit_Stack result;
     result.cur = 0;
     result.max = 0; /// To be reset once memory is successfully allocated.
-    result.functions = NULL; /// To be reset once memory is successfully allocated.
+    result.free_functions = NULL; /// To be reset once memory is successfully allocated.
 
     result.elements = calloc(size, sizeof(void*));
     if (result.elements == NULL)
     {
-        //print_error("`new_deinit_stack()`: couldn't allocate memory for elements' array", NON_SDL_ERROR);
+        print_error("`new_deinit_stack()`: couldn't allocate memory for elements' array", NON_SDL_ERROR);
         *exit_code = EXIT_FAILURE;
         return result;
     }
@@ -49,7 +48,7 @@ struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code)
 
         if (result.elements[i] == NULL)
         {
-            //print_error("`new_deinit_stack()`: couldn't allocate memory for an element", NON_SDL_ERROR);
+            print_error("`new_deinit_stack()`: couldn't allocate memory for an element", NON_SDL_ERROR);
             for (size_t j = 0; j < i; j++)
             {
                 free(result.elements[j]);
@@ -62,10 +61,10 @@ struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code)
         }
     }*/
 
-    result.functions = calloc(size, sizeof(void (*)(int*)));
-    if (result.functions == NULL)
+    result.free_functions = calloc(size, sizeof(void (*)(int*)));
+    if (result.free_functions == NULL)
     {
-        //print_error("`new_deinit_stack()`: couldn't allocate memory for functions", NON_SDL_ERROR);
+        print_error("`new_deinit_stack()`: couldn't allocate memory for free_functions", NON_SDL_ERROR);
         for (size_t i = 0; i < size; i++)
         {
             free(result.elements[i]);
@@ -97,10 +96,10 @@ void free_deinit_stack(struct Deinit_Stack* target)
         free(target->elements);
         target->elements = NULL;
     }
-    if (target->functions != NULL)
+    if (target->free_functions != NULL)
     {
-        free(target->functions);
-        target->functions = NULL;
+        free(target->free_functions);
+        target->free_functions = NULL;
     }
     target->max = 0;
     target->cur = 0;
@@ -116,39 +115,38 @@ void free_deinit_stack(struct Deinit_Stack* target)
 /// - Say, you wanted to add 7 elements to the stack, but during development it so happened that you started adding 8.
 /// 1) Wouldn't you want to know of such a correction, instead of the program quietly multiplying the stack's memory by 1.5?
 /// 2) Whose problem would that additional memory be?
-void add_to_deinit_stack(struct Deinit_Stack* target, void* new_element, void (*new_function)(void*))
+void add_to_deinit_stack(struct Deinit_Stack* target, void* new_element, void (*new_free_function)(void*))
 {
     if (target == NULL || target->elements == NULL)
     {
-        //print_error("`add_to_deinit_stack()`: stack or its `elements` are `NULL`", NON_SDL_ERROR);
+        print_error("`add_to_deinit_stack()`: stack or its `elements` are `NULL`", NON_SDL_ERROR);
         return;
     }
-    if (new_element == NULL || new_function == NULL)
+    if (new_element == NULL || new_free_function == NULL)
     {
-        //print_error("`add_to_deinit_stack()`: `new_element` or `new_function` are `NULL`", NON_SDL_ERROR);
+        print_error("`add_to_deinit_stack()`: `new_element` or `new_free_function` are `NULL`", NON_SDL_ERROR);
         return;
     }
     if (target->cur == target->max)
     {
-        //print_error("`add_to_deinit_stack()`: stack is full", NON_SDL_ERROR);
+        print_error("`add_to_deinit_stack()`: stack is full", NON_SDL_ERROR);
         return;
     }
 
     target->elements [target->cur] = new_element;
-    target->functions[target->cur] = new_function;
+    target->free_functions[target->cur] = new_free_function;
     ++target->cur;
 }
 
 
 void flush_deinit_stack(struct Deinit_Stack* target)
 {
-    if (target == NULL || target->elements == NULL || target->functions == NULL)
+    if (target == NULL || target->elements == NULL || target->free_functions == NULL)
     {
         //print_error("`pop_from_deinit_stack()`: stack, its `elements` or its `functions` are `NULL`", NON_SDL_ERROR);
         return;
     }
 
-    printf("%llu %llu\n", target->cur, target->max);
     while (target->cur > 0)
         pop_from_deinit_stack(target);
 }
@@ -156,19 +154,19 @@ void flush_deinit_stack(struct Deinit_Stack* target)
 
 void pop_from_deinit_stack(struct Deinit_Stack* target)
 {
-    if (target == NULL || target->elements == NULL || target->functions == NULL)
+    if (target == NULL || target->elements == NULL || target->free_functions == NULL)
     {
-        //print_error("`pop_from_deinit_stack()`: stack, its `elements` or its `functions` are `NULL`", NON_SDL_ERROR);
+        print_error("`pop_from_deinit_stack()`: stack, its `elements` or its `functions` are `NULL`", NON_SDL_ERROR);
         return;
     }
     if (target->cur == 0)
     {
-        //print_error("`pop_from_deinit_stack()`: stack is empty", NON_SDL_ERROR);
+        print_error("`pop_from_deinit_stack()`: stack is empty", NON_SDL_ERROR);
         return;
     }
 
     --target->cur;
-    target->functions[target->cur](target->elements[target->cur]);
+    target->free_functions[target->cur](target->elements[target->cur]);
     return;
 }
 
