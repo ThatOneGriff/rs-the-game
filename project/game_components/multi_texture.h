@@ -21,7 +21,7 @@
 struct Multi_Texture
 {
     SDL_Texture* texture;
-    SDL_FRect*   coords;
+    SDL_FRect*   rects;
     size_t count;
     size_t max_count;
 };
@@ -32,7 +32,7 @@ struct Multi_Texture
 struct Multi_Texture load_multi_texture(const char* texture_path, const size_t initial_count, int* exit_code);
 void                 free_multi_texture(struct Multi_Texture* target);
 
-void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_coords, int* exit_code);
+void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_rects, int* exit_code);
 void render_multi_texture(const struct Multi_Texture* target);
 
 
@@ -41,7 +41,7 @@ void render_multi_texture(const struct Multi_Texture* target);
 struct Multi_Texture load_multi_texture(const char* texture_path, const size_t initial_count, int* exit_code)
 {
     struct Multi_Texture result;
-    result.coords = NULL;
+    result.rects = NULL;
     result.count = 0;
     result.max_count = 0;
 
@@ -76,8 +76,8 @@ struct Multi_Texture load_multi_texture(const char* texture_path, const size_t i
         }
     }
     result.max_count = initial_count;
-    result.coords = calloc(initial_count, sizeof(SDL_FRect));
-    if (result.coords == NULL)
+    result.rects = calloc(initial_count, sizeof(SDL_FRect));
+    if (result.rects == NULL)
     {
         print_error("`new_multi_texture()`: couldn't allocate memory to coordinates", NON_SDL_ERROR);
         SDL_DestroyTexture(result.texture);
@@ -102,10 +102,10 @@ void free_multi_texture(struct Multi_Texture* target)
         target->texture = NULL;
     }
     
-    if (target->coords != NULL)
+    if (target->rects != NULL)
     {
-        free(target->coords);
-        target->coords = NULL;
+        free(target->rects);
+        target->rects = NULL;
     }
 
     target->count = 0;
@@ -115,9 +115,9 @@ void free_multi_texture(struct Multi_Texture* target)
 
 /* Functions */
 
-void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_coords, int* exit_code)
+void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_rect, int* exit_code)
 {
-    /* Param checking */
+    /// Param checking
     if (exit_code == NULL)
         print_warning("`add_to_multi_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     if (to == NULL)
@@ -126,47 +126,46 @@ void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_coords, 
         *exit_code = EXIT_FAILURE;
         return;
     }
-    if (to->coords == NULL)
+    if (to->rects == NULL)
     {
-        print_error("`add_to_multi_texture()`: `to->coords` is `NULL`", NON_SDL_ERROR);
+        print_error("`add_to_multi_texture()`: `to->rects` is `NULL`", NON_SDL_ERROR);
         *exit_code = EXIT_FAILURE;
         return;
     }
 
-    /* Realloc if needed */
-    if (to->max_count <= to->count)
+    /// Check if full
+    if (to->max_count == to->count)
     {
-        void* temp = NULL;
-        if (to->max_count * 1.5 == to->max_count) /// i.e. minimal memory allocation is 1.
-            temp = realloc(to->coords, sizeof(SDL_FRect) * (to->max_count += 1));
-        else
-            temp = realloc(to->coords, sizeof(SDL_FRect) * (to->max_count *= 1.5));
-        
-        if (temp == NULL)
-        {
-            print_error("`add_to_multi_texture()`: couldn't reallocate more memory", NON_SDL_ERROR);
-            *exit_code = EXIT_FAILURE;
-            return;
-        }
-        else
-            to->coords = temp;
+        print_error("`add_to_multi_texture()`: `to->rects` is full", NON_SDL_ERROR);
+        return;
     }
 
-    /* Insertion */
-    to->coords[to->count++] = new_coords;
+    /// Insertion
+    to->rects[to->count++] = new_rect;
 }
 
 
 void render_multi_texture(const struct Multi_Texture* target)
 {
-    if (target == NULL || target->texture == NULL || target->coords == NULL || target->count == 0)
+    if (target == NULL || target->texture == NULL || target->rects == NULL || target->count == 0)
     {
         print_error("`render_multi_texture()`: `target` or its members are invalid", NON_SDL_ERROR);
         return;
     }
     
     for (size_t i = 0; i < target->count; i++)
-        SDL_RenderTexture(graphics_layer.renderer, target->texture, NULL, &target->coords[i]);
+    {
+        if (target->rects[i].x + target->rects[i].w <= 0 ||
+            target->rects[i].y + target->rects[i].h <= 0 ||
+            target->rects[i].x >= RENDER_WIDTH ||
+            target->rects[i].y >= RENDER_HEIGHT)
+        {
+            print_warning("`render_multi_texture()`: texture rendering out of bounds", NON_SDL_ERROR);
+            continue; /// While it's not an error, why waste a draw call on something not seen anyway?
+        }
+        else
+            SDL_RenderTexture(graphics_layer.renderer, target->texture, NULL, &target->rects[i]);
+    }
 }
 
 #endif /// MULTI_TEXTURE_H

@@ -21,7 +21,7 @@
 struct Shifting_Texture
 {
     SDL_Texture** textures;
-    SDL_FRect     coords;
+    SDL_FRect     rect;
     size_t count;
     size_t max_count;
     size_t i;
@@ -30,26 +30,26 @@ struct Shifting_Texture
 
 /* Predef */
 
-struct Shifting_Texture init_shifting_texture(const SDL_FRect coords, const size_t initial_count, int* exit_code);
+struct Shifting_Texture init_shifting_texture(const SDL_FRect rect, const size_t initial_count, int* exit_code);
 void                    free_shifting_texture(struct Shifting_Texture* target);
 
-void add_to_shifting_texture(struct Shifting_Texture* to, const char* new_path, int* exit_code);
+void add_to_shifting_texture(struct Shifting_Texture* to, const char* new_texture_path, int* exit_code);
 void render_shifting_texture(struct Shifting_Texture* target);
 
 
 /* Body */
 
-struct Shifting_Texture init_shifting_texture(const SDL_FRect coords, const size_t initial_count, int* exit_code)
+struct Shifting_Texture init_shifting_texture(const SDL_FRect rect, const size_t initial_count, int* exit_code)
 {
-    /* Param checking */
+    /// Param checking
     if (exit_code == NULL)
         print_warning("`new_shifting_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     if (initial_count == 0)
         print_warning("`new_shifting_texture()`: `initial_count` arg is 0. Do you really want that?", NON_SDL_ERROR);
     
-    /* Object creation */
+    /// Object creation
     struct Shifting_Texture result;
-    result.coords = coords;
+    result.rect = rect;
     result.count = 0;
     result.max_count = initial_count;
     result.i = 0;
@@ -87,7 +87,7 @@ void free_shifting_texture(struct Shifting_Texture* target)
         target->textures = NULL;
     }
     
-    target->coords = (SDL_FRect){0,0,0,0};
+    target->rect = (SDL_FRect){0,0,0,0};
     target->count = 0;
     target->max_count = 0;
     target->i = 0;
@@ -96,9 +96,9 @@ void free_shifting_texture(struct Shifting_Texture* target)
 
 /* Functions */
 
-void add_to_shifting_texture(struct Shifting_Texture* to, const char* new_path, int* exit_code)
+void add_to_shifting_texture(struct Shifting_Texture* to, const char* new_texture_path, int* exit_code)
 {
-    /* Param checking */
+    /// Param checking 
     if (exit_code == NULL)
         print_warning("`add_to_shifting_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     if (to == NULL)
@@ -114,27 +114,15 @@ void add_to_shifting_texture(struct Shifting_Texture* to, const char* new_path, 
         return;
     }
 
-    /* Realloc if needed */
-    if (to->max_count <= to->count)
+    /// Check if full
+    if (to->max_count == to->count)
     {
-        void* temp = NULL;
-        if (to->max_count * 1.5 == to->max_count) /// i.e. minimal memory allocation is 1.
-            temp = realloc(to->textures, sizeof(SDL_Texture*) * (to->max_count += 1));
-        else
-            temp = realloc(to->textures, sizeof(SDL_Texture*) * (to->max_count *= 1.5));
-        
-        if (temp == NULL)
-        {
-            print_error("`add_to_shifting_texture()`: couldn't reallocate more memory", NON_SDL_ERROR);
-            *exit_code = EXIT_FAILURE;
-            return;
-        }
-        else
-            to->textures = temp;
+        print_error("`add_to_shifting_texture()`: `to->textures` is full", NON_SDL_ERROR);
+        return;
     }
 
-    /* Insertion */
-    to->textures[to->count] = IMG_LoadTexture(graphics_layer.renderer, new_path);
+    /// Insertion
+    to->textures[to->count] = IMG_LoadTexture(graphics_layer.renderer, new_texture_path);
     if (to->textures[to->count] == NULL)
     {
         if (NULL_TEXTURE != NULL)
@@ -164,9 +152,19 @@ void render_shifting_texture(struct Shifting_Texture* target)
         return;
     }
     
+    /// REDO with step in ms.
     if (++target->i == target->count)
         target->i = 0;
-    SDL_RenderTexture(graphics_layer.renderer, target->textures[target->i], NULL, &target->coords);
+    
+    if (target->rect.x + target->rect.w <= 0 ||
+        target->rect.y + target->rect.h <= 0 ||
+        target->rect.x >= RENDER_WIDTH ||
+        target->rect.y >= RENDER_HEIGHT)
+    {
+        print_warning("`render_shifting_texture()`: texture rendering out of bounds", NON_SDL_ERROR);
+        return; /// While it's not an error, why waste a draw call on something not seen anyway?
+    }
+    SDL_RenderTexture(graphics_layer.renderer, target->textures[target->i], NULL, &target->rect);
 }
 
 #endif /// SHIFTING_TEXTURE_H

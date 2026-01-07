@@ -60,16 +60,16 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 */
 
 /* TODOs: */
-/// - do something about the include hell;
-/// - draw call boundary checking in each member of 'game_components' (like in `render_texture()`);
+/// - do something about the include hell.
+/// Check:
 /// - free_ptr_arr - make sure it erases the correct amount of lines everywhere;
 /// - `add_to_deinit_stack()` - make sure it doesn't insert `NULL_TEXTURE` anywhere. Maybe make it impossible to insert it - but then what to do if global resource initialization fails mid-way?
 /// - `Deinit_Stack` initialization right before first element being inserted.
-/// ? `bool max_achieved` - and a warning if a `Deinit_Stack`'s full memory capacity is not used?
 
 /* Visual TODOs: */
 /// - photograph some cars in Forza for traffic;
-/// - fix Clio Williams half-left texture (exhaust pipe mirrored wrong).
+/// - fix Clio Williams half-left texture (exhaust pipe mirrored wrong);
+/// - player's car bouncing in beat to the music.
 
 /* Structural IDEAs: */
 /// ? `struct Button_Manager`.
