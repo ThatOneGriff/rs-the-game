@@ -41,22 +41,20 @@ void _init_graphics_layer(int* exit_code)
     if (exit_code == NULL)
         print_warning("`_init_graphics_layer()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
+    /// Window
+    graphics_layer.window = SDL_CreateWindow(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+    if (graphics_layer.window == NULL)
+    {
+        print_error("`_init_graphics_layer()`: failed to create a window", IS_SDL_ERROR);
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
     /// Deinit stack
     struct Deinit_Stack deinit_stack = new_deinit_stack(2, exit_code); /// Not adding the last element (font loading). Also, `global_data` needs its own treatment.
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
         free_deinit_stack(&deinit_stack);
-        *exit_code = EXIT_FAILURE;
-        return;
-    }
-    
-    /// Window
-    graphics_layer.window = SDL_CreateWindow(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
-    if (graphics_layer.window == NULL)
-    {
-        free_deinit_stack(&deinit_stack);
-        print_error("`_init_graphics_layer()`: failed to create a window", IS_SDL_ERROR);
         *exit_code = EXIT_FAILURE;
         return;
     }

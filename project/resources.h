@@ -54,23 +54,21 @@ void _load_global_resources(int* exit_code)
         return;
     }
 
+    /// Icon
+    ICON_TEXTURE = IMG_Load(global_data[0]);
+    if (ICON_TEXTURE == NULL)
+    {
+        print_error("`load_global_resources()`: couldn't load app icon", IS_SDL_ERROR);
+        free_ptr_arr((void**)global_data, GLOBAL_DATA_LINES);
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
     /// Deinit stack
     struct Deinit_Stack deinit_stack = new_deinit_stack(2, exit_code); /// Not adding the last element (font loading). Also, `global_data` needs its own treatment.
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_global_resources()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
         free_deinit_stack(&deinit_stack);
-        return;
-    }
-
-    /// Icon
-    ICON_TEXTURE = IMG_Load(global_data[0]);
-    if (ICON_TEXTURE == NULL)
-    {
-        print_error("`load_global_resources()`: couldn't load app icon", IS_SDL_ERROR);
-        free_deinit_stack(&deinit_stack);
-        free_ptr_arr((void**)global_data, GLOBAL_DATA_LINES);
-        *exit_code = EXIT_FAILURE;
         return;
     }
     add_to_deinit_stack(&deinit_stack, ICON_TEXTURE, (void (*)(void*))SDL_DestroySurface);

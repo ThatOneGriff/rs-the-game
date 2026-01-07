@@ -71,16 +71,6 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         return result;
     }
 
-    /// Deinit stack
-    struct Deinit_Stack deinit_stack = new_deinit_stack(4, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
-    if (*exit_code == EXIT_FAILURE)
-    {
-        print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
-        free_deinit_stack(&deinit_stack);
-        free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
-        return result;
-    }
-
     /// Sky
     result.sky_bg = IMG_LoadTexture(graphics_layer.renderer, scene_data[0]);
     if (result.sky_bg == NULL)
@@ -93,11 +83,19 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         else
         {
             print_error("`load_gameplay_scene()`: couldn't load the sky texture, and null texture is empty", IS_SDL_ERROR);
-            free_deinit_stack(&deinit_stack);
             free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
             *exit_code = EXIT_FAILURE;
             return result;
         }
+    }
+    /// Deinit stack
+    struct Deinit_Stack deinit_stack = new_deinit_stack(4, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        free_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
+        return result;
     }
     if (result.sky_bg != NULL_TEXTURE)
         add_to_deinit_stack(&deinit_stack, result.sky_bg, (void (*)(void*))SDL_DestroyTexture);

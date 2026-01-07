@@ -43,21 +43,19 @@ void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius,
 
 SDL_Surface* create_bordered_text_surface(const char* text, const float text_size, const unsigned int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color)
 {
+    /// Font
+    TTF_Font *font = TTF_OpenFont(MAIN_FONT_PATH, text_size); /// IDEA: loading the font each time we create a text is actually wasteful?
+    if (font == NULL)
+    {
+        print_error("`create_bordered_text_surface()`: error loading the font", IS_SDL_ERROR);
+        return NULL;
+    }
     /// Deinit stack
     int exit_code = EXIT_SUCCESS;
     struct Deinit_Stack deinit_stack = new_deinit_stack(3, &exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
     if (exit_code == EXIT_FAILURE)
     {
         print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
-        free_deinit_stack(&deinit_stack);
-        return NULL;
-    }
-
-    /// Font
-    TTF_Font *font = TTF_OpenFont(MAIN_FONT_PATH, text_size); /// IDEA: loading the font each time we create a text is actually wasteful?
-    if (font == NULL)
-    {
-        print_error("`create_bordered_text_surface()`: error loading the font", IS_SDL_ERROR);
         free_deinit_stack(&deinit_stack);
         return NULL;
     }

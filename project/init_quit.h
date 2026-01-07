@@ -51,21 +51,19 @@ void init(int* exit_code)
         return;
     }
 
-    /// Deinit stack
-    struct Deinit_Stack deinit_stack = new_deinit_stack(3, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
-    if (*exit_code == EXIT_FAILURE)
-    {
-        print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
-        free_deinit_stack(&deinit_stack);
-        SDL_Quit();
-        return;
-    }
-
     /// Graphics layer
     _init_graphics_layer(exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init()`: failed to init `graphics_layer`", NON_SDL_ERROR);
+        SDL_Quit();
+        return;
+    }
+    /// Deinit stack
+    struct Deinit_Stack deinit_stack = new_deinit_stack(3, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
         free_deinit_stack(&deinit_stack);
         SDL_Quit();
         return;

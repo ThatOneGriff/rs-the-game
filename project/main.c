@@ -40,7 +40,7 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 */
 
 /* TODOs: */
-/// - `Deinit_Stack` initialization right before first element being inserted.
+/// - check for correct flushing / freeing of `Deinit_Stack` at the end of functions
 
 /* Visual TODOs: */
 /// - photograph some cars in Forza for traffic;

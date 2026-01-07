@@ -69,16 +69,6 @@ struct Menu_Scene load_menu_scene(int* exit_code)
         return result;
     }
 
-    /// Deinit stack
-    struct Deinit_Stack deinit_stack = new_deinit_stack(4, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
-    if (*exit_code == EXIT_FAILURE)
-    {
-        print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
-        free_deinit_stack(&deinit_stack);
-        free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
-        return result;
-    }
-
     /// Background
     result.bg = IMG_LoadTexture(graphics_layer.renderer, scene_data[0]);
     if (result.bg == NULL)
@@ -91,11 +81,19 @@ struct Menu_Scene load_menu_scene(int* exit_code)
         else
         {
             print_error("`load_menu_scene()`: couldn't load the bg texture, and null texture is empty", IS_SDL_ERROR);
-            free_deinit_stack(&deinit_stack);
             free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
             *exit_code = EXIT_FAILURE;
             return result;
         }
+    }
+    /// Deinit stack
+    struct Deinit_Stack deinit_stack = new_deinit_stack(4, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        free_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
+        return result;
     }
     if (result.bg != NULL_TEXTURE)
         add_to_deinit_stack(&deinit_stack, result.bg, (void (*)(void*))SDL_DestroyTexture);
