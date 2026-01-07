@@ -27,8 +27,8 @@
 struct Gameplay_Scene
 {
     SDL_Texture* sky_bg; /// Not a `Texture`, because it's rendered on the whole screen.
-    struct Texture ground;
-    struct Multi_Texture trees;
+    struct Shifting_Texture ground;
+    struct Multi_Texture    trees;
 
     struct Car* car_ptr;
 };
@@ -101,7 +101,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         add_to_deinit_stack(&deinit_stack, result.sky_bg, (void (*)(void*))SDL_DestroyTexture);
 
     /// Ground
-    result.ground = load_texture(scene_data[1], (SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, exit_code);
+    result.ground = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 300, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the ground texture", NON_SDL_ERROR);
@@ -110,7 +110,9 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         *exit_code = EXIT_FAILURE;
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &result.ground, (void (*)(void*))free_texture);
+    add_to_deinit_stack(&deinit_stack, &result.ground, (void (*)(void*))free_shifting_texture); ///  TODO: try replacing it with an incorrect method and see what happens?
+    add_to_shifting_texture(&result.ground, scene_data[1], exit_code);
+    add_to_shifting_texture(&result.ground, "null", exit_code); /// TEMP
 
     /// Trees
     result.trees = load_multi_texture(scene_data[2], 1, exit_code);
@@ -157,8 +159,8 @@ void gameplay_scene_tick(struct Gameplay_Scene* target, int* exit_code)
 
     /* Rendering */
     SDL_RenderTexture(graphics_layer.renderer, target->sky_bg, NULL, NULL);
-    render_texture(&target->ground);
-    render_multi_texture(&target->trees);
+    render_shifting_texture(&target->ground);
+    render_multi_texture   (&target->trees);
     SDL_RenderTexture(graphics_layer.renderer, target->car_ptr->textures[target->car_ptr->base_texture], NULL, &target->car_ptr->coords);
     *exit_code = EXIT_SUCCESS;
     return;
@@ -176,8 +178,8 @@ void free_gameplay_scene(struct Gameplay_Scene* target)
         target->sky_bg = NULL;
     }
     target->car_ptr->coords.x = center_x(target->car_ptr->coords.w);
-    free_texture(&target->ground);
-    free_multi_texture(&target->trees);
+    free_shifting_texture(&target->ground);
+    free_multi_texture   (&target->trees);
 }
 
 #endif /// GAMEPLAY_SCENE_H

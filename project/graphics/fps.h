@@ -11,14 +11,14 @@
 #define time_tick_ms unsigned long long int /// Purely for code clarity.
 
 static unsigned int fps_cap_options[5] = {15, 30, 60, 120, UINT_MAX};
-static unsigned int curr_fps_cap_i = 2;
+static unsigned int curr_fps_cap_i = 3;
 
 
 /* Struct */
 
 struct FPS_Manager
 {
-    bool fps_capped;
+    bool         fps_capped;
     unsigned int fps_cap;
     time_tick_ns        delta_ns;
     time_tick_ns target_delta_ns;

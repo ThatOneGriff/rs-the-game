@@ -13,6 +13,7 @@
 #include "../debug.h"                   /// Error printing.
 #include "../resources.h"               /// Null texture.
 #include "../graphics/graphics_layer.h" /// `graphics_layer`.
+#include "../logic/logic_layer.h"       /// Current tick.
 
 
 /// NOTE: NOT AT ALL RELATED to `texture.h`:
@@ -25,15 +26,18 @@ struct Shifting_Texture
 {
     SDL_Texture** textures;
     SDL_FRect     rect;
-    size_t count;
+    size_t cur_count;
     size_t max_count;
     size_t i;
+
+    time_tick_ms latest_change;
+    time_tick_ms step;
 };
 
 
 /* Predef */
 
-struct Shifting_Texture init_shifting_texture(const SDL_FRect rect, const size_t initial_count, int* exit_code);
+struct Shifting_Texture init_shifting_texture(const SDL_FRect rect, const size_t max_count, const time_tick_ms step, int* exit_code);
 void                    free_shifting_texture(struct Shifting_Texture* target);
 
 void add_to_shifting_texture(struct Shifting_Texture* to, const char* new_texture_path, int* exit_code);
@@ -42,29 +46,32 @@ void render_shifting_texture(struct Shifting_Texture* target);
 
 /* Body */
 
-struct Shifting_Texture init_shifting_texture(const SDL_FRect rect, const size_t initial_count, int* exit_code)
+struct Shifting_Texture init_shifting_texture(const SDL_FRect rect, const size_t max_count, const time_tick_ms step, int* exit_code)
 {
     /// Param checking
     if (exit_code == NULL)
         print_warning("`new_shifting_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    if (initial_count == 0)
-        print_warning("`new_shifting_texture()`: `initial_count` arg is 0. Do you really want that?", NON_SDL_ERROR);
+    if (max_count == 0)
+        print_warning("`new_shifting_texture()`: `max_count` arg is 0. Do you really want that?", NON_SDL_ERROR);
     
     /// Object creation
     struct Shifting_Texture result;
     result.rect = rect;
-    result.count = 0;
-    result.max_count = initial_count;
+    result.cur_count = 0;
+    result.max_count = 0; /// Temporary value to be changed once memory is successfully allocated.
     result.i = 0;
+    result.step = step;
+    result.latest_change = 0; /// Will be filled with first render.
 
     /// Malloc without filling it.
-    result.textures = malloc(initial_count * sizeof(SDL_Texture*));
+    result.textures = malloc(max_count * sizeof(SDL_Texture*));
     if (result.textures == NULL)
     {
         print_error("`new_shifting_texture()`: couldn't allocate memory to texture array", NON_SDL_ERROR);
         *exit_code = EXIT_FAILURE;
         return result;
     }
+    result.max_count = max_count;
     
     *exit_code = EXIT_SUCCESS;
     return result;
@@ -78,7 +85,7 @@ void free_shifting_texture(struct Shifting_Texture* target)
     
     if (target->textures != NULL)
     {
-        for (size_t i = 0; i < target->count; i++)
+        for (size_t i = 0; i < target->cur_count; i++)
         {
             if (target->textures[i] != NULL_TEXTURE)
             {
@@ -91,7 +98,7 @@ void free_shifting_texture(struct Shifting_Texture* target)
     }
     
     target->rect = (SDL_FRect){0,0,0,0};
-    target->count = 0;
+    target->cur_count = 0;
     target->max_count = 0;
     target->i = 0;
 }
@@ -118,20 +125,20 @@ void add_to_shifting_texture(struct Shifting_Texture* to, const char* new_textur
     }
 
     /// Check if full
-    if (to->max_count == to->count)
+    if (to->max_count == to->cur_count)
     {
         print_error("`add_to_shifting_texture()`: `to->textures` is full", NON_SDL_ERROR);
         return;
     }
 
     /// Insertion
-    to->textures[to->count] = IMG_LoadTexture(graphics_layer.renderer, new_texture_path);
-    if (to->textures[to->count] == NULL)
+    to->textures[to->cur_count] = IMG_LoadTexture(graphics_layer.renderer, new_texture_path);
+    if (to->textures[to->cur_count] == NULL)
     {
         if (NULL_TEXTURE != NULL)
         {
             print_warning("`add_to_shifting_texture()`: couldn't load the texture, replaced with null texture", IS_SDL_ERROR);
-            to->textures[to->count] = NULL_TEXTURE;
+            to->textures[to->cur_count] = NULL_TEXTURE;
         }
         else
         {
@@ -141,7 +148,7 @@ void add_to_shifting_texture(struct Shifting_Texture* to, const char* new_textur
         }
     }
     
-    ++to->count;
+    ++to->cur_count;
     *exit_code = EXIT_SUCCESS;
     return;
 }
@@ -149,15 +156,20 @@ void add_to_shifting_texture(struct Shifting_Texture* to, const char* new_textur
 
 void render_shifting_texture(struct Shifting_Texture* target)
 {
-    if (target == NULL || target->textures == NULL || target->count == 0)
+    if (target == NULL || target->textures == NULL || target->cur_count == 0)
     {
         print_error("`render_shifting_texture()`: `target` or its members are invalid", NON_SDL_ERROR);
         return;
     }
     
-    /// REDO with step in ms.
-    if (++target->i == target->count)
-        target->i = 0;
+    if (target->latest_change == 0) /// First time `latest_change` is set.
+        target->latest_change = logic_layer.curr_tick;
+    else if (logic_layer.curr_tick - target->latest_change >= target->step)
+    {
+        if (++target->i == target->cur_count)
+            target->i = 0;
+        target->latest_change = logic_layer.curr_tick;
+    }
     
     if (target->rect.x + target->rect.w <= 0 ||
         target->rect.y + target->rect.h <= 0 ||
