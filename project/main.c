@@ -1,58 +1,35 @@
-/// Every header that was ever used in this project is included here.
-
 /*- SDL -*/
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_main.h>
-#include <SDL3/SDL_timer.h>
-#include <SDL3_image/SDL_image.h>
-#include <SDL3_ttf/SDL_ttf.h>
+#include <SDL3/SDL.h>       /// SDL3
+#include <SDL3/SDL_main.h>  /// and
+#include <SDL3/SDL_timer.h> /// its parts.
 
 /*- C headers -*/
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <stdbool.h> /// `bool gameplay_scene_opened` (TEMP).
+#include <stdio.h>   /// `printf('\n')`.
 
 /* Root folder headers */
-#include "debug.h"
-#include "deinit_stack.h"
-#include "init_quit.h"
-#include "resources.h"
+#include "debug.h"     /// Error printing.
+#include "init_quit.h" /// Program initialization.
 
 /* Audio */
 #ifdef USING_AUDIO
-#include "audio/audio.h"
+#include "audio/audio.h" /// Wrapper for 'miniaudio'.
 #endif /// USING_AUDIO
 
-/* Game components */
-#include "game_components/button.h"
-#include "game_components/multi_texture.h"
-#include "game_components/shifting_texture.h"
-#include "game_components/texture.h"
-
 /* Graphics */
-#include "graphics/fps.h"
-#include "graphics/graphics_layer.h"
-
-/* Helpers */
-#include "helpers/geometry.h"
-#include "helpers/helpers.h"
-#include "helpers/random.h"
+#include "graphics/fps.h"            /// FPS manager.
+#include "graphics/graphics_layer.h" /// Graphics layer.
 
 /* Logic */
-#include "logic/global_events.h"
-#include "logic/logic_layer.h"
+#include "logic/logic_layer.h" /// Logic layer.s
 
 /* Scenes */
-#include "scenes/gameplay/car.h"
-#include "scenes/gameplay/gameplay_events.h"
-#include "scenes/gameplay/gameplay_scene.h"
+#include "scenes/gameplay/car.h"             /// Car.
+#include "scenes/gameplay/gameplay_events.h" /// Gameplay events & input.
+#include "scenes/gameplay/gameplay_scene.h"  /// Gameplay scene.
 
-#include "scenes/menu/menu_scene.h"
-#include "scenes/menu/menu_events.h"
-
-/* Text */
-#include "text/border.h"
-#include "text/text.h"
+#include "scenes/menu/menu_events.h" /// Menu events & input.
+#include "scenes/menu/menu_scene.h"  /// Menu scene.
 
 /* = Library information =
 SDL3 version:          3.2. 28 (last updated  6.12.25)
@@ -70,6 +47,7 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 
 /* Structural IDEAs: */
 /// ? `struct Button_Manager`.
+
 
 /* Predef */
 
