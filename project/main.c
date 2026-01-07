@@ -32,8 +32,10 @@
 #include "scenes/menu/menu_scene.h"  /// Menu scene.
 
 /* = Library information =
-SDL3 version:          3.2. 28 (last updated  6.12.25)
-miniaudio version:     0.11.23 (last updated 12.12.25)
+SDL3 version:          3.4.0   (last updated  7.01.26)
+SDL3_image version:    3.2.6   (last updated  7.01.26)
+SDL3_ttf version:      3.2.2   (last checked  7.01.26)
+miniaudio version:     0.11.23 (last checked  7.01.26)
 nlohmann/json version: 3.12.0  (last updated 24.12.25)
 */
 
