@@ -122,7 +122,7 @@ void init(int* exit_code)
     }
     #endif /// USING_AUDIO
 
-    free_deinit_stack(&deinit_stack);
+    free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     print_success("`init()`");
     *exit_code = EXIT_SUCCESS;
 }

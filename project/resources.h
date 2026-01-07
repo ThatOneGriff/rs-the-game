@@ -98,7 +98,7 @@ void _load_global_resources(int* exit_code)
     }
 
     free_ptr_arr((void**)global_data, GLOBAL_DATA_LINES);
-    free_deinit_stack(&deinit_stack);
+    free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     *exit_code = EXIT_SUCCESS;
     return;
 }

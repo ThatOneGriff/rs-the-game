@@ -1,19 +1,19 @@
 /*- SDL -*/
-#include <SDL3/SDL.h>       /// SDL3
-#include <SDL3/SDL_main.h>  /// and
-#include <SDL3/SDL_timer.h> /// its parts.
+#include <SDL3/SDL.h>                /// SDL3
+#include <SDL3/SDL_main.h>           /// and
+#include <SDL3/SDL_timer.h>          /// its parts.
 
 /*- C headers -*/
-#include <stdbool.h> /// `bool gameplay_scene_opened` (TEMP).
-#include <stdio.h>   /// `printf('\n')`.
+#include <stdbool.h>                 /// `bool gameplay_scene_opened` (TEMP).
+#include <stdio.h>                   /// `printf('\n')`.
 
 /* Root folder headers */
-#include "debug.h"     /// Error printing.
-#include "init_quit.h" /// Program initialization.
+#include "debug.h"                   /// Error printing.
+#include "init_quit.h"               /// Program initialization.
 
 /* Audio */
 #ifdef USING_AUDIO
-#include "audio/audio.h" /// Wrapper for 'miniaudio'.
+#include "audio/audio.h"             /// Wrapper for 'miniaudio'.
 #endif /// USING_AUDIO
 
 /* Graphics */
@@ -21,15 +21,14 @@
 #include "graphics/graphics_layer.h" /// Graphics layer.
 
 /* Logic */
-#include "logic/logic_layer.h" /// Logic layer.s
+#include "logic/logic_layer.h"       /// Logic layer.s
 
 /* Scenes */
 #include "scenes/gameplay/car.h"             /// Car.
 #include "scenes/gameplay/gameplay_events.h" /// Gameplay events & input.
 #include "scenes/gameplay/gameplay_scene.h"  /// Gameplay scene.
-
-#include "scenes/menu/menu_events.h" /// Menu events & input.
-#include "scenes/menu/menu_scene.h"  /// Menu scene.
+#include "scenes/menu/menu_events.h"         /// Menu events & input.
+#include "scenes/menu/menu_scene.h"          /// Menu scene.
 
 /* = Library information =
 SDL3 version:          3.4.0   (last updated  7.01.26)
@@ -40,7 +39,6 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 */
 
 /* TODOs: */
-/// - check for correct flushing / freeing of `Deinit_Stack` at the end of functions
 
 /* Visual TODOs: */
 /// - photograph some cars in Forza for traffic;

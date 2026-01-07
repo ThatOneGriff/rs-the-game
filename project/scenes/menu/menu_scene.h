@@ -134,7 +134,7 @@ struct Menu_Scene load_menu_scene(int* exit_code)
     add_to_deinit_stack(&deinit_stack, &result.play_button, (void (*)(void*))free_button); /// Don't delete. More elements will be added later
 
     //result.main_car_picture = load_texture("")
-    free_deinit_stack(&deinit_stack);
+    free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
     *exit_code = EXIT_SUCCESS;
     return result;

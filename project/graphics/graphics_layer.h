@@ -82,7 +82,7 @@ void _init_graphics_layer(int* exit_code)
     }
     SDL_SetTextureScaleMode(graphics_layer.buffer, SDL_SCALEMODE_NEAREST);
     
-    free_deinit_stack(&deinit_stack);
+    free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     *exit_code = EXIT_SUCCESS;
     return;
 }

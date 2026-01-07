@@ -135,7 +135,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     }*/
     add_to_deinit_stack(&deinit_stack, &result.trees, (void (*)(void*))free_multi_texture); /// Don't delete. More elements will be added later
 
-    free_deinit_stack(&deinit_stack);
+    free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
     *exit_code = EXIT_SUCCESS;
     return result;

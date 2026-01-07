@@ -124,7 +124,7 @@ SDL_Surface* create_bordered_text_surface(const char* text, const float text_siz
     /// Slapping the inner surface in center of the outer.
     SDL_BlitSurface(surf_in, NULL, result, &(SDL_Rect){border_thickness, border_thickness, surf_in->w, surf_in->h});
 
-    flush_deinit_stack(&deinit_stack);
+    flush_deinit_stack(&deinit_stack); /// `flush` because nothing, except the `result`, will be used.
     return result;
 }
 
