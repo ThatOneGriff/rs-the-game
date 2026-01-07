@@ -12,8 +12,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Main headers */
+/* Root folder headers */
 #include "debug.h"
+#include "deinit_stack.h"
 #include "init_quit.h"
 #include "resources.h"
 
@@ -60,10 +61,6 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 */
 
 /* TODOs: */
-/// - do something about the include hell.
-/// Check:
-/// - free_ptr_arr - make sure it erases the correct amount of lines everywhere;
-/// - `add_to_deinit_stack()` - make sure it doesn't insert `NULL_TEXTURE` anywhere. Maybe make it impossible to insert it - but then what to do if global resource initialization fails mid-way?
 /// - `Deinit_Stack` initialization right before first element being inserted.
 
 /* Visual TODOs: */

@@ -2,12 +2,18 @@
 #ifndef GAMEPLAY_EVENTS_H
 #define GAMEPLAY_EVENTS_H
 
+/* SDL3 */
 #include <SDL3/SDL.h> /// Keyboard controls.
-#include "car.h"                     /// Car controls.
+
+/* Helper headers */
+#include "../../graphics/fps.h"            /// FPS-based movement.
+#include "../../graphics/graphics_layer.h" /// `RENDER_WIDTH/HEIGHT`.
+#include "../../logic/global_events.h"     /// Global event processing.
+#include "../../logic/logic_layer.h"       /// Key state.
+
+/* Scene & components */
+#include "car.h"            /// Car position controlling.
 #include "gameplay_scene.h" /// Gameplay scene manipulation.
-#include "../../graphics/fps.h"      /// FPS-based movement.
-#include "../../logic/logic_layer.h"   /// Key state.
-#include "../../logic/global_events.h" /// Global event processing.
 
 
 /* Predef */

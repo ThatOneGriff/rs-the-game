@@ -2,6 +2,7 @@
 #ifndef FPS_H
 #define FPS_H
 
+/* Headers */
 #include <stdbool.h>  /// `bool fps_capped`.
 #include "../debug.h" /// Error printing.
 

@@ -2,12 +2,14 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <SDL3/SDL.h> /// SDL3.
+/* SDL3 */
+#include <SDL3/SDL.h>             /// SDL3.
 #include <SDL3_image/SDL_image.h> /// SDL3_image.
 
+/* Helper headers */
+#include "../debug.h"                   /// Error printing.
+#include "../resources.h"               /// Null texture.
 #include "../graphics/graphics_layer.h" /// Rendering of the texture.
-#include "../debug.h"     /// Error printing.
-#include "../resources.h" /// Null texture.
 
 
 /* Struct */
@@ -93,10 +95,10 @@ void render_texture(const struct Texture* target)
 
 void free_texture(struct Texture* target)
 {
-    if (target == NULL || target->texture == NULL_TEXTURE)
+    if (target == NULL)
         return;
 
-    if (target->texture != NULL)
+    if (target->texture != NULL && target->texture != NULL_TEXTURE)
     {
         SDL_DestroyTexture(target->texture);
         target->texture = NULL;

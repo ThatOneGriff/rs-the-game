@@ -2,12 +2,15 @@
 #ifndef CAR_H
 #define CAR_H
 
+/* SDL3 */
 #include <SDL3/SDL.h>             /// SDL3.
 #include <SDL3_image/SDL_image.h> /// SDL3_image.
+
+/* Helper headers */
 #include "../../debug.h"           /// Error printing.
 #include "../../deinit_stack.h"    /// Deinitialization stack.
+#include "../../resources.h"       /// File reading & null texture.
 #include "../../helpers/helpers.h" /// `free_ptr_arr()`.
-#include "../../resources.h" /// File reading & null texture.
 
 #define CAR_DATA_LINES 7
 

@@ -2,15 +2,17 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
-#include <SDL3/SDL.h>         /// SDL3.
-#include <SDL3_ttf/SDL_ttf.h> /// SDL3_TTF.
+/* SDL3 */
+#include <SDL3/SDL.h> /// SDL3.
 
+/* Helpers */
 #include "../debug.h"            /// Error printing.
 #include "../helpers/geometry.h" /// `Vec2`.
 
+/* Components */
+#include "texture.h"        /// Rendering text into a texture.
 #include "../text/border.h" /// Text w/ borders.
 #include "../text/text.h"   /// Text.
-#include "texture.h" /// Rendering text into a texture.
 
 
 /* Predef */

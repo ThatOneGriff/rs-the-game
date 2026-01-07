@@ -2,18 +2,21 @@
 #ifndef SHIFTING_TEXTURE_H
 #define SHIFTING_TEXTURE_H
 
+/* SDL3 */
 #include <SDL3/SDL.h>             /// `SDL_DestroyTexture()`.
 #include <SDL3_image/SDL_image.h> /// `IMG_Load()`.
 
-#include <stdlib.h> /// `calloc()`, `realloc()`.
+/* C headers */
+#include <stdlib.h> /// `*alloc()`.
 
-#include "../graphics/graphics_layer.h" /// `graphics_layer`.
+/* Helper headers */
 #include "../debug.h"                   /// Error printing.
 #include "../resources.h"               /// Null texture.
+#include "../graphics/graphics_layer.h" /// `graphics_layer`.
 
 
 /// NOTE: NOT AT ALL RELATED to `texture.h`:
-///  this presents an array of raw `SDL_Texture`'s with fixed coordinates.
+/// this presents an array of raw `SDL_Texture*`'s with fixed coordinates.
 
 
 /* Struct */

@@ -2,14 +2,18 @@
 #ifndef GLOBAL_EVENTS_H
 #define GLOBAL_EVENTS_H
 
-#include <SDL3/SDL.h> /// SDL3.
+/* SDL3 */
+#include <SDL3/SDL.h> /// `SDL_Event`, `SDL_Keycode`.
 
+/* C headers */
 #include <stdbool.h> /// For `logic_layer` manipulation.
 #include <stdio.h>   /// I/O.
 
+/* Helper headers */
+#include "logic_layer.h"        /// Exiting the game.
+#include "../debug.h"           /// Some controls should only be available `#ifdef DEBUG`.
 #include "../graphics/fps.h"    /// Frame cap control.
 #include "../helpers/helpers.h" /// Colored output.
-#include "logic_layer.h"        /// Exiting the game.
 #include "../resources.h"       /// Hot resource reload.
 
 
@@ -61,7 +65,8 @@ void _process_global_keyboard(const SDL_Keycode event_key)
             rem_fps_cap();
         }
         break;
-
+    
+    //#ifdef DEBUG /// WARNING: makes sense, but breaks the whole compilation. Do not uncomment.
     case SDLK_R:
         _load_global_resources(&exit_code);
         if (exit_code == EXIT_SUCCESS)
@@ -70,6 +75,7 @@ void _process_global_keyboard(const SDL_Keycode event_key)
             print_error("Hot resource reload:\n- Scene reloading will result in a crash;\n- You may try to fix invalid paths and reload again", NON_SDL_ERROR);
         break;
     }
+    //#endif /// DEBUG /// I assume the compiler confuses this `#endif` with the one at the end of the program.
 }
 
 #endif /// GLOBAL_EVENTS_H

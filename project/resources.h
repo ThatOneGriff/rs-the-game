@@ -2,16 +2,22 @@
 #ifndef RESOURCES_H
 #define RESOURCES_H
 
+/* SDL3 */
 #include <SDL3/SDL.h>             /// SDL3.
 #include <SDL3_image/SDL_image.h> /// SDL3_image.
 #include <SDL3_ttf/SDL_ttf.h>     /// SDL3_ttf.
-#include "graphics/graphics_layer.h" /// Texture loading (`renderer`).
 
+/* C headers */
 #include <stdio.h>  /// `strcpy()`
 #include <stdlib.h> /// `*alloc()`.
-#include "debug.h"  /// Error printing.
-#include "helpers/helpers.h" /// `free_ptr_array()`.
-#include "deinit_stack.h"    /// Deinitialization.
+
+/* Root folder headers */
+#include "debug.h"        /// Error printing.
+#include "deinit_stack.h" /// Deinitialization.
+
+/* Other headers */
+#include "graphics/graphics_layer.h" /// `graphics_layer.renderer` for texture loading.
+#include "helpers/helpers.h"         /// `free_ptr_arr()`.
 
 #define GLOBAL_DATA_PATH "./rsdt/global.rsdt"
 #define GLOBAL_DATA_LINES 3

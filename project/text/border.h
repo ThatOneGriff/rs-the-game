@@ -2,12 +2,14 @@
 #ifndef BORDER_H
 #define BORDER_H
 
+/* SDL3 */
 #include <SDL3/SDL.h>         /// SDL3.
 #include <SDL3_ttf/SDL_ttf.h> /// SDL3_ttf.
 
+/* Helper headers */
+#include "../debug.h"        /// Error output.
 #include "../deinit_stack.h" /// Deinitialization stack.
-#include "../debug.h"     /// Error output
-#include "../resources.h" /// Font path(s)
+#include "../resources.h"    /// `MAIN_FONT_PATH`.
 
 
 /* Predef */

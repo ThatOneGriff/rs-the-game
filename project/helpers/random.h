@@ -2,9 +2,10 @@
 #ifndef RANDOM_H
 #define RANDOM_H
 
+/* Headers */
 #include <SDL3/SDL.h> /// Rand `SDL_Color`
-#include <stdio.h> /// I/O.
-#include <time.h>  /// Time-based random seeding.
+#include <stdio.h>    /// I/O.
+#include <time.h>     /// Time-based random seeding.
 
 
 /* Prefef */

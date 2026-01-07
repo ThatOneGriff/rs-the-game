@@ -2,7 +2,8 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-#include "../graphics/graphics_layer.h" /// `RENDER_WIDTH` and `RENDER_HEIGHT`.
+/* Headers */
+#include "../graphics/graphics_layer.h" /// `RENDER_WIDTH/HEIGHT`.
 
 
 /* Structs */

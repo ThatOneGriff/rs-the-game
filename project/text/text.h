@@ -2,14 +2,17 @@
 #ifndef TEXT_H
 #define TEXT_H
 
-#include <SDL3/SDL.h> /// SDL3.
-#include <SDL3_ttf/SDL_ttf.h> /// SDL3_TTF.
+/* SDL3 */
+#include <SDL3/SDL.h>         /// SDL3.
+#include <SDL3_ttf/SDL_ttf.h> /// SDL3_ttf.
 
-#include "border.h"       /// Text w/ borders.
-#include "../helpers/geometry.h" /// `Vec2`.
-#include "../graphics/graphics_layer.h" /// `SDL_CreateTextureFromSurface()`.
-#include "../game_components/texture.h" /// Rendering text into a texture.
-#include "../resources.h" /// Font path(s).
+/* Helper headers */
+#include "../graphics/graphics_layer.h" /// `graphics_layer.renderer` for `SDL_CreateTextureFromSurface()`.
+#include "../helpers/geometry.h"        /// `Vec2`.
+
+/* Text-related headers */
+#include "border.h"                     /// Text w/ borders.
+#include "../game_components/texture.h" /// Making a texture from text surface.
 
 
 /* Predef */

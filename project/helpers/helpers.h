@@ -2,6 +2,8 @@
 #ifndef HELPERS_H
 #define HELPERS_H
 
+/* Headers */
+#include <stdlib.h>  /// `free()`.
 #include <windows.h> /// Console text coloring.
 
 

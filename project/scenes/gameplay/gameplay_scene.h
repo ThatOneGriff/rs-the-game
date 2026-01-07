@@ -2,18 +2,22 @@
 #ifndef GAMEPLAY_SCENE_H
 #define GAMEPLAY_SCENE_H
 
+/* SDL3 */
 #include <SDL3/SDL.h>             /// SDL3.
 #include <SDL3_image/SDL_image.h> /// SDL3_image.
 
-#include "../../deinit_stack.h"    /// Deinitialization stack.
-#include "../../helpers/helpers.h" /// `free_ptr_arr()`.
-#include "../../resources.h" /// Null texture.
+/* Helper headers */
 #include "../../debug.h"     /// Error printing.
-#include "car.h"             /// `*car_ptr` (player).
+#include "../../deinit_stack.h"    /// Deinitialization stack.
+#include "../../resources.h" /// Null texture.
+#include "../../helpers/helpers.h" /// `free_ptr_arr()`.
 
+/* Graphics & components */
+#include "car.h"                                    /// `*car_ptr` (i.e. player).
 #include "../../game_components/multi_texture.h"    /// Textures.
 #include "../../game_components/shifting_texture.h" /// Shifting textures.
 #include "../../game_components/texture.h"          /// Multi-textures.
+#include "../../graphics/graphics_layer.h"          /// `graphics_layer.renderer`
 
 #define GAMEPLAY_DATA_LINES 3
 
@@ -99,7 +103,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         add_to_deinit_stack(&deinit_stack, result.sky_bg, (void (*)(void*))SDL_DestroyTexture);
 
     /// Ground
-    result.ground = load_texture(scene_data[1], (SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, exit_code); /// TODO: h=80 && better picture
+    result.ground = load_texture(scene_data[1], (SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the ground texture", NON_SDL_ERROR);
@@ -120,7 +124,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         *exit_code = EXIT_FAILURE;
         return result;
     }
-    add_to_multi_texture(&result.trees, (SDL_FRect){0, 0, 50, 50}, exit_code); /// Will be more trees later
+    add_to_multi_texture(&result.trees, (SDL_FRect){0, 0, 50, 50}, exit_code); /// Will be more trees later.
     /// There must be some more elegant way to do this, than simply checking `*exit_code` after each tree's coordinates.
     /// A cycle, maybe?
     /*if (*exit_code == EXIT_FAILURE)

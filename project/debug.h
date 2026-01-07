@@ -2,6 +2,7 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
+/* Headers */
 #include <SDL3/SDL.h> /// SDL_GetError().
 #include <stdio.h>    /// I/O.
 #include <stdbool.h>  /// `bool` args for `print_*()`.
@@ -12,7 +13,8 @@
 #define  IS_SDL_ERROR true
 #define NON_SDL_ERROR false
 
-///#define USING_AUDIO /// Compiling with audio is VERY long and not always needed.
+//#define DEBUG /// BUGGED
+//#define USING_AUDIO /// Compiling with audio is VERY long and not always needed.
 
 
 /* Predef */

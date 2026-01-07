@@ -2,11 +2,16 @@
 #ifndef MENU_EVENTS_H
 #define MENU_EVENTS_H
 
+/* SDL3 */
 #include <SDL3/SDL.h> /// Keyboard processing.
-#include "menu_scene.h" /// Menu scene manipulation.
-#include "../../game_components/button.h"   /// Button manipulation.
-#include "../../logic/logic_layer.h"   /// Key state.
+
+/* Logic */
 #include "../../logic/global_events.h" /// Global event processing.
+#include "../../logic/logic_layer.h"   /// Key state variable.
+
+/* Scene & components */
+#include "menu_scene.h"                     /// Menu scene manipulation.
+#include "../../game_components/button.h"   /// Button manipulation (maybe TEMP?).
 
 
 /* Predef */

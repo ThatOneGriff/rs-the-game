@@ -2,20 +2,24 @@
 #ifndef MENU_SCENE_H
 #define MENU_SCENE_H
 
-#include <SDL3/SDL.h> /// SDL3.
+/* SDL3 */
+#include <SDL3/SDL.h>             /// SDL3.
 #include <SDL3_image/SDL_image.h> /// SDL3_image.
 
+/* C headers */
 #include <stdlib.h> /// `malloc()`
 
+/* Helper headers */
+#include "../../debug.h"           /// Error printing.
 #include "../../deinit_stack.h"    /// Deinitialization stack.
 #include "../../helpers/helpers.h" /// `free_ptr_arr()`.
-#include "../../debug.h"     /// Error printing.
-#include "../../resources.h" /// Null texture.
-#include "../../graphics/graphics_layer.h" /// `graphics_layer`.
+#include "../../resources.h"       /// Null texture.
+
+/* Graphics and components */
 #include "../../game_components/button.h"  /// Button.
 #include "../../game_components/texture.h" /// Texture.
-#include "../../text/border.h" /// Selected text highlighting.
-#include "../../text/text.h"   /// Text.
+#include "../../graphics/graphics_layer.h" /// `graphics_layer`.
+#include "../../text/text.h"               /// Text creation.
 
 #define MENU_DATA_PATH "./rsdt/scene_data/menu.rsdt" /// Unlike `Gameplay_Scene`'s, there's only one concrete file for the menu.
 #define MENU_DATA_LINES 1

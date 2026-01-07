@@ -2,9 +2,12 @@
 #ifndef GRAPHICS_LAYER_H
 #define GRAPHICS_LAYER_H
 
+/* SDL3 */
 #include <SDL3/SDL.h>             /// SDL3.
 #include <SDL3_image/SDL_image.h> /// SDL3_image.
-#include "../debug.h"        /// Error message printing.
+
+/* Helper headers */
+#include "../debug.h"        /// Error printing.
 #include "../deinit_stack.h" /// Deinitialization stack.
 
 #define WINDOW_TITLE "Renault Sport: The Game"

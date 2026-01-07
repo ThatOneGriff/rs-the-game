@@ -2,6 +2,7 @@
 #ifndef LOGIC_LAYER_H
 #define LOGIC_LAYER_H
 
+/* Headers */
 #include <SDL3/SDL.h> /// `SDL_Event`.
 #include <stdbool.h>  /// `bool game_is_running, *key_state`.
 #include "../debug.h" ///  Error printing.

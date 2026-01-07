@@ -2,8 +2,9 @@
 #ifndef DEINIT_STACK_H
 #define DEINIT_STACK_H
 
-#include "debug.h" /// Error printing.
+/* Headers */
 #include <stdlib.h> /// `*alloc()`.
+#include "debug.h" /// Error printing.
 
 
 /* Predef */

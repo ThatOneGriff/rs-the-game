@@ -2,21 +2,28 @@
 #ifndef INIT_QUIT_H
 #define INIT_QUIT_H
 
+/* SDL3 */
 #include <SDL3/SDL.h>             /// Initialization
 #include <SDL3_image/SDL_image.h> /// of
 #include <SDL3_ttf/SDL_ttf.h>     /// SDL3.
 
-#include <stdio.h>  /// I/O
+/* C headers */
+#include <stdio.h> /// I/O.
 
+/* Root folder headers */
 #include "debug.h"        /// Error / warning output.
 #include "deinit_stack.h" /// Deinitialization stack.
-#include "resources.h" /// Texture & font paths.
+#include "resources.h"    /// Texture & font paths.
+
+/* Audio */
 #ifdef USING_AUDIO
-#include "audio/audio.h"             /// Initialization
+#include "audio/audio.h" /// 'miniaudio' init.
 #endif /// USING_AUDIO
-#include "logic/logic_layer.h"       /// of
-#include "graphics/fps.h"            /// various
-#include "graphics/graphics_layer.h" /// game
+
+/* Other headers */
+#include "graphics/fps.h"            /// Initialization of
+#include "graphics/graphics_layer.h" /// various
+#include "logic/logic_layer.h"       /// game
 #include "text/text.h"               /// components.
 
 #define SDL_FLAGS (SDL_INIT_VIDEO)
