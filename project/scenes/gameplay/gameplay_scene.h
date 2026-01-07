@@ -19,7 +19,7 @@
 #include "../../game_components/texture.h"          /// Multi-textures.
 #include "../../graphics/graphics_layer.h"          /// `graphics_layer.renderer`
 
-#define GAMEPLAY_DATA_LINES 9
+#define GAMEPLAY_DATA_LINES 10
 
 
 /* Struct */
@@ -102,7 +102,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         add_to_deinit_stack(&deinit_stack, result.sky_bg, (void (*)(void*))SDL_DestroyTexture);
 
     /// Ground
-    result.ground = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 300, exit_code);
+    result.ground = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 4, 150, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the ground texture", NON_SDL_ERROR);
@@ -114,7 +114,8 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     add_to_deinit_stack(&deinit_stack, &result.ground, (void (*)(void*))free_shifting_texture); ///  TODO: try replacing it with an incorrect method and see what happens?
     add_to_shifting_texture(&result.ground, scene_data[1], exit_code); /// TODO: find a way
     add_to_shifting_texture(&result.ground, scene_data[2], exit_code); /// to check `exit_code`
-    add_to_shifting_texture(&result.ground, scene_data[3], exit_code); /// w/o obnoxious `if() {}` blocks.
+    add_to_shifting_texture(&result.ground, scene_data[3], exit_code); /// w/o obnoxious
+    add_to_shifting_texture(&result.ground, scene_data[4], exit_code); /// `if() {}` blocks.
 
     /// Road
     result.road = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 4, 150, exit_code);
@@ -127,13 +128,13 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         return result;
     }
     add_to_deinit_stack(&deinit_stack, &result.road, (void (*)(void*))free_shifting_texture);
-    add_to_shifting_texture(&result.road, scene_data[4], exit_code);
     add_to_shifting_texture(&result.road, scene_data[5], exit_code);
     add_to_shifting_texture(&result.road, scene_data[6], exit_code);
     add_to_shifting_texture(&result.road, scene_data[7], exit_code);
+    add_to_shifting_texture(&result.road, scene_data[8], exit_code);
 
     /// Trees
-    result.trees = load_multi_texture(scene_data[8], 1, exit_code);
+    result.trees = load_multi_texture(scene_data[9], 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the trees", NON_SDL_ERROR);

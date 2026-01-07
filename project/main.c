@@ -102,7 +102,7 @@ void game_loop(int* exit_code)
     logic_layer.curr_scene = &menu_scene;
 
     /// FPS measurement preparations
-    time_tick_ns render_start_tick   = 0; /// Temporary value.
+    time_tick_ns render_start_tick   = SDL_GetTicksNS();
     time_tick_ms fps_measure_1s_tick = SDL_GetTicks();
     unsigned int curr_fps = 0;
     unsigned int prev_fps = UINT_MAX;
@@ -111,7 +111,6 @@ void game_loop(int* exit_code)
     while (logic_layer.game_is_running)
     {
         /// Preparations
-        render_start_tick     = SDL_GetTicksNS();
         logic_layer.curr_tick = SDL_GetTicks();
         SDL_RenderClear(graphics_layer.renderer);
         SDL_SetRenderTarget(graphics_layer.renderer, graphics_layer.buffer);
@@ -160,9 +159,10 @@ void game_loop(int* exit_code)
         FPS_manager.delta_ns = SDL_GetTicksNS() - render_start_tick;
         if (FPS_manager.fps_capped && FPS_manager.target_delta_ns > FPS_manager.delta_ns)
         {
-            SDL_DelayNS(FPS_manager.target_delta_ns - FPS_manager.delta_ns);
+            SDL_DelayNS(FPS_manager.target_delta_ns - FPS_manager.delta_ns - FPS_manager.delta_ns/40.0);
             FPS_manager.delta_ns = FPS_manager.target_delta_ns;
         }
+        render_start_tick = SDL_GetTicksNS();
         
         /// FPS output
         if (SDL_GetTicks() - fps_measure_1s_tick >= 1000) /// 1s since last measurement elapsed.
