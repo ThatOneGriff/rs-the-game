@@ -19,7 +19,7 @@
 #include "../../game_components/texture.h"          /// Multi-textures.
 #include "../../graphics/graphics_layer.h"          /// `graphics_layer.renderer`
 
-#define GAMEPLAY_DATA_LINES 3
+#define GAMEPLAY_DATA_LINES 9
 
 
 /* Struct */
@@ -28,6 +28,7 @@ struct Gameplay_Scene
 {
     SDL_Texture* sky_bg; /// Not a `Texture`, because it's rendered on the whole screen.
     struct Shifting_Texture ground;
+    struct Shifting_Texture road;
     struct Multi_Texture    trees;
 
     struct Car* car_ptr;
@@ -111,11 +112,28 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         return result;
     }
     add_to_deinit_stack(&deinit_stack, &result.ground, (void (*)(void*))free_shifting_texture); ///  TODO: try replacing it with an incorrect method and see what happens?
-    add_to_shifting_texture(&result.ground, scene_data[1], exit_code);
-    add_to_shifting_texture(&result.ground, "null", exit_code); /// TEMP
+    add_to_shifting_texture(&result.ground, scene_data[1], exit_code); /// TODO: find a way
+    add_to_shifting_texture(&result.ground, scene_data[2], exit_code); /// to check `exit_code`
+    add_to_shifting_texture(&result.ground, scene_data[3], exit_code); /// w/o obnoxious `if() {}` blocks.
+
+    /// Road
+    result.road = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 4, 150, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`load_gameplay_scene()`: couldn't load the ground texture", NON_SDL_ERROR);
+        flush_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
+        *exit_code = EXIT_FAILURE;
+        return result;
+    }
+    add_to_deinit_stack(&deinit_stack, &result.road, (void (*)(void*))free_shifting_texture);
+    add_to_shifting_texture(&result.road, scene_data[4], exit_code);
+    add_to_shifting_texture(&result.road, scene_data[5], exit_code);
+    add_to_shifting_texture(&result.road, scene_data[6], exit_code);
+    add_to_shifting_texture(&result.road, scene_data[7], exit_code);
 
     /// Trees
-    result.trees = load_multi_texture(scene_data[2], 1, exit_code);
+    result.trees = load_multi_texture(scene_data[8], 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the trees", NON_SDL_ERROR);
@@ -160,6 +178,7 @@ void gameplay_scene_tick(struct Gameplay_Scene* target, int* exit_code)
     /* Rendering */
     SDL_RenderTexture(graphics_layer.renderer, target->sky_bg, NULL, NULL);
     render_shifting_texture(&target->ground);
+    render_shifting_texture(&target->road);
     render_multi_texture   (&target->trees);
     SDL_RenderTexture(graphics_layer.renderer, target->car_ptr->textures[target->car_ptr->base_texture], NULL, &target->car_ptr->coords);
     *exit_code = EXIT_SUCCESS;
@@ -172,14 +191,15 @@ void free_gameplay_scene(struct Gameplay_Scene* target)
     if (target == NULL)
         return;
     
+    target->car_ptr->coords.x = center_x(target->car_ptr->coords.w);
+    free_multi_texture   (&target->trees);
+    free_shifting_texture(&target->road);
+    free_shifting_texture(&target->ground);
     if (target->sky_bg != NULL && target->sky_bg != NULL_TEXTURE)
     {
         SDL_DestroyTexture(target->sky_bg);
         target->sky_bg = NULL;
     }
-    target->car_ptr->coords.x = center_x(target->car_ptr->coords.w);
-    free_shifting_texture(&target->ground);
-    free_multi_texture   (&target->trees);
 }
 
 #endif /// GAMEPLAY_SCENE_H

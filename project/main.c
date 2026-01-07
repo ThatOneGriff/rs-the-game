@@ -41,6 +41,8 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 /* TODOs: */
 
 /* Visual TODOs: */
+/// - `Shifting_Texture`'s for road & ground;
+/// - Moving clouds (+ clear sky texture then);
 /// - photograph some cars in Forza for traffic;
 /// - fix Clio Williams half-left texture (exhaust pipe mirrored wrong);
 /// - player's car bouncing in beat to the music.
