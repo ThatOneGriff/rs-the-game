@@ -50,6 +50,7 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 /// - player's car bouncing in beat to the music.
 
 /* Structural IDEAs: */
+/// ? `null_move_component` and similar things for each `game_components`', for code clarity;
 /// ? `struct Button_Manager`;
 /// ? A system of rendering layers.
 

@@ -30,13 +30,16 @@ struct Multi_Texture
     SDL_FRect*   rects;
     size_t cur_count;
     size_t max_count;
+
+    struct Move_Component* move_component;
 };
 
 
 /* Predef */
 
-struct Multi_Texture load_multi_texture(const char* texture_path, const size_t max_count, int* exit_code);
-void                 free_multi_texture(struct Multi_Texture* target);
+struct Multi_Texture     load_multi_texture(const char* texture_path, const size_t max_count, int* exit_code);
+void couple_move_component_to_multi_texture(struct Multi_Texture* to, struct Move_Component* move_component, bool randomize_positions);
+void                     free_multi_texture(struct Multi_Texture* target);
 
 void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_rects, int* exit_code);
 void render_multi_texture(const struct Multi_Texture* target);
@@ -50,6 +53,7 @@ struct Multi_Texture load_multi_texture(const char* texture_path, const size_t m
     result.rects = NULL;
     result.cur_count = 0;
     result.max_count = 0;
+    result.move_component = NULL;
 
     /// Param checking
     if (exit_code == NULL)
@@ -114,6 +118,12 @@ void free_multi_texture(struct Multi_Texture* target)
         target->rects = NULL;
     }
 
+    if (target->move_component != NULL)
+    {
+        free_move_component(target->move_component);
+        target->move_component = NULL;
+    }
+
     target->cur_count = 0;
     target->max_count = 0;
 }
@@ -158,6 +168,9 @@ void render_multi_texture(const struct Multi_Texture* target)
         print_error("`render_multi_texture()`: `target` or its members are invalid", NON_SDL_ERROR);
         return;
     }
+
+    if (target->move_component != NULL)
+        move_all_rects(target->move_component); /// UNTESTED
     
     for (size_t i = 0; i < target->cur_count; i++)
     {
