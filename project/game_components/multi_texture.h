@@ -7,7 +7,10 @@
 #include <SDL3_image/SDL_image.h> /// `IMG_Load()`.
 
 /* C headers */
-#include <stdlib.h> /// `*alloc()`.
+#include <stdlib.h>               /// `*alloc()`.
+
+/* Related headers */
+#include "move_component.h"       /// Moving textures.
 
 /* Helpers */
 #include "../debug.h"                   /// Error printing.

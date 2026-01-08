@@ -50,7 +50,8 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 /// - player's car bouncing in beat to the music.
 
 /* Structural IDEAs: */
-/// ? `struct Button_Manager`.
+/// ? `struct Button_Manager`;
+/// ? A system of rendering layers.
 
 
 /* Predef */

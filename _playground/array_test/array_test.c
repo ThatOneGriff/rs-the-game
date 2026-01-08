@@ -23,10 +23,19 @@ struct Array new_array(const int* values, const size_t size)
     return result;
 }
 
+void display_array(const struct Array* array)
+{
+    for (size_t i = 0; i < array->size; i++)
+        printf("%d ", array->array[i]);
+    printf("\n");
+    return;
+}
+
 
 int main()
 {
     /// TODO: test if I can do `new_array({1,2,3,4}, 4)`
-
-    return 0;
+    struct Array array = new_array((int[]){1,2,3,4,5}, 5);
+    display_array(&array);
+    return EXIT_SUCCESS;
 }
