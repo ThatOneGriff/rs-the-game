@@ -81,7 +81,7 @@ void init(int* exit_code)
         SDL_Quit();
         return;
     }
-    set_fps_cap(120);
+    set_fps_cap(60);
 
     /// TTF initialization
     if (! TTF_Init())

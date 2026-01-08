@@ -11,7 +11,7 @@
 #define time_tick_ms unsigned long long int /// Purely for code clarity.
 
 static unsigned int fps_cap_options[5] = {15, 30, 60, 120, UINT_MAX};
-static unsigned int curr_fps_cap_i = 3;
+static unsigned int curr_fps_cap_i = 2;
 
 
 /* Struct */

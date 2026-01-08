@@ -17,8 +17,8 @@
 #include "../debug.h"             /// Error printing.
 #include "../helpers/random.h"    /// Position randomizing.
 
-#define RANDOMIZE_POSITIONS true
-#define   ORDERED_POSITIONS false
+#define RANDOMIZED_POSITIONS true
+#define    ORDERED_POSITIONS false
 
 
 /* Struct */
@@ -38,7 +38,7 @@ struct Move_Component
 /* Predef */
 
 struct Move_Component init_move_component(const struct Path path, const time_tick_ms step, int* exit_code);
-void                couple_move_component(struct Move_Component* target, SDL_FRect** manipulated_rects, const size_t rect_count, bool randomize_positions, int* exit_code);
+void                couple_move_component(struct Move_Component* target, SDL_FRect* manipulated_rects, const size_t rect_count, bool randomize_positions, int* exit_code);
 void move_all_rects     (struct Move_Component* target);
 void free_move_component(struct Move_Component* target);
 
@@ -62,7 +62,7 @@ struct Move_Component init_move_component(const struct Path path, const time_tic
 }
 
 
-void couple_move_component(struct Move_Component* target, SDL_FRect** manipulated_rects, const size_t rect_count, bool randomize_positions, int* exit_code)
+void couple_move_component(struct Move_Component* target, SDL_FRect* manipulated_rects, const size_t rect_count, bool randomize_positions, int* exit_code)
 {
     /// Param checking
     if (exit_code == NULL)
@@ -94,6 +94,9 @@ void couple_move_component(struct Move_Component* target, SDL_FRect** manipulate
         *exit_code = EXIT_FAILURE;
         return;
     }
+    for (size_t i = 0; i < rect_count; i++)
+        target->manipulated_rects[i] = &manipulated_rects[i];
+
     target->rects_pt_indices = calloc(rect_count, sizeof(size_t));
     if (target->rects_pt_indices == NULL)
     {
@@ -105,14 +108,15 @@ void couple_move_component(struct Move_Component* target, SDL_FRect** manipulate
     }
     target->rect_count = rect_count;
 
-    /// Position distribution
-    if (randomize_positions)
-        for (size_t i = 0; i < rect_count; i++)
-            target->rects_pt_indices[i] = randint(0, (unsigned)target->path.pt_count-1); /// UNTESTED
-    
-    else if (! randomize_positions)
-        for (size_t i = 0; i < rect_count; i++)
-            target->rects_pt_indices[i] = i % target->path.pt_count; /// UNTESTED
+    /// Position distribution (+ setting rects to the path's first point)
+    for (size_t i = 0; i < rect_count; i++)
+    {
+        if (randomize_positions)
+            target->rects_pt_indices[i] = randint(0, (unsigned)target->path.pt_count-1);
+        else
+            target->rects_pt_indices[i] = i % target->path.pt_count;
+        *(target->manipulated_rects[i]) = target->path.points[target->rects_pt_indices[i]];
+    }
     
     *exit_code = EXIT_SUCCESS;
     return;
@@ -132,23 +136,38 @@ void move_all_rects(struct Move_Component* target)
         return;
     }
 
-    if (logic_layer.curr_tick - target->latest_move < target->step)
+    /// Tick check
+    if (target->latest_move == 0)
+    {
+        target->latest_move = logic_layer.curr_tick; /// Only triggered upon 1st move.
+        return;
+    }
+    else if (logic_layer.curr_tick - target->latest_move < target->step)
         return;
     
+    /// Moving all manipulated coords
     for (size_t i = 0; i < target->rect_count; i++)
     {
+        if (target->manipulated_rects[i] == NULL) /// TEMP?
+        {
+            print_error("`move_all_rects()`: unexpected NULL (`manipulated_rects`)", NON_SDL_ERROR);
+            return;
+        }
+
         ++target->rects_pt_indices[i];
         if (target->rects_pt_indices[i] >= target->path.pt_count)
         {
+            /// For now, every path is a loop.
             /*if (target->path.is_loop)
                 --target->rects_pt_indices[i];
-            else*/ /// For now, every path is a loop.
+            else*/
             target->rects_pt_indices[i] = 0;
         }
         
-        *target->manipulated_rects[i] = target->path.path_pts[target->rects_pt_indices[i]]; /// UNTESTED
+        *(target->manipulated_rects[i]) = target->path.points[target->rects_pt_indices[i]];
     }
 
+    target->latest_move = logic_layer.curr_tick;
     return;
 }
 

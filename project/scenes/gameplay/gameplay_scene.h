@@ -7,17 +7,18 @@
 #include <SDL3_image/SDL_image.h> /// SDL3_image.
 
 /* Helper headers */
-#include "../../debug.h"     /// Error printing.
+#include "../../debug.h"           /// Error printing.
 #include "../../deinit_stack.h"    /// Deinitialization stack.
-#include "../../resources.h" /// Null texture.
+#include "../../resources.h"       /// Null texture.
 #include "../../helpers/helpers.h" /// `free_ptr_arr()`.
 
 /* Graphics & components */
 #include "car.h"                                    /// `*car_ptr` (i.e. player).
-#include "../../game_components/multi_texture.h"    /// Textures.
+#include "../../game_components/move_component.h"   /// `struct Move_Component`.
+#include "../../game_components/multi_texture.h"    /// Multi-textures.
 #include "../../game_components/shifting_texture.h" /// Shifting textures.
-#include "../../game_components/texture.h"          /// Multi-textures.
-#include "../../graphics/graphics_layer.h"          /// `graphics_layer.renderer`
+#include "../../game_components/texture.h"          /// Textures.
+#include "../../graphics/graphics_layer.h"          /// `graphics_layer.renderer`.
 
 #define GAMEPLAY_DATA_LINES 10
 
@@ -134,7 +135,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     add_to_shifting_texture(&result.road, scene_data[8], exit_code);
 
     /// Trees
-    result.trees = load_multi_texture(scene_data[9], 1, exit_code);
+    result.trees = load_multi_texture(scene_data[9], 4, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the trees", NON_SDL_ERROR);
@@ -143,17 +144,28 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         *exit_code = EXIT_FAILURE;
         return result;
     }
-    add_to_multi_texture(&result.trees, (SDL_FRect){0, 0, 50, 50}, exit_code); /// Will be more trees later.
+    add_to_multi_texture(&result.trees, (SDL_FRect){0, 0, 50, 50}, exit_code); /// Coord values purely for debug (visibility reasons).
+    //add_to_multi_texture(&result.trees, (SDL_FRect){0, 1, 50, 50}, exit_code); /// Do we need to give those coordinates, anyway?
+    //add_to_multi_texture(&result.trees, (SDL_FRect){0, 2, 50, 50}, exit_code);
+    //add_to_multi_texture(&result.trees, (SDL_FRect){0, 3, 50, 50}, exit_code);
+
     /// There must be some more elegant way to do this, than simply checking `*exit_code` after each tree's coordinates.
     /// A cycle, maybe?
-    /*if (*exit_code == EXIT_FAILURE)
+    if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't add coordinates to the trees", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
         *exit_code = EXIT_FAILURE;
         return result;
-    }*/
+    }
+    struct Path tree_path = new_path(
+        (SDL_FRect[]){{45,55,25,25},  {30,60,30,30},  {15,65,35,35},
+                       {0,70,40,40}, {-25,75,45,45}, {-30,80,50,50}}, 6, exit_code /// TODO: exit code check.
+    );
+    struct Move_Component* tree_move_component = malloc(sizeof(struct Move_Component));
+    *tree_move_component = init_move_component(tree_path, 150, exit_code); /// TODO: exit code check.
+    couple_move_component_to_multi_texture(&result.trees, tree_move_component, RANDOMIZED_POSITIONS, exit_code); /// TODO: exit code check.
     add_to_deinit_stack(&deinit_stack, &result.trees, (void (*)(void*))free_multi_texture); /// Don't delete. More elements will be added later
 
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.

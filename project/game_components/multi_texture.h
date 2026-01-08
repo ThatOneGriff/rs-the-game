@@ -119,12 +119,13 @@ void couple_move_component_to_multi_texture(struct Multi_Texture* to, struct Mov
         return;
     }
 
-    couple_move_component(move_component, &to->rects, to->cur_count, randomize_positions, exit_code); /// UNTESTED
+    couple_move_component(move_component, to->rects, to->cur_count, randomize_positions, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`couple_move_component_to_multi_texture()`: coupling failed", NON_SDL_ERROR);
         return;
     }
+    to->move_component = move_component;
 
     *exit_code = EXIT_SUCCESS;
     return;
@@ -200,7 +201,7 @@ void render_multi_texture(const struct Multi_Texture* target)
     }
 
     if (target->move_component != NULL)
-        move_all_rects(target->move_component); /// UNTESTED
+        move_all_rects(target->move_component);
     
     for (size_t i = 0; i < target->cur_count; i++)
     {
