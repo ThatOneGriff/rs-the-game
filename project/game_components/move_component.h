@@ -17,35 +17,35 @@
 #include "../debug.h"             /// Error printing.
 #include "../helpers/random.h"    /// Position randomizing.
 
+#define RANDOMIZE_POSITIONS true
+#define   ORDERED_POSITIONS false
+
 
 /* Struct */
 
 struct Move_Component
 {
     struct Path path;
+    time_tick_ms latest_move;
+    time_tick_ms step;
+
     size_t      rect_count;
     SDL_FRect** manipulated_rects;
     size_t*     rects_pt_indices;
-
-    time_tick_ms latest_move;
-    time_tick_ms step;
 };
 
 
 /* Predef */
 
-struct Move_Component new_move_component(const struct Path path,
-                                         SDL_FRect** manipulated_rects, const size_t rect_count,
-                                         const time_tick_ms step, bool randomize_positions, int* exit_code);
+struct Move_Component init_move_component(const struct Path path, const time_tick_ms step, int* exit_code);
+void                couple_move_component(struct Move_Component* target, SDL_FRect** manipulated_rects, const size_t rect_count, bool randomize_positions, int* exit_code);
 void move_all_rects     (struct Move_Component* target);
 void free_move_component(struct Move_Component* target);
 
 
 /* Body */
 
-struct Move_Component new_move_component(const struct Path path,
-                                         SDL_FRect** manipulated_rects, const size_t rect_count,
-                                         const time_tick_ms step, bool randomize_positions, int* exit_code)
+struct Move_Component init_move_component(const struct Path path, const time_tick_ms step, int* exit_code)
 {
     struct Move_Component result;
     result.path = path;
@@ -56,49 +56,66 @@ struct Move_Component new_move_component(const struct Path path,
     /// Param checking
     if (exit_code == NULL)
         print_warning("`new_move_component()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+    
+    *exit_code = EXIT_SUCCESS;
+    return result;
+}
+
+
+void couple_move_component(struct Move_Component* target, SDL_FRect** manipulated_rects, const size_t rect_count, bool randomize_positions, int* exit_code)
+{
+    /// Param checking
+    if (exit_code == NULL)
+        print_warning("`couple_move_component()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+    if (target == NULL)
+    {
+        print_error("`couple_move_component()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
     if (rect_count == 0)
     {
-        print_error("`new_move_component()`: `rect_count` arg is 0. `Move_Component` is not dynamic-memory", NON_SDL_ERROR);
+        print_error("`couple_move_component()`: `rect_count` arg is 0. `Move_Component` is not dynamic-memory", NON_SDL_ERROR);
         *exit_code = EXIT_FAILURE;
-        return result;
+        return;
     }
     if (manipulated_rects == NULL)
     {
-        print_error("`new_move_component()`: `manipulated_rects` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`couple_move_component()`: `manipulated_rects` arg is `NULL`", NON_SDL_ERROR);
         *exit_code = EXIT_FAILURE;
-        return result;
+        return;
     }
 
-    /// Object creation
-    result.manipulated_rects = calloc(rect_count, sizeof(SDL_FRect*));
-    if (result.manipulated_rects == NULL)
+    /// Coupling
+    target->manipulated_rects = calloc(rect_count, sizeof(SDL_FRect*));
+    if (target->manipulated_rects == NULL)
     {
-        print_error("`new_move_component()`: couldn't allocate memory for `manipulated_rects`", NON_SDL_ERROR);
+        print_error("`couple_move_component()`: couldn't allocate memory for `manipulated_rects`", NON_SDL_ERROR);
         *exit_code = EXIT_FAILURE;
-        return result;
+        return;
     }
-    result.rects_pt_indices = calloc(rect_count, sizeof(size_t));
-    if (result.rects_pt_indices == NULL)
+    target->rects_pt_indices = calloc(rect_count, sizeof(size_t));
+    if (target->rects_pt_indices == NULL)
     {
-        print_error("`new_move_component()`: couldn't allocate memory for `rects_pt_indices`", NON_SDL_ERROR);
-        free(result.manipulated_rects);
-        result.manipulated_rects = NULL;
+        print_error("`couple_move_component()`: couldn't allocate memory for `rects_pt_indices`", NON_SDL_ERROR);
+        free(target->manipulated_rects);
+        target->manipulated_rects = NULL;
         *exit_code = EXIT_FAILURE;
-        return result;
+        return;
     }
-    result.rect_count = rect_count;
+    target->rect_count = rect_count;
 
     /// Position distribution
     if (randomize_positions)
         for (size_t i = 0; i < rect_count; i++)
-            result.rects_pt_indices[i] = randint(0, (unsigned)path.pt_count-1); /// UNTESTED
+            target->rects_pt_indices[i] = randint(0, (unsigned)target->path.pt_count-1); /// UNTESTED
     
     else if (! randomize_positions)
         for (size_t i = 0; i < rect_count; i++)
-            result.rects_pt_indices[i] = i % path.pt_count; /// UNTESTED
+            target->rects_pt_indices[i] = i % target->path.pt_count; /// UNTESTED
     
     *exit_code = EXIT_SUCCESS;
-    return result;
+    return;
 }
 
 
@@ -107,6 +124,11 @@ void move_all_rects(struct Move_Component* target)
     if (target == NULL)
     {
         print_error("`move_all_rects()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        return;
+    }
+    if (target->manipulated_rects == NULL || target->rects_pt_indices == NULL || target->rect_count == 0)
+    {
+        print_error("`move_all_rects()`: trying to use an uncoupled `target`", NON_SDL_ERROR);
         return;
     }
 
