@@ -25,14 +25,14 @@ struct Multi_Texture
 {
     SDL_Texture* texture;
     SDL_FRect*   rects;
-    size_t count;
+    size_t cur_count;
     size_t max_count;
 };
 
 
 /* Predef */
 
-struct Multi_Texture load_multi_texture(const char* texture_path, const size_t initial_count, int* exit_code);
+struct Multi_Texture load_multi_texture(const char* texture_path, const size_t max_count, int* exit_code);
 void                 free_multi_texture(struct Multi_Texture* target);
 
 void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_rects, int* exit_code);
@@ -41,18 +41,18 @@ void render_multi_texture(const struct Multi_Texture* target);
 
 /* Body */
 
-struct Multi_Texture load_multi_texture(const char* texture_path, const size_t initial_count, int* exit_code)
+struct Multi_Texture load_multi_texture(const char* texture_path, const size_t max_count, int* exit_code)
 {
     struct Multi_Texture result;
     result.rects = NULL;
-    result.count = 0;
+    result.cur_count = 0;
     result.max_count = 0;
 
-    /* Param checking */
+    /// Param checking
     if (exit_code == NULL)
         print_warning("`new_multi_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    if (initial_count == 0)
-        print_warning("`new_multi_texture()`: `initial_count` arg is 0. Do you really want that?", NON_SDL_ERROR);
+    if (max_count == 0)
+        print_warning("`new_multi_texture()`: `max_count` arg is 0. Do you really want that?", NON_SDL_ERROR);
     
     if (texture_path == NULL)
     {
@@ -62,7 +62,7 @@ struct Multi_Texture load_multi_texture(const char* texture_path, const size_t i
         return result;
     }
 
-    /* Object creation */
+    /// Object creation
     result.texture = IMG_LoadTexture(graphics_layer.renderer, texture_path);
     if (result.texture == NULL)
     {
@@ -78,8 +78,7 @@ struct Multi_Texture load_multi_texture(const char* texture_path, const size_t i
             return result;
         }
     }
-    result.max_count = initial_count;
-    result.rects = calloc(initial_count, sizeof(SDL_FRect));
+    result.rects = calloc(max_count, sizeof(SDL_FRect));
     if (result.rects == NULL)
     {
         print_error("`new_multi_texture()`: couldn't allocate memory to coordinates", NON_SDL_ERROR);
@@ -88,6 +87,7 @@ struct Multi_Texture load_multi_texture(const char* texture_path, const size_t i
         *exit_code = EXIT_FAILURE;
         return result;
     }
+    result.max_count = max_count;
     
     *exit_code = EXIT_SUCCESS;
     return result;
@@ -111,7 +111,7 @@ void free_multi_texture(struct Multi_Texture* target)
         target->rects = NULL;
     }
 
-    target->count = 0;
+    target->cur_count = 0;
     target->max_count = 0;
 }
 
@@ -137,26 +137,26 @@ void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_rect, in
     }
 
     /// Check if full
-    if (to->max_count == to->count)
+    if (to->max_count == to->cur_count)
     {
         print_error("`add_to_multi_texture()`: `to->rects` is full", NON_SDL_ERROR);
         return;
     }
 
     /// Insertion
-    to->rects[to->count++] = new_rect;
+    to->rects[to->cur_count++] = new_rect;
 }
 
 
 void render_multi_texture(const struct Multi_Texture* target)
 {
-    if (target == NULL || target->texture == NULL || target->rects == NULL || target->count == 0)
+    if (target == NULL || target->texture == NULL || target->rects == NULL || target->cur_count == 0)
     {
         print_error("`render_multi_texture()`: `target` or its members are invalid", NON_SDL_ERROR);
         return;
     }
     
-    for (size_t i = 0; i < target->count; i++)
+    for (size_t i = 0; i < target->cur_count; i++)
     {
         if (target->rects[i].x + target->rects[i].w <= 0 ||
             target->rects[i].y + target->rects[i].h <= 0 ||

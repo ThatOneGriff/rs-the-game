@@ -39,10 +39,12 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 */
 
 /* TODOs: */
+/// - adding an array of points/textures to array-like members of `game_components`, instead of individual `add_*()`'s.
 
 /* Visual TODOs: */
-/// - `Shifting_Texture`'s for road & ground;
-/// - Moving clouds (+ clear sky texture then);
+/// - Moving trees;
+/// - `Shifting_Texture` for road;
+/// - Moving clouds (+ a clear sky texture then);
 /// - photograph some cars in Forza for traffic;
 /// - fix Clio Williams half-left texture (exhaust pipe mirrored wrong);
 /// - player's car bouncing in beat to the music.
