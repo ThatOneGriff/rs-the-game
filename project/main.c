@@ -38,30 +38,32 @@ miniaudio version:     0.11.23 (last checked  7.01.26)
 nlohmann/json version: 3.12.0  (last updated 24.12.25)
 */
 
-/* TODOs: */
-/// [!!!] object creation
-///       deinit_stack creation
-///           deinit_stack failed
-///           object NOT deleted manually
-/// - fix EVERYWHERE;
-///
-/// - `Move_Component`: check if coords have been taken;
-/// - `Move_Component`: sort out the code mess;
-/// - find the reason of occasional FPS drops;
-/// - a more balanced randomized tree position;
-/// - pushing an array of points/textures into array-like members of `game_components`, instead of individual `add_*()` calls.
-
 /* Visual TODOs: */
-/// - `Shifting_Texture` for road (+ better textures);
-/// - Moving clouds (+ a clear sky texture then);
-/// - photograph some cars in Forza for traffic;
+/// - photograph traffic cars in Forza;
+/// - photograph asphalt in Forza;
+/// - photograph road railing in Forza;
+/// - find tree sprites;
+/// - moving clouds (+ a clear sky texture then);
 /// - fix Clio Williams half-left texture (exhaust pipe mirrored wrong);
 /// - player's car bouncing in beat to the music.
+
+/* TODOs: */
+/// - traffic;
+/// object creation
+/// deinit_stack creation
+///     deinit_stack failed
+///     object NOT deleted manually
+/// - fix EVERYWHERE;
+///
+/// - `Move_Component`: sort out the code mess;
+/// - find the reason of occasional FPS drops;
+/// - a more balanced position randomization;
+/// - pushing an array of points/textures into array-like members of `game_components`, instead of individual `add_*()` calls.
 
 /* Structural IDEAs: */
 /// ? `null_move_component` and similar things for each `game_components`', for code clarity;
 /// ? `struct Button_Manager`;
-/// ? A system of rendering layers.
+/// ? a system of rendering layers.
 
 
 /* Predef */

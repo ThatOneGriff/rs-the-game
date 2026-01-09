@@ -156,7 +156,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
                        8, exit_code /// TODO: exit code check.
     );
     struct Move_Component* tree_move_component = malloc(sizeof(struct Move_Component));
-    *tree_move_component = init_move_component(tree_path, 150, true, exit_code); /// TODO: exit code check.
+    *tree_move_component = init_move_component(tree_path, 200, true, exit_code); /// TODO: exit code check.
     couple_move_component_to_environment(&result.trees, tree_move_component, vec2(10,0), exit_code); /// TODO: exit code check.
     add_to_deinit_stack(&deinit_stack, &result.trees, (void (*)(void*))free_environment); /// Don't delete. More elements will be added later
 
