@@ -36,12 +36,4 @@ void free_ptr_arr(void** target, const size_t len)
     free(target);
 }
 
-/* Maths */
-
-float abs_f(const float x)
-{
-    if (x < 0) return -x;
-    else       return  x;
-}
-
 #endif /// HELPERS_H

@@ -48,7 +48,7 @@ unsigned int randint(const unsigned int min, const unsigned int max)
 int randint_w_neg(const int min, const int max)
 {
     const int diff_0 = 0-min;
-    return randint(min+diff_0, max+diff_0) - diff_0;
+    return (int)randint((unsigned)(min+diff_0), (unsigned)(max+diff_0)) - diff_0;
 }
 
 

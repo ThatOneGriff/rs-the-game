@@ -6,7 +6,6 @@
 #include <SDL3/SDL.h> /// Keyboard controls.
 
 /* Helper headers */
-#include "../../helpers/helpers.h"         /// `abs()`.
 #include "../../graphics/fps.h"            /// FPS-based movement.
 #include "../../graphics/graphics_layer.h" /// `RENDER_WIDTH/HEIGHT`.
 #include "../../logic/global_events.h"     /// Global event processing.

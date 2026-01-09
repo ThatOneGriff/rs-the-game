@@ -21,7 +21,7 @@
 #include "../../game_components/texture.h"          /// Textures.
 #include "../../graphics/graphics_layer.h"          /// `graphics_layer.renderer`.
 
-#define GAMEPLAY_DATA_LINES 12
+#define GAMEPLAY_DATA_LINES 11
 
 
 /* Struct */
@@ -120,7 +120,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     add_to_shifting_texture(&result.ground, scene_data[4], exit_code); /// `if() {}` blocks.
 
     /// Road
-    result.road = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 150, exit_code); /// TEMP: Was 4.
+    result.road = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 100, exit_code); /// TEMP: Was 4.
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the ground texture", NON_SDL_ERROR);
@@ -132,11 +132,10 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     add_to_shifting_texture(&result.road, scene_data[5], exit_code);
     add_to_shifting_texture(&result.road, scene_data[6], exit_code);
     add_to_shifting_texture(&result.road, scene_data[7], exit_code);
-    //add_to_shifting_texture(&result.road, scene_data[8], exit_code);
     add_to_deinit_stack(&deinit_stack, &result.road, (void (*)(void*))free_shifting_texture);
 
     /// Trees
-    result.trees = new_environment((char*[]){scene_data[9], scene_data[10], scene_data[11]}, 3, 7, exit_code);
+    result.trees = new_environment((char*[]){scene_data[8], scene_data[9], scene_data[10]}, 3, 7, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the trees", NON_SDL_ERROR);
@@ -147,14 +146,18 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     }
     /// - Tree movement
     struct Path tree_path = new_path(
-        (SDL_FRect[]){{80,75,10,10},  {70,65,15,15},  {60,60,20,20},
-                      {45,55,25,25},  {30,60,30,30},  {15,65,35,35},
-                       {0,70,40,40}, {-15,75,45,45}, {-30,80,50,50},
-                     {-45,85,55,55}, {-60,90,60,60}}, 11, exit_code /// TODO: exit code check.
+        //(SDL_FRect[]){{80,75,10,10},  {70,65,15,15},  {60,60,20,20},
+        //              {45,55,25,25},  {30,60,30,30},  {15,65,35,35},
+        //               {0,70,40,40}, {-15,75,45,45}, {-30,80,50,50},
+        //             {-45,85,55,55}, {-60,90,60,60}}, 11, exit_code /// TODO: exit code check.
+        (SDL_FRect[]){{80,75, 7, 7},  {75,70,10,10},  {65,65,15,15},
+                      {55,60,22,22},  {35,60,30,30},  /*{10,60,40,40},*/
+                       {5,55,45,45}, {-30,50,60,60}, {-60,45,75,75}},
+                       8, exit_code /// TODO: exit code check.
     );
     struct Move_Component* tree_move_component = malloc(sizeof(struct Move_Component));
     *tree_move_component = init_move_component(tree_path, 150, true, exit_code); /// TODO: exit code check.
-    couple_move_component_to_environment(&result.trees, tree_move_component, vec2(50,0), exit_code); /// TODO: exit code check.
+    couple_move_component_to_environment(&result.trees, tree_move_component, vec2(10,0), exit_code); /// TODO: exit code check.
     add_to_deinit_stack(&deinit_stack, &result.trees, (void (*)(void*))free_environment); /// Don't delete. More elements will be added later
 
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
