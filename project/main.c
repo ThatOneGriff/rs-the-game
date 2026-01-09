@@ -39,6 +39,12 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 */
 
 /* TODOs: */
+/// [!!!] object creation
+///       deinit_stack creation
+///           deinit_stack failed
+///           object NOT deleted manually
+/// - fix EVERYWHERE;
+///
 /// - `Move_Component`: check if coords have been taken;
 /// - `Move_Component`: sort out the code mess;
 /// - find the reason(s) of occasional FPS drops;

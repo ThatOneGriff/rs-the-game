@@ -59,8 +59,11 @@ struct Multi_Texture load_multi_texture(const char* texture_path, const size_t m
     if (exit_code == NULL)
         print_warning("`new_multi_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     if (max_count == 0)
-        print_warning("`new_multi_texture()`: `max_count` arg is 0. Do you really want that?", NON_SDL_ERROR);
-    
+    {
+        print_warning("`new_multi_texture()`: `max_count` arg is 0. `Multi_Texture` is not dynamic-memory", NON_SDL_ERROR);
+        *exit_code = EXIT_FAILURE;
+        return result;
+    }
     if (texture_path == NULL)
     {
         print_error("`new_multi_texture()`: `texture_path` arg is `NULL`", NON_SDL_ERROR);
@@ -119,6 +122,7 @@ void couple_move_component_to_multi_texture(struct Multi_Texture* to, struct Mov
         return;
     }
 
+    /// Coupling
     couple_move_component(move_component, to->rects, to->cur_count, randomize_positions, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {

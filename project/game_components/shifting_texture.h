@@ -48,12 +48,6 @@ void render_shifting_texture(struct Shifting_Texture* target);
 
 struct Shifting_Texture init_shifting_texture(const SDL_FRect rect, const size_t max_count, const time_tick_ms step, int* exit_code)
 {
-    /// Param checking
-    if (exit_code == NULL)
-        print_warning("`new_shifting_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    if (max_count == 0)
-        print_warning("`new_shifting_texture()`: `max_count` arg is 0. Do you really want that?", NON_SDL_ERROR);
-    
     /// Object creation
     struct Shifting_Texture result;
     result.rect = rect;
@@ -62,6 +56,16 @@ struct Shifting_Texture init_shifting_texture(const SDL_FRect rect, const size_t
     result.i = 0;
     result.step = step;
     result.latest_change = 0; /// Will be filled with first render.
+
+    /// Param checking
+    if (exit_code == NULL)
+        print_warning("`new_shifting_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+    if (max_count == 0)
+    {
+        print_error("`new_shifting_texture()`: `max_count` arg is 0. `Shifting_Texture` is not dynamic-memory", NON_SDL_ERROR);
+        *exit_code = EXIT_FAILURE;
+        return result;
+    }
 
     /// Malloc without filling it.
     result.textures = malloc(max_count * sizeof(SDL_Texture*));

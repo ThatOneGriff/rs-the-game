@@ -14,6 +14,7 @@
 
 /* Graphics & components */
 #include "car.h"                                    /// `*car_ptr` (i.e. player).
+#include "../../game_components/environment.h"      /// `struct Environment`.
 #include "../../game_components/move_component.h"   /// `struct Move_Component`.
 #include "../../game_components/multi_texture.h"    /// Multi-textures.
 #include "../../game_components/shifting_texture.h" /// Shifting textures.
