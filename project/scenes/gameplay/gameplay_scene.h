@@ -21,7 +21,7 @@
 #include "../../game_components/texture.h"          /// Textures.
 #include "../../graphics/graphics_layer.h"          /// `graphics_layer.renderer`.
 
-#define GAMEPLAY_DATA_LINES 10
+#define GAMEPLAY_DATA_LINES 12
 
 
 /* Struct */
@@ -31,7 +31,7 @@ struct Gameplay_Scene
     SDL_Texture* sky_bg; /// Not a `Texture`, because it's rendered on the whole screen.
     struct Shifting_Texture ground;
     struct Shifting_Texture road;
-    struct Multi_Texture    trees;
+    struct Environment      trees;
 
     struct Car* car_ptr;
 };
@@ -136,7 +136,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     add_to_deinit_stack(&deinit_stack, &result.road, (void (*)(void*))free_shifting_texture);
 
     /// Trees
-    result.trees = load_multi_texture(scene_data[9], 4, exit_code);
+    result.trees = new_environment((char*[]){scene_data[9], scene_data[10], scene_data[11]}, 3, 7, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the trees", NON_SDL_ERROR);
@@ -145,10 +145,6 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         *exit_code = EXIT_FAILURE;
         return result;
     }
-    add_to_multi_texture(&result.trees, (SDL_FRect){0, 0, 50, 50}, exit_code); /// Coords don't matter here because of `Move_Component`.
-    add_to_multi_texture(&result.trees, (SDL_FRect){0, 1, 50, 50}, exit_code); /// Do we need to give those coordinates, anyway?
-    add_to_multi_texture(&result.trees, (SDL_FRect){0, 2, 50, 50}, exit_code);
-    add_to_multi_texture(&result.trees, (SDL_FRect){0, 3, 50, 50}, exit_code);
     /// - Tree movement
     struct Path tree_path = new_path(
         (SDL_FRect[]){{45,55,25,25},  {30,60,30,30},  {15,65,35,35},
@@ -156,8 +152,8 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     );
     struct Move_Component* tree_move_component = malloc(sizeof(struct Move_Component));
     *tree_move_component = init_move_component(tree_path, 150, vec2(10, 0), true, exit_code); /// TODO: exit code check.
-    couple_move_component_to_multi_texture(&result.trees, tree_move_component, RANDOMIZED_POSITIONS, exit_code); /// TODO: exit code check.
-    add_to_deinit_stack(&deinit_stack, &result.trees, (void (*)(void*))free_multi_texture); /// Don't delete. More elements will be added later
+    couple_move_component_to_environment(&result.trees, tree_move_component, exit_code); /// TODO: exit code check.
+    add_to_deinit_stack(&deinit_stack, &result.trees, (void (*)(void*))free_environment); /// Don't delete. More elements will be added later
 
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
@@ -183,7 +179,7 @@ void gameplay_scene_tick(struct Gameplay_Scene* target, int* exit_code)
     SDL_RenderTexture(graphics_layer.renderer, target->sky_bg, NULL, NULL);
     render_shifting_texture(&target->ground);
     render_shifting_texture(&target->road);
-    render_multi_texture   (&target->trees);
+    render_environment     (&target->trees);
     SDL_RenderTexture(graphics_layer.renderer, target->car_ptr->textures[target->car_ptr->base_texture], NULL, &target->car_ptr->coords);
     *exit_code = EXIT_SUCCESS;
     return;
@@ -196,7 +192,7 @@ void free_gameplay_scene(struct Gameplay_Scene* target)
         return;
     
     target->car_ptr->coords.x = center_x(target->car_ptr->coords.w);
-    free_multi_texture   (&target->trees);
+    free_environment     (&target->trees);
     free_shifting_texture(&target->road);
     free_shifting_texture(&target->ground);
     if (target->sky_bg != NULL && target->sky_bg != NULL_TEXTURE)
