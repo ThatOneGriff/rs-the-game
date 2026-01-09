@@ -39,7 +39,10 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 */
 
 /* TODOs: */
+/// - `Move_Component`: check if coords have been taken;
+/// - `Move_Component`: sort out the code mess;
 /// - find the reason(s) of occasional FPS drops;
+/// - a more balanced randomized tree position;
 /// - pushing an array of points/textures into array-like members of `game_components`, instead of individual `add_*()` calls.
 
 /* Visual TODOs: */

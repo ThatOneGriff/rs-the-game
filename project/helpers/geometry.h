@@ -19,8 +19,12 @@ struct Vec2
 
 /* Predef */
 
+/// TODO: rewrite all using macros.
+
 float center_x  (const float w);
 float center_y  (const float h);
+float reflect_x (const float x);
+float reflect_y (const float y);
 struct Vec2 vec2(const float x, const float y);
 
 
@@ -34,6 +38,16 @@ float center_x(const float w)
 float center_y(const float h)
 {
     return (RENDER_HEIGHT - h) / 2.0;
+}
+
+float reflect_x(const float x)
+{
+    return RENDER_WIDTH - x;
+}
+
+float reflect_y(const float y)
+{
+    return RENDER_HEIGHT - y;
 }
 
 struct Vec2 vec2(const float x, const float y)

@@ -10,8 +10,9 @@
 
 /* Prefef */
 
-unsigned int randint     (const unsigned int min, const unsigned int max);
-unsigned int randint_except(    unsigned int min,       unsigned int max, const unsigned int except);
+unsigned int randint       (const unsigned int min, const unsigned int max);
+         int randint_w_neg (         const int min,          const int max);
+unsigned int randint_except(      unsigned int min,       unsigned int max, const unsigned int except);
 SDL_Color    rand_color(void);
 float        rand_percent(const unsigned int min, const unsigned int max);
 
@@ -38,6 +39,13 @@ unsigned int randint(const unsigned int min, const unsigned int max)
     }
 
     return rand() % (max-min+1) + min;
+}
+
+
+/// [-10, 10] = [-10+10, 10+10] - 10 = [0, 20] - 10
+int randint_w_neg(const int min, const int max)
+{
+    return randint(min+max, max+max) - max;
 }
 
 
