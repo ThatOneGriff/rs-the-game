@@ -6,6 +6,7 @@
 #include <SDL3/SDL.h> /// Keyboard controls.
 
 /* Helper headers */
+#include "../../helpers/helpers.h"         /// `abs()`.
 #include "../../graphics/fps.h"            /// FPS-based movement.
 #include "../../graphics/graphics_layer.h" /// `RENDER_WIDTH/HEIGHT`.
 #include "../../logic/global_events.h"     /// Global event processing.
@@ -67,9 +68,11 @@ void _process_gameplay_car_input(struct Car* car)
     
     /* Input reading */
     logic_layer.key_state = SDL_GetKeyboardState(NULL);
-    size_t prev_car_direction_x = car->direction_x;
+    int prev_car_direction_x = car->direction_x;
     car->direction_x = - logic_layer.key_state[SDL_SCANCODE_LEFT] + logic_layer.key_state[SDL_SCANCODE_RIGHT];
     
+    //printf("%f\n", car->coords.x);                 /// TEMP
+    //printf("%f\n", car->coords.x + car->coords.w); /// TEMP
     /* Boundary processing */
     if (car->direction_x == -1 && car->coords.x <= 0)
         car->direction_x = 0;
@@ -78,12 +81,16 @@ void _process_gameplay_car_input(struct Car* car)
     
     /* Shifting texture */
     car->base_texture = 2 + (car->direction_x + prev_car_direction_x);
-    if (car->coords.x <= 80)
+    if (car->coords.x <= 30)
+        car->base_texture += 2;
+    else if (car->coords.x <= 60)
         ++car->base_texture;
-    else if (car->coords.x + car->coords.w >= 160)
+    else if (car->coords.x + car->coords.w >= 210)
+        car->base_texture -= 2;
+    else if (car->coords.x + car->coords.w >= 180)
         --car->base_texture;
     
-    if (car->base_texture >= UINT_MAX - 100) /// Overflow happened; 100 just to account for potential future changes,
+    if (car->base_texture >= UINT_MAX - 100) /// Overflow happened; 100 is just a buffer for potential future changes,
         car->base_texture = 0;
     else if (car->base_texture >= 5)
         car->base_texture = 4;

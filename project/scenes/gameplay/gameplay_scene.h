@@ -120,7 +120,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     add_to_shifting_texture(&result.ground, scene_data[4], exit_code); /// `if() {}` blocks.
 
     /// Road
-    result.road = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 4, 150, exit_code);
+    result.road = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 150, exit_code); /// TEMP: Was 4.
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the ground texture", NON_SDL_ERROR);
@@ -132,7 +132,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     add_to_shifting_texture(&result.road, scene_data[5], exit_code);
     add_to_shifting_texture(&result.road, scene_data[6], exit_code);
     add_to_shifting_texture(&result.road, scene_data[7], exit_code);
-    add_to_shifting_texture(&result.road, scene_data[8], exit_code);
+    //add_to_shifting_texture(&result.road, scene_data[8], exit_code);
     add_to_deinit_stack(&deinit_stack, &result.road, (void (*)(void*))free_shifting_texture);
 
     /// Trees

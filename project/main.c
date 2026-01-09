@@ -44,16 +44,15 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 ///           deinit_stack failed
 ///           object NOT deleted manually
 /// - fix EVERYWHERE;
-/// - round Earth effect in `Environment` rendering. `pt_range` arg to `render_environment`?
 ///
 /// - `Move_Component`: check if coords have been taken;
 /// - `Move_Component`: sort out the code mess;
-/// - find the reason(s) of occasional FPS drops;
+/// - find the reason of occasional FPS drops;
 /// - a more balanced randomized tree position;
 /// - pushing an array of points/textures into array-like members of `game_components`, instead of individual `add_*()` calls.
 
 /* Visual TODOs: */
-/// - `Shifting_Texture` for road;
+/// - `Shifting_Texture` for road (+ better textures);
 /// - Moving clouds (+ a clear sky texture then);
 /// - photograph some cars in Forza for traffic;
 /// - fix Clio Williams half-left texture (exhaust pipe mirrored wrong);
