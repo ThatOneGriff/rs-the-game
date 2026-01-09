@@ -15,11 +15,16 @@
 
 /* Helpers */
 #include "../debug.h"             /// Error printing.
+#include "../deinit_stack.h"      /// Deinitialization stack.
 #include "../helpers/geometry.h"  /// `struct Vec2`, `reflect_x`.
 #include "../helpers/random.h"    /// Position randomizing.
 
 #define RANDOMIZED_POSITIONS true
 #define    ORDERED_POSITIONS false
+
+
+/* === IN CASE YOU END UP HERE ===
+I wholeheartedly hate this code. Sorry. */
 
 
 /* Struct */
@@ -34,34 +39,36 @@ struct Move_Component
     bool  random_x_reflect; /// If `true`, the coordinates will randomly reflect along X axis (like trees do).
     bool* reflected_rect_indices;
 
-    size_t      rect_count;
-    SDL_FRect** manipulated_rects;
-    size_t*     rects_pt_indices;
+    SDL_FRect**  manipulated_rects;
+    size_t       rect_count;
+    struct Vec2* offsets;
+    struct Vec2  max_offset;
+    size_t*      rects_pt_indices;
 };
 
 
 /* Predef */
 
-struct Move_Component init_move_component(const struct Path path, const time_tick_ms step, struct Vec2 max_jitter, bool random_x_reflect, int* exit_code);
-void                couple_move_component(struct Move_Component* target, SDL_FRect* manipulated_rects, const size_t rect_count, bool randomize_positions, int* exit_code);
+struct Move_Component init_move_component(const struct Path path, const time_tick_ms step, bool random_x_reflect, int* exit_code);
+void                couple_move_component(struct Move_Component* target, SDL_FRect* manipulated_rects, const size_t rect_count, struct Vec2 max_offset, bool randomize_positions, int* exit_code);
 void move_all_rects     (struct Move_Component* target);
 void free_move_component(struct Move_Component* target);
 
 
 /* Body */
 
-struct Move_Component init_move_component(const struct Path path, const time_tick_ms step, struct Vec2 max_jitter, bool random_x_reflect, int* exit_code)
+struct Move_Component init_move_component(const struct Path path, const time_tick_ms step, bool random_x_reflect, int* exit_code)
 {
     struct Move_Component result;
     result.path = path;
     result.rect_count = 0; /// Temporary value to be changed once memory is successfully allocated.
     result.latest_move = 0; /// Will be filled with first move.
     result.step        = step;
-    result.max_jitter       = max_jitter;
     result.random_x_reflect = random_x_reflect;
     
     result.reflected_rect_indices = NULL;
     result.manipulated_rects      = NULL;
+    result.offsets                = NULL;
     result.rects_pt_indices       = NULL;
 
     /// Param checking
@@ -73,7 +80,7 @@ struct Move_Component init_move_component(const struct Path path, const time_tic
 }
 
 
-void couple_move_component(struct Move_Component* target, SDL_FRect* manipulated_rects, const size_t rect_count, bool randomize_positions, int* exit_code)
+void couple_move_component(struct Move_Component* target, SDL_FRect* manipulated_rects, const size_t rect_count, struct Vec2 max_offset, bool randomize_positions, int* exit_code)
 {
     /// Param checking
     if (exit_code == NULL)
@@ -97,26 +104,57 @@ void couple_move_component(struct Move_Component* target, SDL_FRect* manipulated
         return;
     }
 
+    /// Deinit stack
+    struct Deinit_Stack deinit_stack = new_deinit_stack(3, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`new_environment()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        free_deinit_stack(&deinit_stack);
+        return;
+    }
+
     /// Coupling
     target->manipulated_rects = calloc(rect_count, sizeof(SDL_FRect*));
     if (target->manipulated_rects == NULL)
     {
         print_error("`couple_move_component()`: couldn't allocate memory for `manipulated_rects`", NON_SDL_ERROR);
+        free_deinit_stack(&deinit_stack);
         *exit_code = EXIT_FAILURE;
         return;
     }
     for (size_t i = 0; i < rect_count; i++)
         target->manipulated_rects[i] = &manipulated_rects[i];
+    add_to_deinit_stack(&deinit_stack, target->manipulated_rects, (void (*)(void*))free);
+    
+    target->max_offset.x = max_offset.x;
+    target->max_offset.y = max_offset.y;
+    if (! (max_offset.x == 0 && max_offset.y == 0)) /// Non-zero offset.
+    {
+        target->offsets = calloc(rect_count, sizeof(struct Vec2));
+        if (target->manipulated_rects == NULL)
+        {
+            print_error("`couple_move_component()`: couldn't allocate memory for `manipulated_rects`", NON_SDL_ERROR);
+            flush_deinit_stack(&deinit_stack);
+            *exit_code = EXIT_FAILURE;
+            return;
+        }
+
+        for (size_t i = 0; i < rect_count; i++)
+            target->offsets[i] = rand_vec2(vec2(-max_offset.x, -max_offset.y), vec2(0,0));
+
+        add_to_deinit_stack(&deinit_stack, target->offsets, (void (*)(void*))free);
+    }
 
     target->rects_pt_indices = calloc(rect_count, sizeof(size_t));
     if (target->rects_pt_indices == NULL)
     {
         print_error("`couple_move_component()`: couldn't allocate memory for `rects_pt_indices`", NON_SDL_ERROR);
-        free(target->manipulated_rects);
-        target->manipulated_rects = NULL;
+        flush_deinit_stack(&deinit_stack);
         *exit_code = EXIT_FAILURE;
         return;
     }
+    add_to_deinit_stack(&deinit_stack, target->rects_pt_indices, (void (*)(void*))free);
+
     target->rect_count = rect_count;
     if (target->random_x_reflect)
     {
@@ -124,13 +162,11 @@ void couple_move_component(struct Move_Component* target, SDL_FRect* manipulated
         if (target->reflected_rect_indices == NULL)
         {
             print_error("`couple_move_component()`: couldn't allocate memory for `reflected_rect_indices`", NON_SDL_ERROR);
-            free(target->rects_pt_indices);
-            target->rects_pt_indices = NULL;
-            free(target->manipulated_rects);
-            target->manipulated_rects = NULL;
+            flush_deinit_stack(&deinit_stack);
             *exit_code = EXIT_FAILURE;
             return;
         }
+        //add_to_deinit_stack(&deinit_stack, target->random_x_reflect, (void (*)(void*))free);
     }
 
     /// Position distribution (+ setting rects to the path's first point)
@@ -146,6 +182,7 @@ void couple_move_component(struct Move_Component* target, SDL_FRect* manipulated
             target->reflected_rect_indices[i] = randint(0,1);
     }
     
+    free_deinit_stack(&deinit_stack);
     *exit_code = EXIT_SUCCESS;
     return;
 }
@@ -176,12 +213,6 @@ void move_all_rects(struct Move_Component* target)
     /// Moving all manipulated coords
     for (size_t i = 0; i < target->rect_count; i++)
     {
-        if (target->manipulated_rects[i] == NULL) /// TEMP?
-        {
-            print_error("`move_all_rects()`: unexpected NULL (`manipulated_rects`)", NON_SDL_ERROR);
-            return;
-        }
-
         ++target->rects_pt_indices[i];
         if (target->rects_pt_indices[i] >= target->path.pt_count)
         {
@@ -190,12 +221,20 @@ void move_all_rects(struct Move_Component* target)
             /*if (target->path.is_loop)
                 --target->rects_pt_indices[i];
             else*/
+
             target->rects_pt_indices[i] = 0;
             if (target->random_x_reflect)
                 target->reflected_rect_indices[i] = randint(0,1);
+            if (target->offsets != NULL)
+                target->offsets[i] = rand_vec2(vec2(-target->max_offset.x, -target->max_offset.y), vec2(0,0));
         }
         
         SDL_FRect new_rect = target->path.points[target->rects_pt_indices[i]];
+        if (target->offsets != NULL)
+        {
+            new_rect.x += target->offsets[i].x;
+            new_rect.y += target->offsets[i].y;
+        }
         if (target->random_x_reflect)
             if (target->reflected_rect_indices[i] == 1)
                 new_rect.x = reflect_x(new_rect.x) - new_rect.w;

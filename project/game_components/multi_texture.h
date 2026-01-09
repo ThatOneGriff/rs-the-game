@@ -38,7 +38,7 @@ struct Multi_Texture
 /* Predef */
 
 struct Multi_Texture     load_multi_texture(const char* texture_path, const size_t max_count, int* exit_code);
-void couple_move_component_to_multi_texture(struct Multi_Texture* to, struct Move_Component* move_component, bool randomize_positions, int* exit_code);
+void couple_move_component_to_multi_texture(struct Multi_Texture* to, struct Move_Component* move_component, const struct Vec2 max_offset, bool randomize_positions, int* exit_code);
 void                     free_multi_texture(struct Multi_Texture* target);
 
 void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_rects, int* exit_code);
@@ -104,7 +104,7 @@ struct Multi_Texture load_multi_texture(const char* texture_path, const size_t m
 }
 
 
-void couple_move_component_to_multi_texture(struct Multi_Texture* to, struct Move_Component* move_component, bool randomize_positions, int* exit_code)
+void couple_move_component_to_multi_texture(struct Multi_Texture* to, struct Move_Component* move_component, const struct Vec2 max_offset, bool randomize_positions, int* exit_code)
 {
     /// Arg checking
     if (exit_code == NULL)
@@ -123,7 +123,7 @@ void couple_move_component_to_multi_texture(struct Multi_Texture* to, struct Mov
     }
 
     /// Coupling
-    couple_move_component(move_component, to->rects, to->cur_count, randomize_positions, exit_code);
+    couple_move_component(move_component, to->rects, to->cur_count, max_offset, randomize_positions, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`couple_move_component_to_multi_texture()`: coupling failed", NON_SDL_ERROR);

@@ -44,6 +44,7 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 ///           deinit_stack failed
 ///           object NOT deleted manually
 /// - fix EVERYWHERE;
+/// - round Earth effect in `Environment` rendering. `pt_range` arg to `render_environment`?
 ///
 /// - `Move_Component`: check if coords have been taken;
 /// - `Move_Component`: sort out the code mess;

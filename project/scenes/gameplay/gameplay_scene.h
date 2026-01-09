@@ -148,11 +148,12 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     /// - Tree movement
     struct Path tree_path = new_path(
         (SDL_FRect[]){{45,55,25,25},  {30,60,30,30},  {15,65,35,35},
-                       {0,70,40,40}, {-25,75,45,45}, {-30,80,50,50}}, 6, exit_code /// TODO: exit code check.
+                       {0,70,40,40}, {-15,75,45,45}, {-30,80,50,50},
+                     {-45,85,55,55}, {-60,90,60,60}}, 8, exit_code /// TODO: exit code check.
     );
     struct Move_Component* tree_move_component = malloc(sizeof(struct Move_Component));
-    *tree_move_component = init_move_component(tree_path, 150, vec2(10, 0), true, exit_code); /// TODO: exit code check.
-    couple_move_component_to_environment(&result.trees, tree_move_component, exit_code); /// TODO: exit code check.
+    *tree_move_component = init_move_component(tree_path, 150, true, exit_code); /// TODO: exit code check.
+    couple_move_component_to_environment(&result.trees, tree_move_component, vec2(50,0), exit_code); /// TODO: exit code check.
     add_to_deinit_stack(&deinit_stack, &result.trees, (void (*)(void*))free_environment); /// Don't delete. More elements will be added later
 
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.

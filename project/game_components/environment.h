@@ -19,6 +19,10 @@
 #include "../graphics/graphics_layer.h" /// `graphics_layer`.
 
 
+/* === IN CASE YOU END UP HERE ===
+I wholeheartedly hate this code. Sorry. */
+
+
 /* Struct */
 
 /// This is a combination of `Shifting_Texture` and `Multi_Texture`:
@@ -27,12 +31,13 @@ struct Environment
 {
     SDL_Texture** textures;
     size_t        texture_count;
+    size_t*       cur_texture_indexes;
+
+    SDL_FRect*    rects; /// Exists solely for manipulation by `move_component`.
     size_t        object_count;
+
     struct Move_Component* move_component;
 
-    /// `cur_texture_i` and `rects` KIND OF make an object.
-    SDL_FRect* rects; /// Exists solely for manipulation by `move_component`.
-    size_t*    cur_texture_indexes;
     /// TODO: ptr to a function (to check collisions with traffic).
     /// TODO: a way to render layers correctly.
 };
@@ -41,7 +46,7 @@ struct Environment
 /* Predef */
 
 struct Environment        new_environment(char** texture_paths, const size_t texture_count, const size_t object_count, int* exit_code);
-void couple_move_component_to_environment(struct Environment* to, struct Move_Component* move_component, int* exit_code);
+void couple_move_component_to_environment(struct Environment* to, struct Move_Component* move_component, const struct Vec2 max_offset, int* exit_code);
 void                     free_environment(struct Environment* target);
 
 void render_environment(const struct Environment* target);
@@ -75,21 +80,25 @@ struct Environment new_environment(char** texture_paths, const size_t texture_co
         return result;
     }
 
-    /// Object creation
-    /// Textures (memory)
-    result.textures = calloc(texture_count, sizeof(SDL_Texture*));
-    if (result.textures == NULL)
-    {
-        print_error("`new_environment()`: couldn't allocate memory for textures", NON_SDL_ERROR);
-        *exit_code = EXIT_FAILURE;
-        return result;
-    }
     /// Deinit stack
     struct Deinit_Stack deinit_stack = new_deinit_stack(3+texture_count, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`new_environment()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
         free_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)texture_paths, texture_count);
+        return result;
+    }
+
+    /// Object creation
+    /// Textures (memory)
+    result.textures = calloc(texture_count, sizeof(SDL_Texture*));
+    if (result.textures == NULL)
+    {
+        print_error("`new_environment()`: couldn't allocate memory for textures", NON_SDL_ERROR);
+        free_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)texture_paths, texture_count);
+        *exit_code = EXIT_FAILURE;
         return result;
     }
     add_to_deinit_stack(&deinit_stack, result.textures, (void (*)(void*))free);
@@ -108,6 +117,7 @@ struct Environment new_environment(char** texture_paths, const size_t texture_co
             {
                 print_error("`new_environment()`: couldn't load the texture, and null texture is empty", IS_SDL_ERROR);
                 flush_deinit_stack(&deinit_stack);
+                free_ptr_arr((void**)texture_paths, texture_count);
                 *exit_code = EXIT_FAILURE;
                 return result;
             }
@@ -122,6 +132,7 @@ struct Environment new_environment(char** texture_paths, const size_t texture_co
     {
         print_error("`new_environment()`: couldn't allocate memory to rects", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)texture_paths, texture_count);
         *exit_code = EXIT_FAILURE;
         return result;
     }
@@ -132,6 +143,7 @@ struct Environment new_environment(char** texture_paths, const size_t texture_co
     {
         print_error("`new_environment()`: couldn't allocate memory to `cur_texture_indexes`", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)texture_paths, texture_count);
         *exit_code = EXIT_FAILURE;
         return result;
     }
@@ -140,12 +152,13 @@ struct Environment new_environment(char** texture_paths, const size_t texture_co
 
     result.object_count = object_count;
     free_deinit_stack(&deinit_stack); /// `free()` because all members are to be used later.
+    //free_ptr_arr((void**)texture_paths, texture_count);
     *exit_code = EXIT_SUCCESS;
     return result;
 }
 
 
-void couple_move_component_to_environment(struct Environment* to, struct Move_Component* move_component, int* exit_code)
+void couple_move_component_to_environment(struct Environment* to, struct Move_Component* move_component, const struct Vec2 max_offset, int* exit_code)
 {
     /// Arg checking
     if (exit_code == NULL)
@@ -164,7 +177,7 @@ void couple_move_component_to_environment(struct Environment* to, struct Move_Co
     }
 
     /// Coupling
-    couple_move_component(move_component, to->rects, to->object_count, RANDOMIZED_POSITIONS, exit_code);
+    couple_move_component(move_component, to->rects, to->object_count, max_offset, RANDOMIZED_POSITIONS, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`couple_move_component_to_environment()`: coupling failed", NON_SDL_ERROR);
@@ -225,22 +238,39 @@ void render_environment(const struct Environment* target)
         return;
     }
 
-    if (target->move_component != NULL)
-        move_all_rects(target->move_component);
-    
-    for (size_t i = 0; i < target->object_count; i++)
+    if (target->move_component == NULL)
     {
-        if (target->rects[i].x + target->rects[i].w <= 0 ||
-            target->rects[i].y + target->rects[i].h <= 0 ||
-            target->rects[i].x >= RENDER_WIDTH ||
-            target->rects[i].y >= RENDER_HEIGHT)
-        {
-            print_warning("`render_environment()`: texture rendering out of bounds", NON_SDL_ERROR);
-            continue; /// While it's not an error, why waste a draw call on something not seen anyway?
-        }
-        else
-            SDL_RenderTexture(graphics_layer.renderer, target->textures[target->cur_texture_indexes[i]], NULL, &target->rects[i]);
+        print_error("`render_environment()`: `target->move_component` is not coupled", NON_SDL_ERROR);
+        return;
     }
+    
+    move_all_rects(target->move_component);
+    //bool rendered_on_path_pt;
+    //bool rendered_on_path_pt_reflected;
+    /// Rendering in path point order.
+    /// [FALSE FOR NOW] Only 1 texture per path point is actually rendered to avoid visual cluttering.
+    for (size_t path_pt = 0; path_pt < target->move_component->path.pt_count; path_pt++)
+    {
+        for (size_t i = 0; i < target->object_count; i++)
+        {
+            if (target->move_component->rects_pt_indices[i] != path_pt)
+                continue;
+            
+            if (target->rects[i].x + target->rects[i].w <= 0 ||
+                target->rects[i].y + target->rects[i].h <= 0 ||
+                target->rects[i].x >= RENDER_WIDTH ||
+                target->rects[i].y >= RENDER_HEIGHT
+            )
+                continue; /// Out of bounds.
+            
+            SDL_RenderTexture(graphics_layer.renderer, target->textures[target->cur_texture_indexes[i]], NULL, &target->rects[i]);
+            //if (target->move_component.random_x_reflect == false)
+            break;
+            //if (target->move_component.reflected_rect_indices[i])
+        }
+    }
+    
+    return;
 }
 
 #endif /// ENVIRONMENT_H

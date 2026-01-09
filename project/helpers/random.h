@@ -6,6 +6,7 @@
 #include <SDL3/SDL.h> /// Rand `SDL_Color`
 #include <stdio.h>    /// I/O.
 #include <time.h>     /// Time-based random seeding.
+#include "geometry.h" /// `struct Vec2`
 
 
 /* Prefef */
@@ -15,6 +16,7 @@ unsigned int randint       (const unsigned int min, const unsigned int max);
 unsigned int randint_except(      unsigned int min,       unsigned int max, const unsigned int except);
 SDL_Color    rand_color(void);
 float        rand_percent(const unsigned int min, const unsigned int max);
+struct Vec2  rand_vec2(const struct Vec2 min, const struct Vec2 max);
 
 
 
@@ -45,7 +47,8 @@ unsigned int randint(const unsigned int min, const unsigned int max)
 /// [-10, 10] = [-10+10, 10+10] - 10 = [0, 20] - 10
 int randint_w_neg(const int min, const int max)
 {
-    return randint(min+max, max+max) - max;
+    const int diff_0 = 0-min;
+    return randint(min+diff_0, max+diff_0) - diff_0;
 }
 
 
@@ -74,6 +77,12 @@ SDL_Color rand_color(void)
 float rand_percent(const unsigned int min, const unsigned int max)
 {
     return (float)(randint(min, max)) / 100.0;
+}
+
+
+struct Vec2 rand_vec2(const struct Vec2 min, const struct Vec2 max)
+{
+    return vec2(randint_w_neg(min.x, max.x), randint_w_neg(min.y, max.y));
 }
 
 #endif /// RANDOM_H
