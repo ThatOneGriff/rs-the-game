@@ -147,9 +147,10 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     }
     /// - Tree movement
     struct Path tree_path = new_path(
-        (SDL_FRect[]){{45,55,25,25},  {30,60,30,30},  {15,65,35,35},
+        (SDL_FRect[]){{80,75,10,10},  {70,65,15,15},  {60,60,20,20},
+                      {45,55,25,25},  {30,60,30,30},  {15,65,35,35},
                        {0,70,40,40}, {-15,75,45,45}, {-30,80,50,50},
-                     {-45,85,55,55}, {-60,90,60,60}}, 8, exit_code /// TODO: exit code check.
+                     {-45,85,55,55}, {-60,90,60,60}}, 11, exit_code /// TODO: exit code check.
     );
     struct Move_Component* tree_move_component = malloc(sizeof(struct Move_Component));
     *tree_move_component = init_move_component(tree_path, 150, true, exit_code); /// TODO: exit code check.
@@ -178,9 +179,10 @@ void gameplay_scene_tick(struct Gameplay_Scene* target, int* exit_code)
 
     /* Rendering */
     SDL_RenderTexture(graphics_layer.renderer, target->sky_bg, NULL, NULL);
+    partly_render_environment(&target->trees, 0, 2);
     render_shifting_texture(&target->ground);
     render_shifting_texture(&target->road);
-    render_environment     (&target->trees);
+    partly_render_environment(&target->trees, 3, UINT_MAX);
     SDL_RenderTexture(graphics_layer.renderer, target->car_ptr->textures[target->car_ptr->base_texture], NULL, &target->car_ptr->coords);
     *exit_code = EXIT_SUCCESS;
     return;

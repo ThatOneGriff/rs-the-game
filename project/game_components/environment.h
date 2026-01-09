@@ -49,7 +49,8 @@ struct Environment        new_environment(char** texture_paths, const size_t tex
 void couple_move_component_to_environment(struct Environment* to, struct Move_Component* move_component, const struct Vec2 max_offset, int* exit_code);
 void                     free_environment(struct Environment* target);
 
-void render_environment(const struct Environment* target);
+void        render_environment(const struct Environment* target);
+void partly_render_environment(const struct Environment* target, const size_t min_path_pt, size_t max_path_pt);
 
 
 /* Body */
@@ -250,6 +251,59 @@ void render_environment(const struct Environment* target)
     /// Rendering in path point order.
     /// [FALSE FOR NOW] Only 1 texture per path point is actually rendered to avoid visual cluttering.
     for (size_t path_pt = 0; path_pt < target->move_component->path.pt_count; path_pt++)
+    {
+        for (size_t i = 0; i < target->object_count; i++)
+        {
+            if (target->move_component->rects_pt_indices[i] != path_pt)
+                continue;
+            
+            if (target->rects[i].x + target->rects[i].w <= 0 ||
+                target->rects[i].y + target->rects[i].h <= 0 ||
+                target->rects[i].x >= RENDER_WIDTH ||
+                target->rects[i].y >= RENDER_HEIGHT
+            )
+                continue; /// Out of bounds.
+            
+            SDL_RenderTexture(graphics_layer.renderer, target->textures[target->cur_texture_indexes[i]], NULL, &target->rects[i]);
+            //if (target->move_component.random_x_reflect == false)
+            break;
+            //if (target->move_component.reflected_rect_indices[i])
+        }
+    }
+    
+    return;
+}
+
+
+/// REDO according to DRY principle.
+void partly_render_environment(const struct Environment* target, const size_t min_path_pt, size_t max_path_pt)
+{
+    if (target == NULL || target->textures == NULL || target->rects == NULL || target->cur_texture_indexes == NULL || target->texture_count == 0 || target->object_count == 0)
+    {
+        print_error("`render_environment()`: `target` or its members are invalid", NON_SDL_ERROR);
+        return;
+    }
+
+    if (max_path_pt < min_path_pt)
+    {
+        print_error("`render_environment()`: `max_path_pt` < `min_path_pt`", NON_SDL_ERROR);
+        return;
+    }
+
+    if (target->move_component == NULL)
+    {
+        print_error("`render_environment()`: `target->move_component` is not coupled", NON_SDL_ERROR);
+        return;
+    }
+    
+    move_all_rects(target->move_component);
+    //bool rendered_on_path_pt;
+    //bool rendered_on_path_pt_reflected;
+    /// Rendering in path point order.
+    /// [FALSE FOR NOW] Only 1 texture per path point is actually rendered to avoid visual cluttering.
+    if (max_path_pt > target->move_component->path.pt_count)
+        max_path_pt = target->move_component->path.pt_count-1;
+    for (size_t path_pt = min_path_pt; path_pt <= max_path_pt; path_pt++)
     {
         for (size_t i = 0; i < target->object_count; i++)
         {
