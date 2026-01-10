@@ -65,19 +65,36 @@ void _process_gameplay_car_input(struct Car* car)
         return;
     }
     
-    /* Input reading */
+    /// Input reading
     const bool* key_state = SDL_GetKeyboardState(NULL); /// Unlike the scancodes, this provides no delay - just like handling a car requires.
-    const int prev_car_direction_x = car->direction_x;
     car->direction_x = - key_state[SDL_SCANCODE_LEFT] + key_state[SDL_SCANCODE_RIGHT];
-    
-    /* Boundary processing */
+    /// Boundary processing
+    if (car->direction_x != 0)
+        car->prev_turn_direction_x = car->direction_x;
     if (car->direction_x == -1 && car->coords.x <= 0)
         car->direction_x = 0;
     else if (car->direction_x == 1 && car->coords.x + car->coords.w >= RENDER_WIDTH)
         car->direction_x = 0;
     
-    /* Shifting texture */
-    car->base_texture = 2 + (car->direction_x + prev_car_direction_x);
+    /// Turn smoothing
+    if (car->direction_x != 0 && car->latest_turn_start == 0)
+    {
+        car->latest_turn_start = logic_layer.curr_tick;
+        car->latest_turn_end   = 0;
+    }
+    if (car->direction_x == 0 &car->latest_turn_end == 0)
+    {
+        car->latest_turn_end   = logic_layer.curr_tick;
+        car->latest_turn_start = 0;
+    }
+
+    car->base_texture = 2 + car->direction_x;
+    if      ((car->latest_turn_start != 0) && (logic_layer.curr_tick - car->latest_turn_start >= car->turn_smoothing_duration)) /// Turn recently started.
+        car->base_texture += car->prev_turn_direction_x;
+    else if ((car->latest_turn_end   != 0) && (logic_layer.curr_tick - car->latest_turn_end   <= car->turn_smoothing_duration)) /// Turn recently ended.
+        car->base_texture += car->prev_turn_direction_x;
+    
+    /// Turning the texture
     if (car->coords.x <= 30)
         car->base_texture += 2;
     else if (car->coords.x <= 60)

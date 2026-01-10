@@ -21,7 +21,7 @@
 #include "../../game_components/movement/move_component.h" /// `struct Move_Component`.
 #include "../../graphics/graphics_layer.h"              /// `graphics_layer.renderer`.
 
-#define GAMEPLAY_DATA_LINES 11
+#define GAMEPLAY_DATA_LINES 14
 
 
 /* Struct */
@@ -31,6 +31,7 @@ struct Gameplay_Scene
     SDL_Texture* sky_bg; /// Not a `Texture`, because it's rendered on the whole screen.
     struct Shifting_Texture ground;
     struct Shifting_Texture road;
+    struct Shifting_Texture stripes;
     struct Environment      trees;
 
     struct Car* car_ptr;
@@ -45,7 +46,8 @@ void                  free_gameplay_scene(struct Gameplay_Scene* target);
 struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr, int* exit_code)
 {
     struct Gameplay_Scene result;
-    result.sky_bg = NULL;
+    result.sky_bg  = NULL;
+    result.car_ptr = NULL;
 
     /// Param checking
     if (exit_code == NULL)
@@ -73,6 +75,16 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         *exit_code = EXIT_FAILURE;
         return result;
     }
+    
+    /// Deinit stack
+    struct Deinit_Stack deinit_stack = new_deinit_stack(5, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        free_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
+        return result;
+    }
 
     /// Sky
     result.sky_bg = IMG_LoadTexture(graphics_layer.renderer, scene_data[0]);
@@ -86,19 +98,11 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         else
         {
             print_error("`load_gameplay_scene()`: couldn't load the sky texture, and null texture is empty", IS_SDL_ERROR);
+            free_deinit_stack(&deinit_stack);
             free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
             *exit_code = EXIT_FAILURE;
             return result;
         }
-    }
-    /// Deinit stack
-    struct Deinit_Stack deinit_stack = new_deinit_stack(4, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
-    if (*exit_code == EXIT_FAILURE)
-    {
-        print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
-        free_deinit_stack(&deinit_stack);
-        free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
-        return result;
     }
     if (result.sky_bg != NULL_TEXTURE)
         add_to_deinit_stack(&deinit_stack, result.sky_bg, (void (*)(void*))SDL_DestroyTexture);
@@ -123,7 +127,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     result.road = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 100, exit_code); /// TEMP: Was 4.
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_gameplay_scene()`: couldn't load the ground texture", NON_SDL_ERROR);
+        print_error("`load_gameplay_scene()`: couldn't load the road texture", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
         *exit_code = EXIT_FAILURE;
@@ -133,9 +137,24 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     add_to_shifting_texture(&result.road, scene_data[6], exit_code);
     add_to_shifting_texture(&result.road, scene_data[7], exit_code);
     add_to_deinit_stack(&deinit_stack, &result.road, (void (*)(void*))free_shifting_texture);
+    
+    /// Stripes
+    result.stripes = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 100, exit_code); /// TEMP: Was 4.
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`load_gameplay_scene()`: couldn't load the stripes texture", NON_SDL_ERROR);
+        flush_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
+        *exit_code = EXIT_FAILURE;
+        return result;
+    }
+    add_to_shifting_texture(&result.stripes, scene_data[8], exit_code);
+    add_to_shifting_texture(&result.stripes, scene_data[9], exit_code);
+    add_to_shifting_texture(&result.stripes, scene_data[10], exit_code);
+    add_to_deinit_stack(&deinit_stack, &result.stripes, (void (*)(void*))free_shifting_texture);
 
     /// Trees
-    result.trees = new_environment((char*[]){scene_data[8], scene_data[9], scene_data[10]}, 3, 7, exit_code);
+    result.trees = new_environment((char*[]){scene_data[11], scene_data[12], scene_data[13]}, 3, 7, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the trees", NON_SDL_ERROR);
@@ -156,7 +175,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
                        8, exit_code /// TODO: exit code check.
     );
     struct Move_Component* tree_move_component = malloc(sizeof(struct Move_Component));
-    *tree_move_component = init_move_component(tree_path, 200, true, exit_code); /// TODO: exit code check.
+    *tree_move_component = init_move_component(tree_path, 150, true, exit_code); /// TODO: exit code check.
     couple_move_component_to_environment(&result.trees, tree_move_component, vec2(10,0), exit_code); /// TODO: exit code check.
     add_to_deinit_stack(&deinit_stack, &result.trees, (void (*)(void*))free_environment); /// Don't delete. More elements will be added later
 
@@ -185,6 +204,7 @@ void gameplay_scene_tick(struct Gameplay_Scene* target, int* exit_code)
     partly_render_environment(&target->trees, 0, 2);
     render_shifting_texture(&target->ground);
     render_shifting_texture(&target->road);
+    render_shifting_texture(&target->stripes);
     partly_render_environment(&target->trees, 3, UINT_MAX);
     SDL_RenderTexture(graphics_layer.renderer, target->car_ptr->textures[target->car_ptr->base_texture], NULL, &target->car_ptr->coords);
     *exit_code = EXIT_SUCCESS;
@@ -199,6 +219,7 @@ void free_gameplay_scene(struct Gameplay_Scene* target)
     
     target->car_ptr->coords.x = center_x(target->car_ptr->coords.w);
     free_environment     (&target->trees);
+    free_shifting_texture(&target->stripes);
     free_shifting_texture(&target->road);
     free_shifting_texture(&target->ground);
     if (target->sky_bg != NULL && target->sky_bg != NULL_TEXTURE)

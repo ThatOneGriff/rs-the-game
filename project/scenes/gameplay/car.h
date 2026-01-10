@@ -7,10 +7,11 @@
 #include <SDL3_image/SDL_image.h> /// SDL3_image.
 
 /* Helper headers */
-#include "../../debug.h"           /// Error printing.
-#include "../../deinit_stack.h"    /// Deinitialization stack.
-#include "../../resources.h"       /// File reading & null texture.
-#include "../../helpers/helpers.h" /// `free_ptr_arr()`.
+#include "../../debug.h"             /// Error printing.
+#include "../../deinit_stack.h"      /// Deinitialization stack.
+#include "../../resources.h"         /// File reading & null texture.
+#include "../../helpers/helpers.h"   /// `free_ptr_arr()`.
+#include "../../logic/logic_layer.h" /// `time_tick_ms`
 
 #define CAR_DATA_LINES 7
 
@@ -22,12 +23,19 @@
 struct Car
 {
     SDL_Texture* textures[5];
-    size_t base_texture;
-    SDL_FRect coords;
+    size_t       base_texture;
+
     int handling;
     int top_speed;
-    int direction_x;
-    ///unsigned int latest_jump_tick;
+
+    SDL_FRect     coords;
+    int           direction_x;
+    int prev_turn_direction_x; /// Saves the latest non-default `direction_x`. Needed for turn smoothing.
+
+    time_tick_ms latest_turn_start;
+    time_tick_ms latest_turn_end;
+    time_tick_ms turn_smoothing_duration;
+    ///time_tick_ms latest_jump_tick;
 };
 struct Car load_car(const char path[], int* exit_code);
 void       free_car(struct Car* target);
@@ -38,11 +46,16 @@ void       free_car(struct Car* target);
 struct Car load_car(const char path[], int* exit_code)
 {
     struct Car result;
+    result.base_texture = 0;
     result.handling =  0;
     result.top_speed = 0;
-    result.direction_x  = 0;
+    result.direction_x            = 0;
+    result.prev_turn_direction_x  = 0;
     result.base_texture = 2; /// main texture
-    ///result.latest_jump_tick = SDL_GetTicks();
+    result.latest_turn_start = 0; /// Temporary value to be reset with the first turn.
+    result.latest_turn_end   = 0; /// Temporary value to be reset with the first turn.
+    result.turn_smoothing_duration = 100;
+    ///result.latest_jump_tick = 0;
 
     /// Checking params
     if (exit_code == NULL)

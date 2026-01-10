@@ -40,8 +40,6 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 
 /* Visual TODOs: */
 /// - photograph traffic cars in Forza;
-/// - photograph asphalt in Forza;
-/// - photograph road railing in Forza;
 /// - find tree sprites;
 /// - moving clouds (+ a clear sky texture then);
 /// - fix Clio Williams half-left texture (exhaust pipe mirrored wrong);
@@ -49,11 +47,11 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 
 /* TODOs: */
 /// - traffic;
+/// - fix EVERYWHERE:
 /// object creation
 /// deinit_stack creation
 ///     deinit_stack failed
 ///     object NOT deleted manually
-/// - fix EVERYWHERE;
 ///
 /// - `Move_Component`: sort out the code mess;
 /// - find the reason of occasional FPS drops;
@@ -61,6 +59,7 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 /// - pushing an array of points/textures into array-like members of `game_components`, instead of individual `add_*()` calls.
 
 /* Structural IDEAs: */
+/// - try making the car larger (60px? 65px?);
 /// ? `null_move_component` and similar things for each `game_components`', for code clarity;
 /// ? `struct Button_Manager`;
 /// ? a system of rendering layers.
