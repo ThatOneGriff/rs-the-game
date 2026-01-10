@@ -1,1 +1,2 @@
-./main.exe
+#!/bin/bash
+./rs_the_game.exe
