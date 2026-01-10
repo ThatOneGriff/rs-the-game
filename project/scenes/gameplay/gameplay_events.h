@@ -67,7 +67,7 @@ void _process_gameplay_car_input(struct Car* car)
     
     /* Input reading */
     const bool* key_state = SDL_GetKeyboardState(NULL); /// Unlike the scancodes, this provides no delay - just like handling a car requires.
-    int prev_car_direction_x = car->direction_x;
+    const int prev_car_direction_x = car->direction_x;
     car->direction_x = - key_state[SDL_SCANCODE_LEFT] + key_state[SDL_SCANCODE_RIGHT];
     
     /* Boundary processing */
@@ -93,9 +93,9 @@ void _process_gameplay_car_input(struct Car* car)
         car->base_texture = 4;
     
     /* Moving car */
-    car->coords.x += car->direction_x * car->handling * (FPS_manager.delta_ns / SEC_IN_NS);
+    car->coords.x += (float)(car->direction_x) * (float)car->handling * (float)(FPS_manager.delta_ns) / SEC_IN_NS;
     
-    /*if (SDL_GetTicks() - car->latest_jump_tick >= (90.0 / 60.0 * 2)*1000 + 250) /// NOTE: can be synchronized with a track's BPM.
+    /*if (SDL_GetTicks() - car->latest_jump_tick >= (90.0 / 60.0 * 2)*1000 + 250) /// NOTE: should be synchronized with a track's BPM.
         car->coords.y = 45;
     else
         car->coords.y = 50;*/

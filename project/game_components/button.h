@@ -60,7 +60,7 @@ struct Button create_button(const char* text, const SDL_Color inner_color, struc
     }
 
     /* focused_texture texture */
-    const struct Vec2 border_adjusted_screen_pos = vec2(screen_pos.x - size/20, screen_pos.y - size/20); /// So that focusing doesn't make the button jitter.
+    const struct Vec2 border_adjusted_screen_pos = vec2(screen_pos.x - (float)size/20, screen_pos.y - (float)size/20); /// So that focusing doesn't make the button jitter.
     result.focused_texture = create_text(text, inner_color, (SDL_Color){255,255,255,255}, border_adjusted_screen_pos, size, size/10, exit_code); /// WARNING: may result in a `0` border thickness, making the button appear not selected.
     if (*exit_code == EXIT_FAILURE)
     {

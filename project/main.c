@@ -74,7 +74,7 @@ void game_loop(int* exit_code);
 
 /* Body */
 
-#define SDL_MAIN_HANDLED
+[[ noreturn ]] /// `program_exit` at the end handles quitting.
 int main(int argc, char *argv[])
 {
     UNUSED(argc);
@@ -94,7 +94,6 @@ int main(int argc, char *argv[])
     game_loop(&exit_code);
 
     program_exit(exit_code); /// Actual quitting of the program.
-    return exit_code;        /// Solely for `-Wall -Wextra` compliance.
 }
 
 
@@ -174,7 +173,7 @@ void game_loop(int* exit_code)
         FPS_manager.delta_ns = SDL_GetTicksNS() - render_start_tick;
         if (FPS_manager.fps_capped && FPS_manager.target_delta_ns > FPS_manager.delta_ns)
         {
-            SDL_DelayNS(FPS_manager.target_delta_ns - FPS_manager.delta_ns - FPS_manager.delta_ns/40.0);
+            SDL_DelayNS(FPS_manager.target_delta_ns - FPS_manager.delta_ns);
             FPS_manager.delta_ns = FPS_manager.target_delta_ns;
         }
         render_start_tick = SDL_GetTicksNS();

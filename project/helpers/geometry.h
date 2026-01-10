@@ -10,8 +10,8 @@
 
 struct Vec2
 {
-    int x;
-    int y;
+    float x;
+    float y;
 };
 #define X_AUTO_CENTER -1
 #define Y_AUTO_CENTER -1
@@ -19,7 +19,7 @@ struct Vec2
 
 /* Predef */
 
-/// TODO: rewrite all using macros.
+/// REDO: rewrite all using macros.
 
 float center_x  (const float w);
 float center_y  (const float h);
@@ -32,12 +32,12 @@ struct Vec2 vec2(const float x, const float y);
 
 float center_x(const float w)
 {
-    return (RENDER_WIDTH - w) / 2.0;
+    return (RENDER_WIDTH - w) / (float)2.0;
 }
 
 float center_y(const float h)
 {
-    return (RENDER_HEIGHT - h) / 2.0;
+    return (RENDER_HEIGHT - h) / (float)2.0;
 }
 
 float reflect_x(const float x)

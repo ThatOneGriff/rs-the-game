@@ -149,7 +149,7 @@ struct Environment new_environment(char** texture_paths, const size_t texture_co
         return result;
     }
     for (size_t i = 0; i < object_count; i++)
-        result.cur_texture_indexes[i] = randint(0, texture_count-1); /// Randomized textures.
+        result.cur_texture_indexes[i] = randint(0, (unsigned int)texture_count-1); /// Randomized textures.
 
     result.object_count = object_count;
     free_deinit_stack(&deinit_stack); /// `free()` because all members are to be used later.

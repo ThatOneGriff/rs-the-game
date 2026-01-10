@@ -140,7 +140,7 @@ void couple_move_component(struct Move_Component* target, SDL_FRect* manipulated
         }
 
         for (size_t i = 0; i < rect_count; i++)
-            target->offsets[i] = rand_vec2(vec2(0,0), max_offset);
+            target->offsets[i] = rand_vec2(vec2(0.0, 0.0), max_offset);
 
         add_to_deinit_stack(&deinit_stack, target->offsets, (void (*)(void*))free);
     }
@@ -226,14 +226,14 @@ void move_all_rects(struct Move_Component* target)
             if (target->random_x_reflect)
                 target->reflected_rect_indices[i] = randint(0,1);
             if (target->offsets != NULL)
-                target->offsets[i] = rand_vec2(vec2(0,0), target->max_offset);
+                target->offsets[i] = rand_vec2(vec2(0.0, 0.0), target->max_offset);
         }
         
         SDL_FRect new_rect = target->path.points[target->rects_pt_indices[i]];
         if (target->offsets != NULL)
         {
-            new_rect.x -= target->offsets[i].x * (target->rects_pt_indices[i] + 1);
-            //new_rect.y -= target->offsets[i].y * (target->rects_pt_indices[i] + 1); /// UNTESTED
+            new_rect.x -= target->offsets[i].x * (float)(target->rects_pt_indices[i] + 1);
+            new_rect.y -= target->offsets[i].y * (float)(target->rects_pt_indices[i] + 1); /// UNTESTED
         }
         if (target->random_x_reflect)
             if (target->reflected_rect_indices[i] == 1)

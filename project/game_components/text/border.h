@@ -15,7 +15,7 @@
 /* Predef */
 
 void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius, const int x, const int y);
-SDL_Surface* create_bordered_text_surface(const char* text, const float text_size, const unsigned int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color);
+SDL_Surface* create_bordered_text_surface(const char* text, const int text_size, const int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color);
 
 
 /* Body */
@@ -41,21 +41,23 @@ void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius,
 }
 
 
-SDL_Surface* create_bordered_text_surface(const char* text, const float text_size, const unsigned int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color)
+SDL_Surface* create_bordered_text_surface(const char* text, const int text_size, const int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color)
 {
-    /// Font
-    TTF_Font *font = TTF_OpenFont(MAIN_FONT_PATH, text_size); /// IDEA: loading the font each time we create a text is actually wasteful?
-    if (font == NULL)
-    {
-        print_error("`create_bordered_text_surface()`: error loading the font", IS_SDL_ERROR);
-        return NULL;
-    }
     /// Deinit stack
     int exit_code = EXIT_SUCCESS;
     struct Deinit_Stack deinit_stack = new_deinit_stack(3, &exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
     if (exit_code == EXIT_FAILURE)
     {
         print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        free_deinit_stack(&deinit_stack);
+        return NULL;
+    }
+
+    /// Font
+    TTF_Font *font = TTF_OpenFont(MAIN_FONT_PATH, (float)text_size); /// IDEA: loading the font each time we create a text is actually wasteful?
+    if (font == NULL)
+    {
+        print_error("`create_bordered_text_surface()`: error loading the font", IS_SDL_ERROR);
         free_deinit_stack(&deinit_stack);
         return NULL;
     }
@@ -87,7 +89,7 @@ SDL_Surface* create_bordered_text_surface(const char* text, const float text_siz
     add_to_deinit_stack(&deinit_stack, surf_out, (void (*)(void*))SDL_DestroySurface);
     
     /// A surface of the same pixel type as TTF-related things.
-    SDL_Surface* result = SDL_CreateSurface(surf_out->w + border_thickness*2, surf_out->h + border_thickness*2, SDL_PIXELFORMAT_ARGB32);
+    SDL_Surface* result = SDL_CreateSurface((int)surf_out->w + (int)border_thickness*2, (int)surf_out->h + (int)border_thickness*2, SDL_PIXELFORMAT_ARGB32);
     if (result == NULL)
     {
         print_error("`create_bordered_text_surface()`: couldn't create `result` surface", IS_SDL_ERROR);

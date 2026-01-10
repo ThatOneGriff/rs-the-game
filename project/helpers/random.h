@@ -22,7 +22,7 @@ struct Vec2  rand_vec2(const struct Vec2 min, const struct Vec2 max);
 
 /* Body */
 
-unsigned int _seed = 0; /// Temporary value (time-initialized with the first function call).
+static time_t _seed = 0; /// Temporary value (time-initialized with the first function call).
 unsigned int randint(const unsigned int min, const unsigned int max)
 {
     if (min > max)
@@ -37,7 +37,7 @@ unsigned int randint(const unsigned int min, const unsigned int max)
     if (_seed == 0)
     {
         _seed = time(NULL);
-        srand(_seed); /// srand() only needs to be called once.
+        srand((unsigned int)_seed); /// srand() only needs to be called once.
     }
 
     return rand() % (max-min+1) + min;
@@ -69,20 +69,24 @@ unsigned int randint_except(unsigned int min, unsigned int max, const unsigned i
 
 SDL_Color rand_color(void)
 {
-    return (SDL_Color){randint(0, 255), randint(0, 255), randint(0, 255), 0};
+    return (SDL_Color){(Uint8)randint(0, 255), (Uint8)randint(0, 255), (Uint8)randint(0, 255), (Uint8)0};
 }
 
 
 /// [95, 105] = [0.95, 1.05]
 float rand_percent(const unsigned int min, const unsigned int max)
 {
-    return (float)(randint(min, max)) / 100.0;
+    return (float)(randint(min, max)) / (float)100.0;
 }
 
 
+/// WARNING: casts `float` to `int`.
 struct Vec2 rand_vec2(const struct Vec2 min, const struct Vec2 max)
 {
-    return vec2(randint_w_neg(min.x, max.x), randint_w_neg(min.y, max.y));
+    return vec2(
+        (float)randint_w_neg((int)min.x, (int)max.x),
+        (float)randint_w_neg((int)min.y, (int)max.y)
+    );
 }
 
 #endif /// RANDOM_H

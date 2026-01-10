@@ -1,6 +1,7 @@
 #!/bin/bash
-clang -Wall -Wextra -Weverything -Werror -std=c23 -g3 \
--Wconversion -Wdouble-promotion -Wno-implicit-fallthrough -Wno-sign-conversion \
+clang -Wall -Wextra -Weverything -Werror -std=c23 -g3 -ferror-limit=100 \
+-Wconversion -Wdouble-promotion -Wformat=2 -Wformat-truncation -Wshadow -Wundef \
+-Wno-bad-function-cast -Wno-cast-function-type-strict -fno-common -Wno-c++-keyword -Wno-declaration-after-statement -Wno-documentation-unknown-command -Wno-float-equal -Wno-implicit-fallthrough -Wno-implicit-void-ptr-cast -Wno-newline-eof -Wno-padded -Wno-pre-c23-compat -Wno-reserved-identifier -Wno-sign-conversion -Wno-switch-default -Wno-tentative-definition-incomplete-type -Wno-unsafe-buffer-usage \
 -fsanitize=address -fsanitize=undefined \
 project/main.c -o ./rs_the_game.exe -lSDL3 -lSDL3_image -lSDL3_ttf \
 -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" \

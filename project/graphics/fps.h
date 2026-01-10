@@ -6,7 +6,7 @@
 #include <stdbool.h>  /// `bool fps_capped`.
 #include "../debug.h" /// Error printing.
 
-#define SEC_IN_NS 1000000000.0
+#define SEC_IN_NS (float)1000000000.0
 #define time_tick_ns unsigned long long int
 #define time_tick_ms unsigned long long int /// Purely for code clarity.
 
@@ -48,7 +48,7 @@ void set_fps_cap(const unsigned int new_fps_cap)
     if (new_fps_cap != FPS_manager.fps_cap)
     {
         FPS_manager.fps_cap = new_fps_cap;
-        FPS_manager.target_delta_ns = SEC_IN_NS / new_fps_cap;
+        FPS_manager.target_delta_ns = (time_tick_ns)(SEC_IN_NS / (float)new_fps_cap);
     }
 }
 

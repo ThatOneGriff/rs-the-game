@@ -147,6 +147,7 @@ void quit(void)
 }
 
 
+[[ noreturn ]]
 void program_exit(const int exit_code)
 {
     quit();

@@ -39,8 +39,8 @@ struct Texture load_texture(const char* path, const SDL_FRect rect, int* exit_co
     /// Parameter checking
     if (exit_code == NULL)
         print_warning("`load_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    if (rect.w == 0 || rect.h == 0)
-        print_warning("`load_texture()`: `rect`'s `x` or `y` is 0. Are you sure?", NON_SDL_ERROR);
+    if (rect.w == (float)0.0 || rect.h == (float)0.0)
+        print_warning("`load_texture()`: `rect`'s `x` or `y` == 0.0. Are you sure?", NON_SDL_ERROR);
     if (path == NULL)
     {
         print_error("`load_texture()`: `path` arg is `NULL`", NON_SDL_ERROR);
@@ -79,10 +79,10 @@ void render_texture(const struct Texture* target)
         print_error("`render_texture()` target or its `texture` is `NULL`", NON_SDL_ERROR);
         return;
     }
-    if (target->rect.w == 0 || target->rect.h == 0)
-        print_warning("`render_texture()`: target's `w` or `h` is 0. Are you sure this was supposed to happen?", NON_SDL_ERROR);
-    if (target->rect.x + target->rect.w <= 0 ||
-        target->rect.y + target->rect.h <= 0 ||
+    if (target->rect.w == (float)0.0 || target->rect.h == (float)0.0)
+        print_warning("`render_texture()`: target's `w` or `h` == 0.0. Are you sure this was supposed to happen?", NON_SDL_ERROR);
+    if (target->rect.x + target->rect.w <= (float)0.0 ||
+        target->rect.y + target->rect.h <= (float)0.0 ||
         target->rect.x >= RENDER_WIDTH ||
         target->rect.y >= RENDER_HEIGHT)
     {

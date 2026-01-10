@@ -15,7 +15,7 @@
 #define GREEN  2
 #define YELLOW 6
 
-void textcolor(const short int color_code)
+static void textcolor(const short int color_code)
 {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color_code);
 }
@@ -23,7 +23,7 @@ void textcolor(const short int color_code)
 
 /* Memory */
 
-void free_ptr_arr(void** target, const size_t len)
+static void free_ptr_arr(void** target, const size_t len)
 {
     if (target == NULL)
         return;

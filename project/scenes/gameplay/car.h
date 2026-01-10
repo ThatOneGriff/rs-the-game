@@ -24,9 +24,9 @@ struct Car
     SDL_Texture* textures[5];
     size_t base_texture;
     SDL_FRect coords;
-    float handling;
-    float top_speed;
-    float direction_x;
+    int handling;
+    int top_speed;
+    int direction_x;
     ///unsigned int latest_jump_tick;
 };
 struct Car load_car(const char path[], int* exit_code);
@@ -38,9 +38,9 @@ void       free_car(struct Car* target);
 struct Car load_car(const char path[], int* exit_code)
 {
     struct Car result;
-    result.handling = 0.0;
-    result.top_speed = 0.0;
-    result.direction_x = 0.0;
+    result.handling =  0;
+    result.top_speed = 0;
+    result.direction_x  = 0;
     result.base_texture = 2; /// main texture
     ///result.latest_jump_tick = SDL_GetTicks();
 
@@ -125,8 +125,8 @@ void free_car(struct Car* target)
         }
     }
     free(target->textures);
-    target->handling  = 0.0;
-    target->top_speed = 0.0;
+    target->handling  = 0;
+    target->top_speed = 0;
     target->direction_x = 0;
     return;
 }
