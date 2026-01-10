@@ -33,18 +33,20 @@ void render_texture(const struct Texture* target);
 struct Texture load_texture(const char* path, const SDL_FRect rect, int* exit_code)
 {
     struct Texture result;
+    result.texture = NULL;
+    result.rect    = (SDL_FRect){0.0, 0.0, 0.0, 0.0};
 
     /// Parameter checking
+    if (exit_code == NULL)
+        print_warning("`load_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+    if (rect.w == 0 || rect.h == 0)
+        print_warning("`load_texture()`: `rect`'s `x` or `y` is 0. Are you sure?", NON_SDL_ERROR);
     if (path == NULL)
     {
         print_error("`load_texture()`: `path` arg is `NULL`", NON_SDL_ERROR);
         *exit_code = EXIT_FAILURE;
         return result;
     }
-    if (exit_code == NULL)
-        print_warning("`load_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    if (rect.w == 0 || rect.h == 0)
-        print_warning("`load_texture()`: `rect`'s `x` or `y` is 0. Are you sure?", NON_SDL_ERROR);
     
     /// Texture loading
     result.texture = IMG_LoadTexture(graphics_layer.renderer, path);

@@ -10,7 +10,7 @@
 #include <stdlib.h>               /// `*alloc()`.
 
 /* Related headers */
-#include "move_component.h"       /// Moving textures.
+#include "movement/move_component.h"    /// Moving textures.
 
 /* Helpers */
 #include "../debug.h"                   /// Error printing.

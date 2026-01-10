@@ -29,7 +29,6 @@ struct Logic_Layer
     void* curr_scene;
 
     SDL_Event event;
-    bool* key_state;
 
     time_tick_ms curr_tick;
 };
@@ -42,7 +41,6 @@ void _init_logic_layer(int* exit_code)
     logic_layer.game_is_running = true;
     logic_layer.remain_in_scene = true;
     logic_layer.curr_scene = NULL;
-    logic_layer.key_state  = NULL;
     logic_layer.curr_tick  = SDL_GetTicks(); /// Temp value. Will be updated every frame.
     *exit_code = EXIT_SUCCESS;
     return;
@@ -53,7 +51,6 @@ void _free_logic_layer(void)
     logic_layer.game_is_running = false;
     logic_layer.remain_in_scene = false;
     logic_layer.curr_scene = NULL;
-    logic_layer.key_state  = NULL;
     return;
 }
 

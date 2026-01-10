@@ -13,13 +13,13 @@
 #include "../../helpers/helpers.h" /// `free_ptr_arr()`.
 
 /* Graphics & components */
-#include "car.h"                                    /// `*car_ptr` (i.e. player).
-#include "../../game_components/environment.h"      /// `struct Environment`.
-#include "../../game_components/move_component.h"   /// `struct Move_Component`.
-#include "../../game_components/multi_texture.h"    /// Multi-textures.
-#include "../../game_components/shifting_texture.h" /// Shifting textures.
-#include "../../game_components/texture.h"          /// Textures.
-#include "../../graphics/graphics_layer.h"          /// `graphics_layer.renderer`.
+#include "car.h"                                           /// `*car_ptr` (i.e. player).
+#include "../../game_components/environment.h"             /// `struct Environment`.
+#include "../../game_components/multi_texture.h"           /// Multi-textures.
+#include "../../game_components/shifting_texture.h"        /// Shifting textures.
+#include "../../game_components/texture.h"                 /// Textures.
+#include "../../game_components/movement/move_component.h" /// `struct Move_Component`.
+#include "../../graphics/graphics_layer.h"              /// `graphics_layer.renderer`.
 
 #define GAMEPLAY_DATA_LINES 11
 

@@ -66,12 +66,10 @@ void _process_gameplay_car_input(struct Car* car)
     }
     
     /* Input reading */
-    logic_layer.key_state = SDL_GetKeyboardState(NULL);
+    const bool* key_state = SDL_GetKeyboardState(NULL); /// Unlike the scancodes, this provides no delay - just like handling a car requires.
     int prev_car_direction_x = car->direction_x;
-    car->direction_x = - logic_layer.key_state[SDL_SCANCODE_LEFT] + logic_layer.key_state[SDL_SCANCODE_RIGHT];
+    car->direction_x = - key_state[SDL_SCANCODE_LEFT] + key_state[SDL_SCANCODE_RIGHT];
     
-    //printf("%f\n", car->coords.x);                 /// TEMP
-    //printf("%f\n", car->coords.x + car->coords.w); /// TEMP
     /* Boundary processing */
     if (car->direction_x == -1 && car->coords.x <= 0)
         car->direction_x = 0;

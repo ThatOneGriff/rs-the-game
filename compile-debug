@@ -1,4 +1,5 @@
-gcc -Ofast -Wall -Wextra -Werror -Wno-discarded-qualifiers -Wno-implicit-fallthrough -Wno-stringop-overflow -std=c23 \
-project/main.c project/audio/audio.c -o ./rs_the_game.exe -lSDL3 -lSDL3_image -lSDL3_ttf \
+clang -Wall -Wextra -Werror -Wno-implicit-fallthrough -std=c23 \
+-fsanitize=address -fsanitize=undefined \
+project/main.c -o ./rs_the_game.exe -lSDL3 -lSDL3_image -lSDL3_ttf \
 -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" \
 -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"

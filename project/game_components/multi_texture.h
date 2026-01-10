@@ -10,7 +10,7 @@
 #include <stdlib.h>               /// `*alloc()`.
 
 /* Related headers */
-#include "move_component.h"       /// Moving textures.
+//#include "move_component.h"       /// Moving textures.
 
 /* Helpers */
 #include "../debug.h"                   /// Error printing.
@@ -104,6 +104,7 @@ struct Multi_Texture load_multi_texture(const char* texture_path, const size_t m
 }
 
 
+/*
 void couple_move_component_to_multi_texture(struct Multi_Texture* to, struct Move_Component* move_component, const struct Vec2 max_offset, bool randomize_positions, int* exit_code)
 {
     /// Arg checking
@@ -134,6 +135,7 @@ void couple_move_component_to_multi_texture(struct Multi_Texture* to, struct Mov
     *exit_code = EXIT_SUCCESS;
     return;
 }
+*/
 
 
 void free_multi_texture(struct Multi_Texture* target)

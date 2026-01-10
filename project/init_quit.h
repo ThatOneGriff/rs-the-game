@@ -21,10 +21,10 @@
 #endif /// USING_AUDIO
 
 /* Other headers */
-#include "graphics/fps.h"            /// Initialization of
-#include "graphics/graphics_layer.h" /// various
-#include "logic/logic_layer.h"       /// game
-#include "text/text.h"               /// components.
+#include "graphics/fps.h"              /// Initialization of
+#include "graphics/graphics_layer.h"   /// various
+#include "logic/logic_layer.h"         /// game
+#include "game_components/text/text.h" /// components.
 
 #define SDL_FLAGS (SDL_INIT_VIDEO)
 

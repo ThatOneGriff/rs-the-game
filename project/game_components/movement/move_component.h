@@ -11,13 +11,13 @@
 
 /* Related */
 #include "path.h"                 /// The whole `Move_Component` is based on some `Path`.
-#include "../logic/logic_layer.h" /// `logic_layer.curr_tick`.
+#include "../../logic/logic_layer.h" /// `logic_layer.curr_tick`.
 
 /* Helpers */
-#include "../debug.h"             /// Error printing.
-#include "../deinit_stack.h"      /// Deinitialization stack.
-#include "../helpers/geometry.h"  /// `struct Vec2`, `reflect_x()`.
-#include "../helpers/random.h"    /// Position randomizing.
+#include "../../debug.h"             /// Error printing.
+#include "../../deinit_stack.h"      /// Deinitialization stack.
+#include "../../helpers/geometry.h"  /// `struct Vec2`, `reflect_x()`.
+#include "../../helpers/random.h"    /// Position randomizing.
 
 #define RANDOMIZED_POSITIONS true
 #define    ORDERED_POSITIONS false

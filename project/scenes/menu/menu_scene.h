@@ -16,10 +16,10 @@
 #include "../../resources.h"       /// Null texture.
 
 /* Graphics and components */
-#include "../../game_components/button.h"  /// Button.
-#include "../../game_components/texture.h" /// Texture.
-#include "../../graphics/graphics_layer.h" /// `graphics_layer`.
-#include "../../text/text.h"               /// Text creation.
+#include "../../game_components/button.h"    /// Button.
+#include "../../game_components/texture.h"   /// Texture.
+#include "../../game_components/text/text.h" /// Text creation.
+#include "../../graphics/graphics_layer.h"   /// `graphics_layer`.
 
 #define MENU_DATA_PATH "./rsdt/scene_data/menu.rsdt" /// Unlike `Gameplay_Scene`'s, there's only one concrete file for the menu.
 #define MENU_DATA_LINES 1

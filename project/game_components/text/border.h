@@ -7,9 +7,9 @@
 #include <SDL3_ttf/SDL_ttf.h> /// SDL3_ttf.
 
 /* Helper headers */
-#include "../debug.h"        /// Error output.
-#include "../deinit_stack.h" /// Deinitialization stack.
-#include "../resources.h"    /// `MAIN_FONT_PATH`.
+#include "../../debug.h"        /// Error output.
+#include "../../deinit_stack.h" /// Deinitialization stack.
+#include "../../resources.h"    /// `MAIN_FONT_PATH`.
 
 
 /* Predef */

@@ -10,7 +10,7 @@
 #include <stdlib.h>   /// `*alloc()`.
 
 /* Helpers */
-#include "../debug.h" /// Error printing.
+#include "../../debug.h" /// Error printing.
 
 
 /* Struct */

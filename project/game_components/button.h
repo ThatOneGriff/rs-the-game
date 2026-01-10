@@ -7,12 +7,12 @@
 
 /* Helpers */
 #include "../debug.h"            /// Error printing.
-#include "../helpers/geometry.h" /// `Vec2`.
+#include "../helpers/geometry.h" /// `struct Vec2`.
 
 /* Components */
-#include "texture.h"        /// Rendering text into a texture.
-#include "../text/border.h" /// Text w/ borders.
-#include "../text/text.h"   /// Text.
+#include "texture.h"     /// Rendering text into a texture.
+#include "text/border.h" /// Text w/ borders.
+#include "text/text.h"   /// Text.
 
 
 /* Predef */
