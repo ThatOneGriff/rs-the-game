@@ -265,9 +265,7 @@ void render_environment(const struct Environment* target)
                 continue; /// Out of bounds.
             
             SDL_RenderTexture(graphics_layer.renderer, target->textures[target->cur_texture_indexes[i]], NULL, &target->rects[i]);
-            //if (target->move_component.random_x_reflect == false)
             break;
-            //if (target->move_component.reflected_rect_indices[i])
         }
     }
     

@@ -1,5 +1,10 @@
-# DEPRECATED, left purely as an example.
-gcc -Ofast -Wall -Wextra -Werror -Wno-discarded-qualifiers -Wno-implicit-fallthrough -Wno-stringop-overflow -std=c23 \
+#!/bin/bash
+# Before compiling with audio, run `sh compile-release` or `sh compile-debug` to check for warnings in project's code.
+# `miniaudio` is not compliant with `-Weverything`, and since I'm not being waged to fix the library,
+# a lot of warnings otherwise checked for have been removed from this file.
+clang -O3 -ffast-math -flto -Wall -Wextra -Werror -std=c23 \
+-Wformat=2 -Wformat-truncation -Wundef                     \
+-Wno-bad-function-cast -Wno-cast-function-type-strict -fno-common -Wno-c++-keyword -Wno-declaration-after-statement -Wno-documentation-unknown-command -Wno-float-equal -Wno-format-nonliteral -Wno-implicit-fallthrough -Wno-implicit-void-ptr-cast -Wno-newline-eof -Wno-padded -Wno-pre-c11-compat -Wno-pre-c23-compat -Wno-reserved-identifier -Wno-sign-conversion -Wno-switch-default -Wno-tentative-definition-incomplete-type -Wno-unsafe-buffer-usage \
 project/main.c project/audio/audio.c -o ./rs_the_game.exe -lSDL3 -lSDL3_image -lSDL3_ttf \
 -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" \
 -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
