@@ -1,3 +1,0 @@
-#!/bin/bash
-export ASAN_OPTIONS="verbosity=3:log_threads=1:print_stacktrace=1"
-gdb --ex run ./rs-the-game.exe
