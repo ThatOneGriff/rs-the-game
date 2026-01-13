@@ -14,6 +14,7 @@
 /* Audio */
 #ifdef USING_AUDIO
 #include "audio/audio.h"             /// Wrapper for 'miniaudio'.
+#include "audio/miniaudio.h"         /// 'miniaudio'.
 #endif /// USING_AUDIO
 
 /* Graphics */
@@ -73,7 +74,7 @@ void game_loop(int* exit_code);
 
 /* Body */
 
-[[ noreturn ]] /// `program_exit` at the end handles quitting.
+[[ noreturn ]] /// Reason: `program_exit` at the end handles quitting.
 int main(int argc, char *argv[])
 {
     UNUSED(argc);

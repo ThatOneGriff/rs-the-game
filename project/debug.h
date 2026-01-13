@@ -13,8 +13,7 @@
 #define  IS_SDL_ERROR true
 #define NON_SDL_ERROR false
 
-//#define DEBUG /// BUGGED
-//#define USING_AUDIO /// Compiling with audio is VERY long and not always needed.
+#define USING_AUDIO /// Compilation with audio is VERY long. Comment if not needed.
 
 
 /* Predef */
