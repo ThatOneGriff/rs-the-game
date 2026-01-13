@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# Whatever the reason, GDB conflicts with ASan (SIGSEGV). So here, `-fsanitize=address` is removed.
+# Purpose of this build script: testing with GDB.
+# Run with GDB: `sh run-gdb`.
+
 set -euo pipefail  # Exit upon any error, undefined variable usage or pipeline failure
 
 # Clean-up preparing
@@ -19,7 +24,7 @@ clang -g3 -ferror-limit=100 -Wall -Wextra -Weverything -Werror -std=c23 -Wno-unu
 -Wno-implicit-fallthrough -Wno-implicit-void-ptr-cast -Wno-newline-eof -Wno-padded \
 -Wno-pre-c11-compat -Wno-pre-c23-compat -Wno-reserved-identifier -Wno-sign-conversion \
 -Wno-switch-default -Wno-tentative-definition-incomplete-type -Wno-unsafe-buffer-usage \
--fsanitize=undefined -fsanitize=integer \
+-fsanitize=float-divide-by-zero -fsanitize=integer -fsanitize=nullability -fsanitize=shadow-call-stack -fsanitize=undefined -fsanitize=unsigned-integer-overflow -fsanitize=unsigned-shift-base \
 -c project/main.c -o ./main.o \
 -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include"
 
@@ -28,7 +33,7 @@ echo "- Compiling audio..."
 
 # Audio compilation ('miniaudio' is not compliant with `-Weverything`)
 clang -g3 -ferror-limit=100 -Wall -Wextra -Werror -std=c23 \
--fsanitize=undefined -fsanitize=integer \
+-fsanitize=float-divide-by-zero -fsanitize=integer -fsanitize=nullability -fsanitize=shadow-call-stack -fsanitize=undefined -fsanitize=unsigned-integer-overflow -fsanitize=unsigned-shift-base \
 -c project/audio/audio.c -o ./audio.o
 
 echo "[2/3] Compiled audio."
@@ -36,7 +41,7 @@ echo "- Linking..."
 
 # Linking
 clang -g3 -ferror-limit=100 ./main.o ./audio.o -o ./rs-the-game.exe \
--fsanitize=undefined -fsanitize=integer \
+-fsanitize=float-divide-by-zero -fsanitize=integer -fsanitize=nullability -fsanitize=shadow-call-stack -fsanitize=undefined -fsanitize=unsigned-integer-overflow -fsanitize=unsigned-shift-base \
 -lSDL3 -lSDL3_image -lSDL3_ttf \
 -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
 
