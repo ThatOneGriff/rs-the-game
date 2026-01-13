@@ -1,2 +1,2 @@
 #!/bin/bash
-gdb ./rs_the_game.exe
+gdb --ex run ./rs-the-game.exe

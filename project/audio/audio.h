@@ -10,5 +10,6 @@ struct Audio
     /// ...
 };
 static struct Audio audio;
+//extern struct Audio audio;
 
 #endif /// AUDIO_H

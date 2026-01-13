@@ -1,7 +1,46 @@
 #!/bin/bash
-clang -O3 -ffast-math -flto -Wall -Wextra -Weverything -Werror -std=c23                                     \
--Wconversion -Wdouble-promotion -Wformat=2 -Wformat-truncation -Wshadow -Wundef                             \
--Wno-bad-function-cast -Wno-cast-function-type-strict -fno-common -Wno-c++-keyword -Wno-declaration-after-statement -Wno-documentation-unknown-command -Wno-float-equal -Wno-implicit-fallthrough -Wno-implicit-void-ptr-cast -Wno-newline-eof -Wno-padded -Wno-pre-c11-compat -Wno-pre-c23-compat -Wno-reserved-identifier -Wno-sign-conversion -Wno-switch-default -Wno-tentative-definition-incomplete-type -Wno-unsafe-buffer-usage \
-project/main.c -o ./rs_the_game.exe -lSDL3 -lSDL3_image -lSDL3_ttf                                          \
--I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include" \
+set -euo pipefail  # Exit upon any error, undefined variable usage or pipeline failure
+
+# Clean-up preparing
+clean_up() {
+    rm -f ./main.o ./audio.o
+    echo "Temp files cleaned up."
+}
+trap clean_up EXIT # Will be called any way the compilation goes.
+
+echo ""
+echo "- Compiling main program..."
+
+# Main program compilation (maximum possible warning checks)
+clang -O3 -DNDEBUG -ffast-math -flto -fno-stack-protector -fomit-frame-pointer -fstrict-aliasing -funroll-loops -march=native -mtune=native \
+-Wall -Wextra -Weverything -Werror -std=c23 \
+-Wconversion -Wdouble-promotion -Wformat=2 -Wformat-truncation -Wshadow -Wundef \
+-Wno-bad-function-cast -Wno-cast-function-type-strict -fno-common -Wno-c++-keyword \
+-Wno-declaration-after-statement -Wno-documentation-unknown-command -Wno-float-equal \
+-Wno-implicit-fallthrough -Wno-implicit-void-ptr-cast -Wno-newline-eof -Wno-padded \
+-Wno-pre-c11-compat -Wno-pre-c23-compat -Wno-reserved-identifier -Wno-sign-conversion \
+-Wno-switch-default -Wno-tentative-definition-incomplete-type -Wno-unsafe-buffer-usage \
+-c project/main.c -o ./main.o \
+-I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include"
+
+echo "[1/3] Compiled main program."
+echo "- Compiling audio..."
+
+# Audio compilation ('miniaudio' is not compliant with `-Weverything`)
+clang -O3 -DNDEBUG -ffast-math -flto -fno-stack-protector -fomit-frame-pointer -fstrict-aliasing -funroll-loops -march=native -mtune=native \
+-Wall -Wextra -Werror -std=c23 \
+-c project/audio/audio.c -o ./audio.o
+
+echo "[2/3] Compiled audio."
+echo "- Linking..."
+
+# Linking
+clang -O3 -ffast-math -flto -fno-semantic-interposition -march=native -mtune=native \
+-Wl,--gc-sections -Wl,-O3 \
+./main.o ./audio.o -o ./rs-the-game.exe \
+-lSDL3 -lSDL3_image -lSDL3_ttf \
 -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
+
+echo "[3/3] Linked!"
+echo "- Compiled!"
+echo ""
