@@ -18,7 +18,7 @@
 /* Predef */
 
 struct Button;
-struct Button create_button(const char* text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned int size, int* exit_code);
+struct Button create_button(const char* text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int* exit_code);
 void          render_button(const struct Button* target);
 void            free_button(struct Button* target);
 
@@ -36,7 +36,7 @@ struct Button
 
 /* Body */
 
-struct Button create_button(const char* text, const SDL_Color inner_color, struct Vec2 screen_pos, const unsigned int size, int* exit_code)
+struct Button create_button(const char* text, const SDL_Color inner_color, struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int* exit_code)
 {
     struct Button result;
     result.is_focused = false;
@@ -52,7 +52,7 @@ struct Button create_button(const char* text, const SDL_Color inner_color, struc
         print_warning("`create_button()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
     /* regular_texture texture */
-    result.regular_texture = create_text(text, inner_color, (SDL_Color){188,204,220,255}, screen_pos, size, size/20, exit_code);
+    result.regular_texture = create_text(text, inner_color, (SDL_Color){188,204,220,255}, screen_pos, size, border_thickness/2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`create_button()`: `regular_texture` creation failure", NON_SDL_ERROR);
@@ -60,8 +60,8 @@ struct Button create_button(const char* text, const SDL_Color inner_color, struc
     }
 
     /* focused_texture texture */
-    const struct Vec2 border_adjusted_screen_pos = vec2(screen_pos.x - (float)size/20, screen_pos.y - (float)size/20); /// So that focusing doesn't make the button jitter.
-    result.focused_texture = create_text(text, inner_color, (SDL_Color){255,255,255,255}, border_adjusted_screen_pos, size, size/10, exit_code); /// WARNING: may result in a `0` border thickness, making the button appear not selected.
+    const struct Vec2 border_adjusted_screen_pos = vec2(screen_pos.x - (float)border_thickness/2, screen_pos.y - (float)border_thickness/2); /// So that focusing doesn't make the button jitter.
+    result.focused_texture = create_text(text, inner_color, (SDL_Color){255,255,255,255}, border_adjusted_screen_pos, size, border_thickness, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`create_button()`: `focused_texture` creation failure", NON_SDL_ERROR);

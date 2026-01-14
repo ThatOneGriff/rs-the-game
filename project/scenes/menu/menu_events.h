@@ -53,14 +53,30 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
             break;
 
         /// TEMP while I'm coming up with a better button management structure.
-        case SDLK_LEFT:
-            scene->quit_button.is_focused = false;
-            scene->play_button.is_focused = true;
+        case SDLK_UP:
+            if (scene->options_button.is_focused)
+            {
+                scene->play_button.   is_focused = true;
+                scene->options_button.is_focused = false;
+            }
+            else if (scene->quit_button.is_focused)
+            {
+                scene->options_button.is_focused = true;
+                scene->quit_button.   is_focused = false;
+            }
             break;
         
-        case SDLK_RIGHT:
-            scene->quit_button.is_focused = true;
-            scene->play_button.is_focused = false;
+        case SDLK_DOWN:
+            if (scene->play_button.is_focused)
+            {
+                scene->play_button.   is_focused = false;
+                scene->options_button.is_focused = true;
+            }
+            else if (scene->options_button.is_focused)
+            {
+                scene->options_button.is_focused = false;
+                scene->quit_button.   is_focused = true;
+            }
             break;
         
         case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.

@@ -1,4 +1,6 @@
 - borders around images (may be as simple as drawing a rect behind them)
+- it may be quite easy to add another car (Clio 3 RS)
+- car stats in menu
 - car bouncing along to the beat
 
 + download tracks
