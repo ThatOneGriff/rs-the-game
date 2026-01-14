@@ -6,6 +6,7 @@
 #include <SDL3/SDL.h> /// Keyboard processing.
 
 /* Logic */
+#include <stdbool.h>                   /// Bools.
 #include "../../logic/global_events.h" /// Global event processing.
 #include "../../logic/logic_layer.h"   /// Key state variable.
 
@@ -47,13 +48,19 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
         case SDLK_RETURN:
             if (scene->play_button.is_focused)
                 logic_layer.remain_in_scene = false;
+            else if (scene->quit_button.is_focused)
+                logic_layer.game_is_running = false;
             break;
 
         /// TEMP while I'm coming up with a better button management structure.
-        case SDLK_UP:
-        case SDLK_DOWN:
-            scene->dummy_button.is_focused = ! scene->dummy_button.is_focused;
-            scene->play_button.is_focused  = ! scene->play_button.is_focused;
+        case SDLK_LEFT:
+            scene->quit_button.is_focused = false;
+            scene->play_button.is_focused = true;
+            break;
+        
+        case SDLK_RIGHT:
+            scene->quit_button.is_focused = true;
+            scene->play_button.is_focused = false;
             break;
         
         case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.

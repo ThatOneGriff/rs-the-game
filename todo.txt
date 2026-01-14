@@ -1,3 +1,4 @@
+- borders around images (may be as simple as drawing a rect behind them)
 - car bouncing along to the beat
 
 + download tracks
