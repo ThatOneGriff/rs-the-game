@@ -99,7 +99,7 @@ struct Menu_Scene load_menu_scene(int* exit_code)
         add_to_deinit_stack(&deinit_stack, result.bg, (void (*)(void*))SDL_DestroyTexture);
 
     /// Car name text
-    result.car_name_text = create_text("Renault Clio Williams", (SDL_Color){255,255,255,255}, (SDL_Color){255,255,255,255}, vec2(X_AUTO_CENTER, 50), 15, 0, exit_code);
+    result.car_name_text = create_text("Renault Clio Williams", (SDL_Color){255,255,255,255}, (SDL_Color){255,255,255,255}, vec2(X_AUTO_CENTER, 17), 15, 0, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_menu_scene()`: couldn't create the text", IS_SDL_ERROR);
@@ -110,7 +110,7 @@ struct Menu_Scene load_menu_scene(int* exit_code)
     add_to_deinit_stack(&deinit_stack, &result.car_name_text, (void (*)(void*))free_texture);
     
     /// Dummy button
-    result.dummy_button = create_button("dummy", (SDL_Color){45,60,89,255}, vec2(150, 20), 20, exit_code);
+    result.dummy_button = create_button("dummy", (SDL_Color){45,60,89,255}, vec2(150, 75), 20, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_menu_scene()`: couldn't create dummy button", IS_SDL_ERROR);
