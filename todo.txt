@@ -1,9 +1,8 @@
-- divide music into 'menu', 'racing', 'both' (`enum struct Music_Style`)
 - car bouncing along to the beat
-- simple music window on screens
 
 + download tracks
 + music loading system
 + colored output (compilation)
 + add music to the game
 + music auto-switching 2s after ending
++ divide music into 'menu' and 'racing'

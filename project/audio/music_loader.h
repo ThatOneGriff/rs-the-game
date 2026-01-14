@@ -73,7 +73,7 @@ struct Music_Loader _init_music_loader(const char* music_data_path, int* exit_co
 
     /// First line indicates track amount.
     char line[100];
-    fgets(line, 3, music_data_file);
+    fgets(line, 100, music_data_file);
     const size_t line_count = atoi(line);
     if (line_count == 0)
     {
@@ -130,6 +130,7 @@ struct Music_Loader _init_music_loader(const char* music_data_path, int* exit_co
         {
             printf("(%s) ", line);
             print_warning("`_init_music_loader()`: couldnt't open track", NON_SDL_ERROR);
+            --i;
             continue;
         }
         else
@@ -273,7 +274,7 @@ void play_random_music(struct Music_Loader* target)
     strcpy(track_path, target->track_paths[track_i]);
     if (ma_sound_init_from_file(&audio_manager.engine, track_path, 0, NULL, NULL, &audio_manager.music) != MA_SUCCESS)
     {
-        printf("(%s) ", track_path);
+        printf("([%llu] %s) ", target->curr_track, track_path);
         print_warning("`play_random_music()`: couldn't play music", NON_SDL_ERROR);
         return;
     }
