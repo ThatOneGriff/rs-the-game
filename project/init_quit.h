@@ -145,7 +145,7 @@ void init(int* exit_code)
 void quit(void)
 {
     _free_music_loader();
-    ma_sound_uninit (&audio_manager.track);
+    ma_sound_uninit (&audio_manager.music);
     ma_engine_uninit(&audio_manager.engine);
     _free_global_resources();
     TTF_Quit();

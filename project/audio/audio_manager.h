@@ -8,7 +8,7 @@
 struct Audio_Manager
 {
     ma_engine engine;
-    ma_sound  track;
+    ma_sound  music;
 };
 static struct Audio_Manager audio_manager; /// Singleton.
 

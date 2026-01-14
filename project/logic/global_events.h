@@ -10,11 +10,12 @@
 #include <stdio.h>   /// I/O.
 
 /* Helper headers */
-#include "logic_layer.h"        /// Exiting the game.
-#include "../debug.h"           /// Some controls should only be available `#ifdef DEBUG`.
-#include "../graphics/fps.h"    /// Frame cap control.
-#include "../helpers/helpers.h" /// Colored output.
-#include "../resources.h"       /// Hot resource reload.
+#include "logic_layer.h"           /// Exiting the game.
+#include "../debug.h"              /// Some controls should only be available `#ifdef DEBUG`.
+#include "../graphics/fps.h"       /// Frame cap control.
+#include "../helpers/helpers.h"    /// Colored output.
+#include "../resources.h"          /// Hot resource reload.
+#include "../audio/music_loader.h" /// Music manipulation.
 
 
 /* Predef */
@@ -66,7 +67,10 @@ void _process_global_keyboard(const SDL_Keycode event_key)
         }
         break;
     
-    //#ifdef DEBUG /// WARNING: makes sense, but breaks the whole compilation. Do not uncomment.
+    case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
+        play_random_music();
+        break;
+    
     case SDLK_R:
         _load_global_resources(&exit_code);
         if (exit_code == EXIT_SUCCESS)
@@ -75,7 +79,6 @@ void _process_global_keyboard(const SDL_Keycode event_key)
             print_error("Hot resource reload:\n- Scene reloading will result in a crash;\n- You may try to fix invalid paths and reload again", NON_SDL_ERROR);
         break;
     }
-    //#endif /// DEBUG /// I assume the compiler confuses this `#endif` with the one at the end of the program.
 }
 
 #endif /// GLOBAL_EVENTS_H

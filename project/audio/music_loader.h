@@ -21,6 +21,7 @@ struct Music_Loader
 
     size_t       curr_track;
     time_tick_ms track_end_tick; /// Is used to control the 2s pause between tracks.
+    time_tick_ms track_start_delay;
 };
 static struct Music_Loader music_loader; /// Singleton.
 
@@ -29,7 +30,8 @@ static struct Music_Loader music_loader; /// Singleton.
 
 void _init_music_loader(const char* music_data_path, int* exit_code);
 void _free_music_loader(void);
-void play_random_music (void);
+void check_if_music_ended(void);
+void play_random_music   (void);
 
 
 /* Body */
@@ -39,8 +41,9 @@ void _init_music_loader(const char* music_data_path, int* exit_code)
     /// `music_loader` initial `NULL`-ing.
     music_loader.track_paths = NULL;
     music_loader.track_count = 0;
-    music_loader.curr_track     = 0;
-    music_loader.track_end_tick = 0; /// Temporary value to be set with the first update.
+    music_loader.curr_track        = ULONG_LONG_MAX;
+    music_loader.track_end_tick    = 0; /// Temporary value to be set with the first update.
+    music_loader.track_start_delay = 2000;
 
     /// Param checking
     if (exit_code == NULL)
@@ -112,6 +115,7 @@ void _init_music_loader(const char* music_data_path, int* exit_code)
         }
         add_to_deinit_stack(&deinit_stack, &music_loader.track_paths[i], (void (*)(void*))free);
         fgets(line, 100, music_data_file);
+        line[strcspn(line, "\n")] = '\0';
 
         /// Track loading
         test_track_opener = fopen(line, "r");
@@ -180,8 +184,53 @@ void _free_music_loader(void)
     }
     
     music_loader.track_count = 0;
-    music_loader.curr_track     = 0;
+    music_loader.curr_track     = ULONG_LONG_MAX;
     music_loader.track_end_tick = 0;
+    return;
+}
+
+
+void check_if_music_ended(void)
+{
+    /// Music hasn't ended.
+    if (! ma_sound_at_end(&audio_manager.music))
+        return;
+    /// Music just ended.
+    else if (music_loader.track_end_tick == 0)
+    {
+        music_loader.track_end_tick = logic_layer.curr_tick;
+        if (music_loader.track_start_delay == 0) /// delay = 0 => playing immediately
+            play_random_music();
+        else
+            return;
+    }
+    /// Music ended, and delay elapsed.
+    else if (logic_layer.curr_tick - music_loader.track_end_tick >= music_loader.track_start_delay)
+        play_random_music();
+}
+
+
+void play_random_music(void)
+{
+    if (music_loader.track_count == 1)
+    {
+        ma_sound_start(&audio_manager.music);
+        return;
+    }
+
+    ma_sound_uninit(&audio_manager.music);
+    char         track_path[100];
+    const size_t track_i = randint_except(0, (unsigned)music_loader.track_count-1, (unsigned)music_loader.curr_track);
+    strcpy(track_path, music_loader.track_paths[track_i]);
+    if (ma_sound_init_from_file(&audio_manager.engine, track_path, 0, NULL, NULL, &audio_manager.music) != MA_SUCCESS)
+    {
+        printf("(%s) ", track_path);
+        print_warning("`play_random_music()`: couldn't play music", NON_SDL_ERROR);
+        return;
+    }
+    music_loader.curr_track = track_i;
+    music_loader.track_end_tick = 0;
+    ma_sound_start(&audio_manager.music);
     return;
 }
 

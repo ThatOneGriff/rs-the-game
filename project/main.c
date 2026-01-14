@@ -121,12 +121,14 @@ void game_loop(int* exit_code)
     unsigned int prev_fps = UINT_MAX;
 
     /// The loop
+    play_random_music();
     while (logic_layer.game_is_running)
     {
         /// Preparations
         logic_layer.curr_tick = SDL_GetTicks();
         SDL_RenderClear(graphics_layer.renderer);
         SDL_SetRenderTarget(graphics_layer.renderer, graphics_layer.buffer);
+        check_if_music_ended();
 
         /// Gameplay scene processing
         if (logic_layer.curr_scene == &gameplay_scene)
@@ -143,6 +145,7 @@ void game_loop(int* exit_code)
                     return;
                 logic_layer.curr_scene = &menu_scene;
                 logic_layer.remain_in_scene = true;
+                play_random_music();
             }
         }
         /// Menu scene processing
@@ -159,6 +162,7 @@ void game_loop(int* exit_code)
                     return;
                 logic_layer.curr_scene = &gameplay_scene;
                 logic_layer.remain_in_scene = true;
+                play_random_music();
             }
         }
         
