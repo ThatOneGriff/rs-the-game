@@ -12,10 +12,9 @@
 #include "init_quit.h"               /// Program initialization.
 
 /* Audio */
-#ifdef USING_AUDIO
-#include "audio/audio.h"             /// Wrapper for 'miniaudio'.
+#include "audio/audio_manager.h"     /// Audio system.
 #include "audio/miniaudio.h"         /// 'miniaudio'.
-#endif /// USING_AUDIO
+#include "audio/music_loader.h"      /// Music loading.
 
 /* Graphics */
 #include "graphics/fps.h"            /// FPS manager.

@@ -31,9 +31,8 @@ clang -g1 -ferror-limit=100 -Wall -Wextra -Weverything -Werror -std=c23 -Wno-unu
 echo "[1/3] Compiled main program."
 echo "- Compiling audio..."
 
-# Audio compilation ('miniaudio' is not compliant with `-Weverything`)
+# Audio compilation ('miniaudio' is not compliant with `-Weverything` or most sanitizers)
 clang -g1 -ferror-limit=100 -Wall -Wextra -Werror -std=c23 \
--fsanitize=address -fsanitize=float-divide-by-zero -fsanitize=integer -fsanitize=nullability -fsanitize=shadow-call-stack -fsanitize=undefined -fsanitize=unsigned-integer-overflow -fsanitize=unsigned-shift-base \
 -c project/audio/audio.c -o ./audio.o
 
 echo "[2/3] Compiled audio."

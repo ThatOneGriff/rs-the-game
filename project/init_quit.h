@@ -16,9 +16,8 @@
 #include "resources.h"    /// Texture & font paths.
 
 /* Audio */
-#ifdef USING_AUDIO
-#include "audio/audio.h" /// 'miniaudio' init.
-#endif /// USING_AUDIO
+#include "audio/audio_manager.h" /// 'miniaudio' init.
+#include "audio/music_loader.h"  /// Music loading.
 
 /* Other headers */
 #include "graphics/fps.h"              /// Initialization of
@@ -107,11 +106,12 @@ void init(int* exit_code)
     }
     SDL_SetWindowIcon(graphics_layer.window, ICON_TEXTURE);
 
-    #ifdef USING_AUDIO
-    /// Audio
-    if (ma_engine_init(NULL, &audio.engine) != MA_SUCCESS)
+    /// Music loader
+    _init_music_loader("./rsdt/music.rsdt", exit_code);
+    if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init()`: failed to initialize audio", NON_SDL_ERROR);
+        print_error("`init()`: failed to initialize music loader", NON_SDL_ERROR);
+        //_free_music_loader(); /// TODO: enable once available.
         _free_global_resources();
         TTF_Quit();
         _free_logic_layer();
@@ -120,7 +120,20 @@ void init(int* exit_code)
         *exit_code = EXIT_FAILURE;
         return;
     }
-    #endif /// USING_AUDIO
+
+    /// Audio system
+    if (ma_engine_init(NULL, &audio_manager.engine) != MA_SUCCESS)
+    {
+        print_error("`init()`: failed to initialize audio engine", NON_SDL_ERROR);
+        //_free_music_loader(); /// TODO: enable once available.
+        _free_global_resources();
+        TTF_Quit();
+        _free_logic_layer();
+        flush_deinit_stack(&deinit_stack);
+        SDL_Quit();
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
 
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     print_success("`init()`");
@@ -128,14 +141,12 @@ void init(int* exit_code)
 }
 
 
-/// Works by FILO principle. IDEA: de-init with a stack? Could greatly shorten the code.
+/// Works by FILO principle.
 void quit(void)
 {
-    #ifdef USING_AUDIO
-    ma_sound_uninit (&audio.track);
-    ma_engine_uninit(&audio.engine);
-    #endif /// USING_AUDIO
-
+    //_free_music_loader(); /// TODO: enable once available.
+    ma_sound_uninit (&audio_manager.track);
+    ma_engine_uninit(&audio_manager.engine);
     _free_global_resources();
     TTF_Quit();
     _free_logic_layer();
