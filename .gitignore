@@ -5,6 +5,10 @@
 # VS Code & extensions
 #**/.VsCodeCounter/**
 
+# Music (due to licensing impossibility)
+**/music
+**/music.rsdt
+
 # Prerequisites
 *.d
 
