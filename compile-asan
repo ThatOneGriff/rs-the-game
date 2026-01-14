@@ -4,6 +4,10 @@
 # Purpose of this build script: testing with ASan.
 # Run: `sh run`.
 
+# Colors
+GREEN='\033[32m'
+RESET='\033[0m'
+
 set -euo pipefail  # Exit upon any error, undefined variable usage or pipeline failure
 
 # Clean-up preparing
@@ -28,14 +32,14 @@ clang -g1 -ferror-limit=100 -Wall -Wextra -Weverything -Werror -std=c23 -Wno-unu
 -c project/main.c -o ./main.o \
 -I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include"
 
-echo "[1/3] Compiled main program."
+echo -e "$GREEN[1/3]$RESET Compiled main program."
 echo "- Compiling audio..."
 
 # Audio compilation ('miniaudio' is not compliant with `-Weverything` or most sanitizers)
 clang -g1 -ferror-limit=100 -Wall -Wextra -Werror -std=c23 \
 -c project/audio/audio.c -o ./audio.o
 
-echo "[2/3] Compiled audio."
+echo -e "$GREEN[2/3]$RESET Compiled audio."
 echo "- Linking..."
 
 # Linking
@@ -44,6 +48,6 @@ clang -g1 -ferror-limit=100 ./main.o ./audio.o -o ./rs-the-game.exe \
 -lSDL3 -lSDL3_image -lSDL3_ttf \
 -L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
 
-echo "[3/3] Linked!"
+echo -e "$GREEN[3/3]$RESET Linked!"
 echo "- Compiled!"
 echo ""
