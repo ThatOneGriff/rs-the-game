@@ -7,7 +7,7 @@
 struct Audio
 {
     ma_engine engine;
-    /// ...
+    ma_sound  track;
 };
 static struct Audio audio;
 

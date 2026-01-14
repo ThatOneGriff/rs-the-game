@@ -179,6 +179,19 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     couple_move_component_to_environment(&result.trees, tree_move_component, vec2(10,0), exit_code); /// TODO: exit code check.
     add_to_deinit_stack(&deinit_stack, &result.trees, (void (*)(void*))free_environment); /// Don't delete. More elements will be added later
 
+    #ifdef USING_AUDIO
+    /// Audio setup (assumes `audio.engine` is initialized)
+    if (ma_sound_init_from_file(&audio.engine, "res/why_so_jolly.mp3", 0, NULL, NULL, &audio.bg_music) != MA_SUCCESS)
+    {
+        print_error("`load_gameplay_scene()`: couldn't load the music", NON_SDL_ERROR);
+        flush_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
+        *exit_code = EXIT_FAILURE;
+        return result;
+    }
+    ma_sound_start(&audio.bg_music);
+    #endif /// USING_AUDIO
+
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
     *exit_code = EXIT_SUCCESS;

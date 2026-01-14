@@ -132,7 +132,7 @@ void init(int* exit_code)
 void quit(void)
 {
     #ifdef USING_AUDIO
-    //ma_sound_uninit (&audio.bg_music); /// Sounds will be added.
+    ma_sound_uninit (&audio.track);
     ma_engine_uninit(&audio.engine);
     #endif /// USING_AUDIO
 

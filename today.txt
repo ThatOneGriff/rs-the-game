@@ -1,5 +1,6 @@
 - colored output (compilation)
-- download tracks
 - music loading system
 - add music to the game
-- car bouncing
+- car bouncing along to the beat
+
++ download tracks
