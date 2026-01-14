@@ -67,10 +67,6 @@ void _process_global_keyboard(const SDL_Keycode event_key)
         }
         break;
     
-    case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
-        play_random_music();
-        break;
-    
     case SDLK_R:
         _load_global_resources(&exit_code);
         if (exit_code == EXIT_SUCCESS)

@@ -54,6 +54,11 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
         case SDLK_DOWN:
             scene->dummy_button.is_focused = ! scene->dummy_button.is_focused;
             scene->play_button.is_focused  = ! scene->play_button.is_focused;
+            break;
+        
+        case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
+            play_random_music(&music_loader_menu);
+            break;
 
         default:
             _process_global_keyboard(event_key);

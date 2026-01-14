@@ -51,6 +51,10 @@ void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode 
             logic_layer.remain_in_scene = false;
             break;
         
+        case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
+            play_random_music(&music_loader_gameplay);
+            break;
+        
         default:
             _process_global_keyboard(event_key);
     }

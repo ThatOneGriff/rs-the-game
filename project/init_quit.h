@@ -59,7 +59,7 @@ void init(int* exit_code)
         return;
     }
     /// Deinit stack
-    struct Deinit_Stack deinit_stack = new_deinit_stack(3, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
+    struct Deinit_Stack deinit_stack = new_deinit_stack(5, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
@@ -106,47 +106,61 @@ void init(int* exit_code)
     }
     SDL_SetWindowIcon(graphics_layer.window, ICON_TEXTURE);
 
-    /// Music loader
-    _init_music_loader("./rsdt/music.rsdt", exit_code);
+    /// Music loaders
+    music_loader_gameplay = _init_music_loader("./rsdt/music_gameplay.rsdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init()`: failed to initialize music loader", NON_SDL_ERROR);
-        _free_music_loader();
-        _free_global_resources();
-        TTF_Quit();
-        _free_logic_layer();
-        flush_deinit_stack(&deinit_stack);
-        SDL_Quit();
-        *exit_code = EXIT_FAILURE;
-        return;
+        print_warning("`init()`: music data (gameplay) file not found", NON_SDL_ERROR);
+        _free_music_loader(&music_loader_gameplay);
     }
-
-    /// Audio system
-    if (ma_engine_init(NULL, &audio_manager.engine) != MA_SUCCESS)
+    else
+        add_to_deinit_stack(&deinit_stack, &music_loader_gameplay, (void (*)(void*))_free_music_loader);
+    
+    music_loader_menu = _init_music_loader("./rsdt/music_menu.rsdt", exit_code);
+    if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init()`: failed to initialize audio engine", NON_SDL_ERROR);
-        _free_music_loader();
-        _free_global_resources();
-        TTF_Quit();
-        _free_logic_layer();
-        flush_deinit_stack(&deinit_stack);
-        SDL_Quit();
-        *exit_code = EXIT_FAILURE;
-        return;
+        print_warning("`init()`: music data (menu) file not found", NON_SDL_ERROR);
+        _free_music_loader(&music_loader_menu);
+    }
+    else
+        add_to_deinit_stack(&deinit_stack, &music_loader_menu, (void (*)(void*))_free_music_loader);
+    
+    audio_manager.using_audio = (music_loader_gameplay.valid && music_loader_menu.valid);
+    
+    /// Audio system
+    if (audio_manager.using_audio)
+    {
+        printf("using audio\n"); /// TEMP
+        if (ma_engine_init(NULL, &audio_manager.engine) != MA_SUCCESS)
+        {
+            print_error("`init()`: failed to initialize audio engine", NON_SDL_ERROR);
+            _free_global_resources();
+            TTF_Quit();
+            _free_logic_layer();
+            flush_deinit_stack(&deinit_stack);
+            SDL_Quit();
+            *exit_code = EXIT_FAILURE;
+            return;
+        }
     }
 
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     print_success("`init()`");
     *exit_code = EXIT_SUCCESS;
+    return;
 }
 
 
 /// Works by FILO principle.
 void quit(void)
 {
-    _free_music_loader();
-    ma_sound_uninit (&audio_manager.music);
-    ma_engine_uninit(&audio_manager.engine);
+    if (audio_manager.using_audio)
+    {
+        _free_music_loader(&music_loader_gameplay);
+        _free_music_loader(&music_loader_menu);
+        ma_sound_uninit (&audio_manager.music);
+        ma_engine_uninit(&audio_manager.engine);
+    }
     _free_global_resources();
     TTF_Quit();
     _free_logic_layer();

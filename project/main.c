@@ -121,22 +121,26 @@ void game_loop(int* exit_code)
     unsigned int prev_fps = UINT_MAX;
 
     /// The loop
-    play_random_music();
+    if (audio_manager.using_audio)
+        play_random_music(&music_loader_menu);
+    
     while (logic_layer.game_is_running)
     {
         /// Preparations
         logic_layer.curr_tick = SDL_GetTicks();
         SDL_RenderClear(graphics_layer.renderer);
         SDL_SetRenderTarget(graphics_layer.renderer, graphics_layer.buffer);
-        check_if_music_ended();
 
         /// Gameplay scene processing
         if (logic_layer.curr_scene == &gameplay_scene)
         {
             gameplay_scene_opened = true; /// TEMP: just not to get an error while deinitializing BEFORE loading the gameplay scene.
+            if (audio_manager.using_audio)
+                check_if_music_ended(&music_loader_gameplay);
+            
             process_gameplay_events(&gameplay_scene);
             gameplay_scene_tick(&gameplay_scene, exit_code);
-            /// Scene switch
+            /// Scene switch (to menu)
             if (! logic_layer.remain_in_scene)
             {
                 free_gameplay_scene(&gameplay_scene);
@@ -145,7 +149,11 @@ void game_loop(int* exit_code)
                     return;
                 logic_layer.curr_scene = &menu_scene;
                 logic_layer.remain_in_scene = true;
-                play_random_music();
+                if (audio_manager.using_audio)
+                {
+                    _freeze_music_loader(&music_loader_gameplay);
+                    play_random_music   (&music_loader_menu);
+                }
             }
         }
         /// Menu scene processing
@@ -162,7 +170,11 @@ void game_loop(int* exit_code)
                     return;
                 logic_layer.curr_scene = &gameplay_scene;
                 logic_layer.remain_in_scene = true;
-                play_random_music();
+                if (audio_manager.using_audio)
+                {
+                    _freeze_music_loader(&music_loader_menu);
+                    play_random_music   (&music_loader_gameplay);
+                }
             }
         }
         
