@@ -7,7 +7,8 @@
 
 # Music (due to licensing impossibility)
 **/music
-**/music.rsdt
+**/music_gameplay.rsdt
+**/music_menu.rsdt
 
 # Prerequisites
 *.d

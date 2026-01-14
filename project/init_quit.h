@@ -130,7 +130,6 @@ void init(int* exit_code)
     /// Audio system
     if (audio_manager.using_audio)
     {
-        printf("using audio\n"); /// TEMP
         if (ma_engine_init(NULL, &audio_manager.engine) != MA_SUCCESS)
         {
             print_error("`init()`: failed to initialize audio engine", NON_SDL_ERROR);

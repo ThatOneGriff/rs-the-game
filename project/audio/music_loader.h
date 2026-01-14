@@ -260,7 +260,6 @@ void play_random_music(struct Music_Loader* target)
         return;
     
     target->active = true;
-    printf("playing music\n"); /// TEMP
 
     if (target->track_count == 1)
     {
