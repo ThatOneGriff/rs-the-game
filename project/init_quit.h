@@ -111,7 +111,7 @@ void init(int* exit_code)
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init()`: failed to initialize music loader", NON_SDL_ERROR);
-        //_free_music_loader(); /// TODO: enable once available.
+        _free_music_loader();
         _free_global_resources();
         TTF_Quit();
         _free_logic_layer();
@@ -125,7 +125,7 @@ void init(int* exit_code)
     if (ma_engine_init(NULL, &audio_manager.engine) != MA_SUCCESS)
     {
         print_error("`init()`: failed to initialize audio engine", NON_SDL_ERROR);
-        //_free_music_loader(); /// TODO: enable once available.
+        _free_music_loader();
         _free_global_resources();
         TTF_Quit();
         _free_logic_layer();
@@ -144,7 +144,7 @@ void init(int* exit_code)
 /// Works by FILO principle.
 void quit(void)
 {
-    //_free_music_loader(); /// TODO: enable once available.
+    _free_music_loader();
     ma_sound_uninit (&audio_manager.track);
     ma_engine_uninit(&audio_manager.engine);
     _free_global_resources();

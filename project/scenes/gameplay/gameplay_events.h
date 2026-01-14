@@ -89,27 +89,63 @@ void _process_gameplay_car_input(struct Car* car)
     }
 
     car->base_texture = 2 + car->direction_x;
-    if      ((car->latest_turn_start != 0) && (logic_layer.curr_tick - car->latest_turn_start >= car->turn_smoothing_duration)) /// Turn recently started.
-        car->base_texture += car->prev_turn_direction_x;
-    else if ((car->latest_turn_end   != 0) && (logic_layer.curr_tick - car->latest_turn_end   <= car->turn_smoothing_duration)) /// Turn recently ended.
-        car->base_texture += car->prev_turn_direction_x;
+    /// NOTE: those nested `if-else`s are for overflow sanitizer compliance.
+    /// - If turn recently started.
+    if ((car->latest_turn_start != 0) && (logic_layer.curr_tick - car->latest_turn_start >= car->turn_smoothing_duration))
+    {
+        if (car->prev_turn_direction_x >= 0)
+            car->base_texture += car->prev_turn_direction_x;
+        else
+        {
+            if (car->base_texture <  (size_t)(-car->prev_turn_direction_x))
+                car->base_texture = 0;
+            else
+                car->base_texture -= (size_t)(-car->prev_turn_direction_x);
+        }
+    }
+    
+    /// - If turn recently ended.
+    else if ((car->latest_turn_end   != 0) && (logic_layer.curr_tick - car->latest_turn_end   <= car->turn_smoothing_duration))
+    {
+        if (car->prev_turn_direction_x >= 0)
+            car->base_texture += car->prev_turn_direction_x;
+        else
+        {
+            if (car->base_texture <  (size_t)(-car->prev_turn_direction_x))
+                car->base_texture = 0;
+            else
+                car->base_texture -= (size_t)(-car->prev_turn_direction_x);
+        }
+    }
     
     /// Turning the texture
+    int coord_based_diff = 0;
     if (car->coords.x <= 30)
-        car->base_texture += 2;
+        coord_based_diff =  2;
     else if (car->coords.x <= 60)
-        ++car->base_texture;
+        coord_based_diff =  1;
     else if (car->coords.x + car->coords.w >= 210)
-        car->base_texture -= 2;
+        coord_based_diff = -2;
     else if (car->coords.x + car->coords.w >= 180)
-        --car->base_texture;
+        coord_based_diff = -1;
     
-    if (car->base_texture >= UINT_MAX - 100) /// Overflow happened; 100 is just a buffer for potential future changes,
-        car->base_texture = 0;
-    else if (car->base_texture >= 5)
-        car->base_texture = 4;
     
-    /* Moving car */
+    /// NOTE: again, integer overflow compliance.
+    if (coord_based_diff >= 0)
+    {
+        car->base_texture += coord_based_diff;
+        if (car->base_texture >= 5)
+            car->base_texture = 4;
+    }
+    else
+    {
+        if (car->base_texture <  (size_t)(-coord_based_diff))
+            car->base_texture = 0;
+        else
+            car->base_texture -= (size_t)(-coord_based_diff);
+    }
+    
+    /// Moving the car across the screen.
     car->coords.x += (float)(car->direction_x) * (float)car->handling * (float)(FPS_manager.delta_ns) / SEC_IN_NS;
     
     /*if (SDL_GetTicks() - car->latest_jump_tick >= (90.0 / 60.0 * 2)*1000 + 250) /// NOTE: should be synchronized with a track's BPM.

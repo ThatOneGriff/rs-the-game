@@ -6,9 +6,10 @@
 #include <stdlib.h>               /// `*alloc()`.
 #include "../debug.h"             /// Error printing.
 #include "../deinit_stack.h"      /// Deinitialization stack.
-#include "../helpers/helpers.h"   /// `free_ptr_arr()`.
 #include "../helpers/random.h"    /// `randint_except()`.
 #include "../logic/logic_layer.h" /// `logic_layer.curr_tick`.
+
+/// TODO: make the application work fine without music.
 
 
 /* Struct */
@@ -130,7 +131,6 @@ void _init_music_loader(const char* music_data_path, int* exit_code)
     fclose(test_track_opener);
     test_track_opener = NULL;
 
-    /// TODO: make the application work fine without music.
     if (music_loader.track_count == 0)
     {
         print_error("`_init_music_loader()`: no tracks have been loaded", NON_SDL_ERROR);
@@ -162,6 +162,26 @@ void _init_music_loader(const char* music_data_path, int* exit_code)
     free_deinit_stack(&deinit_stack);
     fclose(music_data_file);
     *exit_code = EXIT_SUCCESS;
+    return;
+}
+
+
+void _free_music_loader(void)
+{
+    if (music_loader.track_paths != NULL)
+    {
+        for (size_t i = 0; i < music_loader.track_count; i++)
+        {
+            free(music_loader.track_paths[i]);
+            music_loader.track_paths[i] = NULL;
+        }
+        free(music_loader.track_paths);
+        music_loader.track_paths = NULL;
+    }
+    
+    music_loader.track_count = 0;
+    music_loader.curr_track     = 0;
+    music_loader.track_end_tick = 0;
     return;
 }
 
