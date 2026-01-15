@@ -109,7 +109,7 @@ struct Pause_Screen init_pause_screen(int* exit_code)
     add_to_deinit_stack(&deinit_stack, &result.continue_button, (void (*)(void*))free_button);
 
     /// 'Quit to menu' button
-    result.quit_to_menu_button = create_button("Quit to menu", (SDL_Color){22,196,127,255}, vec2(10, 70), 15, 2, exit_code);
+    result.quit_to_menu_button = create_button("Quit to menu", (SDL_Color){69,71,75,255}, vec2(10, 70), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_pause_screen()`: couldn't create the 'Quit to menu' button", NON_SDL_ERROR);
@@ -119,7 +119,7 @@ struct Pause_Screen init_pause_screen(int* exit_code)
     add_to_deinit_stack(&deinit_stack, &result.quit_to_menu_button, (void (*)(void*))free_button);
 
     /// 'Quit to desktop' button
-    result.quit_to_desktop_button = create_button("Quit to desktop", (SDL_Color){22,196,127,255}, vec2(10, 90), 15, 2, exit_code);
+    result.quit_to_desktop_button = create_button("Quit to desktop", (SDL_Color){69,71,75,255}, vec2(10, 90), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_pause_screen()`: couldn't create the 'Quit to desktop' button", NON_SDL_ERROR);

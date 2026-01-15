@@ -27,7 +27,8 @@ void _process_gameplay_car_input(struct Car* car);
 
 void process_gameplay_events(struct Gameplay_Scene* scene)
 {
-    _process_gameplay_car_input(scene->car_ptr);
+    if (! scene->pause_screen.is_open)
+        _process_gameplay_car_input(scene->car_ptr);
     while (SDL_PollEvent(&logic_layer.event))
     {
         switch (logic_layer.event.type)
@@ -62,7 +63,53 @@ void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode 
             break;
         
         case SDLK_RETURN:
-            logic_layer.remain_in_scene = false;
+            if (scene->pause_screen.close_button.is_focused || scene->pause_screen.continue_button.is_focused)
+                hide_pause_screen(&scene->pause_screen);
+            else if (scene->pause_screen.quit_to_menu_button.is_focused)
+                logic_layer.remain_in_scene = false;
+            else if (scene->pause_screen.quit_to_desktop_button.is_focused)
+                logic_layer.game_is_running = false;
+            break;
+        
+        /// TEMP while I'm coming up with a better button management structure.
+        case SDLK_UP:
+            if (! scene->pause_screen.is_open)
+                break;
+            else if (scene->pause_screen.continue_button.is_focused)
+            {
+                scene->pause_screen.close_button.is_focused    = true;
+                scene->pause_screen.continue_button.is_focused = false;
+            }
+            else if (scene->pause_screen.quit_to_menu_button.is_focused)
+            {
+                scene->pause_screen.continue_button.is_focused     = true;
+                scene->pause_screen.quit_to_menu_button.is_focused = false;
+            }
+            else if (scene->pause_screen.quit_to_desktop_button.is_focused)
+            {
+                scene->pause_screen.quit_to_menu_button.is_focused    = true;
+                scene->pause_screen.quit_to_desktop_button.is_focused = false;
+            }
+            break;
+        
+        case SDLK_DOWN:
+            if (! scene->pause_screen.is_open)
+                break;
+            else if (scene->pause_screen.close_button.is_focused)
+            {
+                scene->pause_screen.close_button.is_focused    = false;
+                scene->pause_screen.continue_button.is_focused = true;
+            }
+            else if (scene->pause_screen.continue_button.is_focused)
+            {
+                scene->pause_screen.continue_button.is_focused     = false;
+                scene->pause_screen.quit_to_menu_button.is_focused = true;
+            }
+            else if (scene->pause_screen.quit_to_menu_button.is_focused)
+            {
+                scene->pause_screen.quit_to_menu_button.is_focused    = false;
+                scene->pause_screen.quit_to_desktop_button.is_focused = true;
+            }
             break;
         
         case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
