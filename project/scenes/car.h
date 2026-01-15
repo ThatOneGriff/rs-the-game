@@ -150,7 +150,6 @@ void free_car(struct Car* target)
             target->textures[i] = NULL;
         }
     }
-    free(target->textures);
     target->handling  = 0;
     target->top_speed = 0;
     target->direction_x = 0;

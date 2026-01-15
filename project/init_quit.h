@@ -21,8 +21,9 @@
 
 /* Other headers */
 #include "graphics/fps.h"              /// Initialization of
-#include "graphics/graphics_layer.h"   /// various
-#include "logic/logic_layer.h"         /// game
+#include "graphics/graphics_layer.h"   /// of
+#include "logic/logic_layer.h"         /// various
+#include "scenes/car_manager.h"        /// game
 #include "game_components/text/text.h" /// components.
 
 #define SDL_FLAGS (SDL_INIT_VIDEO)
@@ -106,6 +107,19 @@ void init(int* exit_code)
     }
     SDL_SetWindowIcon(graphics_layer.window, ICON_TEXTURE);
 
+    /// Car manager
+    init_car_manager(exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init()`: failed to initialize car manager", NON_SDL_ERROR);
+        TTF_Quit();
+        _free_logic_layer();
+        flush_deinit_stack(&deinit_stack);
+        SDL_Quit();
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
+
     /// Music loaders
     music_loader_gameplay = _init_music_loader("./rsdt/music_gameplay.rsdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
@@ -133,6 +147,7 @@ void init(int* exit_code)
         if (ma_engine_init(NULL, &audio_manager.engine) != MA_SUCCESS)
         {
             print_error("`init()`: failed to initialize audio engine", NON_SDL_ERROR);
+            free_car_manager();
             _free_global_resources();
             TTF_Quit();
             _free_logic_layer();
@@ -160,6 +175,7 @@ void quit(void)
         ma_sound_uninit (&audio_manager.music);
         ma_engine_uninit(&audio_manager.engine);
     }
+    free_car_manager();
     _free_global_resources();
     TTF_Quit();
     _free_logic_layer();
