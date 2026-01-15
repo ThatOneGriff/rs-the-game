@@ -199,7 +199,6 @@ void _process_gameplay_car_input(struct Car* car)
     else if (car->coords.x + car->coords.w >= 180)
         coord_based_diff = -1;
     
-    
     /// NOTE: again, integer overflow compliance.
     if (coord_based_diff >= 0)
     {
