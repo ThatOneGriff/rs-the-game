@@ -63,6 +63,8 @@ void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode 
             break;
         
         case SDLK_RETURN:
+            if (! scene->pause_screen.is_open)
+                break;
             if (scene->pause_screen.close_button.is_focused || scene->pause_screen.continue_button.is_focused)
             {
                 hide_pause_screen(&scene->pause_screen);

@@ -71,9 +71,23 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
         if (! scene->options_screen.is_open)
         {
             if      (scene->prev_button.is_focused)
+            {
                 set_menu_car_info(scene, select_prev_car(), &exit_code);
+                if (car_manager.cur_car == 0)
+                {
+                    scene->prev_button.is_focused = false;
+                    scene->next_button.is_focused = true;
+                }
+            }
             else if (scene->next_button.is_focused)
+            {
                 set_menu_car_info(scene, select_next_car(), &exit_code);
+                if (car_manager.cur_car == car_manager.car_count - 1)
+                {
+                    scene->prev_button.is_focused = true;
+                    scene->next_button.is_focused = false;
+                }
+            }
             else if (scene->play_button.is_focused)
                 logic_layer.remain_in_scene = false;
             else if (scene->options_button.is_focused)
@@ -115,6 +129,7 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
         {
             if      (scene->play_button.is_focused)
             {
+                scene->play_button.is_focused = false;
                 if (car_manager.cur_car == 0)
                     scene->next_button.is_focused = true;
                 else
@@ -188,23 +203,23 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
         }
 
         case SDLK_LEFT:
-        if (! scene->options_screen.is_open)
+        if (! scene->options_screen.is_open && car_manager.cur_car != 0)
         {
-            if (scene->prev_button.is_focused)
+            if (scene->next_button.is_focused)
             {
-                scene->prev_button.is_focused = false;
-                scene->next_button.is_focused = true;
+                scene->prev_button.is_focused = true;
+                scene->next_button.is_focused = false;
             }
             break;
         }
 
         case SDLK_RIGHT:
-        if (! scene->options_screen.is_open)
+        if (! scene->options_screen.is_open && car_manager.cur_car != car_manager.car_count - 1)
         {
-            if (scene->next_button.is_focused)
+            if (scene->prev_button.is_focused)
             {
-                scene->next_button.is_focused = false;
-                scene->prev_button.is_focused = true;
+                scene->prev_button.is_focused = false;
+                scene->next_button.is_focused = true;
             }
             break;
         }

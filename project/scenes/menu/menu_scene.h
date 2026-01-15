@@ -36,8 +36,8 @@ struct Menu_Scene
 
     SDL_Texture* bg;
     struct Texture car_name_text;
-    struct Button next_button;
     struct Button prev_button;
+    struct Button next_button;
 
     struct Button play_button;
     struct Button         options_button;
@@ -118,19 +118,8 @@ struct Menu_Scene load_menu_scene(struct Car* car_ptr, int* exit_code)
     if (result.bg != NULL_TEXTURE)
         add_to_deinit_stack(&deinit_stack, result.bg, (void (*)(void*))SDL_DestroyTexture);
 
-    /// Next button
-    result.next_button = create_button("NEXT", (SDL_Color){69,71,75,255}, vec2(155, 15), 12, 2, exit_code);
-    if (*exit_code == EXIT_FAILURE)
-    {
-        print_error("`load_menu_scene()`: couldn't create next button", NON_SDL_ERROR);
-        flush_deinit_stack(&deinit_stack);
-        free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
-        return result;
-    }
-    add_to_deinit_stack(&deinit_stack, &result.next_button, (void (*)(void*))free_button);
-
     /// Prev button
-    result.prev_button = create_button("PREV", (SDL_Color){69,71,75,255}, vec2(195, 15), 12, 2, exit_code);
+    result.prev_button = create_button("PREV", (SDL_Color){69,71,75,255}, vec2(155, 15), 12, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_menu_scene()`: couldn't create prev button", NON_SDL_ERROR);
@@ -139,6 +128,17 @@ struct Menu_Scene load_menu_scene(struct Car* car_ptr, int* exit_code)
         return result;
     }
     add_to_deinit_stack(&deinit_stack, &result.prev_button, (void (*)(void*))free_button);
+
+    /// Next button
+    result.next_button = create_button("NEXT", (SDL_Color){69,71,75,255}, vec2(195, 15), 12, 2, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`load_menu_scene()`: couldn't create next button", NON_SDL_ERROR);
+        flush_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
+        return result;
+    }
+    add_to_deinit_stack(&deinit_stack, &result.next_button, (void (*)(void*))free_button);
 
     /// Play button
     result.play_button = create_button("PLAY", (SDL_Color){254,178,26,255}, vec2(155, 82), 25, 2, exit_code);
@@ -202,8 +202,8 @@ void free_menu_scene(struct Menu_Scene* target)
         target->bg = NULL;
     }
     free_texture(&target->car_name_text);
-    free_button(&target->next_button);
     free_button(&target->prev_button);
+    free_button(&target->next_button);
 
     free_button(&target->play_button);
     free_button(&target->options_button);
@@ -286,8 +286,8 @@ void render_menu_scene(struct Menu_Scene* target)
 
     SDL_RenderTexture(graphics_layer.renderer, target->bg, NULL, NULL);
     render_texture(&target->car_name_text);
-    render_button(&target->next_button);
     render_button(&target->prev_button);
+    render_button(&target->next_button);
 
     render_button(&target->play_button);
     render_button(&target->options_button);
