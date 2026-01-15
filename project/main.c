@@ -24,7 +24,6 @@
 #include "logic/logic_layer.h"       /// Logic layer.s
 
 /* Scenes */
-#include "scenes/car.h"                      /// Car.
 #include "scenes/car_manager.h"              /// Car manager.
 #include "scenes/gameplay/gameplay_events.h" /// Gameplay events & input.
 #include "scenes/gameplay/gameplay_scene.h"  /// Gameplay scene.
@@ -106,11 +105,7 @@ void game_loop(int* exit_code)
     struct Gameplay_Scene gameplay_scene;
     bool gameplay_scene_opened = false; /// TEMP: just not to get an error while deinitializing BEFORE loading the gameplay scene.
     
-    struct Car* car = select_curr_car();
-    if (*exit_code == EXIT_FAILURE)
-        return;
-    
-    struct Menu_Scene menu_scene = load_menu_scene(car, exit_code);
+    struct Menu_Scene menu_scene = load_menu_scene(select_curr_car(), exit_code);
     if (*exit_code == EXIT_FAILURE)
         return;
     logic_layer.curr_scene = &menu_scene;
@@ -145,7 +140,7 @@ void game_loop(int* exit_code)
             if (! logic_layer.remain_in_scene)
             {
                 free_gameplay_scene(&gameplay_scene);
-                menu_scene = load_menu_scene(car, exit_code);
+                menu_scene = load_menu_scene(select_curr_car(), exit_code);
                 if (*exit_code == EXIT_FAILURE)
                     return;
                 logic_layer.curr_scene = &menu_scene;
@@ -167,7 +162,7 @@ void game_loop(int* exit_code)
             if (! logic_layer.remain_in_scene)
             {
                 free_menu_scene(&menu_scene);
-                gameplay_scene = load_gameplay_scene("./rsdt/scene_data/plains.rsdt", car, exit_code);
+                gameplay_scene = load_gameplay_scene("./rsdt/scene_data/plains.rsdt", select_curr_car(), exit_code);
                 if (*exit_code == EXIT_FAILURE)
                     return;
                 logic_layer.curr_scene = &gameplay_scene;
