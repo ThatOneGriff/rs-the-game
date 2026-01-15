@@ -9,6 +9,7 @@
 #include "../../audio/audio_manager.h"       /// `audio_manager.using_audio`.
 #include "../../game_components/text/text.h" /// Text.
 #include "../../game_components/button.h"    /// Buttons.
+#include "../../game_components/switch.h"    /// Switches.
 #include "../../graphics/graphics_layer.h"   /// Rendering.
 
 /// NOTE: not my proudest code.
