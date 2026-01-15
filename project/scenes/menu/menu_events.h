@@ -17,6 +17,9 @@
 #include "../../audio/music_loader.h"       ///  manipulation.
 #include "../../game_components/button.h"   /// Button manipulation.
 
+/// NOTE: not my proudest code.
+/// I would've shortened a lot of things, if not for the time constraints.
+
 
 /* Predef */
 

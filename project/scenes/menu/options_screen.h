@@ -11,6 +11,9 @@
 #include "../../game_components/button.h"    /// Buttons.
 #include "../../graphics/graphics_layer.h"   /// Rendering.
 
+/// NOTE: not my proudest code.
+/// I would've shortened a lot of things, if not for the time constraints.
+
 
 /* Struct */
 
@@ -26,6 +29,9 @@ struct Options_Screen
     /// TODO: `struct Switch` that's basically 2 `struct Button`'s in a trenchcoat.
     struct Button  audio_on_button;
     struct Button  audio_off_button;
+    
+    struct Texture fps_text;
+    struct Button  fps_button;
 
     struct Texture version_text;
 };
@@ -53,7 +59,7 @@ struct Options_Screen init_options_screen(int* exit_code)
     result.last_menu_frame = NULL;
     
     /// Deinit stack
-    struct Deinit_Stack deinit_stack = new_deinit_stack(7, exit_code);
+    struct Deinit_Stack deinit_stack = new_deinit_stack(9, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_options_screen()`: couldn't create deinit stack", NON_SDL_ERROR);
@@ -119,6 +125,26 @@ struct Options_Screen init_options_screen(int* exit_code)
         return result;
     }
     add_to_deinit_stack(&deinit_stack, &result.audio_off_button, (void (*)(void*))free_button);
+
+    /// 'FPS limit' text
+    result.fps_text = create_text("FPS limit:", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(10, 70), 15, 1, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init_options_screen()`: couldn't create the 'FPS limit:' text", NON_SDL_ERROR);
+        flush_deinit_stack(&deinit_stack);
+        return result;
+    }
+    add_to_deinit_stack(&deinit_stack, &result.fps_text, (void (*)(void*))free_texture);
+
+    /// FPS limit button
+    result.fps_button = create_button("60", (SDL_Color){22,196,127,255}, vec2(100, 70), 15, 2, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init_options_screen()`: couldn't create the FPS limit button", NON_SDL_ERROR);
+        flush_deinit_stack(&deinit_stack);
+        return result;
+    }
+    add_to_deinit_stack(&deinit_stack, &result.fps_button, (void (*)(void*))free_button);
     
     /// 'Version' text
     result.version_text = create_text("RS The Game v. 0.0.1", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(X_AUTO_CENTER, 150), 9, 1, exit_code);
@@ -156,6 +182,9 @@ void free_options_screen(struct Options_Screen* target)
     free_texture(&target->audio_text);
     free_button (&target->audio_on_button);
     free_button (&target->audio_off_button);
+    
+    free_texture(&target->fps_text);
+    free_button (&target->fps_button);
 
     free_texture(&target->version_text);
     return;
@@ -224,6 +253,8 @@ void render_options_screen(struct Options_Screen* target)
     else
         render_button(&target->audio_off_button);
 
+    render_texture(&target->fps_text);
+    render_button (&target->fps_button);
 
     render_texture(&target->version_text);
     return;
