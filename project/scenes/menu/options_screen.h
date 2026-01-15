@@ -30,8 +30,7 @@ struct Options_Screen
     struct Switch  audio_switch;
     
     struct Texture fps_text;
-    struct Button  fps_button;
-    //struct Switch  fps_switch;
+    struct Switch  fps_switch;
 
     struct Texture version_text;
 };
@@ -59,7 +58,7 @@ struct Options_Screen init_options_screen(int* exit_code)
     result.last_menu_frame = NULL;
     
     /// Deinit stack
-    struct Deinit_Stack deinit_stack = new_deinit_stack(11, exit_code);
+    struct Deinit_Stack deinit_stack = new_deinit_stack(13, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_options_screen()`: couldn't create deinit stack", NON_SDL_ERROR);
@@ -135,8 +134,8 @@ struct Options_Screen init_options_screen(int* exit_code)
     add_to_switch(&result.audio_switch, audio_on_button);
     add_to_switch(&result.audio_switch, audio_off_button);
     result.audio_switch.is_focused = true;
-    if (! audio_manager.using_audio)
-        change_switch_option(&result.audio_switch);
+    //if (! audio_manager.using_audio)
+    //    change_switch_option(&result.audio_switch);
     add_to_deinit_stack(&deinit_stack, &result.audio_switch, (void (*)(void*))free_switch);
 
     /// 'FPS limit' text
@@ -148,16 +147,57 @@ struct Options_Screen init_options_screen(int* exit_code)
         return result;
     }
     add_to_deinit_stack(&deinit_stack, &result.fps_text, (void (*)(void*))free_texture);
-
-    /// FPS limit button
-    result.fps_button = create_button("60", (SDL_Color){22,196,127,255}, vec2(100, 70), 15, 2, exit_code);
+    /// FPS limit (30) button
+    struct Button fps_button_30 = create_button("30", (SDL_Color){246,255,153,255}, vec2(100, 70), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the FPS limit button", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the FPS limit (30) button", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &result.fps_button, (void (*)(void*))free_button);
+    add_to_deinit_stack(&deinit_stack, &fps_button_30, (void (*)(void*))free_button);
+    /// FPS limit (60) button
+    struct Button fps_button_60 = create_button("60", (SDL_Color){22,196,127,255}, vec2(100, 70), 15, 2, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init_options_screen()`: couldn't create the FPS limit (60) button", NON_SDL_ERROR);
+        flush_deinit_stack(&deinit_stack);
+        return result;
+    }
+    add_to_deinit_stack(&deinit_stack, &fps_button_60, (void (*)(void*))free_button);
+    /// FPS limit (120) button
+    struct Button fps_button_120 = create_button("120", (SDL_Color){22,196,127,255}, vec2(100, 70), 15, 2, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init_options_screen()`: couldn't create the FPS limit (120) button", NON_SDL_ERROR);
+        flush_deinit_stack(&deinit_stack);
+        return result;
+    }
+    add_to_deinit_stack(&deinit_stack, &fps_button_120, (void (*)(void*))free_button);
+    /// FPS limit (none) button
+    struct Button fps_button_none = create_button("None", (SDL_Color){69,71,75,255}, vec2(100, 70), 15, 2, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init_options_screen()`: couldn't create the FPS limit (120) button", NON_SDL_ERROR);
+        flush_deinit_stack(&deinit_stack);
+        return result;
+    }
+    add_to_deinit_stack(&deinit_stack, &fps_button_none, (void (*)(void*))free_button);
+    /// FPS switch
+    result.fps_switch = init_switch(4, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init_options_screen()`: couldn't create the FPS switch", NON_SDL_ERROR);
+        flush_deinit_stack(&deinit_stack);
+        return result;
+    }
+    add_to_switch(&result.fps_switch, fps_button_30);
+    add_to_switch(&result.fps_switch, fps_button_60);
+    add_to_switch(&result.fps_switch, fps_button_120);
+    add_to_switch(&result.fps_switch, fps_button_none);
+    for (unsigned int i = 0; i < curr_fps_cap_i; i++)
+        change_switch_option(&result.fps_switch); /// Set to curr FPS cap.
+    add_to_deinit_stack(&deinit_stack, &result.fps_switch, (void (*)(void*))free_switch);
     
     /// 'Version' text
     result.version_text = create_text("RS The Game v. 0.0.1", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(X_AUTO_CENTER, 150), 9, 1, exit_code);
@@ -196,7 +236,7 @@ void free_options_screen(struct Options_Screen* target)
     free_switch (&target->audio_switch);
     
     free_texture(&target->fps_text);
-    free_button (&target->fps_button);
+    free_switch (&target->fps_switch);
 
     free_texture(&target->version_text);
     return;
@@ -227,6 +267,7 @@ void show_options_screen(struct Options_Screen* target)
     /// Setting correct button focus.
     target->close_button.is_focused = false;
     target->audio_switch.is_focused = true;
+    target->fps_switch.  is_focused = false;
     return;
 }
 
@@ -260,7 +301,7 @@ void render_options_screen(struct Options_Screen* target)
     render_switch (&target->audio_switch);
 
     render_texture(&target->fps_text);
-    render_button (&target->fps_button);
+    render_switch (&target->fps_switch);
 
     render_texture(&target->version_text);
     return;

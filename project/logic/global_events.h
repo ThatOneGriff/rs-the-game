@@ -12,7 +12,6 @@
 /* Helper headers */
 #include "logic_layer.h"           /// Exiting the game.
 #include "../debug.h"              /// Some controls should only be available `#ifdef DEBUG`.
-#include "../graphics/fps.h"       /// Frame cap control.
 #include "../helpers/helpers.h"    /// Colored output.
 #include "../resources.h"          /// Hot resource reload.
 #include "../audio/music_loader.h" /// Music manipulation.
@@ -45,28 +44,6 @@ void _process_global_keyboard(const SDL_Keycode event_key)
     int exit_code = EXIT_SUCCESS;
     switch(event_key)
     {
-    /// Frame cap on / off
-    case SDLK_F:
-        ++curr_fps_cap_i;
-        if (curr_fps_cap_i == 5)
-            curr_fps_cap_i = 0;
-        
-        if (curr_fps_cap_i != 4) /// Non-inf FPS cap
-        {
-            textcolor(GRAY);
-            printf("+ [FPS cap] %u\n", fps_cap_options[curr_fps_cap_i]);
-            textcolor(WHITE);
-            set_fps_cap(fps_cap_options[curr_fps_cap_i]);
-        }
-        else /// Inf FPS cap (=> turned off)
-        {
-            textcolor(GRAY);
-            printf("- [FPS cap] Disabled\n");
-            textcolor(WHITE);
-            rem_fps_cap();
-        }
-        break;
-    
     case SDLK_R:
         _load_global_resources(&exit_code);
         if (exit_code == EXIT_SUCCESS)

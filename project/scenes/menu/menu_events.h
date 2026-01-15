@@ -17,6 +17,7 @@
 #include "../../audio/music_loader.h"     ///  manipulation.
 #include "../../game_components/button.h" /// Button manipulation.
 #include "../../game_components/switch.h" /// Switch manipulation.
+#include "../../graphics/fps.h"           /// Frame cap control.
 
 /// NOTE: not my proudest code.
 /// I would've shortened a lot of things, if not for the time constraints.
@@ -78,6 +79,14 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
             {
                 hide_options_screen(&scene->options_screen);
             }
+            else if (scene->options_screen.fps_switch.is_focused)
+            {       
+                ++curr_fps_cap_i;
+                if (curr_fps_cap_i == 4)
+                    curr_fps_cap_i = 0;
+                set_fps_cap(fps_cap_options[curr_fps_cap_i]);
+                change_switch_option(&scene->options_screen.fps_switch);
+            }
             break;
         }
 
@@ -104,6 +113,11 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
                 scene->options_screen.audio_switch.is_focused = false;
                 scene->options_screen.close_button.is_focused = true;
             }
+            else if (scene->options_screen.fps_switch.is_focused)
+            {
+                scene->options_screen.fps_switch.  is_focused = false;
+                scene->options_screen.audio_switch.is_focused = true;
+            }
             break;
         }
         
@@ -128,6 +142,11 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
             {
                 scene->options_screen.close_button.is_focused = false;
                 scene->options_screen.audio_switch.is_focused = true;
+            }
+            else if (scene->options_screen.audio_switch.is_focused)
+            {
+                scene->options_screen.audio_switch.is_focused = false;
+                scene->options_screen.fps_switch.is_focused   = true;
             }
             break;
         }
