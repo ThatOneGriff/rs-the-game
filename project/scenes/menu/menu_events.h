@@ -72,8 +72,8 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
         {
             if      (scene->prev_button.is_focused)
             {
-                set_menu_car_info(scene, select_prev_car(), &exit_code);
-                if (car_manager.cur_car == 0)
+                set_menu_car_info(scene, get_prev_car(&players_car_manager), &exit_code);
+                if (players_car_manager.cur_car == 0)
                 {
                     scene->prev_button.is_focused = false;
                     scene->next_button.is_focused = true;
@@ -81,8 +81,8 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
             }
             else if (scene->next_button.is_focused)
             {
-                set_menu_car_info(scene, select_next_car(), &exit_code);
-                if (car_manager.cur_car == car_manager.car_count - 1)
+                set_menu_car_info(scene, get_next_car(&players_car_manager), &exit_code);
+                if (players_car_manager.cur_car == players_car_manager.car_count - 1)
                 {
                     scene->prev_button.is_focused = true;
                     scene->next_button.is_focused = false;
@@ -130,7 +130,7 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
             if      (scene->play_button.is_focused)
             {
                 scene->play_button.is_focused = false;
-                if (car_manager.cur_car == 0)
+                if (players_car_manager.cur_car == 0)
                     scene->next_button.is_focused = true;
                 else
                     scene->prev_button.is_focused = true;
@@ -203,7 +203,7 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
         }
 
         case SDLK_LEFT:
-        if (! scene->options_screen.is_open && car_manager.cur_car != 0)
+        if (! scene->options_screen.is_open && players_car_manager.cur_car != 0)
         {
             if (scene->next_button.is_focused)
             {
@@ -214,7 +214,7 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
         }
 
         case SDLK_RIGHT:
-        if (! scene->options_screen.is_open && car_manager.cur_car != car_manager.car_count - 1)
+        if (! scene->options_screen.is_open && players_car_manager.cur_car != players_car_manager.car_count - 1)
         {
             if (scene->prev_button.is_focused)
             {
