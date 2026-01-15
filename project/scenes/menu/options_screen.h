@@ -27,12 +27,11 @@ struct Options_Screen
     struct Button  close_button;
 
     struct Texture audio_text;
-    /// TODO: `struct Switch` that's basically 2 `struct Button`'s in a trenchcoat.
-    struct Button  audio_on_button;
-    struct Button  audio_off_button;
+    struct Switch  audio_switch;
     
     struct Texture fps_text;
     struct Button  fps_button;
+    //struct Switch  fps_switch;
 
     struct Texture version_text;
 };
@@ -60,7 +59,7 @@ struct Options_Screen init_options_screen(int* exit_code)
     result.last_menu_frame = NULL;
     
     /// Deinit stack
-    struct Deinit_Stack deinit_stack = new_deinit_stack(9, exit_code);
+    struct Deinit_Stack deinit_stack = new_deinit_stack(11, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_options_screen()`: couldn't create deinit stack", NON_SDL_ERROR);
@@ -108,24 +107,37 @@ struct Options_Screen init_options_screen(int* exit_code)
     add_to_deinit_stack(&deinit_stack, &result.audio_text, (void (*)(void*))free_texture);
 
     /// Audio 'ON' button
-    result.audio_on_button = create_button("ON", (SDL_Color){22,196,127,255}, vec2(70, 50), 15, 2, exit_code);
+    struct Button audio_on_button = create_button("ON", (SDL_Color){22,196,127,255}, vec2(70, 50), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_options_screen()`: couldn't create the audio 'ON' button", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    result.audio_on_button.is_focused = true;
-    add_to_deinit_stack(&deinit_stack, &result.audio_on_button, (void (*)(void*))free_button);
+    add_to_deinit_stack(&deinit_stack, &audio_on_button, (void (*)(void*))free_button);
     /// Audio 'OFF' button
-    result.audio_off_button = create_button("OFF", (SDL_Color){237,63,39,255}, vec2(70, 50), 15, 2, exit_code);
+    struct Button audio_off_button = create_button("OFF", (SDL_Color){237,63,39,255}, vec2(70, 50), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_options_screen()`: couldn't create the audio 'OFF' button", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &result.audio_off_button, (void (*)(void*))free_button);
+    add_to_deinit_stack(&deinit_stack, &audio_off_button, (void (*)(void*))free_button);
+    /// Audio switch
+    result.audio_switch = init_switch(2, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init_options_screen()`: couldn't create the audio switch", NON_SDL_ERROR);
+        flush_deinit_stack(&deinit_stack);
+        return result;
+    }
+    add_to_switch(&result.audio_switch, audio_on_button);
+    add_to_switch(&result.audio_switch, audio_off_button);
+    result.audio_switch.is_focused = true;
+    if (! audio_manager.using_audio)
+        change_switch_option(&result.audio_switch);
+    add_to_deinit_stack(&deinit_stack, &result.audio_switch, (void (*)(void*))free_switch);
 
     /// 'FPS limit' text
     result.fps_text = create_text("FPS limit:", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(10, 70), 15, 1, exit_code);
@@ -181,8 +193,7 @@ void free_options_screen(struct Options_Screen* target)
     free_button (&target->close_button);
 
     free_texture(&target->audio_text);
-    free_button (&target->audio_on_button);
-    free_button (&target->audio_off_button);
+    free_switch (&target->audio_switch);
     
     free_texture(&target->fps_text);
     free_button (&target->fps_button);
@@ -215,10 +226,7 @@ void show_options_screen(struct Options_Screen* target)
 
     /// Setting correct button focus.
     target->close_button.is_focused = false;
-    if (audio_manager.using_audio)
-        target->audio_on_button.is_focused  = true;
-    else
-        target->audio_off_button.is_focused = true;
+    target->audio_switch.is_focused = true;
     return;
 }
 
@@ -249,10 +257,7 @@ void render_options_screen(struct Options_Screen* target)
     render_button (&target->close_button);
 
     render_texture(&target->audio_text);
-    if (audio_manager.using_audio)
-        render_button(&target->audio_on_button);
-    else
-        render_button(&target->audio_off_button);
+    render_switch (&target->audio_switch);
 
     render_texture(&target->fps_text);
     render_button (&target->fps_button);

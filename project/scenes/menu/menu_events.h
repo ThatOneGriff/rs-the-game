@@ -65,19 +65,14 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
         }
         else if (scene->options_screen.is_open)
         {
-            if (scene->options_screen.audio_on_button.is_focused)
+            if (scene->options_screen.audio_switch.is_focused)
             {
-                audio_manager.using_audio = false;
-                scene->options_screen.audio_on_button. is_focused = false;
-                scene->options_screen.audio_off_button.is_focused = true;
-                ma_sound_stop(&audio_manager.music);
-            }
-            else if (scene->options_screen.audio_off_button.is_focused)
-            {
-                audio_manager.using_audio = true;
-                scene->options_screen.audio_on_button. is_focused = true;
-                scene->options_screen.audio_off_button.is_focused = false;
-                play_random_music(&music_loader_menu);
+                audio_manager.using_audio = ! audio_manager.using_audio;
+                change_switch_option(&scene->options_screen.audio_switch);
+                if (! audio_manager.using_audio)
+                    ma_sound_stop(&audio_manager.music);
+                else
+                    play_random_music(&music_loader_menu);
             }
             else if (scene->options_screen.close_button.is_focused)
             {
@@ -104,10 +99,9 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
         }
         else if (scene->options_screen.is_open)
         {
-            if (scene->options_screen.audio_on_button.is_focused || scene->options_screen.audio_off_button.is_focused)
+            if (scene->options_screen.audio_switch.is_focused)
             {
-                scene->options_screen.audio_on_button.is_focused  = false;
-                scene->options_screen.audio_off_button.is_focused = false;
+                scene->options_screen.audio_switch.is_focused = false;
                 scene->options_screen.close_button.is_focused = true;
             }
             break;
@@ -133,10 +127,7 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
             if (scene->options_screen.close_button.is_focused)
             {
                 scene->options_screen.close_button.is_focused = false;
-                if (audio_manager.using_audio)
-                    scene->options_screen.audio_on_button.is_focused = true;    
-                else
-                    scene->options_screen.audio_off_button.is_focused = true;
+                scene->options_screen.audio_switch.is_focused = true;
             }
             break;
         }
