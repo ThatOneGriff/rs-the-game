@@ -24,7 +24,7 @@
 #include "logic/logic_layer.h"       /// Logic layer.s
 
 /* Scenes */
-#include "scenes/gameplay/car.h"             /// Car.
+#include "scenes/car.h"                      /// Car.
 #include "scenes/gameplay/gameplay_events.h" /// Gameplay events & input.
 #include "scenes/gameplay/gameplay_scene.h"  /// Gameplay scene.
 #include "scenes/menu/menu_events.h"         /// Menu events & input.
@@ -109,7 +109,7 @@ void game_loop(int* exit_code)
     if (*exit_code == EXIT_FAILURE)
         return;
     
-    struct Menu_Scene menu_scene = load_menu_scene(exit_code);
+    struct Menu_Scene menu_scene = load_menu_scene(&car, exit_code);
     if (*exit_code == EXIT_FAILURE)
         return;
     logic_layer.curr_scene = &menu_scene;
@@ -144,7 +144,7 @@ void game_loop(int* exit_code)
             if (! logic_layer.remain_in_scene)
             {
                 free_gameplay_scene(&gameplay_scene);
-                menu_scene = load_menu_scene(exit_code);
+                menu_scene = load_menu_scene(&car, exit_code);
                 if (*exit_code == EXIT_FAILURE)
                     return;
                 logic_layer.curr_scene = &menu_scene;

@@ -13,7 +13,7 @@
 #include "../../logic/logic_layer.h"       /// Key state.
 
 /* Scene & components */
-#include "car.h"            /// Car position controlling.
+#include "../car.h"         /// Car position controlling.
 #include "gameplay_scene.h" /// Gameplay scene manipulation.
 #include "pause_screen.h"   /// Pause screen manipulation.
 
@@ -64,7 +64,10 @@ void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode 
         
         case SDLK_RETURN:
             if (scene->pause_screen.close_button.is_focused || scene->pause_screen.continue_button.is_focused)
+            {
                 hide_pause_screen(&scene->pause_screen);
+                ma_sound_start(&audio_manager.music);
+            }
             else if (scene->pause_screen.quit_to_menu_button.is_focused)
                 logic_layer.remain_in_scene = false;
             else if (scene->pause_screen.quit_to_desktop_button.is_focused)

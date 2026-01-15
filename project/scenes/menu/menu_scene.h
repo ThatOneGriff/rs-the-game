@@ -17,6 +17,7 @@
 #include "../../resources.h"       /// Null texture.
 
 /* Graphics and components */
+#include "../car.h"                          /// Car data.
 #include "options_screen.h"                  /// Options screen.
 #include "../../game_components/button.h"    /// Button.
 #include "../../game_components/texture.h"   /// Texture.
@@ -31,6 +32,8 @@
 
 struct Menu_Scene
 {
+    struct Car* car_ptr;
+
     SDL_Texture* bg;
     struct Texture car_name_text;
     struct Button next_button;
@@ -58,17 +61,19 @@ struct Menu_Scene
 
 /* Predef */
 
-struct Menu_Scene load_menu_scene(int* exit_code);
+struct Menu_Scene load_menu_scene(struct Car* car_ptr, int* exit_code);
 void              free_menu_scene(struct Menu_Scene* target);
+void              set_menu_car_info(struct Menu_Scene* scene, struct Car* car, int* exit_code);
 void              render_menu_scene(struct Menu_Scene* target);
 
 
 /* Body */
 
-struct Menu_Scene load_menu_scene(int* exit_code)
+struct Menu_Scene load_menu_scene(struct Car* car_ptr, int* exit_code)
 {
     struct Menu_Scene result;
     result.bg = NULL;
+    result.car_ptr = NULL;
     //result.button_focus_i = 0;
 
     /// Param checking
@@ -102,7 +107,7 @@ struct Menu_Scene load_menu_scene(int* exit_code)
         }
     }
     /// Deinit stack
-    struct Deinit_Stack deinit_stack = new_deinit_stack(8, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
+    struct Deinit_Stack deinit_stack = new_deinit_stack(6, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
@@ -112,17 +117,6 @@ struct Menu_Scene load_menu_scene(int* exit_code)
     }
     if (result.bg != NULL_TEXTURE)
         add_to_deinit_stack(&deinit_stack, result.bg, (void (*)(void*))SDL_DestroyTexture);
-
-    /// Car name text
-    result.car_name_text = create_text("Clio Williams", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(10, 10), 15, 1, exit_code);
-    if (*exit_code == EXIT_FAILURE)
-    {
-        print_error("`load_menu_scene()`: couldn't create the text", NON_SDL_ERROR);
-        flush_deinit_stack(&deinit_stack);
-        free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
-        return result;
-    }
-    add_to_deinit_stack(&deinit_stack, &result.car_name_text, (void (*)(void*))free_texture);
 
     /// Next button
     result.next_button = create_button("NEXT", (SDL_Color){69,71,75,255}, vec2(155, 15), 12, 2, exit_code);
@@ -189,21 +183,8 @@ struct Menu_Scene load_menu_scene(int* exit_code)
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &result.quit_button, (void (*)(void*))free_button);
 
-    /// Photo quads. REDO: very hard-coded and unsafe as of now.
-    result.photo_quad1 = load_texture("./res/images/cars/clio-williams/quad1.png", (SDL_FRect){10   , 34   , 72, 54}, exit_code);
-    result.photo_quad2 = load_texture("./res/images/cars/clio-williams/quad2.png", (SDL_FRect){10+72, 34   , 72, 54}, exit_code);
-    result.photo_quad3 = load_texture("./res/images/cars/clio-williams/quad3.png", (SDL_FRect){10   , 34+54, 72, 54}, exit_code);
-    result.photo_quad4 = load_texture("./res/images/cars/clio-williams/quad4.png", (SDL_FRect){10+72, 34+54, 72, 54}, exit_code);
-
-    result.year_text        = create_text("Year: 1994",    (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(156, 33), 9, 1, exit_code);
-    result.horsepower_text  = create_text("Engine: 150 hp", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(156, 43), 9, 1, exit_code);
-    result.top_speed_text   = create_text("Speed: 215 kph",    (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(156, 53), 9, 1, exit_code);
-    result.handling_text    = create_text("Handling: 80",  (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(156, 63), 9, 1, exit_code);
-    
-    result.info_line1 = create_text("Honoring the Williams F1 team, this was", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(10, 150), 9, 1, exit_code);
-    result.info_line2 = create_text("the first sporty Clio of many to come.",  (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(10, 160), 9, 1, exit_code);
+    set_menu_car_info(&result, car_ptr, exit_code);
 
     free_deinit_stack(&deinit_stack);
     free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
@@ -214,6 +195,7 @@ struct Menu_Scene load_menu_scene(int* exit_code)
 
 void free_menu_scene(struct Menu_Scene* target)
 {
+    target->car_ptr = NULL;
     if (target->bg != NULL_TEXTURE)
     {
         SDL_DestroyTexture(target->bg);
@@ -239,6 +221,52 @@ void free_menu_scene(struct Menu_Scene* target)
     
     free_texture(&target->info_line1);
     free_texture(&target->info_line2);
+}
+
+
+void set_menu_car_info(struct Menu_Scene* scene, struct Car* car, int* exit_code)
+{
+    if (exit_code == NULL)
+        print_warning("`set_menu_car_info()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+    if (scene == NULL || car == NULL) /// TODO: check all members.
+    {
+        print_error("`set_menu_car_info()`: `scene` or `car` arg is `NULL`", NON_SDL_ERROR);
+        return;
+    }
+
+    scene->car_ptr = car;
+    /// Car name text
+    scene->car_name_text = create_text(car->name, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(10, 10), 15, 1, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`set_menu_car_info()`: couldn't create the text", NON_SDL_ERROR);
+        return;
+    }
+    
+    /// TODO: checks.
+    scene->photo_quad1 = load_texture(car->quad_paths[0], (SDL_FRect){10   , 34   , 72, 54}, exit_code);
+    scene->photo_quad2 = load_texture(car->quad_paths[1], (SDL_FRect){10+72, 34   , 72, 54}, exit_code);
+    scene->photo_quad3 = load_texture(car->quad_paths[2], (SDL_FRect){10   , 34+54, 72, 54}, exit_code);
+    scene->photo_quad4 = load_texture(car->quad_paths[3], (SDL_FRect){10+72, 34+54, 72, 54}, exit_code);
+    
+    char year_text[15];
+    sprintf(year_text, "Year: %d", car->year);
+    char engine_text[15];
+    sprintf(engine_text, "Engine: %d hp", car->hp);
+    char speed_text[15];
+    sprintf(speed_text, "Speed: %d kph", car->top_speed);
+    char handling_text[14];
+    sprintf(handling_text, "Handling: %d", car->handling);
+    scene->year_text        = create_text(year_text,     (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(156, 33), 9, 1, exit_code);
+    scene->horsepower_text  = create_text(engine_text,   (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(156, 43), 9, 1, exit_code);
+    scene->top_speed_text   = create_text(speed_text,    (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(156, 53), 9, 1, exit_code);
+    scene->handling_text    = create_text(handling_text, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(156, 63), 9, 1, exit_code);
+    
+    scene->info_line1 = create_text(car->info_text[0], (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(10, 150), 9, 1, exit_code);
+    scene->info_line2 = create_text(car->info_text[1], (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(10, 160), 9, 1, exit_code);
+    
+    *exit_code = EXIT_SUCCESS;
+    return;
 }
 
 

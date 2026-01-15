@@ -13,7 +13,7 @@
 #include "../../helpers/helpers.h" /// `free_ptr_arr()`.
 
 /* Graphics & components */
-#include "car.h"                                           /// `*car_ptr` (i.e. player).
+#include "../car.h"                                        /// `*car_ptr` (i.e. player).
 #include "pause_screen.h"                                  /// Pause screen.
 #include "../../game_components/environment.h"             /// `struct Environment`.
 #include "../../game_components/multi_texture.h"           /// Multi-textures.
