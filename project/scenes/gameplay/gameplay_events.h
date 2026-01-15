@@ -190,11 +190,11 @@ void _process_gameplay_car_input(struct Car* car)
     
     /// Turning the texture
     int coord_based_diff = 0;
-    if (car->coords.x <= 30)
+    if (car->coords.x <= 20)
         coord_based_diff =  2;
     else if (car->coords.x <= 60)
         coord_based_diff =  1;
-    else if (car->coords.x + car->coords.w >= 210)
+    else if (car->coords.x + car->coords.w >= 220)
         coord_based_diff = -2;
     else if (car->coords.x + car->coords.w >= 180)
         coord_based_diff = -1;
