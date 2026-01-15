@@ -127,7 +127,7 @@ void game_loop(int* exit_code)
     while (logic_layer.game_is_running)
     {
         /// Preparations
-        logic_layer.curr_tick = SDL_GetTicks();
+        logic_layer.curr_tick = SDL_GetTicks() - logic_layer.real_tick_diff;
         SDL_RenderClear(graphics_layer.renderer);
         SDL_SetRenderTarget(graphics_layer.renderer, graphics_layer.buffer);
 
@@ -149,6 +149,7 @@ void game_loop(int* exit_code)
                     return;
                 logic_layer.curr_scene = &menu_scene;
                 logic_layer.remain_in_scene = true;
+                logic_layer.real_tick_diff  = 0;
                 if (audio_manager.using_audio)
                 {
                     _freeze_music_loader(&music_loader_gameplay);

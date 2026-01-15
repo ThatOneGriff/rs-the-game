@@ -31,6 +31,7 @@ struct Logic_Layer
     SDL_Event event;
 
     time_tick_ms curr_tick;
+    time_tick_ms real_tick_diff;
 };
 
 /// Doesn't check for accidental double initialization.
@@ -41,7 +42,8 @@ void _init_logic_layer(int* exit_code)
     logic_layer.game_is_running = true;
     logic_layer.remain_in_scene = true;
     logic_layer.curr_scene = NULL;
-    logic_layer.curr_tick  = SDL_GetTicks(); /// Temp value. Will be updated every frame.
+    logic_layer.curr_tick      = SDL_GetTicks(); /// Temp value. Will be updated every frame.
+    logic_layer.real_tick_diff = 0; /// For pause reasons.
     *exit_code = EXIT_SUCCESS;
     return;
 }

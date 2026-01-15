@@ -14,6 +14,7 @@
 
 /* Graphics & components */
 #include "car.h"                                           /// `*car_ptr` (i.e. player).
+#include "pause_screen.h"                                  /// Pause screen.
 #include "../../game_components/environment.h"             /// `struct Environment`.
 #include "../../game_components/multi_texture.h"           /// Multi-textures.
 #include "../../game_components/shifting_texture.h"        /// Shifting textures.
@@ -35,6 +36,7 @@ struct Gameplay_Scene
     struct Environment      trees;
 
     struct Car* car_ptr;
+    struct Pause_Screen pause_screen;
 };
 
 
@@ -118,7 +120,6 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         print_error("`load_gameplay_scene()`: couldn't load the ground texture", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
-        *exit_code = EXIT_FAILURE;
         return result;
     }
     add_to_deinit_stack(&deinit_stack, &result.ground, (void (*)(void*))free_shifting_texture); ///  TODO: try replacing it with an incorrect method and see what happens?
@@ -134,7 +135,6 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         print_error("`load_gameplay_scene()`: couldn't load the road texture", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
-        *exit_code = EXIT_FAILURE;
         return result;
     }
     add_to_shifting_texture(&result.road, scene_data[5], exit_code);
@@ -149,7 +149,6 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         print_error("`load_gameplay_scene()`: couldn't load the stripes texture", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
-        *exit_code = EXIT_FAILURE;
         return result;
     }
     add_to_shifting_texture(&result.stripes, scene_data[8], exit_code);
@@ -164,7 +163,6 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         print_error("`load_gameplay_scene()`: couldn't load the trees", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
-        *exit_code = EXIT_FAILURE;
         return result;
     }
     /// - Tree movement
@@ -183,18 +181,14 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     couple_move_component_to_environment(&result.trees, tree_move_component, vec2(10,0), exit_code); /// TODO: exit code check.
     add_to_deinit_stack(&deinit_stack, &result.trees, (void (*)(void*))free_environment); /// Don't delete. More elements will be added later
 
-    #ifdef USING_AUDIO
-    /// Audio setup (assumes `audio.engine` is initialized)
-    if (ma_sound_init_from_file(&audio.engine, "res/why_so_jolly.mp3", 0, NULL, NULL, &audio.bg_music) != MA_SUCCESS)
+    result.pause_screen = init_pause_screen(exit_code);
+    if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_gameplay_scene()`: couldn't load the music", NON_SDL_ERROR);
+        print_error("`load_gameplay_scene()`: couldn't create pause screen", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
-        *exit_code = EXIT_FAILURE;
         return result;
     }
-    ma_sound_start(&audio.bg_music);
-    #endif /// USING_AUDIO
 
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
@@ -208,6 +202,7 @@ void free_gameplay_scene(struct Gameplay_Scene* target)
     if (target == NULL)
         return;
     
+    free_pause_screen(&target->pause_screen);
     target->car_ptr->coords.x = center_x(target->car_ptr->coords.w);
     free_environment     (&target->trees);
     free_shifting_texture(&target->stripes);
@@ -227,6 +222,12 @@ void render_gameplay_scene(struct Gameplay_Scene* target)
     if (target == NULL || target->sky_bg == NULL) /// TODO: check all members.
     {
         print_error("`render_gameplay_scene()`: `target` arg or one of its members is `NULL`", NON_SDL_ERROR);
+        return;
+    }
+
+    if (target->pause_screen.is_open)
+    {
+        render_pause_screen(&target->pause_screen);
         return;
     }
 

@@ -6,6 +6,7 @@
 #include <SDL3/SDL.h> /// Keyboard controls.
 
 /* Helper headers */
+#include "../../audio/audio_manager.h"     /// Audio manipulation.
 #include "../../graphics/fps.h"            /// FPS-based movement.
 #include "../../graphics/graphics_layer.h" /// `RENDER_WIDTH/HEIGHT`.
 #include "../../logic/global_events.h"     /// Global event processing.
@@ -14,6 +15,7 @@
 /* Scene & components */
 #include "car.h"            /// Car position controlling.
 #include "gameplay_scene.h" /// Gameplay scene manipulation.
+#include "pause_screen.h"   /// Pause screen manipulation.
 
 
 /* Predef */
@@ -44,9 +46,21 @@ void process_gameplay_events(struct Gameplay_Scene* scene)
 
 void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode event_key)
 {
-    UNUSED(scene); /// I'm not sure if it ever will be used. Let's keep it for now.
     switch(event_key)
     {
+        case SDLK_ESCAPE:
+            if (scene->pause_screen.is_open)
+            {
+                hide_pause_screen(&scene->pause_screen);
+                ma_sound_start(&audio_manager.music);
+            }
+            else
+            {
+                show_pause_screen(&scene->pause_screen);
+                ma_sound_stop(&audio_manager.music);
+            }
+            break;
+        
         case SDLK_RETURN:
             logic_layer.remain_in_scene = false;
             break;
