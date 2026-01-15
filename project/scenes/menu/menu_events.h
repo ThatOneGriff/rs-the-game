@@ -13,7 +13,9 @@
 /* Scene & components */
 #include "menu_scene.h"                     /// Menu scene manipulation.
 #include "options_screen.h"                 /// Options screen manipulation.
-#include "../../game_components/button.h"   /// Button manipulation (maybe TEMP?).
+#include "../../audio/audio_manager.h"      /// Audio
+#include "../../audio/music_loader.h"       ///  manipulation.
+#include "../../game_components/button.h"   /// Button manipulation.
 
 
 /* Predef */
@@ -47,6 +49,8 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
     switch(event_key)
     {
         case SDLK_RETURN:
+        if (! scene->options_screen.is_open)
+        {
             if (scene->play_button.is_focused)
                 logic_layer.remain_in_scene = false;
             else if (scene->options_button.is_focused)
@@ -54,9 +58,34 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
             else if (scene->quit_button.is_focused)
                 logic_layer.game_is_running = false;
             break;
+        }
+        else if (scene->options_screen.is_open)
+        {
+            if (scene->options_screen.audio_on_button.is_focused)
+            {
+                audio_manager.using_audio = false;
+                scene->options_screen.audio_on_button. is_focused = false;
+                scene->options_screen.audio_off_button.is_focused = true;
+                ma_sound_stop(&audio_manager.music);
+            }
+            else if (scene->options_screen.audio_off_button.is_focused)
+            {
+                audio_manager.using_audio = true;
+                scene->options_screen.audio_on_button. is_focused = true;
+                scene->options_screen.audio_off_button.is_focused = false;
+                play_random_music(&music_loader_menu);
+            }
+            else if (scene->options_screen.close_button.is_focused)
+            {
+                hide_options_screen(&scene->options_screen);
+            }
+            break;
+        }
 
         /// TEMP while I'm coming up with a better button management structure.
         case SDLK_UP:
+        if (! scene->options_screen.is_open)
+        {
             if (scene->options_button.is_focused)
             {
                 scene->play_button.   is_focused = true;
@@ -68,8 +97,21 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
                 scene->quit_button.   is_focused = false;
             }
             break;
+        }
+        else if (scene->options_screen.is_open)
+        {
+            if (scene->options_screen.audio_on_button.is_focused || scene->options_screen.audio_off_button.is_focused)
+            {
+                scene->options_screen.audio_on_button.is_focused  = false;
+                scene->options_screen.audio_off_button.is_focused = false;
+                scene->options_screen.close_button.is_focused = true;
+            }
+            break;
+        }
         
         case SDLK_DOWN:
+        if (! scene->options_screen.is_open)
+        {
             if (scene->play_button.is_focused)
             {
                 scene->play_button.   is_focused = false;
@@ -81,6 +123,19 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
                 scene->quit_button.   is_focused = true;
             }
             break;
+        }
+        else if (scene->options_screen.is_open)
+        {
+            if (scene->options_screen.close_button.is_focused)
+            {
+                scene->options_screen.close_button.is_focused = false;
+                if (audio_manager.using_audio)
+                    scene->options_screen.audio_on_button.is_focused = true;    
+                else
+                    scene->options_screen.audio_off_button.is_focused = true;
+            }
+            break;
+        }
         
         case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
             play_random_music(&music_loader_menu);
