@@ -17,6 +17,7 @@
 #include "../../resources.h"       /// Null texture.
 
 /* Graphics and components */
+#include "options_screen.h"                  /// Options screen.
 #include "../../game_components/button.h"    /// Button.
 #include "../../game_components/texture.h"   /// Texture.
 #include "../../game_components/text/text.h" /// Text creation.
@@ -36,7 +37,8 @@ struct Menu_Scene
     struct Button prev_button;
 
     struct Button play_button;
-    struct Button options_button;
+    struct Button         options_button;
+    struct Options_Screen options_screen;
     struct Button quit_button;
 
     struct Texture photo_quad1;
@@ -52,12 +54,16 @@ struct Menu_Scene
     struct Texture info_line1;
     struct Texture info_line2;
 };
+
+
+/* Predef */
+
 struct Menu_Scene load_menu_scene(int* exit_code);
-void              menu_scene_tick(struct Menu_Scene* target, int* exit_code);
 void              free_menu_scene(struct Menu_Scene* target);
+void              render_menu_scene(struct Menu_Scene* target);
 
 
-/* Functions */
+/* Body */
 
 struct Menu_Scene load_menu_scene(int* exit_code)
 {
@@ -96,7 +102,7 @@ struct Menu_Scene load_menu_scene(int* exit_code)
         }
     }
     /// Deinit stack
-    struct Deinit_Stack deinit_stack = new_deinit_stack(7, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
+    struct Deinit_Stack deinit_stack = new_deinit_stack(8, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
@@ -111,10 +117,10 @@ struct Menu_Scene load_menu_scene(int* exit_code)
     result.car_name_text = create_text("Clio Williams", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(10, 10), 15, 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_menu_scene()`: couldn't create the text", IS_SDL_ERROR);
+        print_error("`load_menu_scene()`: couldn't create the text", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
-        *exit_code = EXIT_FAILURE;
+        return result;
     }
     add_to_deinit_stack(&deinit_stack, &result.car_name_text, (void (*)(void*))free_texture);
 
@@ -122,34 +128,32 @@ struct Menu_Scene load_menu_scene(int* exit_code)
     result.next_button = create_button("NEXT", (SDL_Color){69,71,75,255}, vec2(155, 15), 12, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_menu_scene()`: couldn't create next button", IS_SDL_ERROR);
+        print_error("`load_menu_scene()`: couldn't create next button", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
-        *exit_code = EXIT_FAILURE;
+        return result;
     }
-    result.next_button.is_focused = false;
     add_to_deinit_stack(&deinit_stack, &result.next_button, (void (*)(void*))free_button);
 
     /// Prev button
     result.prev_button = create_button("PREV", (SDL_Color){69,71,75,255}, vec2(195, 15), 12, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_menu_scene()`: couldn't create prev button", IS_SDL_ERROR);
+        print_error("`load_menu_scene()`: couldn't create prev button", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
-        *exit_code = EXIT_FAILURE;
+        return result;
     }
-    result.prev_button.is_focused = false;
     add_to_deinit_stack(&deinit_stack, &result.prev_button, (void (*)(void*))free_button);
 
     /// Play button
     result.play_button = create_button("PLAY", (SDL_Color){254,178,26,255}, vec2(155, 82), 25, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_menu_scene()`: couldn't create play button", IS_SDL_ERROR);
+        print_error("`load_menu_scene()`: couldn't create play button", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
-        *exit_code = EXIT_FAILURE;
+        return result;
     }
     result.play_button.is_focused = true;
     add_to_deinit_stack(&deinit_stack, &result.play_button, (void (*)(void*))free_button);
@@ -158,24 +162,33 @@ struct Menu_Scene load_menu_scene(int* exit_code)
     result.options_button = create_button("OPTIONS", (SDL_Color){19,70,134,255}, vec2(155, 107), 18, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_menu_scene()`: couldn't create options button", IS_SDL_ERROR);
+        print_error("`load_menu_scene()`: couldn't create options button", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
-        *exit_code = EXIT_FAILURE;
+        return result;
     }
-    result.options_button.is_focused = false;
     add_to_deinit_stack(&deinit_stack, &result.options_button, (void (*)(void*))free_button);
+
+    /// Options screen
+    result.options_screen = init_options_screen(exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`load_menu_scene()`: couldn't init options screen", NON_SDL_ERROR);
+        flush_deinit_stack(&deinit_stack);
+        free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
+        return result;
+    }
+    add_to_deinit_stack(&deinit_stack, &result.options_screen, (void (*)(void*))free_options_screen);
 
     /// Quit button
     result.quit_button = create_button("QUIT", (SDL_Color){237,63,39,255}, vec2(155, 125), 18, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_menu_scene()`: couldn't create quit button", IS_SDL_ERROR);
+        print_error("`load_menu_scene()`: couldn't create quit button", NON_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
-        *exit_code = EXIT_FAILURE;
+        return result;
     }
-    result.quit_button.is_focused = false;
     add_to_deinit_stack(&deinit_stack, &result.quit_button, (void (*)(void*))free_button);
 
     /// Photo quads. REDO: very hard-coded and unsafe as of now.
@@ -196,35 +209,6 @@ struct Menu_Scene load_menu_scene(int* exit_code)
     free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
     *exit_code = EXIT_SUCCESS;
     return result;
-}
-
-
-void menu_scene_tick(struct Menu_Scene* target, int* exit_code)
-{
-    SDL_RenderTexture(graphics_layer.renderer, target->bg, NULL, NULL);
-    render_texture(&target->car_name_text);
-    render_button(&target->next_button);
-    render_button(&target->prev_button);
-
-    render_button(&target->play_button);
-    render_button(&target->options_button);
-    render_button(&target->quit_button);
-
-    render_texture(&target->photo_quad1);
-    render_texture(&target->photo_quad2);
-    render_texture(&target->photo_quad3);
-    render_texture(&target->photo_quad4);
-    
-    render_texture(&target->year_text);
-    render_texture(&target->horsepower_text);
-    render_texture(&target->top_speed_text);
-    render_texture(&target->handling_text);
-    
-    render_texture(&target->info_line1);
-    render_texture(&target->info_line2);
-
-    *exit_code = EXIT_SUCCESS;
-    return;
 }
 
 
@@ -255,6 +239,45 @@ void free_menu_scene(struct Menu_Scene* target)
     
     free_texture(&target->info_line1);
     free_texture(&target->info_line2);
+}
+
+
+void render_menu_scene(struct Menu_Scene* target)
+{
+    if (target == NULL) /// TODO: check all members.
+    {
+        print_error("`menu_scene_tick()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        return;
+    }
+
+    if (target->options_screen.is_open)
+    {
+        render_options_screen(&target->options_screen);
+        return;
+    }
+
+    SDL_RenderTexture(graphics_layer.renderer, target->bg, NULL, NULL);
+    render_texture(&target->car_name_text);
+    render_button(&target->next_button);
+    render_button(&target->prev_button);
+
+    render_button(&target->play_button);
+    render_button(&target->options_button);
+    render_button(&target->quit_button);
+
+    render_texture(&target->photo_quad1);
+    render_texture(&target->photo_quad2);
+    render_texture(&target->photo_quad3);
+    render_texture(&target->photo_quad4);
+    
+    render_texture(&target->year_text);
+    render_texture(&target->horsepower_text);
+    render_texture(&target->top_speed_text);
+    render_texture(&target->handling_text);
+    
+    render_texture(&target->info_line1);
+    render_texture(&target->info_line2);
+    return;
 }
 
 #endif /// MENU_SCENE_H

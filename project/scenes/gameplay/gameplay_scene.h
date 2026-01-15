@@ -36,9 +36,13 @@ struct Gameplay_Scene
 
     struct Car* car_ptr;
 };
+
+
+/* Predef */
+
 struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr, int* exit_code);
-void                  gameplay_scene_tick(struct Gameplay_Scene* target, int* exit_code);
 void                  free_gameplay_scene(struct Gameplay_Scene* target);
+void                  render_gameplay_scene(struct Gameplay_Scene* target);
 
 
 /* Body */
@@ -199,32 +203,6 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
 }
 
 
-/// Renders into `graphics_layer`'s `buffer` texture.
-void gameplay_scene_tick(struct Gameplay_Scene* target, int* exit_code)
-{
-    /* Param checking*/
-    if (exit_code == NULL)
-        print_warning("`render_gameplay_scene()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    if (target == NULL || target->sky_bg == NULL) /// TODO: take all members into account.
-    {
-        print_error("`render_gameplay_scene()`: `target` arg or one of its members is `NULL`", NON_SDL_ERROR);
-        *exit_code = EXIT_FAILURE;
-        return;
-    }
-
-    /* Rendering */
-    SDL_RenderTexture(graphics_layer.renderer, target->sky_bg, NULL, NULL);
-    partly_render_environment(&target->trees, 0, 2);
-    render_shifting_texture(&target->ground);
-    render_shifting_texture(&target->road);
-    render_shifting_texture(&target->stripes);
-    partly_render_environment(&target->trees, 3, UINT_MAX);
-    SDL_RenderTexture(graphics_layer.renderer, target->car_ptr->textures[target->car_ptr->base_texture], NULL, &target->car_ptr->coords);
-    *exit_code = EXIT_SUCCESS;
-    return;
-}
-
-
 void free_gameplay_scene(struct Gameplay_Scene* target)
 {
     if (target == NULL)
@@ -240,6 +218,27 @@ void free_gameplay_scene(struct Gameplay_Scene* target)
         SDL_DestroyTexture(target->sky_bg);
         target->sky_bg = NULL;
     }
+}
+
+
+void render_gameplay_scene(struct Gameplay_Scene* target)
+{
+    /// Param checking
+    if (target == NULL || target->sky_bg == NULL) /// TODO: check all members.
+    {
+        print_error("`render_gameplay_scene()`: `target` arg or one of its members is `NULL`", NON_SDL_ERROR);
+        return;
+    }
+
+    /// Rendering
+    SDL_RenderTexture(graphics_layer.renderer, target->sky_bg, NULL, NULL);
+    partly_render_environment(&target->trees, 0, 2);
+    render_shifting_texture(&target->ground);
+    render_shifting_texture(&target->road);
+    render_shifting_texture(&target->stripes);
+    partly_render_environment(&target->trees, 3, UINT_MAX);
+    SDL_RenderTexture(graphics_layer.renderer, target->car_ptr->textures[target->car_ptr->base_texture], NULL, &target->car_ptr->coords);
+    return;
 }
 
 #endif /// GAMEPLAY_SCENE_H

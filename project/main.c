@@ -139,7 +139,7 @@ void game_loop(int* exit_code)
                 check_if_music_ended(&music_loader_gameplay);
             
             process_gameplay_events(&gameplay_scene);
-            gameplay_scene_tick(&gameplay_scene, exit_code);
+            render_gameplay_scene(&gameplay_scene);
             /// Scene switch (to menu)
             if (! logic_layer.remain_in_scene)
             {
@@ -160,7 +160,7 @@ void game_loop(int* exit_code)
         else if (logic_layer.curr_scene == &menu_scene)
         {
             process_menu_events(&menu_scene);
-            menu_scene_tick(&menu_scene, exit_code);
+            render_menu_scene(&menu_scene);
             /// Scene switch
             if (! logic_layer.remain_in_scene)
             {

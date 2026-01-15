@@ -12,6 +12,7 @@
 
 /* Scene & components */
 #include "menu_scene.h"                     /// Menu scene manipulation.
+#include "options_screen.h"                 /// Options screen manipulation.
 #include "../../game_components/button.h"   /// Button manipulation (maybe TEMP?).
 
 
@@ -48,6 +49,8 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
         case SDLK_RETURN:
             if (scene->play_button.is_focused)
                 logic_layer.remain_in_scene = false;
+            else if (scene->options_button.is_focused)
+                show_options_screen(&scene->options_screen);
             else if (scene->quit_button.is_focused)
                 logic_layer.game_is_running = false;
             break;
