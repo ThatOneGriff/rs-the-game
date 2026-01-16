@@ -203,26 +203,26 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
         }
 
         case SDLK_LEFT:
-        if (! scene->options_screen.is_open && players_car_manager.cur_car != 0)
-        {
-            if (scene->next_button.is_focused)
+            if (! scene->options_screen.is_open && players_car_manager.cur_car != 0)
             {
-                scene->prev_button.is_focused = true;
-                scene->next_button.is_focused = false;
+                if (scene->next_button.is_focused)
+                {
+                    scene->prev_button.is_focused = true;
+                    scene->next_button.is_focused = false;
+                }
             }
             break;
-        }
 
         case SDLK_RIGHT:
-        if (! scene->options_screen.is_open && players_car_manager.cur_car != players_car_manager.car_count - 1)
-        {
-            if (scene->prev_button.is_focused)
+            if (! scene->options_screen.is_open && players_car_manager.cur_car != players_car_manager.car_count - 1)
             {
-                scene->prev_button.is_focused = false;
-                scene->next_button.is_focused = true;
+                if (scene->prev_button.is_focused)
+                {
+                    scene->prev_button.is_focused = false;
+                    scene->next_button.is_focused = true;
+                }
             }
             break;
-        }
         
         case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
             play_random_music(&music_loader_menu);
