@@ -134,8 +134,8 @@ struct Options_Screen init_options_screen(int* exit_code)
     add_to_switch(&result.audio_switch, audio_on_button);
     add_to_switch(&result.audio_switch, audio_off_button);
     result.audio_switch.is_focused = true;
-    //if (! audio_manager.using_audio)
-    //    change_switch_option(&result.audio_switch);
+    if (! audio_manager.using_audio)
+        change_switch_option(&result.audio_switch);
     add_to_deinit_stack(&deinit_stack, &result.audio_switch, (void (*)(void*))free_switch);
 
     /// 'FPS limit' text

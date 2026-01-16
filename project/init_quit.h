@@ -29,11 +29,16 @@
 
 #define SDL_FLAGS (SDL_INIT_VIDEO)
 
+#define SAVE_DATA_PATH "./player.savedata"
+#define SAVE_DATA_LINES 4
+
 
 /* Predef */
 
 void init(int* exit_code);
 void quit(void);
+void read_data(void);
+void save_data(void);
 void program_exit(const int exit_code);
 
 
@@ -172,9 +177,43 @@ void init(int* exit_code)
         }
     }
 
+    read_data();
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     print_success("`init()`");
     *exit_code = EXIT_SUCCESS;
+    return;
+}
+
+
+void read_data(void)
+{
+    char** save_data = read_file_by_line(SAVE_DATA_PATH, SAVE_DATA_LINES);
+    if (save_data == NULL)
+    {
+        printf("Save file not found or empty.\n");
+        return;
+    }
+
+    audio_manager.using_audio = (bool)    atoi(save_data[0]);
+    curr_fps_cap_i            = (unsigned)atoi(save_data[1]);
+    set_fps_cap(fps_cap_options[curr_fps_cap_i]);
+
+    const size_t car_i = (size_t)atoi(save_data[2]);
+    for (size_t i = 0; i < car_i; i++)
+        get_next_car(&players_car_manager);
+
+    print_success("Save data read");
+    free_ptr_arr((void**)save_data, SAVE_DATA_LINES);
+    return;
+}
+
+
+void save_data(void)
+{
+    FILE* save_data = fopen(SAVE_DATA_PATH, "w");
+    fprintf(save_data, "%d\n%u\n%llu\n3000", audio_manager.using_audio, curr_fps_cap_i, players_car_manager.cur_car);
+    fclose(save_data);
+    print_success("Data saved");
     return;
 }
 
@@ -206,6 +245,7 @@ void quit(void)
 [[ noreturn ]]
 void program_exit(const int exit_code)
 {
+    save_data();
     quit();
     printf("\n");
     exit(exit_code);
