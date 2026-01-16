@@ -14,8 +14,10 @@
 #include "../car_manager.h" /// `traffic_car_manager`.
 #include "../../game_components/movement/path.h" /// Traffic path.
 
-#define TRAFFIC_ON_ROW_CHANCE     (float)0.20 /// percent
-#define TRAFFIC_ON_2_LANES_CHANCE (float)0.60 /// percent
+#define TRAFFIC_ON_ROW_CHANCE     (float)0.50 /// percent
+#define TRAFFIC_ON_2_LANES_CHANCE (float)0.70 /// percent
+
+#define LANE_SPAWN_COOLDOWN 5
 
 
 /* Struct */
@@ -28,6 +30,7 @@ struct Traffic_Manager
     size_t*  car_path_pts;
 
     struct Path lanes[3];
+    size_t lane_spawn_cooldowns[3];
 
     time_tick_ms latest_move_tick;
     time_span_ms move_delta;
@@ -128,7 +131,7 @@ void init_traffic_manager(const size_t car_count, int* exit_code)
         (SDL_FRect[]){{95, 75, 10,10}, {85,70,15,15}, { 77,68,20,20},
                       {70, 70, 25,25}, {63,73,29,29}, { 50,75,35,35},
                       {35, 80, 45,45}, {15,85,55,55}, {-10,90,65,65},
-                      {-15,125,65,65}/*, {-25,150,65,65}*/},
+                      {-20,100,65,65}/*, {-25,150,65,65}*/},
                        10, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
@@ -141,10 +144,10 @@ void init_traffic_manager(const size_t car_count, int* exit_code)
     
     /// Path (center lane)
     traffic_manager.lanes[1] = new_path(
-        (SDL_FRect[]){{center_x(10), 75, 10,10}, {center_x(15),70,15,15}, {center_x(20),68,20,20},
-                      {center_x(25), 70, 25,25}, {center_x(29),73,29,29}, {center_x(35),75,35,35},
-                      {center_x(45), 80, 45,45}, {center_x(55),85,55,55}, {center_x(65),90,65,65},
-                      {center_x(65),125,65,65}/*, {-25,150,65,65}*/},
+        (SDL_FRect[]){{center_x(10), 75,10,10}, {center_x(15),70,15,15}, {center_x(20),68,20,20},
+                      {center_x(25), 70,25,25}, {center_x(29),73,29,29}, {center_x(35),75,35,35},
+                      {center_x(45), 80,45,45}, {center_x(55),85,55,55}, {center_x(65),90,65,65},
+                      {center_x(65),100,65,65}/*, {-25,150,65,65}*/},
                        10, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
@@ -158,7 +161,9 @@ void init_traffic_manager(const size_t car_count, int* exit_code)
     /// Path (right lane)
     traffic_manager.lanes[2] = flipped_path_x(traffic_manager.lanes[0]);
 
-    /// UNTESTED: now that I think about it, all lane initializations may be broken.
+    traffic_manager.lane_spawn_cooldowns[0] = 0;
+    traffic_manager.lane_spawn_cooldowns[1] = 0;
+    traffic_manager.lane_spawn_cooldowns[2] = 0;
 
     free_deinit_stack(&deinit_stack);
     *exit_code = EXIT_SUCCESS;
@@ -190,6 +195,10 @@ void free_traffic_manager(void)
     traffic_manager.latest_move_tick = 0;
     traffic_manager.move_delta       = 0;
 
+    traffic_manager.lane_spawn_cooldowns[0] = 0;
+    traffic_manager.lane_spawn_cooldowns[1] = 0;
+    traffic_manager.lane_spawn_cooldowns[2] = 0;
+
     free_path(&traffic_manager.lanes[0]);
     free_path(&traffic_manager.lanes[1]);
     free_path(&traffic_manager.lanes[2]);
@@ -208,31 +217,13 @@ void move_traffic(void)
     if (logic_layer.curr_tick - traffic_manager.latest_move_tick < traffic_manager.move_delta)
         return;
     
-    /// Seeding traffic on row
-    if (rand_percent(0, 100) <= TRAFFIC_ON_ROW_CHANCE)
-    {
-        size_t lane_id     = ULONG_LONG_MAX;
-        size_t lane_except = ULONG_LONG_MAX;
-
-        do
-        {
-            lane_except = lane_id; /// Ensuring 2 cars don't end up on the same lane
-            /// Checking for car availability
-            size_t car_id = ULONG_LONG_MAX;
-            for (size_t i = 0; i < traffic_manager.car_count; i++)
-                if (traffic_manager.car_lane_ids[i] == ULONG_LONG_MAX)
-                    car_id = i;
-            if (car_id == ULONG_LONG_MAX) /// All cars taken.
-                break;
-            
-            lane_id = (size_t)randint(0, 2);
-            traffic_manager.car_lane_ids[car_id] = lane_id;
-            traffic_manager.car_path_pts[car_id] = 0;
-
-            traffic_manager.cars[car_id].base_texture = lane_id * 2;
-        } while ((lane_except == ULONG_LONG_MAX) && (rand_percent(0,100) <= TRAFFIC_ON_2_LANES_CHANCE));
-    }
-
+    if   (traffic_manager.lane_spawn_cooldowns[0] > 0)
+        --traffic_manager.lane_spawn_cooldowns[0];
+    if   (traffic_manager.lane_spawn_cooldowns[1] > 0)
+        --traffic_manager.lane_spawn_cooldowns[1];
+    if   (traffic_manager.lane_spawn_cooldowns[2] > 0)
+        --traffic_manager.lane_spawn_cooldowns[2];
+    
     /// Moving traffic
     for (size_t car_id = 0; car_id < traffic_manager.car_count; car_id++)
     {
@@ -246,8 +237,46 @@ void move_traffic(void)
             traffic_manager.car_lane_ids[car_id] = ULONG_LONG_MAX;
             traffic_manager.car_path_pts[car_id] = ULONG_LONG_MAX;
         }
+
+        traffic_manager.latest_move_tick = logic_layer.curr_tick;
     }
 
+    if (traffic_manager.lane_spawn_cooldowns[0] > 0
+     && traffic_manager.lane_spawn_cooldowns[1] > 0
+     && traffic_manager.lane_spawn_cooldowns[2] > 0) /// No free lanes
+        return;
+    
+    /// Seeding traffic on row
+    //if (rand_percent(0, 100) <= TRAFFIC_ON_ROW_CHANCE)
+    
+    for (size_t i = 0; i < 2; i++)
+    {
+        const size_t lane = (size_t)randint(0,2);
+        if (traffic_manager.lane_spawn_cooldowns[lane] > 0)
+            return;
+
+        /// Checking for car availability
+        size_t car_id = ULONG_LONG_MAX;
+        for (size_t j = 0; j < traffic_manager.car_count; j++)
+            if (traffic_manager.car_lane_ids[j] == ULONG_LONG_MAX)
+                car_id = j;
+        if (car_id == ULONG_LONG_MAX) /// All cars taken.
+            break;
+        
+        /// Setting car on a lane
+        traffic_manager.car_lane_ids[car_id] = lane;
+        traffic_manager.car_path_pts[car_id] = 0;
+
+        traffic_manager.cars[car_id].base_texture = 4 - lane * 2;
+        traffic_manager.lane_spawn_cooldowns[lane] = LANE_SPAWN_COOLDOWN;
+
+        if (i == 1 && rand_percent(0,100) <= TRAFFIC_ON_2_LANES_CHANCE)
+            continue;
+        traffic_manager.lane_spawn_cooldowns[0] = LANE_SPAWN_COOLDOWN;
+        traffic_manager.lane_spawn_cooldowns[1] = LANE_SPAWN_COOLDOWN;
+        traffic_manager.lane_spawn_cooldowns[2] = LANE_SPAWN_COOLDOWN;
+        break;
+    }
     return;
 }
 

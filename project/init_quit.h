@@ -20,10 +20,11 @@
 #include "audio/music_loader.h"  /// Music loading.
 
 /* Other headers */
-#include "graphics/fps.h"              /// Initialization of
+#include "graphics/fps.h"              /// Initialization
 #include "graphics/graphics_layer.h"   /// of
 #include "logic/logic_layer.h"         /// various
 #include "scenes/car_manager.h"        /// game
+#include "scenes/gameplay/traffic_manager.h"
 #include "game_components/text/text.h" /// components.
 
 #define SDL_FLAGS (SDL_INIT_VIDEO)
@@ -181,6 +182,7 @@ void init(int* exit_code)
 /// Works by FILO principle.
 void quit(void)
 {
+    free_traffic_manager();
     if (audio_manager.using_audio)
     {
         _free_music_loader(&music_loader_gameplay);

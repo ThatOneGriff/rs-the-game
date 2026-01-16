@@ -192,7 +192,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     }
     add_to_deinit_stack(&deinit_stack, &result.pause_screen, (void (*)(void*))free_pause_screen);
 
-    init_traffic_manager(7, exit_code);
+    init_traffic_manager(5, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't initialize traffic manager", NON_SDL_ERROR);
@@ -214,7 +214,6 @@ void free_gameplay_scene(struct Gameplay_Scene* target)
     if (target == NULL)
         return;
     
-    free_traffic_manager();
     free_pause_screen(&target->pause_screen);
     target->car_ptr->coords.x = center_x(target->car_ptr->coords.w);
     free_environment     (&target->trees);
