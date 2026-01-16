@@ -103,11 +103,11 @@ void init_traffic_manager(const size_t car_count, int* exit_code)
     
     /// Path (center lane)
     traffic_manager.center_lane = new_path(
-        (SDL_FRect[]){{95,75,10,10}, { 85, 70,15,15}, { 70, 70,25,25},
-                      {65,75,25,25}, { 50, 80,30,30}, { 35, 85,35,35},
-
-                                     {-15,125,65,65}, {-25,150,65,65}},
-                       12, exit_code);
+        (SDL_FRect[]){{95, 75, 10,10}, {85,70,15,15}, { 77,68,20,20},
+                      {70, 70, 25,25}, {63,73,29,29}, { 50,75,35,35},
+                      {35, 80, 45,45}, {15,85,55,55}, {-10,90,55,55},
+                      {-15,125,65,65}/*, {-25,150,65,65}*/},
+                       10, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_traffic_manager()`: error creating center lane path", NON_SDL_ERROR);

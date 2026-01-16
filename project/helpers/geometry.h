@@ -3,7 +3,8 @@
 #define GEOMETRY_H
 
 /* Headers */
-#include "../graphics/graphics_layer.h" /// `RENDER_WIDTH/HEIGHT`.
+#include "../game_components/movement/path.h" /// Path manipulation.
+#include "../graphics/graphics_layer.h"       /// `RENDER_WIDTH/HEIGHT`.
 
 
 /* Structs */
@@ -33,7 +34,7 @@ struct Vec2 vec2(const float x, const float y);
 
 struct Path flipped_x(struct Path path)
 {
-    for (size_t i; i < path.pt_count; i++)
+    for (size_t i = 0; i < path.pt_count; i++)
         path.points[i].x = reflect_x(path.points[i].x) - path.points[i].w;
     return path;
 }
