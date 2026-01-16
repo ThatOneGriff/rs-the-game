@@ -32,7 +32,7 @@ static struct Car_Manager traffic_car_manager;
 
 void init_car_manager(struct Car_Manager* target, const bool is_traffic, int* exit_code);
 void free_car_manager(struct Car_Manager* target);
-struct Car* get_random_car(struct Car_Manager* target);
+struct Car copy_random_car(struct Car_Manager* target);
 struct Car* get_curr_car  (struct Car_Manager* target);
 struct Car* get_next_car  (struct Car_Manager* target);
 struct Car* get_prev_car  (struct Car_Manager* target);
@@ -126,9 +126,9 @@ void free_car_manager(struct Car_Manager* target)
 }
 
 
-struct Car* get_random_car(struct Car_Manager* target)
+struct Car copy_random_car(struct Car_Manager* target)
 {
-    return &target->cars[(size_t)randint(0, (unsigned)target->car_count-1)];
+    return target->cars[(size_t)randint(0, (unsigned)target->car_count-1)];
 }
 
 

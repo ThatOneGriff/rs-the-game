@@ -15,6 +15,7 @@
 /* Graphics & components */
 #include "../car.h"                                        /// `*car_ptr` (i.e. player).
 #include "pause_screen.h"                                  /// Pause screen.
+#include "traffic_manager.h"                               /// Traffic manager.
 #include "../../game_components/environment.h"             /// `struct Environment`.
 #include "../../game_components/multi_texture.h"           /// Multi-textures.
 #include "../../game_components/shifting_texture.h"        /// Shifting textures.
