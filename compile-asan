@@ -30,7 +30,7 @@ clang -g1 -ferror-limit=100 -Wall -Wextra -Weverything -Werror -std=c23 -Wno-unu
 -Wno-switch-default -Wno-tentative-definition-incomplete-type -Wno-unsafe-buffer-usage \
 -fsanitize=address -fsanitize=float-divide-by-zero -fsanitize=integer -fsanitize=nullability -fsanitize=shadow-call-stack -fsanitize=undefined -fsanitize=unsigned-integer-overflow -fsanitize=unsigned-shift-base \
 -c project/main.c -o ./main.o \
--I "C:/SDL/x86_64-w64-mingw32/include" -I "C:/SDL_Image/x86_64-w64-mingw32/include" -I "C:/SDL_ttf/x86_64-w64-mingw32/include"
+-I "./SDL3/SDL/x86_64-w64-mingw32/include" -I "./SDL3/SDL_Image/x86_64-w64-mingw32/include" -I "./SDL3/SDL_ttf/x86_64-w64-mingw32/include"
 
 echo -e "$GREEN[1/3]$RESET Compiled main program."
 echo "- Compiling audio..."
@@ -46,7 +46,7 @@ echo "- Linking..."
 clang -g1 -ferror-limit=100 ./main.o ./audio.o -o ./rs-the-game.exe \
 -fsanitize=address -fsanitize=float-divide-by-zero -fsanitize=integer -fsanitize=nullability -fsanitize=shadow-call-stack -fsanitize=undefined -fsanitize=unsigned-integer-overflow -fsanitize=unsigned-shift-base \
 -lSDL3 -lSDL3_image -lSDL3_ttf \
--L "C:/SDL/x86_64-w64-mingw32/lib" -L "C:/SDL_image/x86_64-w64-mingw32/lib" -L "C:/SDL_ttf/x86_64-w64-mingw32/lib"
+-L "./SDL3/SDL/x86_64-w64-mingw32/lib" -L "./SDL3/SDL_image/x86_64-w64-mingw32/lib" -L "./SDL3/SDL_ttf/x86_64-w64-mingw32/lib"
 
 echo -e "$GREEN[3/3]$RESET Linked!"
 echo "- Compiled!"

@@ -4,7 +4,8 @@
 
 # Project files
 **/SDL3
-**/*.savedata
+**/player.savedata
+
 # VS Code & extensions
 #**/.VsCodeCounter/**
 
