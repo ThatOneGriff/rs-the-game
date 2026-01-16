@@ -35,6 +35,7 @@ struct Gameplay_Scene
     time_tick_ms start_tick;
     time_tick_ms crash_tick;
     int point_count;
+    int prev_point_count;
 
     SDL_Texture* sky_bg; /// Not a `Texture`, because it's rendered on the whole screen.
     struct Shifting_Texture ground;
@@ -44,7 +45,7 @@ struct Gameplay_Scene
 
     struct Texture clouds[10];
     struct Texture personal_best_text;
-    struct Texture personal_best_value;
+    struct Texture   curr_points_text;
 
     struct Car* car_ptr;
     struct Pause_Screen pause_screen;
@@ -56,7 +57,7 @@ struct Gameplay_Scene
 struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr, int* exit_code);
 void                  free_gameplay_scene(struct Gameplay_Scene* target);
 void                  render_gameplay_scene(struct Gameplay_Scene* target);
-void update_personal_best(struct Gameplay_Scene* target);
+void update_points(struct Gameplay_Scene* target);
 
 
 /* Body */
@@ -70,6 +71,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     result.start_tick  = 0; /// Will be updated once the player starts.
     result.crash_tick  = 0; /// Will be updated when (if?) the player crashes.
     result.point_count = 0;
+    result.prev_point_count = 0;
 
     /// Param checking
     if (exit_code == NULL)
@@ -230,9 +232,11 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     
     char personal_best_text[10];
     sprintf(personal_best_text, "PB: %d", PERSONAL_BEST);
-    result.personal_best_text = create_text(personal_best_text, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(X_AUTO_CENTER, 10), 15, 1, exit_code);
+    result.personal_best_text = create_text(personal_best_text, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(5, 5), 15, 1, exit_code);
     add_to_deinit_stack(&deinit_stack, &result.personal_best_text, (void (*)(void*))free_texture);
 
+    result.curr_points_text = create_text("Pts: 0", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(5, 20), 15, 1, exit_code);
+    
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
     *exit_code = EXIT_SUCCESS;
@@ -246,6 +250,8 @@ void free_gameplay_scene(struct Gameplay_Scene* target)
         return;
     
     target->is_driving = false;
+    target->point_count = 0;
+    target->prev_point_count = 0;
     free_texture(&target->personal_best_text);
     free_pause_screen(&target->pause_screen);
     target->car_ptr->coords.x     = center_x(target->car_ptr->coords.w);
@@ -326,25 +332,31 @@ void render_gameplay_scene(struct Gameplay_Scene* target)
     render_shifting_texture(&target->ground);
     render_shifting_texture(&target->road);
     render_shifting_texture(&target->stripes);
+    target->prev_point_count = target->point_count;
     render_traffic_on_pts(1, 9, target->car_ptr, &target->is_driving, &target->point_count);
-    if (target->point_count > PERSONAL_BEST)
-        update_personal_best(target);
+    update_points(target);
     partly_render_environment(&target->trees, 3, ULONG_LONG_MAX);
     render_car(target->car_ptr);
     render_traffic_on_pts(10, UINT_MAX, NULL, NULL, NULL);
     render_texture(&target->personal_best_text);
+    render_texture(&target->curr_points_text);
     return;
 }
 
 
-void update_personal_best(struct Gameplay_Scene* target)
+void update_points(struct Gameplay_Scene* target)
 {
     int exit_code = EXIT_SUCCESS; /// A dummy for now.
-    PERSONAL_BEST = target->point_count;
-    char personal_best_text[10];
-    sprintf(personal_best_text, "PB: %d", PERSONAL_BEST);
-    free_texture(&target->personal_best_text);
-    target->personal_best_text = create_text(personal_best_text, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(X_AUTO_CENTER, 10), 15, 1, &exit_code);
+    if (target->point_count == target->prev_point_count)
+        return;
+    
+    char curr_pts[10];
+    sprintf(curr_pts, "Pts: %d", target->point_count);
+    free_texture(&target->curr_points_text);
+    target->curr_points_text = create_text(curr_pts, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(5, 20), 15, 1, &exit_code);
+
+    if (target->point_count > PERSONAL_BEST)
+        PERSONAL_BEST = target->point_count; /// Text will be updated in the next gameplay scene loading.
 }
 
 #endif /// GAMEPLAY_SCENE_H
