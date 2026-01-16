@@ -130,7 +130,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     add_to_shifting_texture(&result.ground, scene_data[4], exit_code); /// `if() {}` blocks.
 
     /// Road
-    result.road = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 100, exit_code); /// TEMP: Was 4.
+    result.road = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 100, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the road texture", NON_SDL_ERROR);
@@ -243,15 +243,19 @@ void render_gameplay_scene(struct Gameplay_Scene* target)
         render_pause_screen(&target->pause_screen);
         return;
     }
+    
+    move_traffic();
 
     /// Rendering
     SDL_RenderTexture(graphics_layer.renderer, target->sky_bg, NULL, NULL);
+    render_traffic_on_pts(0, 0);
     partly_render_environment(&target->trees, 0, 2);
     render_shifting_texture(&target->ground);
     render_shifting_texture(&target->road);
     render_shifting_texture(&target->stripes);
-    partly_render_environment(&target->trees, 3, UINT_MAX);
-    SDL_RenderTexture(graphics_layer.renderer, target->car_ptr->textures[target->car_ptr->base_texture], NULL, &target->car_ptr->coords);
+    render_traffic_on_pts(1, ULONG_LONG_MAX);
+    partly_render_environment(&target->trees, 3, ULONG_LONG_MAX);
+    render_car(target->car_ptr);
     return;
 }
 

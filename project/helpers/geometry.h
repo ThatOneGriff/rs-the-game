@@ -39,7 +39,7 @@ struct Path flipped_path_x(const struct Path path) /// UNTESTED
     result.points = malloc(path.pt_count * sizeof(SDL_FRect));
     if (result.points == NULL)
     {
-        print_error("`flipped_path_x()`: couldn't allocate memory");
+        print_error("`flipped_path_x()`: couldn't allocate memory", NON_SDL_ERROR);
         return result; /// TODO: add `exit_code`.
     }
     for (size_t i = 0; i < path.pt_count; i++)
@@ -48,7 +48,7 @@ struct Path flipped_path_x(const struct Path path) /// UNTESTED
         result.points[i].x = reflect_x(path.points[i].x) - path.points[i].w;
     }
     result.pt_count = path.pt_count;
-    return path;
+    return result;
 }
 
 float center_x(const float w)

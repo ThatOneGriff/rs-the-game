@@ -48,6 +48,7 @@ struct Car
 struct Car load_car        (const char path[], int* exit_code);
 struct Car load_traffic_car(const char path[], int* exit_code);
 void       free_car        (struct Car* target);
+void     render_car        (struct Car* target);
 
 
 /* Body */
@@ -248,6 +249,19 @@ void free_car(struct Car* target)
     target->handling  = 0;
     target->top_speed = 0;
     target->direction_x = 0;
+    return;
+}
+
+
+void render_car(struct Car* target)
+{
+    if (target == NULL) /// TODO: check for everything.
+    {
+        print_error("`render_car()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        return;
+    }
+
+    SDL_RenderTexture(graphics_layer.renderer, target->textures[target->base_texture], NULL, &target->coords);
     return;
 }
 
