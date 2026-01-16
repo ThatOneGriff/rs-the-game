@@ -48,7 +48,7 @@ void init_traffic_manager(const size_t car_count, int* exit_code);
 void free_traffic_manager(void);
 
 void   move_traffic       (const bool mode);
-void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car* player_car, bool* is_driving);
+void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car* player_car, bool* is_driving, int* point_count);
 
 
 /* Body */
@@ -302,7 +302,7 @@ void move_traffic(const bool mode)
 }
 
 
-void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car* player_car, bool* is_driving)
+void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car* player_car, bool* is_driving, int* point_count)
 {
     /// TODO: check args
     if (max_path_pt >= traffic_manager.lanes[0].pt_count)
@@ -328,9 +328,9 @@ void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct 
                     SDL_FRect traffic_collision_box = CAR_COLLISION_BOXES[traffic_manager.cars[car_id].base_texture];
                     traffic_collision_box.x -= (RENDER_WIDTH - traffic_manager.cars[car_id].coords.x);
                     if (have_x_overlap(players_collision_box, traffic_collision_box))
-                    {
                         *is_driving = false;
-                    }
+                    else if (distance_between(players_collision_box, traffic_collision_box) <= 130)
+                        (*point_count)++;
                 }
             }
         }

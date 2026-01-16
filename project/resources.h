@@ -25,8 +25,9 @@
 static SDL_Surface* ICON_TEXTURE = NULL;
 static SDL_Texture* NULL_TEXTURE = NULL;
 static char       MAIN_FONT_PATH[64];
+static int PERSONAL_BEST = 0;
 
-/// NOTE: `.rsdt` is a compromise born from a lack of time. JSON loading is preferable and will be eventually the mechanism.
+/// NOTE: `.rsdt` is a compromise born from a lack of time. JSON loading is preferable and will eventually be the mechanism.
 
 
 /* Predef */

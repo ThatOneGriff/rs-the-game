@@ -26,7 +26,8 @@ struct Vec2
 /// REDO: rewrite using macros.
 
 struct Path flipped_path_x(const struct Path path);
-bool have_x_overlap(const SDL_FRect rect1, const SDL_FRect rect2);
+bool  have_x_overlap  (const SDL_FRect rect1, const SDL_FRect rect2);
+float distance_between(const SDL_FRect rect1, const SDL_FRect rect2);
 float center_x  (const float w);
 float center_y  (const float h);
 float reflect_x (const float x);
@@ -60,6 +61,18 @@ bool have_x_overlap(const SDL_FRect rect1, const SDL_FRect rect2)
         ((rect1.x < rect2.x) && (rect1.x + rect1.w > rect2.x))
      || ((rect2.x < rect1.x) && (rect2.x + rect2.w > rect1.x))
     );
+}
+
+float distance_between(const SDL_FRect rect1, const SDL_FRect rect2)
+{
+    const float dist1 = (rect1.x - rect2.x + rect2.w);
+    const float dist2 = (rect2.x - rect1.x + rect1.w);
+    if (dist1 < 0)
+        return dist2;
+    else if (dist2 < 0)
+        return dist1;
+    else
+        return (dist1 < dist2 ? dist1 : dist2);
 }
 
 float center_x(const float w)
