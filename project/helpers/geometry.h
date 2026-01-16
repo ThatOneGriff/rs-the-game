@@ -21,6 +21,7 @@ struct Vec2
 
 /// REDO: rewrite all using macros.
 
+struct Path flipped_x(struct Path path);
 float center_x  (const float w);
 float center_y  (const float h);
 float reflect_x (const float x);
@@ -29,6 +30,13 @@ struct Vec2 vec2(const float x, const float y);
 
 
 /* Body */
+
+struct Path flipped_x(struct Path path)
+{
+    for (size_t i; i < path.pt_count; i++)
+        path.points[i].x = reflect_x(path.points[i].x) - path.points[i].w;
+    return path;
+}
 
 float center_x(const float w)
 {

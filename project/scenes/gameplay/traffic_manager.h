@@ -3,9 +3,10 @@
 #define TRAFFIC_MANAGER_H
 
 /* Helpers */
-#include "../../debug.h"          /// Error message printing.
-#include "../../deinit_stack.h"   /// Deinitialization stack.
-#include "../../helpers/random.h" /// Random.
+#include "../../debug.h"            /// Error message printing.
+#include "../../deinit_stack.h"     /// Deinitialization stack.
+#include "../../helpers/geometry.h" /// Path flipping.
+#include "../../helpers/random.h"   /// Random.
 
 /* Related headers */
 #include "../car.h"         /// Cars.
@@ -58,7 +59,7 @@ void init_traffic_manager(const size_t car_count, int* exit_code)
     }
 
     /// Deinit stack
-    struct Deinit_Stack deinit_stack = new_deinit_stack(4 + car_count, exit_code);
+    struct Deinit_Stack deinit_stack = new_deinit_stack(3 + car_count, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_traffic_manager()`: couldn't create deinit stack", NON_SDL_ERROR);
@@ -102,10 +103,11 @@ void init_traffic_manager(const size_t car_count, int* exit_code)
     
     /// Path (center lane)
     traffic_manager.center_lane = new_path(
-        (SDL_FRect[]){{80,75, 7, 7},  {75,70,10,10},  {65,65,15,15},
-                      {55,60,22,22},  {35,60,30,30},
-                      {5,55,45,45}, {-30,50,60,60}, {-60,45,75,75}},
-                       8, exit_code);
+        (SDL_FRect[]){{95,75,10,10}, { 85, 70,15,15}, { 70, 70,25,25},
+                      {65,75,25,25}, { 50, 80,30,30}, { 35, 85,35,35},
+
+                                     {-15,125,65,65}, {-25,150,65,65}},
+                       12, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_traffic_manager()`: error creating center lane path", NON_SDL_ERROR);
@@ -116,19 +118,7 @@ void init_traffic_manager(const size_t car_count, int* exit_code)
     add_to_deinit_stack(&deinit_stack, &traffic_manager.center_lane, (void (*)(void*))free_path);
     
     /// Path (right lane)
-    traffic_manager.right_lane = new_path(
-        (SDL_FRect[]){{80,75, 7, 7},  {75,70,10,10},  {65,65,15,15},
-                      {55,60,22,22},  {35,60,30,30},
-                      {5,55,45,45}, {-30,50,60,60}, {-60,45,75,75}},
-                       8, exit_code);
-    if (*exit_code == EXIT_FAILURE)
-    {
-        print_error("`init_traffic_manager()`: error creating right lane path", NON_SDL_ERROR);
-        flush_deinit_stack(&deinit_stack);
-        *exit_code = EXIT_FAILURE;
-        return;
-    }
-    add_to_deinit_stack(&deinit_stack, &traffic_manager.right_lane, (void (*)(void*))free_path);
+    traffic_manager.right_lane = flipped_x(traffic_manager.left_lane);
 
     free_deinit_stack(&deinit_stack);
     *exit_code = EXIT_SUCCESS;
