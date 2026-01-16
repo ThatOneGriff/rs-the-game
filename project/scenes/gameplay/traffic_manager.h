@@ -319,11 +319,9 @@ void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct 
                 render_car(&traffic_manager.cars[car_id]);
 
                 /// Collision check. Can be done with math, but I'm tired.
-                if ((path_pt == 9 && player_car->direction_x == -1)
-                 || (path_pt == 8 && player_car->direction_x == -1)
-                 || (path_pt == 7 && player_car->direction_x ==  0)
-                 || (path_pt == 8 && player_car->direction_x ==  1)
-                 || (path_pt == 9 && player_car->direction_x ==  1))
+                if ((path_pt == 9 && (player_car->direction_x == -1 || player_car->base_texture != 2))
+                 || (path_pt == 7 && (player_car->direction_x ==  0 && player_car->base_texture == 2))
+                 || (path_pt == 9 && (player_car->direction_x ==  1 || player_car->base_texture != 2)))
                 {
                     SDL_FRect players_collision_box = CAR_COLLISION_BOXES[traffic_manager.cars[car_id].base_texture];
                     players_collision_box.x -= (RENDER_WIDTH -                  player_car->coords.x);
