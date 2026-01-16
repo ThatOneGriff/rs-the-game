@@ -128,11 +128,11 @@ void init_traffic_manager(const size_t car_count, int* exit_code)
 
     /// Path (left lane)
     traffic_manager.lanes[0] = new_path(
-        (SDL_FRect[]){{95, 75, 10,10}, {85,70,15,15}, { 77,68,20,20},
-                      {70, 70, 25,25}, {63,73,29,29}, { 50,75,35,35},
-                      {35, 80, 45,45}, {15,85,55,55}, {-10,90,65,65},
-                      {-20,100,65,65}/*, {-25,150,65,65}*/},
-                       10, exit_code);
+        (SDL_FRect[]){{ 95, 75,10,10},  {85, 70,15,15}, { 77, 68,20,20},
+                      { 70, 70,25,25},  {63, 73,29,29}, { 50, 75,35,35},
+                      { 35, 80,45,45},  {15, 85,55,55}, {-10, 90,65,65},
+                      {-20,100,65,65}, {-35,120,75,75}, {-50,140,85,85}},
+                       12, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_traffic_manager()`: error creating left lane path", NON_SDL_ERROR);
@@ -144,11 +144,11 @@ void init_traffic_manager(const size_t car_count, int* exit_code)
     
     /// Path (center lane)
     traffic_manager.lanes[1] = new_path(
-        (SDL_FRect[]){{center_x(10), 75,10,10}, {center_x(15),70,15,15}, {center_x(20),68,20,20},
-                      {center_x(25), 70,25,25}, {center_x(29),73,29,29}, {center_x(35),75,35,35},
-                      {center_x(45), 80,45,45}, {center_x(55),85,55,55}, {center_x(65),90,65,65},
-                      {center_x(65),100,65,65}/*, {-25,150,65,65}*/},
-                       10, exit_code);
+        (SDL_FRect[]){{center_x(10), 75,10,10}, {center_x(15), 70,15,15}, {center_x(20), 68,20,20},
+                      {center_x(25), 70,25,25}, {center_x(29), 73,29,29}, {center_x(35), 75,35,35},
+                      {center_x(45), 80,45,45}, {center_x(55), 85,55,55}, {center_x(65), 90,65,65},
+                      {center_x(65),100,65,65}, {center_x(75),120,75,75}, {center_x(85),140,85,85}},
+                       12, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_traffic_manager()`: error creating center lane path", NON_SDL_ERROR);

@@ -252,9 +252,10 @@ void render_gameplay_scene(struct Gameplay_Scene* target)
     render_shifting_texture(&target->ground);
     render_shifting_texture(&target->road);
     render_shifting_texture(&target->stripes);
-    render_traffic_on_pts(1, ULONG_LONG_MAX);
+    render_traffic_on_pts(1, 9);
     partly_render_environment(&target->trees, 3, ULONG_LONG_MAX);
     render_car(target->car_ptr);
+    render_traffic_on_pts(10, UINT_MAX);
     return;
 }
 
