@@ -8,7 +8,11 @@
 #include <stdbool.h>        /// `bool game_is_running, *key_state`.
 #include "../debug.h"       ///  Error printing.
 
-#define time_tick_ms unsigned long long int /// Purely for code clarity.
+/// Purely for code clarity.
+#define time_tick_ns unsigned long long int
+#define time_tick_ms unsigned long long int
+#define time_span_ns unsigned long long int
+#define time_span_ms unsigned long long int
 
 
 /* Predef */

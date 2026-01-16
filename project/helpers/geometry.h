@@ -3,6 +3,7 @@
 #define GEOMETRY_H
 
 /* Headers */
+#include "../debug.h"                         /// Error message printing.
 #include "../game_components/movement/path.h" /// Path manipulation.
 #include "../graphics/graphics_layer.h"       /// `RENDER_WIDTH/HEIGHT`.
 
@@ -22,7 +23,7 @@ struct Vec2
 
 /// REDO: rewrite all using macros.
 
-struct Path flipped_x(struct Path path);
+struct Path flipped_path_x(const struct Path path);
 float center_x  (const float w);
 float center_y  (const float h);
 float reflect_x (const float x);
@@ -32,10 +33,21 @@ struct Vec2 vec2(const float x, const float y);
 
 /* Body */
 
-struct Path flipped_x(struct Path path)
+struct Path flipped_path_x(const struct Path path) /// UNTESTED
 {
+    struct Path result;
+    result.points = malloc(path.pt_count * sizeof(SDL_FRect));
+    if (result.points == NULL)
+    {
+        print_error("`flipped_path_x()`: couldn't allocate memory");
+        return result; /// TODO: add `exit_code`.
+    }
     for (size_t i = 0; i < path.pt_count; i++)
-        path.points[i].x = reflect_x(path.points[i].x) - path.points[i].w;
+    {
+        result.points[i] = path.points[i];
+        result.points[i].x = reflect_x(path.points[i].x) - path.points[i].w;
+    }
+    result.pt_count = path.pt_count;
     return path;
 }
 
