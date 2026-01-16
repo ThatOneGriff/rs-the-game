@@ -23,7 +23,8 @@
 #include "../../game_components/movement/move_component.h" /// `struct Move_Component`.
 #include "../../graphics/graphics_layer.h"              /// `graphics_layer.renderer`.
 
-#define GAMEPLAY_DATA_LINES 15
+#define GAMEPLAY_DATA_LINES 20
+#define CLOUD_VELOCITY 150
 
 
 /* Struct */
@@ -35,6 +36,8 @@ struct Gameplay_Scene
     struct Shifting_Texture road;
     struct Shifting_Texture stripes;
     struct Environment      trees;
+
+    struct Texture clouds[10];
 
     struct Car* car_ptr;
     struct Pause_Screen pause_screen;
@@ -178,6 +181,18 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     couple_move_component_to_environment(&result.trees, tree_move_component, vec2(10,0), exit_code); /// TODO: exit code check.
     add_to_deinit_stack(&deinit_stack, &result.trees, (void (*)(void*))free_environment); /// Don't delete. More elements will be added later
 
+    /// TODO: checks.
+    result.clouds[0] = load_texture(scene_data[15], (SDL_FRect){(float)randint(0, RENDER_WIDTH-30),  5, 30, 10}, exit_code);
+    result.clouds[1] = load_texture(scene_data[16], (SDL_FRect){(float)randint(0, RENDER_WIDTH-32), 12, 32, 15}, exit_code);
+    result.clouds[2] = load_texture(scene_data[17], (SDL_FRect){(float)randint(0, RENDER_WIDTH-23), 24, 23,  8}, exit_code);
+    result.clouds[3] = load_texture(scene_data[18], (SDL_FRect){(float)randint(0, RENDER_WIDTH-41), 29, 41,  8}, exit_code);
+    result.clouds[4] = load_texture(scene_data[19], (SDL_FRect){(float)randint(0, RENDER_WIDTH-36), 34, 36,  8}, exit_code);
+    result.clouds[5] = load_texture(scene_data[15], (SDL_FRect){(float)randint(0, RENDER_WIDTH-30),  5, 30, 10}, exit_code);
+    result.clouds[6] = load_texture(scene_data[16], (SDL_FRect){(float)randint(0, RENDER_WIDTH-32), 12, 32, 15}, exit_code);
+    result.clouds[7] = load_texture(scene_data[17], (SDL_FRect){(float)randint(0, RENDER_WIDTH-23), 24, 23,  8}, exit_code);
+    result.clouds[8] = load_texture(scene_data[18], (SDL_FRect){(float)randint(0, RENDER_WIDTH-41), 29, 41,  8}, exit_code);
+    result.clouds[9] = load_texture(scene_data[19], (SDL_FRect){(float)randint(0, RENDER_WIDTH-36), 34, 36,  8}, exit_code);
+
     result.pause_screen = init_pause_screen(exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
@@ -212,6 +227,8 @@ void free_gameplay_scene(struct Gameplay_Scene* target)
     
     free_pause_screen(&target->pause_screen);
     target->car_ptr->coords.x = center_x(target->car_ptr->coords.w);
+    for (size_t i = 0; i < 10; i++)
+        free_texture(&target->clouds[i]);
     free_environment     (&target->trees);
     free_shifting_texture(&target->stripes);
     free_shifting_texture(&target->road);
@@ -243,6 +260,14 @@ void render_gameplay_scene(struct Gameplay_Scene* target)
 
     /// Rendering
     SDL_RenderTexture(graphics_layer.renderer, target->sky_bg, NULL, NULL);
+    for (size_t i = 0; i < 10; i++)
+    {
+        /// Just a bunch of magic numbers I got after playing around.
+        target->clouds[i].rect.x += (float)CLOUD_VELOCITY * (float)FPS_manager.delta_ns / (float)SEC_IN_NS / target->clouds[i].rect.w;
+        if (target->clouds[i].rect.x >= RENDER_WIDTH - 1)
+            target->clouds[i].rect.x = - target->clouds[i].rect.w + 1;
+        render_texture(&target->clouds[i]);
+    }
     render_traffic_on_pts(0, 0);
     partly_render_environment(&target->trees, 0, 2);
     render_shifting_texture(&target->ground);
