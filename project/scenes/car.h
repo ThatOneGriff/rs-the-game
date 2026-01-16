@@ -16,6 +16,14 @@
 #define         CAR_DATA_LINES 16
 #define TRAFFIC_CAR_DATA_LINES  4
 
+const static SDL_FRect CAR_COLLISION_BOXES[5] = {
+    (SDL_FRect){7, 0, 65-7, 65}, /// left
+    (SDL_FRect){2, 0, 65-2, 65}, /// half-left
+    (SDL_FRect){0, 0, 65,   65}, /// main
+    (SDL_FRect){0, 0, 65-2, 65}, /// half-right
+    (SDL_FRect){0, 0, 65-7, 65}, /// right
+};
+
 
 /* Struct */
 

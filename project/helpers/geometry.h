@@ -3,6 +3,8 @@
 #define GEOMETRY_H
 
 /* Headers */
+#include <SDL3/SDL.h>                         /// `SDL_FRect`.
+#include <stdbool.h>                          /// `bool have_x_overlap()`.
 #include "../debug.h"                         /// Error message printing.
 #include "../game_components/movement/path.h" /// Path manipulation.
 #include "../graphics/graphics_layer.h"       /// `RENDER_WIDTH/HEIGHT`.
@@ -21,9 +23,10 @@ struct Vec2
 
 /* Predef */
 
-/// REDO: rewrite all using macros.
+/// REDO: rewrite using macros.
 
 struct Path flipped_path_x(const struct Path path);
+bool have_x_overlap(const SDL_FRect rect1, const SDL_FRect rect2);
 float center_x  (const float w);
 float center_y  (const float h);
 float reflect_x (const float x);
@@ -33,7 +36,7 @@ struct Vec2 vec2(const float x, const float y);
 
 /* Body */
 
-struct Path flipped_path_x(const struct Path path) /// UNTESTED
+struct Path flipped_path_x(const struct Path path)
 {
     struct Path result;
     result.points = malloc(path.pt_count * sizeof(SDL_FRect));
@@ -49,6 +52,14 @@ struct Path flipped_path_x(const struct Path path) /// UNTESTED
     }
     result.pt_count = path.pt_count;
     return result;
+}
+
+bool have_x_overlap(const SDL_FRect rect1, const SDL_FRect rect2)
+{
+    return (
+        ((rect1.x < rect2.x) && (rect1.x + rect1.w > rect2.x))
+     || ((rect2.x < rect1.x) && (rect2.x + rect2.w > rect1.x))
+    );
 }
 
 float center_x(const float w)

@@ -31,7 +31,7 @@
 
 struct Gameplay_Scene
 {
-    bool just_loaded;
+    bool is_driving;
     time_tick_ms start_tick;
 
     SDL_Texture* sky_bg; /// Not a `Texture`, because it's rendered on the whole screen.
@@ -61,7 +61,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     struct Gameplay_Scene result;
     result.sky_bg  = NULL;
     result.car_ptr = NULL;
-    result.just_loaded = true;
+    result.is_driving = true;
     result.start_tick  = 0; /// Will be updated once the player starts.
 
     /// Param checking
@@ -233,9 +233,13 @@ void free_gameplay_scene(struct Gameplay_Scene* target)
     if (target == NULL)
         return;
     
-    target->just_loaded = false;
+    target->is_driving = false;
     free_pause_screen(&target->pause_screen);
-    target->car_ptr->coords.x = center_x(target->car_ptr->coords.w);
+    target->car_ptr->coords.x     = center_x(target->car_ptr->coords.w);
+    target->car_ptr->base_texture = 2;
+    target->car_ptr->latest_turn_start     = 0;
+    target->car_ptr->latest_turn_end       = 0;
+    target->car_ptr->prev_turn_direction_x = 0;
     for (size_t i = 0; i < 10; i++)
         free_texture(&target->clouds[i]);
     free_environment     (&target->trees);
@@ -266,7 +270,7 @@ void render_gameplay_scene(struct Gameplay_Scene* target)
     }
     
     /// Moving stuff
-    if (! target->just_loaded)
+    if (! target->is_driving)
     {
         move_all_rects(target->trees.move_component);
         target->ground. freeze_shifting = false;
@@ -287,15 +291,15 @@ void render_gameplay_scene(struct Gameplay_Scene* target)
             target->clouds[i].rect.x = - target->clouds[i].rect.w + 1;
         render_texture(&target->clouds[i]);
     }
-    render_traffic_on_pts(0, 0);
+    render_traffic_on_pts(0, 0, NULL, NULL);
     partly_render_environment(&target->trees, 0, 2);
     render_shifting_texture(&target->ground);
     render_shifting_texture(&target->road);
     render_shifting_texture(&target->stripes);
-    render_traffic_on_pts(1, 9);
+    render_traffic_on_pts(1, 9, target->car_ptr, &target->is_driving);
     partly_render_environment(&target->trees, 3, ULONG_LONG_MAX);
     render_car(target->car_ptr);
-    render_traffic_on_pts(10, UINT_MAX);
+    render_traffic_on_pts(10, UINT_MAX, NULL, NULL);
     return;
 }
 

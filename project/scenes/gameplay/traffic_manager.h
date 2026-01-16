@@ -5,7 +5,7 @@
 /* Helpers */
 #include "../../debug.h"             /// Error message printing.
 #include "../../deinit_stack.h"      /// Deinitialization stack.
-#include "../../helpers/geometry.h"  /// Path flipping.
+#include "../../helpers/geometry.h"  /// Path flipping & collision checking.
 #include "../../helpers/random.h"    /// Random.
 #include "../../logic/logic_layer.h" /// `logic_layer.curr_tick`.
 
@@ -45,7 +45,7 @@ void init_traffic_manager(const size_t car_count, int* exit_code);
 void free_traffic_manager(void);
 
 void   move_traffic       (void);
-void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt);
+void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car* player_car, bool* is_driving);
 
 
 /* Body */
@@ -281,7 +281,7 @@ void move_traffic(void)
 }
 
 
-void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt)
+void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car* player_car, bool* is_driving)
 {
     /// TODO: check args
     if (max_path_pt >= traffic_manager.lanes[0].pt_count)
@@ -290,12 +290,28 @@ void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt)
     for (size_t path_pt = min_path_pt; path_pt <= max_path_pt; path_pt++)
     {
         for (size_t car_id = 0; car_id < traffic_manager.car_count; car_id++)
+        {
             if (traffic_manager.car_path_pts[car_id] == path_pt)
             {
                 const size_t lane_id = traffic_manager.car_lane_ids[car_id];
                 traffic_manager.cars[car_id].coords = traffic_manager.lanes[lane_id].points[path_pt];
                 render_car(&traffic_manager.cars[car_id]);
+
+                if (path_pt == 9) /// Collision check
+                {
+                    SDL_FRect players_collision_box = CAR_COLLISION_BOXES[traffic_manager.cars[car_id].base_texture];
+                    players_collision_box.x -= (RENDER_WIDTH -                  player_car->coords.x);
+                    SDL_FRect traffic_collision_box = CAR_COLLISION_BOXES[traffic_manager.cars[car_id].base_texture];
+                    traffic_collision_box.x -= (RENDER_WIDTH - traffic_manager.cars[car_id].coords.x);
+                    if (have_x_overlap(players_collision_box, traffic_collision_box))
+                    {
+                        UNUSED(is_driving); /// TEMP
+                        //*is_driving = false;
+                        printf("collision %s %s\n", player_car->name, traffic_manager.cars[car_id].name); /// TEMP
+                    }
+                }
             }
+        }
     }
 
     return;
