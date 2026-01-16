@@ -19,6 +19,9 @@
 
 #define LANE_SPAWN_COOLDOWN 5
 
+#define MOVE_NORMAL false
+#define MOVE_REVERSE true
+
 
 /* Struct */
 
@@ -44,7 +47,7 @@ static struct Traffic_Manager traffic_manager;
 void init_traffic_manager(const size_t car_count, int* exit_code);
 void free_traffic_manager(void);
 
-void   move_traffic       (void);
+void   move_traffic       (const bool mode);
 void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car* player_car, bool* is_driving);
 
 
@@ -206,7 +209,7 @@ void free_traffic_manager(void)
 }
 
 
-void move_traffic(void)
+void move_traffic(const bool mode)
 {
     /// Delta checking
     if (traffic_manager.latest_move_tick == 0)
@@ -217,21 +220,37 @@ void move_traffic(void)
     if (logic_layer.curr_tick - traffic_manager.latest_move_tick < traffic_manager.move_delta)
         return;
     
-    if   (traffic_manager.lane_spawn_cooldowns[0] > 0)
-        --traffic_manager.lane_spawn_cooldowns[0];
-    if   (traffic_manager.lane_spawn_cooldowns[1] > 0)
-        --traffic_manager.lane_spawn_cooldowns[1];
-    if   (traffic_manager.lane_spawn_cooldowns[2] > 0)
-        --traffic_manager.lane_spawn_cooldowns[2];
+    if (mode == MOVE_NORMAL)
+    {
+        if   (traffic_manager.lane_spawn_cooldowns[0] > 0)
+            --traffic_manager.lane_spawn_cooldowns[0];
+        if   (traffic_manager.lane_spawn_cooldowns[1] > 0)
+            --traffic_manager.lane_spawn_cooldowns[1];
+        if   (traffic_manager.lane_spawn_cooldowns[2] > 0)
+            --traffic_manager.lane_spawn_cooldowns[2];
+    }
     
     /// Moving traffic
     for (size_t car_id = 0; car_id < traffic_manager.car_count; car_id++)
     {
         if (traffic_manager.car_lane_ids[car_id] == ULONG_LONG_MAX) /// Non-active traffic car
             continue;
-        ++traffic_manager.  car_path_pts[car_id];
         
-        /// Removing car
+        if      (mode == MOVE_NORMAL)
+            ++traffic_manager.car_path_pts[car_id];
+        else if (mode == MOVE_REVERSE)
+        {
+            if   (traffic_manager.car_path_pts[car_id] > 0)
+                --traffic_manager.car_path_pts[car_id];
+            else
+            {
+                traffic_manager.car_path_pts[car_id] = ULONG_LONG_MAX;
+                traffic_manager.car_lane_ids[car_id] = ULONG_LONG_MAX;
+                continue;
+            }
+        }
+        
+        /// Removing car (normal mode)
         if (traffic_manager.car_path_pts[car_id] >= traffic_manager.lanes[0].pt_count)
         {
             traffic_manager.car_lane_ids[car_id] = ULONG_LONG_MAX;
@@ -241,13 +260,15 @@ void move_traffic(void)
         traffic_manager.latest_move_tick = logic_layer.curr_tick;
     }
 
+    if (mode == MOVE_REVERSE) /// No spawning while traffic is moving mode.
+        return;
+
     if (traffic_manager.lane_spawn_cooldowns[0] > 0
      && traffic_manager.lane_spawn_cooldowns[1] > 0
      && traffic_manager.lane_spawn_cooldowns[2] > 0) /// No free lanes
         return;
     
     /// Seeding traffic on row
-    //if (rand_percent(0, 100) <= TRAFFIC_ON_ROW_CHANCE)
     
     for (size_t i = 0; i < 2; i++)
     {
@@ -297,7 +318,12 @@ void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct 
                 traffic_manager.cars[car_id].coords = traffic_manager.lanes[lane_id].points[path_pt];
                 render_car(&traffic_manager.cars[car_id]);
 
-                if (path_pt == 9) /// Collision check
+                /// Collision check. Can be done with math, but I'm tired.
+                if ((path_pt == 9 && player_car->direction_x == -1)
+                 || (path_pt == 8 && player_car->direction_x == -1)
+                 || (path_pt == 7 && player_car->direction_x ==  0)
+                 || (path_pt == 8 && player_car->direction_x ==  1)
+                 || (path_pt == 9 && player_car->direction_x ==  1))
                 {
                     SDL_FRect players_collision_box = CAR_COLLISION_BOXES[traffic_manager.cars[car_id].base_texture];
                     players_collision_box.x -= (RENDER_WIDTH -                  player_car->coords.x);
@@ -305,9 +331,7 @@ void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct 
                     traffic_collision_box.x -= (RENDER_WIDTH - traffic_manager.cars[car_id].coords.x);
                     if (have_x_overlap(players_collision_box, traffic_collision_box))
                     {
-                        UNUSED(is_driving); /// TEMP
-                        //*is_driving = false;
-                        printf("collision %s %s\n", player_car->name, traffic_manager.cars[car_id].name); /// TEMP
+                        *is_driving = false;
                     }
                 }
             }

@@ -61,7 +61,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     struct Gameplay_Scene result;
     result.sky_bg  = NULL;
     result.car_ptr = NULL;
-    result.is_driving = true;
+    result.is_driving = false;
     result.start_tick  = 0; /// Will be updated once the player starts.
 
     /// Param checking
@@ -270,7 +270,7 @@ void render_gameplay_scene(struct Gameplay_Scene* target)
     }
     
     /// Moving stuff
-    if (! target->is_driving)
+    if (target->is_driving)
     {
         move_all_rects(target->trees.move_component);
         target->ground. freeze_shifting = false;
@@ -278,7 +278,16 @@ void render_gameplay_scene(struct Gameplay_Scene* target)
         target->stripes.freeze_shifting = false;
         if (target->   start_tick != 0
          && logic_layer.curr_tick - target->start_tick >= 2000) /// Pause before traffic starts coming.
-            move_traffic();
+            move_traffic(MOVE_NORMAL);
+    }
+    else
+    {
+        target->ground. freeze_shifting = true;
+        target->road.   freeze_shifting = true;
+        target->stripes.freeze_shifting = true;
+        if (target->   start_tick != 0
+         && logic_layer.curr_tick - target->start_tick >= 2000) /// Pause before traffic starts coming.
+            move_traffic(MOVE_REVERSE);
     }
 
     /// Rendering

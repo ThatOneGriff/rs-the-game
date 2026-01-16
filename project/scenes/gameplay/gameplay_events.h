@@ -27,7 +27,7 @@ void _process_gameplay_car_input(struct Car* car);
 
 void process_gameplay_events(struct Gameplay_Scene* scene)
 {
-    if (! scene->pause_screen.is_open && ! scene->is_driving)
+    if (! scene->pause_screen.is_open && scene->is_driving)
         _process_gameplay_car_input(scene->car_ptr);
     while (SDL_PollEvent(&logic_layer.event))
     {
@@ -80,8 +80,8 @@ void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode 
         case SDLK_UP:
             if (! scene->pause_screen.is_open)
             {
-                scene->is_driving = false;
-                scene->start_tick  = logic_layer.curr_tick;
+                scene->is_driving = true;
+                scene->start_tick = logic_layer.curr_tick;
             }
             else if (scene->pause_screen.continue_button.is_focused)
             {
