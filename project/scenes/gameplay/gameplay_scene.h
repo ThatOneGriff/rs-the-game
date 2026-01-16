@@ -31,6 +31,9 @@
 
 struct Gameplay_Scene
 {
+    bool just_loaded;
+    time_tick_ms start_tick;
+
     SDL_Texture* sky_bg; /// Not a `Texture`, because it's rendered on the whole screen.
     struct Shifting_Texture ground;
     struct Shifting_Texture road;
@@ -58,6 +61,8 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     struct Gameplay_Scene result;
     result.sky_bg  = NULL;
     result.car_ptr = NULL;
+    result.just_loaded = true;
+    result.start_tick  = 0; /// Will be updated once the player starts.
 
     /// Param checking
     if (exit_code == NULL)
@@ -126,11 +131,12 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &result.ground, (void (*)(void*))free_shifting_texture); ///  TODO: try replacing it with an incorrect method and see what happens?
+    result.ground.freeze_shifting = true;
     add_to_shifting_texture(&result.ground, scene_data[1], exit_code); /// TODO: find a way
     add_to_shifting_texture(&result.ground, scene_data[2], exit_code); /// to check `exit_code`
     add_to_shifting_texture(&result.ground, scene_data[3], exit_code); /// w/o obnoxious
     add_to_shifting_texture(&result.ground, scene_data[4], exit_code); /// `if() {}` blocks.
+    add_to_deinit_stack(&deinit_stack, &result.ground, (void (*)(void*))free_shifting_texture);
 
     /// Road
     result.road = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 100, exit_code);
@@ -141,6 +147,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
         return result;
     }
+    result.road.freeze_shifting = true;
     add_to_shifting_texture(&result.road, scene_data[5], exit_code);
     add_to_shifting_texture(&result.road, scene_data[6], exit_code);
     add_to_shifting_texture(&result.road, scene_data[7], exit_code);
@@ -155,6 +162,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
         return result;
     }
+    result.stripes.freeze_shifting = true;
     add_to_shifting_texture(&result.stripes, scene_data[8], exit_code);
     add_to_shifting_texture(&result.stripes, scene_data[9], exit_code);
     add_to_shifting_texture(&result.stripes, scene_data[10], exit_code);
@@ -225,6 +233,7 @@ void free_gameplay_scene(struct Gameplay_Scene* target)
     if (target == NULL)
         return;
     
+    target->just_loaded = false;
     free_pause_screen(&target->pause_screen);
     target->car_ptr->coords.x = center_x(target->car_ptr->coords.w);
     for (size_t i = 0; i < 10; i++)
@@ -256,7 +265,17 @@ void render_gameplay_scene(struct Gameplay_Scene* target)
         return;
     }
     
-    move_traffic();
+    /// Moving stuff
+    if (! target->just_loaded)
+    {
+        move_all_rects(target->trees.move_component);
+        target->ground. freeze_shifting = false;
+        target->road.   freeze_shifting = false;
+        target->stripes.freeze_shifting = false;
+        if (target->   start_tick != 0
+         && logic_layer.curr_tick - target->start_tick >= 2000) /// Pause before traffic starts coming.
+            move_traffic();
+    }
 
     /// Rendering
     SDL_RenderTexture(graphics_layer.renderer, target->sky_bg, NULL, NULL);

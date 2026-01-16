@@ -27,7 +27,7 @@ void _process_gameplay_car_input(struct Car* car);
 
 void process_gameplay_events(struct Gameplay_Scene* scene)
 {
-    if (! scene->pause_screen.is_open)
+    if (! scene->pause_screen.is_open && ! scene->just_loaded)
         _process_gameplay_car_input(scene->car_ptr);
     while (SDL_PollEvent(&logic_layer.event))
     {
@@ -79,7 +79,10 @@ void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode 
         /// TEMP while I'm coming up with a better button management structure.
         case SDLK_UP:
             if (! scene->pause_screen.is_open)
-                break;
+            {
+                scene->just_loaded = false;
+                scene->start_tick  = logic_layer.curr_tick;
+            }
             else if (scene->pause_screen.continue_button.is_focused)
             {
                 scene->pause_screen.close_button.is_focused    = true;

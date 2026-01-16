@@ -7,7 +7,8 @@
 #include <SDL3_image/SDL_image.h> /// `IMG_Load()`.
 
 /* C headers */
-#include <stdlib.h> /// `*alloc()`.
+#include <stdlib.h>  /// `*alloc()`.
+#include <stdbool.h> /// `bool freeze_shifting`
 
 /* Helper headers */
 #include "../debug.h"                   /// Error printing.
@@ -24,6 +25,8 @@
 
 struct Shifting_Texture
 {
+    bool freeze_shifting;
+
     SDL_Texture** textures;
     SDL_FRect     rect;
     size_t cur_count;
@@ -50,6 +53,7 @@ struct Shifting_Texture init_shifting_texture(const SDL_FRect rect, const size_t
 {
     /// Object creation
     struct Shifting_Texture result;
+    result.freeze_shifting = false;
     result.rect = rect;
     result.cur_count = 0;
     result.max_count = 0; /// Temporary value to be changed once memory is successfully allocated.
@@ -87,6 +91,7 @@ void free_shifting_texture(struct Shifting_Texture* target)
     if (target == NULL)
         return;
     
+    target->freeze_shifting = true;
     if (target->textures != NULL)
     {
         for (size_t i = 0; i < target->cur_count; i++)
@@ -166,9 +171,9 @@ void render_shifting_texture(struct Shifting_Texture* target)
         return;
     }
     
-    if (target->latest_change == 0) /// First time `latest_change` is set.
+    if      (! target->freeze_shifting && target->latest_change == 0) /// First time `latest_change` is set.
         target->latest_change = logic_layer.curr_tick;
-    else if (logic_layer.curr_tick - target->latest_change >= target->step)
+    else if (! target->freeze_shifting && logic_layer.curr_tick - target->latest_change >= target->step)
     {
         if (++target->i == target->cur_count)
             target->i = 0;

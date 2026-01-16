@@ -293,7 +293,6 @@ void partly_render_environment(const struct Environment* target, const size_t mi
         return;
     }
     
-    move_all_rects(target->move_component);
     //bool rendered_on_path_pt;
     //bool rendered_on_path_pt_reflected;
     /// Rendering in path point order.
