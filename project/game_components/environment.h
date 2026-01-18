@@ -37,8 +37,6 @@ struct Environment
     size_t        object_count;
 
     struct Move_Component* move_component;
-
-    /// TODO: ptr to a function (to check collisions with traffic).
 };
 
 

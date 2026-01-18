@@ -198,7 +198,7 @@ void game_loop(int* exit_code)
             fps_measure_1s_tick = SDL_GetTicks();
             prev_fps = curr_fps;
             curr_fps = 0;
-        } 
+        }
     }
 
     if (gameplay_scene_opened)
