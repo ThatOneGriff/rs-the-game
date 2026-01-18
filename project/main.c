@@ -39,10 +39,6 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 */
 
 /* Visual TODOs: */
-/// - photograph traffic cars in Forza;
-/// - find tree sprites;
-/// - moving clouds (+ a clear sky texture then);
-/// - fix Clio Williams half-left texture (exhaust pipe mirrored wrong);
 /// - player's car bouncing in beat to the music.
 
 /* TODOs: */
@@ -58,8 +54,9 @@ nlohmann/json version: 3.12.0  (last updated 24.12.25)
 /// - a more balanced position randomization;
 /// - pushing an array of points/textures into array-like members of `game_components`, instead of individual `add_*()` calls.
 
-/* Structural IDEAs: */
-/// - try making the car larger (60px? 65px?);
+/* IDEAs: */
+/// - switch between metric and imperial system
+/// - mouse control
 /// ? `null_move_component` and similar things for each `game_components`', for code clarity;
 /// ? `struct Button_Manager`;
 /// ? a system of rendering layers.
