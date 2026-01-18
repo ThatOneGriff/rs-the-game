@@ -9,18 +9,10 @@
 #include "../debug.h"       ///  Error printing.
 
 /// Purely for code clarity.
-#define time_tick_ns unsigned long long int
 #define time_tick_ms unsigned long long int
-#define time_span_ns unsigned long long int
+#define time_tick_ns unsigned long long int
 #define time_span_ms unsigned long long int
-
-
-/* Predef */
-
-struct Logic_Layer;
-static struct Logic_Layer logic_layer; /// Singleton.
-void _init_logic_layer(int* exit_code);
-void _free_logic_layer(void);
+#define time_span_ns unsigned long long int
 
 
 /* Struct */
@@ -37,6 +29,16 @@ struct Logic_Layer
     time_tick_ms curr_tick;
     time_tick_ms real_tick_diff;
 };
+static struct Logic_Layer logic_layer; /// Singleton.
+
+
+/* Predef */
+
+void _init_logic_layer(int* exit_code);
+void _free_logic_layer(void);
+
+
+/* Body */
 
 /// Doesn't check for accidental double initialization.
 void _init_logic_layer(int* exit_code)
