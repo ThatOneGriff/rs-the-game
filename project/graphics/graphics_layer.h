@@ -17,14 +17,6 @@
 #define RENDER_HEIGHT 180 /// = 720 / 4
 
 
-/* Predef */
-
-struct Graphics_Layer;
-static struct Graphics_Layer graphics_layer; /// Singleton.
-void _init_graphics_layer(int* exit_code);
-void _free_graphics_layer(void);
-
-
 /* Struct */
 
 struct Graphics_Layer
@@ -33,6 +25,16 @@ struct Graphics_Layer
     SDL_Renderer* renderer;
     SDL_Texture*  buffer;
 };
+static struct Graphics_Layer graphics_layer; /// Singleton.
+
+
+/* Predef */
+
+void _init_graphics_layer(int* exit_code);
+void _free_graphics_layer(void);
+
+
+/* Body */
 
 /// [!!!] Assumes SDL has been initialized.
 /// Doesn't check for accidental double initialization.
