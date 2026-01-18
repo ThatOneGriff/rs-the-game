@@ -113,10 +113,10 @@ void game_loop(int* exit_code)
     unsigned int curr_fps = 0;
     unsigned int prev_fps = UINT_MAX;
 
-    /// The loop
     if (audio_manager.using_audio)
         play_random_music(&music_loader_menu);
     
+    /// The loop
     while (logic_layer.game_is_running)
     {
         /// Preparations
@@ -153,8 +153,12 @@ void game_loop(int* exit_code)
         /// Menu scene processing
         else if (logic_layer.curr_scene == &menu_scene)
         {
+            if (audio_manager.using_audio)
+                check_if_music_ended(&music_loader_menu);
+            
             process_menu_events(&menu_scene);
             render_menu_scene  (&menu_scene);
+            
             /// Scene switch
             if (! logic_layer.remain_in_scene)
             {
