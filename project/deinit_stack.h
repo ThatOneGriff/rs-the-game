@@ -7,16 +7,6 @@
 #include "debug.h" /// Error printing.
 
 
-/* Predef */
-
-struct Deinit_Stack;
-struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code);
-void               free_deinit_stack(struct Deinit_Stack* target); 
-void             add_to_deinit_stack(struct Deinit_Stack* target, void* new_element, void (*new_free_function)(void*));
-void              flush_deinit_stack(struct Deinit_Stack* target);
-void           pop_from_deinit_stack(struct Deinit_Stack* target);
-
-
 /* Struct */
 
 struct Deinit_Stack
@@ -26,6 +16,18 @@ struct Deinit_Stack
     void**  elements;
     void (**free_functions)(void*);
 };
+
+
+/* Predef */
+
+struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code);
+void               free_deinit_stack(struct Deinit_Stack* target); 
+void             add_to_deinit_stack(struct Deinit_Stack* target, void* new_element, void (*new_free_function)(void*));
+void              flush_deinit_stack(struct Deinit_Stack* target);
+void           pop_from_deinit_stack(struct Deinit_Stack* target);
+
+
+/* Body */
 
 struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code)
 {
