@@ -53,12 +53,14 @@ void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode 
             if (scene->pause_screen.is_open)
             {
                 hide_pause_screen(&scene->pause_screen);
-                ma_sound_start(&audio_manager.music);
+                if (audio_manager.using_audio)
+                    ma_sound_start(&audio_manager.music);
             }
             else
             {
                 show_pause_screen(&scene->pause_screen);
-                ma_sound_stop(&audio_manager.music);
+                if (audio_manager.using_audio)
+                    ma_sound_stop(&audio_manager.music);
             }
             break;
         
