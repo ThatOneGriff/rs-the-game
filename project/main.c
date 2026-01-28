@@ -31,27 +31,23 @@
 #include "scenes/menu/menu_scene.h"          /// Menu scene.
 
 /* = Library information =
-SDL3 version:          3.4.0   (last updated  7.01.26)
-SDL3_image version:    3.2.6   (last updated  7.01.26)
-SDL3_ttf version:      3.2.2   (last checked  7.01.26)
-miniaudio version:     0.11.23 (last checked  7.01.26)
-nlohmann/json version: 3.12.0  (last updated 24.12.25)
+SDL3 version:          3.4.0   (last checked 28.01.26) | https://github.com/libsdl-org/SDL/releases
+SDL3_image version:    3.2.6   (last checked 28.01.26) | https://github.com/libsdl-org/SDL_image/releases
+SDL3_ttf version:      3.2.2   (last checked 28.01.26) | https://github.com/libsdl-org/SDL_ttf/releases
+miniaudio version:     0.11.24 (last updated 28.01.26) | https://github.com/mackron/miniaudio/releases
+nlohmann/json version: 3.12.0  (last checked 28.01.26) | https://github.com/nlohmann/json/releases
 */
 
 /* Visual TODOs: */
 /// - player's car bouncing in beat to the music.
 
 /* TODOs: */
-/// - traffic;
 /// - fix EVERYWHERE:
 /// object creation
 /// deinit_stack creation
 ///     deinit_stack failed
 ///     object NOT deleted manually
-///
-/// - `Move_Component`: sort out the code mess;
-/// - find the reason of occasional FPS drops;
-/// - a more balanced position randomization;
+/// ;
 /// - pushing an array of points/textures into array-like members of `game_components`, instead of individual `add_*()` calls.
 
 /* IDEAs: */
