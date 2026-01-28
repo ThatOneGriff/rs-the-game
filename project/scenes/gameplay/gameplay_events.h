@@ -80,7 +80,7 @@ void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode 
         
         /// TEMP while I'm coming up with a better button management structure.
         case SDLK_UP:
-            if (! scene->pause_screen.is_open && scene->crash_tick == 0)
+            if (! scene->pause_screen.is_open && scene->start_tick == 0 && scene->crash_tick == 0)
             {
                 scene->is_driving = true;
                 scene->start_tick = logic_layer.curr_tick;

@@ -314,6 +314,8 @@ void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct 
             if (traffic_manager.car_path_pts[car_id] == path_pt)
             {
                 const size_t lane_id = traffic_manager.car_lane_ids[car_id];
+                if (lane_id > 2) /// Means the car is not on any lane
+                    continue;
                 traffic_manager.cars[car_id].coords = traffic_manager.lanes[lane_id].points[path_pt];
                 render_car(&traffic_manager.cars[car_id]);
 

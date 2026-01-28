@@ -163,7 +163,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     add_to_deinit_stack(&deinit_stack, &result.road, (void (*)(void*))free_shifting_texture);
     
     /// Stripes
-    result.stripes = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 100, exit_code); /// TEMP: Was 4.
+    result.stripes = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 100, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the stripes texture", NON_SDL_ERROR);
@@ -295,11 +295,11 @@ void render_gameplay_scene(struct Gameplay_Scene* target)
         target->ground. freeze_shifting = false;
         target->road.   freeze_shifting = false;
         target->stripes.freeze_shifting = false;
-        if (target->   start_tick != 0
-         && logic_layer.curr_tick - target->start_tick >= 2000) /// Pause before traffic starts coming.
+        if ((target->   start_tick != 0)
+         && (logic_layer.curr_tick - target->start_tick >= 2000)) /// Pause before traffic starts coming.
             move_traffic(MOVE_NORMAL);
     }
-    else
+    else if (! target->is_driving)
     {
         target->ground. freeze_shifting = true;
         target->road.   freeze_shifting = true;
@@ -327,17 +327,20 @@ void render_gameplay_scene(struct Gameplay_Scene* target)
             target->clouds[i].rect.x = - target->clouds[i].rect.w + 1;
         render_texture(&target->clouds[i]);
     }
-    render_traffic_on_pts(0, 0, NULL, NULL, NULL);
+    if ((target->is_driving && (logic_layer.curr_tick - target->start_tick >= 2000)) || target->crash_tick != 0)
+        render_traffic_on_pts(0, 0, NULL, NULL, NULL);
     partly_render_environment(&target->trees, 0, 2);
     render_shifting_texture(&target->ground);
     render_shifting_texture(&target->road);
     render_shifting_texture(&target->stripes);
     target->prev_point_count = target->point_count;
-    render_traffic_on_pts(1, 9, target->car_ptr, &target->is_driving, &target->point_count);
+    if ((target->is_driving && (logic_layer.curr_tick - target->start_tick >= 2000)) || target->crash_tick != 0)
+        render_traffic_on_pts(1, 9, target->car_ptr, &target->is_driving, &target->point_count);
     update_points(target);
     partly_render_environment(&target->trees, 3, ULONG_LONG_MAX);
     render_car(target->car_ptr);
-    render_traffic_on_pts(10, UINT_MAX, NULL, NULL, NULL);
+    if ((target->is_driving && (logic_layer.curr_tick - target->start_tick >= 2000)) || target->crash_tick != 0)
+        render_traffic_on_pts(10, UINT_MAX, NULL, NULL, NULL);
     render_texture(&target->personal_best_text);
     render_texture(&target->curr_points_text);
     return;

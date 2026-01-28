@@ -28,7 +28,7 @@ echo "- Compiling main program..."
 clang -O3 -DNDEBUG -ffast-math -flto \
 -fno-asynchronous-unwind-tables -fno-ident -fno-stack-protector -fomit-frame-pointer -fstrict-aliasing -funroll-loops \
 -march=native -mtune=native \
--Wall -Wextra -Weverything -Werror -std=c23 \
+-Wall -Wextra -Weverything -pedantic-errors -Werror -std=c23 \
 -Wconversion -Wdouble-promotion -Wformat=2 -Wformat-truncation -Wshadow -Wundef \
 -Wno-bad-function-cast -Wno-cast-function-type-strict -fno-common -Wno-c++-keyword \
 -Wno-declaration-after-statement -Wno-documentation-unknown-command -Wno-float-equal \

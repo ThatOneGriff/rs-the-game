@@ -23,11 +23,11 @@ DLL_PATH="./miniaudio.dll"
 echo ""
 echo "- Compiling miniaudio..."
 
-# Miniaudio compilation
+# Miniaudio compilation (maximum possible optimizations)
 clang -O3 -DNDEBUG -ffast-math -flto \
 -fno-asynchronous-unwind-tables -fno-ident -fno-stack-protector -fomit-frame-pointer -fstrict-aliasing -funroll-loops \
 -march=native -mtune=native \
--Wall -Wextra -Werror -pedantic-errors -std=c23 \
+-Wall -Wextra -pedantic-errors -Werror -std=c23 \
 -shared project/audio/audio.c -o miniaudio.dll
 
 echo -e "$GREEN[1/1]$RESET Compiled! ($DLL_PATH)"
