@@ -1,0 +1,49 @@
+#!/bin/bash
+# Copies all the needed distribution files into a separate folder.
+
+### Preparations ###
+
+# Colors
+GREEN='\033[32m'
+RESET='\033[0m'
+
+# Clean-up
+set -euo pipefail  # Exit upon any error, undefined variable usage or pipeline failure
+clean_up() {
+    rm -r "$PATH"
+    echo "Distribution files cleaned up."
+}
+
+### Distribution ###
+
+PATH="./DISTRIBUTION"
+echo ""
+
+rm -r "$PATH"
+mkdir "$PATH"
+mkdir "$PATH/res"
+mkdir "$PATH/rsdt"
+
+touch "$PATH/player.savedata"
+printf "1\n1\n0\n0\n" > "$PATH/player.savedata"
+
+echo -e "$GREEN[1/3]$RESET Folder system created."
+
+cp -r "./res"  "$PATH"
+rm -r "$PATH/res/_legacy"
+rm -r "$PATH/res/images/environment/bmp"
+rm "$PATH/res/images/icon.ico"
+
+cp -r "./rsdt" "$PATH"
+
+echo -e "$GREEN[2/3]$RESET Resources and data copied."
+
+cp "./SDL3.dll"       "$PATH/SDL3.dll"
+cp "./SDL3_image.dll" "$PATH/SDL3_image.dll"
+cp "./SDL3_ttf.dll"   "$PATH/SDL3_ttf.dll"
+cp "./miniaudio.dll"  "$PATH/miniaudio.dll"
+cp "./rs-the-game.exe" "$PATH/rs-the-game.exe"
+
+echo -e "$GREEN[3/3]$RESET Executable files copied."
+echo -e "Distribution created! ($PATH)"
+echo ""
