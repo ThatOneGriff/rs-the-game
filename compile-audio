@@ -1,0 +1,36 @@
+#!/bin/bash
+# Compiles miniaudio into its own neat `.dll`.
+
+### Preparations ###
+
+# Colors
+GREEN='\033[32m'
+RESET='\033[0m'
+
+set -euo pipefail # Exit upon any error, undefined variable usage or pipeline failure.
+# Clean-up preparing
+clean_up() {
+    rm -f ./audio.o
+    echo "Temp files cleaned up."
+}
+trap clean_up EXIT # Will be called any way the compilation goes.
+
+### Compilation ###
+
+DLL_PATH="./miniaudio.dll"
+echo ""
+echo "- Compiling miniaudio..."
+
+# Miniaudio compilation
+#clang -g1 -ferror-limit=100 -Wall -Wextra -Weverything -pedantic-errors -Werror -std=c23 \
+clang -g1 -ferror-limit=100 -std=c23 \
+-Wno-bad-function-cast -Wno-cast-function-type-strict -fno-common -Wno-c++-keyword \
+-Wno-declaration-after-statement -Wno-documentation-unknown-command -Wno-float-equal \
+-Wno-implicit-fallthrough -Wno-implicit-void-ptr-cast -Wno-newline-eof -Wno-padded \
+-Wno-pre-c11-compat -Wno-pre-c23-compat -Wno-reserved-identifier -Wno-sign-conversion \
+-Wno-switch-default -Wno-tentative-definition-incomplete-type -Wno-unsafe-buffer-usage \
+-fsanitize=address -fsanitize=float-divide-by-zero -fsanitize=integer -fsanitize=nullability -fsanitize=shadow-call-stack -fsanitize=undefined -fsanitize=unsigned-integer-overflow -fsanitize=unsigned-shift-base \
+-shared project/audio/audio.c -o miniaudio.dll
+
+echo -e "$GREEN[1/1]$RESET Compiled! ($DLL_PATH)"
+echo ""

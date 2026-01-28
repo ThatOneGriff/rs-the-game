@@ -58,14 +58,12 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
     switch(event_key)
     {
         case SDLK_ESCAPE:
-        if (! scene->options_screen.is_open)
-        {
-            if (scene->options_screen.is_open)
-                hide_options_screen(&scene->options_screen);
-            else
+            if (! scene->options_screen.is_open)
                 show_options_screen(&scene->options_screen);
+            else if (scene->options_screen.is_open)
+                hide_options_screen(&scene->options_screen);
             break;
-        }
+
         
         case SDLK_RETURN:
         if (! scene->options_screen.is_open)
