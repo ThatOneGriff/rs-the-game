@@ -9,8 +9,8 @@
 GREEN='\033[32m'
 RESET='\033[0m'
 
+# Clean-up
 set -euo pipefail  # Exit upon any error, undefined variable usage or pipeline failure
-# Clean-up preparing
 clean_up() {
     rm -f ./main.o ./audio.o
     echo "Temp files cleaned up."
@@ -24,7 +24,7 @@ echo ""
 echo "- Compiling main program..."
 
 # Main program compilation (maximum possible warning checks)
-clang -g1 -ferror-limit=100 -Wall -Wextra -Weverything -pedantic-errors -Werror -std=c23 -Wno-unused-function -Wno-missing-prototypes \
+clang -g1 -ferror-limit=100 -Wall -Wextra -Weverything -pedantic-errors -Werror -std=c23 \
 -Wconversion -Wdouble-promotion -Wformat=2 -Wformat-truncation -Wshadow -Wundef \
 -Wno-bad-function-cast -Wno-cast-function-type-strict -fno-common -Wno-c++-keyword \
 -Wno-declaration-after-statement -Wno-documentation-unknown-command -Wno-float-equal \
