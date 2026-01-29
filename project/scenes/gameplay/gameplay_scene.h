@@ -13,15 +13,15 @@
 #include "../../helpers/helpers.h" /// `free_ptr_arr()`.
 
 /* Graphics & components */
-#include "../car.h"                                        /// `*car_ptr` (i.e. player).
-#include "pause_screen.h"                                  /// Pause screen.
-#include "traffic_manager.h"                               /// Traffic manager.
-#include "../../game_components/environment.h"             /// `struct Environment`.
-#include "../../game_components/multi_texture.h"           /// Multi-textures.
-#include "../../game_components/shifting_texture.h"        /// Shifting textures.
-#include "../../game_components/texture.h"                 /// Textures.
-#include "../../game_components/movement/move_component.h" /// `struct Move_Component`.
-#include "../../graphics/graphics_layer.h"              /// `graphics_layer.renderer`.
+#include "../car.h"                                          /// `*car_ptr` (i.e. player).
+#include "pause_screen.h"                                    /// Pause screen.
+#include "traffic_manager.h"                                 /// Traffic manager.
+#include "../../game_components/environment.h"      /// `struct Environment`.
+#include "../../game_components/graphics/multi_texture.h"    /// Multi-textures.
+#include "../../game_components/graphics/shifting_texture.h" /// Shifting textures.
+#include "../../game_components/graphics/texture.h"          /// Textures.
+#include "../../game_components/movement/move_component.h"   /// `struct Move_Component`.
+#include "../../graphics/graphics_layer.h"                   /// `graphics_layer.renderer`.
 
 #define GAMEPLAY_DATA_LINES 20
 #define CLOUD_VELOCITY 150

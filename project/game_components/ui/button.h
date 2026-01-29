@@ -6,12 +6,12 @@
 #include <SDL3/SDL.h> /// SDL3.
 
 /* Helpers */
-#include "../debug.h"            /// Error printing.
-#include "../helpers/geometry.h" /// `struct Vec2`.
+#include "../../debug.h"            /// Error printing.
+#include "../../helpers/geometry.h" /// `struct Vec2`.
 
 /* Components */
-#include "texture.h"     /// Rendering text into a texture.
-#include "text/text.h"   /// Text.
+#include "../graphics/texture.h"     /// Rendering text into a texture.
+#include "../text/text.h"   /// Text.
 
 
 /* Predef */

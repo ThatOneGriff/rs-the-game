@@ -11,10 +11,10 @@
 #include <stdbool.h> /// `bool freeze_shifting`
 
 /* Helper headers */
-#include "../debug.h"                   /// Error printing.
-#include "../resources.h"               /// Null texture.
-#include "../graphics/graphics_layer.h" /// `graphics_layer`.
-#include "../logic/logic_layer.h"       /// Current tick.
+#include "../../debug.h"                   /// Error printing.
+#include "../../resources.h"               /// Null texture.
+#include "../../graphics/graphics_layer.h" /// `graphics_layer`.
+#include "../../logic/logic_layer.h"       /// Current tick.
 
 
 /// NOTE: NOT AT ALL RELATED to `texture.h`:

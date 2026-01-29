@@ -16,8 +16,8 @@
 #include "../car_manager.h"               /// Minor car manager data pulling for 'Prev'/'Next' enabling.
 #include "../../audio/audio_manager.h"    /// Audio
 #include "../../audio/music_loader.h"     ///  manipulation.
-#include "../../game_components/button.h" /// Button manipulation.
-#include "../../game_components/switch.h" /// Switch manipulation.
+#include "../../game_components/ui/button.h" /// Button manipulation.
+#include "../../game_components/ui/switch.h" /// Switch manipulation.
 #include "../../graphics/fps.h"           /// Frame cap control.
 
 /// NOTE: not my proudest code.

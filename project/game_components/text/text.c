@@ -10,7 +10,7 @@
 #include "../../helpers/geometry.h"        /// `Vec2`.
 
 /* Text-related headers */
-#include "../../game_components/texture.h" /// Making a texture from text surface.
+#include "../../game_components/graphics/texture.h" /// Making a texture from text surface.
 
 
 /* Predef */

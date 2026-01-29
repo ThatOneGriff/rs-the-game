@@ -5,8 +5,8 @@
 #include <stdlib.h>   /// `*alloc()`.
 #include <stdbool.h>  /// `bool is_focused()`.
 #include "button.h"   /// Buttons.
-#include "../debug.h" /// Error message printing.
-#include "../graphics/graphics_layer.h" /// `graphics_layer.renderer`.
+#include "../../debug.h" /// Error message printing.
+#include "../../graphics/graphics_layer.h" /// `graphics_layer.renderer`.
 
 
 /* Struct */

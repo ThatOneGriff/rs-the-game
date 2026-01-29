@@ -4,8 +4,9 @@
 
 /* Headers */
 #include <SDL3/SDL.h>       /// `SDL_Event`.
-#include <SDL3/SDL_timer.h> /// Tick measurement. Only needed once upon initialization. Maybe there's a better way?
+#include <SDL3/SDL_timer.h> /// Tick measurement.
 #include <stdbool.h>        /// `bool game_is_running, *key_state`.
+#include <stdlib.h>         /// `EXIT_SUCCESS`/`EXIT_FAILURE`.
 #include "../debug.h"       ///  Error printing.
 
 /// Purely for code clarity.

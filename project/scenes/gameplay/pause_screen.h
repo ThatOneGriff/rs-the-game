@@ -9,8 +9,8 @@
 #include "../../deinit_stack.h"              /// Deinitialization stack.
 #include "../../audio/audio_manager.h"       /// `audio_manager.using_audio`.
 #include "../../game_components/text/text.h" /// Text.
-#include "../../game_components/button.h"    /// Buttons.
-#include "../../game_components/switch.h"    /// Switches.
+#include "../../game_components/ui/button.h" /// Buttons.
+#include "../../game_components/ui/switch.h"       /// Switches.
 #include "../../graphics/graphics_layer.h"   /// Rendering.
 #include "../../logic/logic_layer.h"         /// Time tick manipulation.
 

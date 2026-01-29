@@ -7,9 +7,9 @@
 #include <SDL3_image/SDL_image.h> /// SDL3_image.
 
 /* Helper headers */
-#include "../debug.h"                   /// Error printing.
-#include "../resources.h"               /// Null texture.
-#include "../graphics/graphics_layer.h" /// Rendering of the texture.
+#include "../../debug.h"                   /// Error printing.
+#include "../../resources.h"               /// Null texture.
+#include "../../graphics/graphics_layer.h" /// Rendering of the texture.
 
 
 /* Struct */

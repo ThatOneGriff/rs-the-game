@@ -13,9 +13,9 @@
 //#include "move_component.h"       /// Moving textures.
 
 /* Helpers */
-#include "../debug.h"                   /// Error printing.
-#include "../resources.h"               /// Null texture.
-#include "../graphics/graphics_layer.h" /// `graphics_layer`.
+#include "../../debug.h"                   /// Error printing.
+#include "../../resources.h"               /// Null texture.
+#include "../../graphics/graphics_layer.h" /// `graphics_layer`.
 
 
 /// NOTE: NOT AT ALL RELATED to `texture.h`:

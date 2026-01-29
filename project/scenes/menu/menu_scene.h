@@ -19,8 +19,8 @@
 /* Graphics and components */
 #include "../car.h"                          /// Car data.
 #include "options_screen.h"                  /// Options screen.
-#include "../../game_components/button.h"    /// Button.
-#include "../../game_components/texture.h"   /// Texture.
+#include "../../game_components/ui/button.h"    /// Button.
+#include "../../game_components/graphics/texture.h"   /// Texture.
 #include "../../game_components/text/text.h" /// Text creation.
 #include "../../graphics/graphics_layer.h"   /// `graphics_layer`.
 
