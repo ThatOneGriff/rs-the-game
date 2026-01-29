@@ -16,8 +16,9 @@
 #include "resources.h"    /// Texture & font paths.
 
 /* Audio */
-#include "audio/audio_manager.h" /// 'miniaudio' init.
-#include "audio/music_loader.h"  /// Music loading.
+#include "_miniaudio/miniaudio.h" /// 'miniaudio' init.
+#include "audio/audio_manager.h"  /// Audio manager init.
+#include "audio/music_loader.h"   /// Music loading.
 
 /* Other headers */
 #include "graphics/fps.h"              /// Initialization

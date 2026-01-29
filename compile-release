@@ -36,7 +36,7 @@ clang -O3 -DNDEBUG -ffast-math -flto \
 -Wno-pre-c11-compat -Wno-pre-c23-compat -Wno-reserved-identifier -Wno-sign-conversion \
 -Wno-switch-default -Wno-tentative-definition-incomplete-type -Wno-unsafe-buffer-usage \
 project/main.c -o $EXE_PATH \
--I "./SDL3/SDL/x86_64-w64-mingw32/include" -I "./SDL3/SDL_Image/x86_64-w64-mingw32/include" -I "./SDL3/SDL_ttf/x86_64-w64-mingw32/include" -I "./project/audio/miniaudio.h" \
+-I "./SDL3/SDL/x86_64-w64-mingw32/include" -I "./SDL3/SDL_Image/x86_64-w64-mingw32/include" -I "./SDL3/SDL_ttf/x86_64-w64-mingw32/include" -I "./project/_miniaudio/miniaudio.h" \
 -L "./SDL3/SDL/x86_64-w64-mingw32/lib" -L "./SDL3/SDL_image/x86_64-w64-mingw32/lib" -L "./SDL3/SDL_ttf/x86_64-w64-mingw32/lib" -L "./" \
 -lSDL3 -lSDL3_image -lSDL3_ttf -lminiaudio
 

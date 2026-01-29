@@ -28,7 +28,7 @@ clang -O3 -DNDEBUG -ffast-math -flto \
 -fno-asynchronous-unwind-tables -fno-ident -fno-stack-protector -fomit-frame-pointer -fstrict-aliasing -funroll-loops \
 -march=native -mtune=native \
 -Wall -Wextra -pedantic-errors -Werror -std=c23 \
--shared project/audio/audio.c -o miniaudio.dll
+-shared project/_miniaudio/audio.c -o miniaudio.dll
 
 echo -e "$GREEN[1/1]$RESET Compiled! ($DLL_PATH)"
 echo ""

@@ -2,7 +2,7 @@
 #ifndef AUDIO_MANAGER_H
 #define AUDIO_MANAGER_H
 
-#include "miniaudio.h"
+#include "../_miniaudio/miniaudio.h"
 
 
 struct Audio_Manager

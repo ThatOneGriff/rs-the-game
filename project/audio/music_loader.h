@@ -2,13 +2,19 @@
 #ifndef MUSIC_LOADER_H
 #define MUSIC_LOADER_H
 
-#include "audio_manager.h"        /// Audio system.
-#include <stdlib.h>               /// `*alloc()`.
-#include <stdbool.h>              /// `bool active`.
-#include "../debug.h"             /// Error printing.
-#include "../deinit_stack.h"      /// Deinitialization stack.
-#include "../helpers/random.h"    /// `randint_except()`.
-#include "../logic/logic_layer.h" /// `logic_layer.curr_tick`.
+/* Audio */
+#include "../_miniaudio/miniaudio.h" /// 'miniaudio'.
+#include "audio_manager.h"           /// Audio system.
+
+/* C headers*/
+#include <stdlib.h>                  /// `*alloc()`.
+#include <stdbool.h>                 /// `bool active`.
+
+/* Helpers */
+#include "../debug.h"                /// Error printing.
+#include "../deinit_stack.h"         /// Deinitialization stack.
+#include "../helpers/random.h"       /// `randint_except()`.
+#include "../logic/logic_layer.h"    /// `logic_layer.curr_tick`.
 
 
 /* Struct */
