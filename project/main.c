@@ -38,7 +38,7 @@ nlohmann/json version: 3.12.0  (last checked 28.01.26) | https://github.com/nloh
 */
 
 /// BEFORE header mitosis: 175 KB
-/// AFTER header mitotis:  
+///  AFTER header mitotis: 130 KB (but broken)
 
 /* Visual TODOs: */
 /// - player's car bouncing in beat to the music.
