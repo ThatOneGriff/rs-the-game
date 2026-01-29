@@ -43,6 +43,9 @@ C_FILE_PATHS="./project/audio/music_loader.c \
               ./project/scenes/gameplay/gameplay_scene.c  \
               ./project/scenes/gameplay/pause_screen.c    \
               ./project/scenes/gameplay/traffic_manager.c \
+              ./project/scenes/menu/menu_events.c    \
+              ./project/scenes/menu/menu_scene.c     \
+              ./project/scenes/menu/options_screen.c \
               ./project/debug.c        \
               ./project/deinit_stack.c \
               ./project/init_quit.c    \
