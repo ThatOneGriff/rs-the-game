@@ -11,6 +11,7 @@
 #include "../deinit_stack.h"      /// Deinitialization stack.
 #include "../resources.h"         /// File reading & null texture.
 #include "../helpers/helpers.h"   /// `free_ptr_arr()`.
+#include "../helpers/geometry.h"  /// `center_x()`.
 #include "../logic/logic_layer.h" /// `time_tick_ms`
 
 #define         CAR_DATA_LINES 16

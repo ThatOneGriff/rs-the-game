@@ -20,6 +20,7 @@ trap clean_up EXIT # Will be called any way the compilation goes.
 
 ### Compilation ###
 
+C_FILE_PATHS="./project/audio/music_loader.c"
 EXE_PATH="./rs-the-game.exe"
 echo ""
 echo "- Compiling main program..."
@@ -35,7 +36,7 @@ clang -O3 -DNDEBUG -ffast-math -flto \
 -Wno-implicit-fallthrough -Wno-implicit-void-ptr-cast -Wno-newline-eof -Wno-padded \
 -Wno-pre-c11-compat -Wno-pre-c23-compat -Wno-reserved-identifier -Wno-sign-conversion \
 -Wno-switch-default -Wno-tentative-definition-incomplete-type -Wno-unsafe-buffer-usage \
-project/main.c -o $EXE_PATH \
+$C_FILE_PATHS project/main.c -o $EXE_PATH \
 -I "./SDL3/SDL/x86_64-w64-mingw32/include" -I "./SDL3/SDL_Image/x86_64-w64-mingw32/include" -I "./SDL3/SDL_ttf/x86_64-w64-mingw32/include" -I "./project/_miniaudio/miniaudio.h" \
 -L "./SDL3/SDL/x86_64-w64-mingw32/lib" -L "./SDL3/SDL_image/x86_64-w64-mingw32/lib" -L "./SDL3/SDL_ttf/x86_64-w64-mingw32/lib" -L "./" \
 -lSDL3 -lSDL3_image -lSDL3_ttf -lminiaudio
