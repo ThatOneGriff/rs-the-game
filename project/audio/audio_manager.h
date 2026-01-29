@@ -5,6 +5,9 @@
 #include "../_miniaudio/miniaudio.h"
 
 
+/// As element count adds up,
+/// may get its own init and quit functions.
+
 struct Audio_Manager
 {
     ma_engine engine;
