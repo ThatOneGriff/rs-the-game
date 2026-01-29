@@ -11,7 +11,6 @@
 
 /* Components */
 #include "texture.h"     /// Rendering text into a texture.
-#include "text/border.h" /// Text w/ borders.
 #include "text/text.h"   /// Text.
 
 

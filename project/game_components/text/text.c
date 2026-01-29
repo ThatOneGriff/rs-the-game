@@ -1,26 +1,85 @@
-#pragma once
-#ifndef BORDER_H
-#define BORDER_H
+﻿/* Related header */
+#include "text.h"
 
 /* SDL3 */
 #include <SDL3/SDL.h>         /// SDL3.
 #include <SDL3_ttf/SDL_ttf.h> /// SDL3_ttf.
 
 /* Helper headers */
-#include "../../debug.h"        /// Error output.
-#include "../../deinit_stack.h" /// Deinitialization stack.
-#include "../../resources.h"    /// `MAIN_FONT_PATH`.
+#include "../../graphics/graphics_layer.h" /// `graphics_layer.renderer` for `SDL_CreateTextureFromSurface()`.
+#include "../../helpers/geometry.h"        /// `Vec2`.
+
+/* Text-related headers */
+#include "../../game_components/texture.h" /// Making a texture from text surface.
 
 
 /* Predef */
-
-void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius, const int x, const int y);
-SDL_Surface* create_bordered_text_surface(const char* text, const int text_size, const int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color);
+struct Texture create_text(const char* text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const int size, const int border_thickness, int* exit_code);
+void          _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius, const int x, const int y);
+SDL_Surface*  _create_bordered_text_surface(const char* text, const int text_size, const int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color);
 
 
 /* Body */
 
-/// Helper for midpoint cicle algorithm. Explanation in `create_bordered_text_surface()`.
+struct Texture create_text(const char* text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const int size, const int border_thickness, int* exit_code)
+{
+    struct Texture result;
+    result.texture = NULL;
+    result.rect    = (SDL_FRect){0.0, 0.0, 0.0, 0.0};
+
+    /// Checking args
+    if (size == 0)
+    {
+        print_error("`create_text()`: `size` == 0", NON_SDL_ERROR);
+        *exit_code = EXIT_FAILURE;
+        return result;
+    }
+    if (exit_code == NULL)
+        print_warning("`create_text()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+
+    /// Creating text surface
+    SDL_Surface* text_surf = _create_bordered_text_surface(text, size, border_thickness, inner_color, outer_color);
+    if (text_surf == NULL)
+    {
+        print_error("`create_text()`: couldn't create `text_surf`", IS_SDL_ERROR);
+        *exit_code = EXIT_FAILURE;
+        return result;
+    }
+
+    /// Creating texture from text surface
+    result.texture = SDL_CreateTextureFromSurface(graphics_layer.renderer, text_surf);
+    if (result.texture == NULL)
+    {
+        print_error("`create_text()`: couldn't create a resulting texture from `text_surf`", IS_SDL_ERROR);
+        SDL_DestroySurface(text_surf);
+        text_surf = NULL;
+        *exit_code = EXIT_FAILURE;
+        return result;
+    }
+
+    /// Coords (size)
+    result.rect.w = (float)text_surf->w;
+    result.rect.h = (float)text_surf->h;
+    SDL_DestroySurface(text_surf);
+    text_surf = NULL;
+
+    /// Coords (position)
+    if (screen_pos.x == X_AUTO_CENTER)
+        result.rect.x = center_x(result.rect.w);
+    else
+        result.rect.x = screen_pos.x;
+    
+    if (screen_pos.y == Y_AUTO_CENTER)
+        result.rect.y = center_y(result.rect.h);
+    else
+        result.rect.y = screen_pos.y;
+
+    *exit_code = EXIT_SUCCESS;
+    return result;
+}
+
+
+/// Helper for midpoint cicle algorithm. Explanation in `_create_bordered_text_surface()`.
 void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius, const int x, const int y)
 {
     if (surf_out == NULL || surf_target == NULL)
@@ -41,7 +100,7 @@ void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius,
 }
 
 
-SDL_Surface* create_bordered_text_surface(const char* text, const int text_size, const int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color)
+SDL_Surface* _create_bordered_text_surface(const char* text, const int text_size, const int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color)
 {
     /// Deinit stack
     int exit_code = EXIT_SUCCESS;
@@ -57,7 +116,7 @@ SDL_Surface* create_bordered_text_surface(const char* text, const int text_size,
     TTF_Font *font = TTF_OpenFont(MAIN_FONT_PATH, (float)text_size); /// IDEA: loading the font each time we create a text is actually wasteful?
     if (font == NULL)
     {
-        print_error("`create_bordered_text_surface()`: error loading the font", IS_SDL_ERROR);
+        print_error("`_create_bordered_text_surface()`: error loading the font", IS_SDL_ERROR);
         free_deinit_stack(&deinit_stack);
         return NULL;
     }
@@ -67,7 +126,7 @@ SDL_Surface* create_bordered_text_surface(const char* text, const int text_size,
     SDL_Surface* surf_in = TTF_RenderText_Blended(font, text, 0, inner_color);
     if (surf_in == NULL)
     {
-        print_error("`create_bordered_text_surface()`: couldn't render `surf_in`", IS_SDL_ERROR);
+        print_error("`_create_bordered_text_surface()`: couldn't render `surf_in`", IS_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         return NULL;
     }
@@ -82,7 +141,7 @@ SDL_Surface* create_bordered_text_surface(const char* text, const int text_size,
     SDL_Surface* surf_out = TTF_RenderText_Blended(font, text, 0, outer_color);
     if (surf_out == NULL)
     {
-        print_error("`create_bordered_text_surface()`: couldn't render `surf_out`", IS_SDL_ERROR);
+        print_error("`_create_bordered_text_surface()`: couldn't render `surf_out`", IS_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         return NULL;
     }
@@ -92,7 +151,7 @@ SDL_Surface* create_bordered_text_surface(const char* text, const int text_size,
     SDL_Surface* result = SDL_CreateSurface((int)surf_out->w + (int)border_thickness*2, (int)surf_out->h + (int)border_thickness*2, SDL_PIXELFORMAT_ARGB32);
     if (result == NULL)
     {
-        print_error("`create_bordered_text_surface()`: couldn't create `result` surface", IS_SDL_ERROR);
+        print_error("`_create_bordered_text_surface()`: couldn't create `result` surface", IS_SDL_ERROR);
         flush_deinit_stack(&deinit_stack);
         return NULL;
     }
@@ -129,5 +188,3 @@ SDL_Surface* create_bordered_text_surface(const char* text, const int text_size,
     flush_deinit_stack(&deinit_stack); /// `flush` because nothing, except the `result`, will be used.
     return result;
 }
-
-#endif /// BORDER_H

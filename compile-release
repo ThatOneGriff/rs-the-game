@@ -20,7 +20,10 @@ trap clean_up EXIT # Will be called any way the compilation goes.
 
 ### Compilation ###
 
-C_FILE_PATHS="./project/audio/music_loader.c"
+C_FILE_PATHS="./project/audio/music_loader.c \
+              ./project/game_components/movement/move_component.c \
+              ./project/game_components/movement/path.c \
+              ./project/game_components/text/text.c"
 EXE_PATH="./rs-the-game.exe"
 echo ""
 echo "- Compiling main program..."

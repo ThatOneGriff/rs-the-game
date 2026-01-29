@@ -3,80 +3,15 @@
 #define TEXT_H
 
 /* SDL3 */
-#include <SDL3/SDL.h>         /// SDL3.
-#include <SDL3_ttf/SDL_ttf.h> /// SDL3_ttf.
+#include <SDL3/SDL.h> /// SDL3.
 
 /* Helper headers */
-#include "../../graphics/graphics_layer.h" /// `graphics_layer.renderer` for `SDL_CreateTextureFromSurface()`.
-#include "../../helpers/geometry.h"        /// `Vec2`.
-
-/* Text-related headers */
-#include "border.h"                     /// Text w/ borders.
-#include "../../game_components/texture.h" /// Making a texture from text surface.
+#include "../../helpers/geometry.h" /// `Vec2`.
 
 
 /* Predef */
-
 struct Texture create_text(const char* text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const int size, const int border_thickness, int* exit_code);
-
-
-/* Body */
-
-struct Texture create_text(const char* text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const int size, const int border_thickness, int* exit_code)
-{
-    struct Texture result;
-    result.texture = NULL;
-    result.rect    = (SDL_FRect){0.0, 0.0, 0.0, 0.0};
-
-    /// Checking args
-    if (size == 0)
-    {
-        print_error("`create_text()`: `size` == 0", NON_SDL_ERROR);
-        *exit_code = EXIT_FAILURE;
-        return result;
-    }
-    if (exit_code == NULL)
-        print_warning("`create_text()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-
-    /// Creating text surface
-    SDL_Surface* text_surf = create_bordered_text_surface(text, size, border_thickness, inner_color, outer_color);
-    if (text_surf == NULL)
-    {
-        print_error("`create_text()`: couldn't create `text_surf`", IS_SDL_ERROR);
-        *exit_code = EXIT_FAILURE;
-        return result;
-    }
-
-    /// Creating texture from text surface
-    result.texture = SDL_CreateTextureFromSurface(graphics_layer.renderer, text_surf);
-    if (result.texture == NULL)
-    {
-        print_error("`create_text()`: couldn't create a resulting texture from `text_surf`", IS_SDL_ERROR);
-        SDL_DestroySurface(text_surf);
-        text_surf = NULL;
-        *exit_code = EXIT_FAILURE;
-        return result;
-    }
-
-    /// Coords (size)
-    result.rect.w = (float)text_surf->w;
-    result.rect.h = (float)text_surf->h;
-    SDL_DestroySurface(text_surf);
-    text_surf = NULL;
-
-    /// Coords (position)
-    if (screen_pos.x == X_AUTO_CENTER)
-        result.rect.x = center_x(result.rect.w);
-    else
-        result.rect.x = screen_pos.x;
-    
-    if (screen_pos.y == Y_AUTO_CENTER)
-        result.rect.y = center_y(result.rect.h);
-    else
-        result.rect.y = screen_pos.y;
-
-    *exit_code = EXIT_SUCCESS;
-    return result;
-}
+void          _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius, const int x, const int y);
+SDL_Surface*  _create_bordered_text_surface(const char* text, const int text_size, const int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color);
 
 #endif /// TEXT_H
