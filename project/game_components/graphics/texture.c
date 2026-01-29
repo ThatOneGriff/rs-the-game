@@ -5,6 +5,9 @@
 #include <SDL3/SDL.h>             /// SDL3.
 #include <SDL3_image/SDL_image.h> /// SDL3_image.
 
+/* C headers */
+#include <stdlib.h> /// Exit codes.
+
 /* Helper headers */
 #include "../../debug.h"                   /// Error printing.
 #include "../../resources.h"               /// Null texture.

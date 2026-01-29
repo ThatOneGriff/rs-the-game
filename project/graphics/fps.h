@@ -4,6 +4,7 @@
 
 /* Headers */
 #include <stdbool.h> /// `bool fps_capped`.
+#include <stdlib.h>  /// `UINT_MAX`.
 #include "../logic/logic_layer.h" /// `time_tick_ns`.
 
 

@@ -6,8 +6,9 @@
 #include "audio_manager.h"           /// Audio system.
 
 /* C headers*/
-#include <stdlib.h>                  /// `*alloc()`.
 #include <stdbool.h>                 /// `bool active`.
+#include <stdio.h>                   /// File read/write.
+#include <stdlib.h>                  /// `*alloc()`.
 
 /* Helpers */
 #include "../debug.h"                /// Error printing.

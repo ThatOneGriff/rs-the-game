@@ -4,9 +4,10 @@
 
 #include "../_miniaudio/miniaudio.h"
 
+/// For now, it's miniature enough to not be mitosed.
 
-/// As element count adds up,
-/// may get its own init and quit functions.
+/// As element count adds up, this
+/// may get its own `init` and `quit` functions.
 
 struct Audio_Manager
 {

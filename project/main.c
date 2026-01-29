@@ -62,6 +62,7 @@ nlohmann/json version: 3.12.0  (last checked 28.01.26) | https://github.com/nloh
 
 /* Predef */
 
+[[ noreturn ]] /// Reason: `program_exit` at the end handles quitting.
 int  main(int argc, char *argv[]);
 void game_loop(int* exit_code);
 

@@ -1,0 +1,156 @@
+/* Related header */
+#include "deinit_stack.h"
+
+/* Headers */
+#include <stdlib.h> /// `*alloc()`.
+#include "debug.h"  /// Error printing.
+
+
+/* Body */
+
+struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code)
+{
+    if (exit_code == NULL)
+        print_warning("`new_deinit_stack()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+    struct Deinit_Stack result;
+    result.cur = 0;
+    result.max = 0; /// To be reset once memory is successfully allocated.
+    result.free_functions = NULL; /// To be reset once memory is successfully allocated.
+
+    result.elements = calloc(size, sizeof(void*));
+    if (result.elements == NULL)
+    {
+        print_error("`new_deinit_stack()`: couldn't allocate memory for elements' array", NON_SDL_ERROR);
+        *exit_code = EXIT_FAILURE;
+        return result;
+    }
+    /*for (size_t i = 0; i < size; i++)
+    {
+        result.elements[i] = malloc(sizeof(void*));
+
+        if (result.elements[i] == NULL)
+        {
+            print_error("`new_deinit_stack()`: couldn't allocate memory for an element", NON_SDL_ERROR);
+            for (size_t j = 0; j < i; j++)
+            {
+                free(result.elements[j]);
+                result.elements[j] = NULL;
+            }
+            free(result.elements);
+            result.elements = NULL;
+            *exit_code = EXIT_FAILURE;
+            return result;
+        }
+    }*/
+
+    result.free_functions = calloc(size, sizeof(void (*)(int*)));
+    if (result.free_functions == NULL)
+    {
+        print_error("`new_deinit_stack()`: couldn't allocate memory for free_functions", NON_SDL_ERROR);
+        for (size_t i = 0; i < size; i++)
+        {
+            free(result.elements[i]);
+            result.elements[i] = NULL;
+        }
+        free(result.elements);
+        result.elements = NULL;
+        *exit_code = EXIT_FAILURE;
+        return result;
+    }
+
+    result.max = size;
+    *exit_code = EXIT_SUCCESS;
+    return result;
+}
+
+void free_deinit_stack(struct Deinit_Stack* target)
+{
+    if (target == NULL)
+        return;
+    
+    if (target->elements != NULL)
+    {
+        /// NOTE: we are not freeing members,
+        /// because they're pointers to to-be-used parts of program.
+        free(target->elements);
+        target->elements = NULL;
+    }
+    if (target->free_functions != NULL)
+    {
+        free(target->free_functions);
+        target->free_functions = NULL;
+    }
+    target->max = 0;
+    target->cur = 0;
+    return;
+}
+
+
+/* Body */
+
+/// NOTE: unlike other structures (`Multi/Shifting_Texture`), which have a use case to being dynamic,
+/// making `Deinit_Stack` non-fixed-size could cause confusion and unneccessary memory usage
+/// without good benefits. So, the size of `Deinit_Stack::elements` is set one time upon creation.
+/// - Say, you wanted to add 7 elements to the stack, but during development it so happened that you started adding 8.
+/// 1) Wouldn't you want to know of such a correction, instead of the program quietly multiplying the stack's memory by 1.5?
+/// 2) Whose problem would that additional memory be?
+void add_to_deinit_stack(struct Deinit_Stack* target, void* new_element, void (*new_free_function)(void*))
+{
+    if (target == NULL || target->elements == NULL)
+    {
+        print_error("`add_to_deinit_stack()`: stack or its `elements` are `NULL`", NON_SDL_ERROR);
+        return;
+    }
+    if (new_element == NULL || new_free_function == NULL)
+    {
+        print_error("`add_to_deinit_stack()`: `new_element` or `new_free_function` are `NULL`", NON_SDL_ERROR);
+        return;
+    }
+    if (target->cur == target->max)
+    {
+        print_error("`add_to_deinit_stack()`: stack is full", NON_SDL_ERROR);
+        return;
+    }
+
+    target->elements [target->cur] = new_element;
+    target->free_functions[target->cur] = new_free_function;
+    ++target->cur;
+}
+
+
+/// `free`'s at the end, too.
+void flush_deinit_stack(struct Deinit_Stack* target)
+{
+    if (target == NULL || target->elements == NULL || target->free_functions == NULL)
+    {
+        //print_error("`pop_from_deinit_stack()`: stack, its `elements` or its `functions` are `NULL`", NON_SDL_ERROR);
+        return;
+    }
+
+    while (target->cur > 0)
+        pop_from_deinit_stack(target);
+    free_deinit_stack(target);
+}
+
+
+void pop_from_deinit_stack(struct Deinit_Stack* target)
+{
+    if (target == NULL || target->elements == NULL || target->free_functions == NULL)
+    {
+        print_error("`pop_from_deinit_stack()`: stack, its `elements` or its `functions` are `NULL`", NON_SDL_ERROR);
+        return;
+    }
+    if (target->cur == 0)
+    {
+        print_error("`pop_from_deinit_stack()`: stack is empty", NON_SDL_ERROR);
+        return;
+    }
+
+    --target->cur;
+    if (target->elements[target->cur] != NULL)
+    {
+        target->free_functions[target->cur](target->elements[target->cur]);
+        ///printf("[freed] "); /// For debug purposes.
+    }
+    return;
+}

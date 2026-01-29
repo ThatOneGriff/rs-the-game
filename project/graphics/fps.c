@@ -3,7 +3,10 @@
 
 /* Headers */
 #include <stdbool.h>  /// `bool fps_capped`.
+#include <stdio.h>    /// I/O.
+#include <stdlib.h>   /// `UINT_MAX`.
 #include "../debug.h" /// Error printing.
+#include "../helpers/helpers.h" /// Colored output.
 
 
 /* Body */

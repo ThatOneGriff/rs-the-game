@@ -15,6 +15,7 @@
 #include "../debug.h"                   /// Error printing.
 #include "../deinit_stack.h"            /// Deinitialization stack.
 #include "../resources.h"               /// Null texture.
+#include "../helpers/helpers.h"         /// `free_ptr_arr()`.
 #include "../helpers/random.h"          /// `randint()`.
 #include "../graphics/graphics_layer.h" /// `graphics_layer`.
 

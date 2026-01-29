@@ -5,7 +5,12 @@
 #include <SDL3/SDL.h>         /// SDL3.
 #include <SDL3_ttf/SDL_ttf.h> /// SDL3_ttf.
 
+/* C headers */
+#include <stdlib.h> /// Exit codes.
+
 /* Helper headers */
+#include "../../debug.h"                   /// Error printing.
+#include "../../deinit_stack.h"            /// Deinitialization stack.
 #include "../../resources.h"               /// `MAIN_FONT_PATH`.
 #include "../../graphics/graphics_layer.h" /// `graphics_layer.renderer` for `SDL_CreateTextureFromSurface()`.
 #include "../../helpers/geometry.h"        /// `Vec2`.
