@@ -39,6 +39,10 @@ C_FILE_PATHS="./project/audio/music_loader.c \
               ./project/logic/logic_layer.c   \
               ./project/scenes/car.c         \
               ./project/scenes/car_manager.c \
+              ./project/scenes/gameplay/gameplay_events.c \
+              ./project/scenes/gameplay/gameplay_scene.c  \
+              ./project/scenes/gameplay/pause_screen.c    \
+              ./project/scenes/gameplay/traffic_manager.c \
               ./project/debug.c        \
               ./project/deinit_stack.c \
               ./project/init_quit.c    \
