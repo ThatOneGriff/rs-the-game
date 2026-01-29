@@ -6,6 +6,7 @@
 #include <SDL3_ttf/SDL_ttf.h> /// SDL3_ttf.
 
 /* Helper headers */
+#include "../../resources.h"               /// `MAIN_FONT_PATH`.
 #include "../../graphics/graphics_layer.h" /// `graphics_layer.renderer` for `SDL_CreateTextureFromSurface()`.
 #include "../../helpers/geometry.h"        /// `Vec2`.
 
