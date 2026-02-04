@@ -12,7 +12,7 @@ RESET='\033[0m'
 # Clean-up
 set -euo pipefail # Exit upon any error, undefined variable usage or pipeline failure.
 clean_up() {
-    rm -f ./audio.o
+    rm -f ./miniaudio.o
     echo "Temp files cleaned up."
 }
 trap clean_up EXIT # Will be called any way the compilation goes.
@@ -28,7 +28,7 @@ clang -O3 -DNDEBUG -ffast-math -flto \
 -fno-asynchronous-unwind-tables -fno-ident -fno-stack-protector -fomit-frame-pointer -fstrict-aliasing -funroll-loops \
 -march=native -mtune=native \
 -Wall -Wextra -pedantic-errors -Werror -std=c23 \
--shared project/_miniaudio/audio.c -o miniaudio.dll
+-shared project/_miniaudio/miniaudio.c -o miniaudio.dll
 
 echo -e "$GREEN[1/1]$RESET Compiled! ($DLL_PATH)"
 echo ""

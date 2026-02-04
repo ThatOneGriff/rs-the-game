@@ -1,9 +1,9 @@
-/* Related header */
+/* Related headers */
+#include "audio_manager.h"
 #include "music_loader.h"
 
 /* Audio */
 #include "../_miniaudio/miniaudio.h" /// 'miniaudio'.
-#include "audio_manager.h"           /// Audio system.
 
 /* C headers*/
 #include <stdbool.h>                 /// `bool active`.
@@ -17,6 +17,7 @@
 #include "../logic/logic_layer.h"    /// `logic_layer.curr_tick`.
 
 
+struct Audio_Manager audio_manager        = {0};
 struct Music_Loader music_loader_gameplay = {0};
 struct Music_Loader music_loader_menu     = {0};
 

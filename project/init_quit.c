@@ -124,6 +124,9 @@ void init(int* exit_code)
         *exit_code = EXIT_FAILURE;
         return;
     }
+    
+    /// Save read
+    read_data();
 
     /// Music loaders
     music_loader_gameplay = _init_music_loader("./rsdt/music_gameplay.rsdt", exit_code);
@@ -164,7 +167,6 @@ void init(int* exit_code)
         }
     }
 
-    read_data();
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     print_success("`init()`");
     *exit_code = EXIT_SUCCESS;
