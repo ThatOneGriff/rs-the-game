@@ -19,6 +19,12 @@
 #include "helpers/helpers.h"         /// `free_ptr_arr()`.
 
 
+SDL_Surface* ICON_TEXTURE = NULL;
+SDL_Texture* NULL_TEXTURE = NULL;
+char       MAIN_FONT_PATH[64];
+int PERSONAL_BEST = 0;
+
+
 /* Body */
 
 /// Must be called after SDL, TTF, & `renderer` have been initialized.

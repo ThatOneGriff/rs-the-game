@@ -101,9 +101,14 @@ void add_to_deinit_stack(struct Deinit_Stack* target, void* new_element, void (*
         print_error("`add_to_deinit_stack()`: stack or its `elements` are `NULL`", NON_SDL_ERROR);
         return;
     }
-    if (new_element == NULL || new_free_function == NULL)
+    if (new_element == NULL)
     {
-        print_error("`add_to_deinit_stack()`: `new_element` or `new_free_function` are `NULL`", NON_SDL_ERROR);
+        print_error("`add_to_deinit_stack()`: `new_element` is `NULL`", NON_SDL_ERROR);
+        return;
+    }
+    if (new_free_function == NULL)
+    {
+        print_error("`add_to_deinit_stack()`: `new_free_function` is `NULL`", NON_SDL_ERROR);
         return;
     }
     if (target->cur == target->max)

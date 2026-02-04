@@ -47,6 +47,7 @@ void init(int* exit_code)
     /// Graphics layer
     printf("Graphics\n"); /// TEMP
     _init_graphics_layer(exit_code);
+    printf("%d\n", graphics_layer.renderer == NULL); /// TEMP
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init()`: failed to init `graphics_layer`", NON_SDL_ERROR);

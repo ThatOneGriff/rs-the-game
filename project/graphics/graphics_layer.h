@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef GRAPHICS_LAYER_H
 #define GRAPHICS_LAYER_H
 
@@ -20,7 +20,7 @@ struct Graphics_Layer
     SDL_Renderer* renderer;
     SDL_Texture*  buffer;
 };
-static struct Graphics_Layer graphics_layer; /// Singleton.
+extern struct Graphics_Layer graphics_layer; /// Singleton.
 
 
 /* Predef */
