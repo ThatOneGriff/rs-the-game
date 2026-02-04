@@ -7,7 +7,6 @@
 
 /* C headers */
 #include <stdlib.h> /// Exit codes.
-#include <stdio.h>  /// TEMP
 
 /* Helper headers */
 #include "../debug.h"        /// Error printing.
@@ -68,7 +67,6 @@ void _init_graphics_layer(int* exit_code)
     
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     *exit_code = EXIT_SUCCESS;
-    printf("%d\n", graphics_layer.renderer == NULL); /// TEMP
     return;
 }
 

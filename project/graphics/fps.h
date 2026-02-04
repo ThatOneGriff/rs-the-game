@@ -29,7 +29,7 @@ struct FPS_Manager
     time_tick_ns        delta_ns;
     time_tick_ns target_delta_ns;
 };
-static struct FPS_Manager FPS_manager; /// Singleton.
+extern struct FPS_Manager FPS_manager; /// Singleton.
 
 
 /* Predef */

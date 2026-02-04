@@ -20,8 +20,8 @@ struct Car_Manager
     size_t car_count;
     size_t cur_car;
 };
-static struct Car_Manager players_car_manager;
-static struct Car_Manager traffic_car_manager;
+extern struct Car_Manager players_car_manager;
+extern struct Car_Manager traffic_car_manager;
 
 
 /* Predef */

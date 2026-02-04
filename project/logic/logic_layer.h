@@ -27,7 +27,7 @@ struct Logic_Layer
     time_tick_ms curr_tick;
     time_tick_ms real_tick_diff;
 };
-static struct Logic_Layer logic_layer; /// Singleton.
+extern struct Logic_Layer logic_layer; /// Singleton.
 
 
 /* Predef */

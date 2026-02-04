@@ -33,7 +33,7 @@ struct Traffic_Manager
     time_tick_ms latest_move_tick;
     time_span_ms move_delta;
 };
-static struct Traffic_Manager traffic_manager; /// Singleton.
+extern struct Traffic_Manager traffic_manager; /// Singleton.
 
 
 /* Predef */

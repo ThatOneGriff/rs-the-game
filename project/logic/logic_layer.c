@@ -9,6 +9,9 @@
 #include "../debug.h"       ///  Error printing.
 
 
+struct Logic_Layer logic_layer = {0};
+
+
 /* Body */
 
 /// Doesn't check for accidental double initialization.

@@ -17,6 +17,10 @@
 #include "../logic/logic_layer.h"    /// `logic_layer.curr_tick`.
 
 
+struct Music_Loader music_loader_gameplay = {0};
+struct Music_Loader music_loader_menu     = {0};
+
+
 /* Body */
 
 struct Music_Loader _init_music_loader(const char* music_data_path, int* exit_code)

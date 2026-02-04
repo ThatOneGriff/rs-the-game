@@ -9,6 +9,10 @@
 #include "../helpers/random.h" /// Random.
 
 
+struct Car_Manager players_car_manager = {0};
+struct Car_Manager traffic_car_manager = {0};
+
+
 /* Body */
 
 void init_car_manager(struct Car_Manager* target, const bool is_traffic, int* exit_code)

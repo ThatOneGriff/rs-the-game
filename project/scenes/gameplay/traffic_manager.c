@@ -15,6 +15,9 @@
 #include "../../game_components/movement/path.h" /// Traffic path.
 
 
+struct Traffic_Manager traffic_manager = {0};
+
+
 /* Body */
 
 /// Assumes `traffic_car_manager` has been initialized.

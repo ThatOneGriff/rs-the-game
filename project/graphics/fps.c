@@ -9,6 +9,9 @@
 #include "../helpers/helpers.h" /// Colored output.
 
 
+struct FPS_Manager FPS_manager = {0};
+
+
 /* Body */
 
 /// Also used as initialization.

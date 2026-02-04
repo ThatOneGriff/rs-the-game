@@ -45,9 +45,7 @@ void init(int* exit_code)
     }
 
     /// Graphics layer
-    printf("Graphics\n"); /// TEMP
     _init_graphics_layer(exit_code);
-    printf("%d\n", graphics_layer.renderer == NULL); /// TEMP
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init()`: failed to init `graphics_layer`", NON_SDL_ERROR);
@@ -55,7 +53,6 @@ void init(int* exit_code)
         return;
     }
     /// Deinit stack
-    printf("Deinit stack\n"); /// TEMP
     struct Deinit_Stack deinit_stack = new_deinit_stack(5, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
     if (*exit_code == EXIT_FAILURE)
     {
@@ -64,15 +61,11 @@ void init(int* exit_code)
         SDL_Quit();
         return;
     }
-    printf("- Adding window\n"); /// TEMP
     add_to_deinit_stack(&deinit_stack, graphics_layer.window,   (void (*)(void*))SDL_DestroyWindow);
-    printf("- Adding renderer\n"); /// TEMP
     add_to_deinit_stack(&deinit_stack, graphics_layer.renderer, (void (*)(void*))SDL_DestroyRenderer);
-    printf("- Adding buffer\n"); /// TEMP
     add_to_deinit_stack(&deinit_stack, graphics_layer.buffer,   (void (*)(void*))SDL_DestroyTexture);
 
     /// Logic layer
-    printf("Logic layer\n"); /// TEMP
     _init_logic_layer(exit_code);
     if (*exit_code == EXIT_FAILURE) /// NOTE: never happens for now.
     {
@@ -81,11 +74,9 @@ void init(int* exit_code)
         SDL_Quit();
         return;
     }
-    printf("FPS cap\n"); /// TEMP
     set_fps_cap(60);
 
     /// TTF initialization
-    printf("TTF\n"); /// TEMP
     if (! TTF_Init())
     {
         print_error("`init()`: failed to initialize TTF", IS_SDL_ERROR);
@@ -96,7 +87,6 @@ void init(int* exit_code)
         return;
     }
 
-    printf("Global resources\n"); /// TEMP
     _load_global_resources(exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
@@ -108,11 +98,9 @@ void init(int* exit_code)
         *exit_code = EXIT_FAILURE;
         return;
     }
-    printf("Icon setting\n"); /// TEMP
     SDL_SetWindowIcon(graphics_layer.window, ICON_TEXTURE);
 
     /// Car managers
-    printf("Player's car manager\n"); /// TEMP
     init_car_manager(&players_car_manager, LOAD_PLAYERS, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
@@ -124,7 +112,6 @@ void init(int* exit_code)
         *exit_code = EXIT_FAILURE;
         return;
     }
-    printf("Traffic car manager\n"); /// TEMP
     init_car_manager(&traffic_car_manager, LOAD_TRAFFIC, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
@@ -139,7 +126,6 @@ void init(int* exit_code)
     }
 
     /// Music loaders
-    printf("Gameplay music loader\n"); /// TEMP
     music_loader_gameplay = _init_music_loader("./rsdt/music_gameplay.rsdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
@@ -149,7 +135,6 @@ void init(int* exit_code)
     else
         add_to_deinit_stack(&deinit_stack, &music_loader_gameplay, (void (*)(void*))_free_music_loader);
     
-    printf("Menu music loader\n"); /// TEMP
     music_loader_menu = _init_music_loader("./rsdt/music_menu.rsdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
@@ -164,7 +149,6 @@ void init(int* exit_code)
     /// Audio system
     if (audio_manager.using_audio)
     {
-        printf("'miniaudio' initialization\n"); /// TEMP
         if (ma_engine_init(NULL, &audio_manager.engine) != MA_SUCCESS)
         {
             print_error("`init()`: failed to initialize audio engine", NON_SDL_ERROR);
@@ -180,7 +164,6 @@ void init(int* exit_code)
         }
     }
 
-    printf("Save read\n"); /// TEMP
     read_data();
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     print_success("`init()`");
