@@ -71,5 +71,5 @@ $C_FILE_PATHS project/main.c -o $EXE_PATH \
 -L "./SDL3/SDL/x86_64-w64-mingw32/lib" -L "./SDL3/SDL_image/x86_64-w64-mingw32/lib" -L "./SDL3/SDL_ttf/x86_64-w64-mingw32/lib" -L "./" \
 -lSDL3 -lSDL3_image -lSDL3_ttf -lminiaudio
 
-echo -e "$GREEN[1/1]$RESET Compiled main program! ($EXE_PATH)"
+echo -e "$GREEN[1/1]$RESET Compiled main program! [Release] ($EXE_PATH)"
 echo ""
