@@ -2,8 +2,9 @@
 #include "switch.h"
 
 /* C headers */
-#include <stdlib.h>   /// `*alloc()`.
-#include <stdbool.h>  /// `bool is_focused()`.
+#include <stdlib.h>  /// `*alloc()`.
+#include <stdbool.h> /// `bool is_focused()`.
+#include <string.h>  /// `memset()`.
 
 /* Helper headers */
 #include "button.h"   /// Buttons.
@@ -28,12 +29,7 @@ struct Switch init_switch(const size_t max_option_count, int* exit_code)
         print_warning("`init_switch()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
     /// Object preparation
-    struct Switch result;
-    result.is_focused = false;
-    result.options      = NULL;
-    result.max_option_count = 0; /// Temporary value to be changed once memory is successfully allocated.
-    result.cur_option_count = 0;
-    result.cur_option = 0;
+    struct Switch result = {0};
 
     if (max_option_count == 0)
     {
@@ -70,11 +66,9 @@ void free_switch(struct Switch* target)
         for (size_t i = 0; i < target->cur_option_count; i++)
             free_button(&target->options[i]);
         free(target->options);
-        target->options = NULL;
     }
-    target->max_option_count = 0;
-    target->cur_option_count = 0;
-    target->cur_option = 0;
+    
+    memset(target, 0, sizeof *target);
     return;
 }
 

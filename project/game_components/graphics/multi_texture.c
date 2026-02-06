@@ -7,6 +7,7 @@
 
 /* C headers */
 #include <stdlib.h>               /// `*alloc()`.
+#include <string.h>               /// `memset()`.
 
 /* Helpers */
 #include "../../debug.h"                   /// Error printing.
@@ -26,10 +27,7 @@ void render_multi_texture(const struct Multi_Texture* target);
 
 struct Multi_Texture load_multi_texture(const char* texture_path, const size_t max_count, int* exit_code)
 {
-    struct Multi_Texture result;
-    result.rects = NULL;
-    result.cur_count = 0;
-    result.max_count = 0;
+    struct Multi_Texture result = {0};
 
     /// Param checking
     if (exit_code == NULL)
@@ -86,19 +84,12 @@ void free_multi_texture(struct Multi_Texture* target)
         return;
     
     if (target->texture != NULL && target->texture != NULL_TEXTURE)
-    {
         SDL_DestroyTexture(target->texture);
-        target->texture = NULL;
-    }
-    
     if (target->rects != NULL)
-    {
         free(target->rects);
-        target->rects = NULL;
-    }
 
-    target->cur_count = 0;
-    target->max_count = 0;
+    memset(target, 0, sizeof *target);
+    return;
 }
 
 
@@ -131,6 +122,7 @@ void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_rect, in
 
     /// Insertion
     to->rects[to->cur_count++] = new_rect;
+    return;
 }
 
 
@@ -155,4 +147,6 @@ void render_multi_texture(const struct Multi_Texture* target)
         else
             SDL_RenderTexture(graphics_layer.renderer, target->texture, NULL, &target->rects[i]);
     }
+
+    return;
 }

@@ -6,6 +6,7 @@
 #include <SDL3/SDL_timer.h> /// Tick measurement.
 #include <stdbool.h>        /// `bool game_is_running`.
 #include <stdlib.h>         /// `EXIT_SUCCESS`/`EXIT_FAILURE`.
+#include <string.h>         /// `memset()`.
 #include "../debug.h"       ///  Error printing.
 
 
@@ -38,8 +39,6 @@ void init_logic_layer(int* exit_code)
 
 void free_logic_layer(void)
 {
-    logic_layer.game_is_running = false;
-    logic_layer.remain_in_scene = false;
-    logic_layer.curr_scene = NULL;
+    memset(&logic_layer, 0, sizeof logic_layer);
     return;
 }

@@ -154,9 +154,8 @@ void init(int* exit_code)
     else
         add_to_deinit_stack(&deinit_stack, &music_loader_menu, (void (*)(void*))free_music_loader);
     
-    /// Save read (needed for `using_audio`)
-    read_data();
-    audio_manager.using_audio = (audio_manager.using_audio && music_loader_gameplay.valid && music_loader_menu.valid);
+    
+    audio_manager.using_audio = (music_loader_gameplay.valid && music_loader_menu.valid);
     
     /// Audio system
     if (audio_manager.using_audio)
@@ -176,6 +175,7 @@ void init(int* exit_code)
         }
     }
 
+    read_data();
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     print_success("`init()`");
     *exit_code = EXIT_SUCCESS;

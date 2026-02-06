@@ -9,6 +9,7 @@
 #include <stdbool.h>                 /// `bool active`.
 #include <stdio.h>                   /// File read/write.
 #include <stdlib.h>                  /// `*alloc()`.
+#include <string.h>                  /// `memset()`.
 
 /* Helpers */
 #include "../debug.h"                /// Error printing.
@@ -37,14 +38,8 @@ void play_random_music   (struct Music_Loader* target);
 
 struct Music_Loader init_music_loader(const char* music_data_path, int* exit_code)
 {
-    struct Music_Loader result;
-    /// initial `NULL`-ing of `result`.
-    result.active = false;
-    result.valid  = false;
-    result.track_paths = NULL;
-    result.track_count = 0;
+    struct Music_Loader result = {0};
     result.curr_track        = ULONG_LONG_MAX;
-    result.track_end_tick    = 0; /// Temporary value to be set with the first update.
     result.track_start_delay = 2000;
 
     /// Param checking
@@ -195,23 +190,15 @@ void free_music_loader(struct Music_Loader* target)
         return;
     }
 
-    target->active = false;
-    target->valid  = false;
-
     if (target->track_paths != NULL)
     {
         for (size_t i = 0; i < target->track_count; i++)
-        {
             free(target->track_paths[i]);
-            target->track_paths[i] = NULL;
-        }
         free(target->track_paths);
-        target->track_paths = NULL;
     }
     
-    target->track_count = 0;
-    target->curr_track     = ULONG_LONG_MAX;
-    target->track_end_tick = 0;
+    memset(target, 0, sizeof *target);
+    target->curr_track = ULONG_LONG_MAX;
     return;
 }
 

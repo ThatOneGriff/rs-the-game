@@ -7,6 +7,7 @@
 
 /* C headers */
 #include <stdlib.h> /// Exit codes.
+#include <string.h> /// `memset()`.
 
 /* Helper headers */
 #include "../debug.h"        /// Error printing.
@@ -32,6 +33,8 @@ void init_graphics_layer(int* exit_code)
 {
     if (exit_code == NULL)
         print_warning("`_init_graphics_layer()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+    
+    memset(&graphics_layer, 0, sizeof graphics_layer);
     
     /// Window
     graphics_layer.window = SDL_CreateWindow(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
@@ -82,18 +85,12 @@ void init_graphics_layer(int* exit_code)
 void free_graphics_layer(void)
 {
     if (graphics_layer.renderer != NULL)
-    {
         SDL_DestroyRenderer(graphics_layer.renderer);
-        graphics_layer.renderer = NULL;
-    }
     if (graphics_layer.window != NULL)
-    {
         SDL_DestroyWindow(graphics_layer.window);
-        graphics_layer.window = NULL;
-    }
     if (graphics_layer.buffer != NULL)
-    {
         SDL_DestroyTexture(graphics_layer.buffer);
-        graphics_layer.buffer = NULL;
-    }
+    
+    memset(&graphics_layer, 0, sizeof graphics_layer);
+    return;
 }

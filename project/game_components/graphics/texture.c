@@ -6,7 +6,8 @@
 #include <SDL3_image/SDL_image.h> /// SDL3_image.
 
 /* C headers */
-#include <stdlib.h> /// Exit codes.
+#include <stdlib.h>               /// Exit codes.
+#include <string.h>               /// `memset()`.
 
 /* Helper headers */
 #include "../../debug.h"                   /// Error printing.
@@ -25,9 +26,7 @@ void render_texture(const struct Texture* target);
 
 struct Texture load_texture(const char* path, const SDL_FRect rect, int* exit_code)
 {
-    struct Texture result;
-    result.texture = NULL;
-    result.rect    = (SDL_FRect){0.0, 0.0, 0.0, 0.0};
+    struct Texture result = {0};
 
     /// Parameter checking
     if (exit_code == NULL)
@@ -64,6 +63,19 @@ struct Texture load_texture(const char* path, const SDL_FRect rect, int* exit_co
 }
 
 
+void free_texture(struct Texture* target)
+{
+    if (target == NULL)
+        return;
+
+    if (target->texture != NULL && target->texture != NULL_TEXTURE)
+        SDL_DestroyTexture(target->texture);
+    
+    memset(target, 0, sizeof *target);
+    return;
+}
+
+
 void render_texture(const struct Texture* target)
 {
     /* Param checking */
@@ -85,19 +97,5 @@ void render_texture(const struct Texture* target)
     
     /* Rendering */
     SDL_RenderTexture(graphics_layer.renderer, target->texture, NULL, &target->rect);
-}
-
-
-void free_texture(struct Texture* target)
-{
-    if (target == NULL)
-        return;
-
-    if (target->texture != NULL && target->texture != NULL_TEXTURE)
-    {
-        SDL_DestroyTexture(target->texture);
-        target->texture = NULL;
-    }
-    target->rect = (SDL_FRect){0.0, 0.0, 0.0, 0.0};
     return;
 }

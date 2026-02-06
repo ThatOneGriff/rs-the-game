@@ -8,6 +8,7 @@
 /* C headers */
 #include <stdlib.h>  /// `*alloc()`.
 #include <stdbool.h> /// `bool freeze_shifting`.
+#include <string.h>  /// `memset()`.
 
 /* Helper headers */
 #include "../../debug.h"                   /// Error printing.
@@ -29,14 +30,10 @@ void render_shifting_texture(struct Shifting_Texture* target);
 struct Shifting_Texture init_shifting_texture(const SDL_FRect rect, const size_t max_count, const time_span_ms step, int* exit_code)
 {
     /// Object creation
-    struct Shifting_Texture result;
-    result.freeze_shifting = false;
+    struct Shifting_Texture result = {0};
     result.rect = rect;
-    result.cur_count = 0;
-    result.max_count = 0; /// Temporary value to be changed once memory is successfully allocated.
-    result.i = 0;
+    result.i    = 0;
     result.step = step;
-    result.latest_change = 0; /// Will be filled with first render.
 
     /// Param checking
     if (exit_code == NULL)
@@ -68,7 +65,6 @@ void free_shifting_texture(struct Shifting_Texture* target)
     if (target == NULL)
         return;
     
-    target->freeze_shifting = true;
     if (target->textures != NULL)
     {
         for (size_t i = 0; i < target->cur_count; i++)
@@ -80,13 +76,11 @@ void free_shifting_texture(struct Shifting_Texture* target)
             }
         }
         free(target->textures);
-        target->textures = NULL;
     }
     
-    target->rect = (SDL_FRect){0,0,0,0};
-    target->cur_count = 0;
-    target->max_count = 0;
-    target->i = 0;
+    memset(target, 0, sizeof *target);
+    target->freeze_shifting = true;
+    return;
 }
 
 

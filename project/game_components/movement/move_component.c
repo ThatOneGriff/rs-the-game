@@ -7,6 +7,7 @@
 /* C headers */
 #include <stdbool.h>  /// `bool randomize_positions`
 #include <stdlib.h>   /// `*alloc()`.
+#include <string.h>   /// `memset()`.
 
 /* Related */
 #include "path.h"                    /// The whole `Move_Component` is based on some `Path`.
@@ -36,17 +37,10 @@ void free_move_component(struct Move_Component* target);
 
 struct Move_Component init_move_component(const struct Path path, const time_span_ms step, bool random_x_reflect, int* exit_code)
 {
-    struct Move_Component result;
+    struct Move_Component result = {0};
     result.path = path;
-    result.rect_count = 0; /// Temporary value to be changed once memory is successfully allocated.
-    result.latest_move = 0; /// Will be filled with first move.
-    result.step        = step;
+    result.step = step;
     result.random_x_reflect = random_x_reflect;
-    
-    result.reflected_rect_indices = NULL;
-    result.manipulated_rects      = NULL;
-    result.offsets        = NULL;
-    result.rects_pt_indices       = NULL;
 
     /// Param checking
     if (exit_code == NULL)
@@ -233,21 +227,11 @@ void free_move_component(struct Move_Component* target)
     }
 
     free_path(&target->path);
-    target->latest_move = 0;
-    target->step        = 0;
-
     if (target->manipulated_rects != NULL)
-    {
         free(target->manipulated_rects);
-        target->manipulated_rects = NULL;
-    }
-    target->rect_count = 0;
-
     if (target->rects_pt_indices != NULL)
-    {
         free(target->rects_pt_indices);
-        target->rects_pt_indices = NULL;
-    }
 
+    memset(target, 0, sizeof *target);
     return;
 }

@@ -7,6 +7,7 @@
 
 /* C headers */
 #include <stdlib.h>               /// `*alloc()`.
+#include <string.h>               /// `memset()`.
 
 /* Related headers */
 #include "movement/move_component.h"    /// Moving textures.
@@ -38,13 +39,7 @@ void partly_render_environment(const struct Environment* target, const size_t mi
 
 struct Environment new_environment(char** texture_paths, const size_t texture_count, const size_t object_count, int* exit_code)
 {
-    struct Environment result;
-    result.textures       = NULL;
-    result.move_component = NULL;
-    result.texture_count = 0; /// Temporary value to be changed once memory is successfully allocated.
-    result.object_count  = 0; /// Temporary value to be changed once memory is successfully allocated.
-    result.cur_texture_indexes = NULL;
-    result.rects               = NULL;
+    struct Environment result = {0};
 
     /// Param checking
     if (exit_code == NULL)
@@ -183,29 +178,15 @@ void free_environment(struct Environment* target)
             if (target->textures[i] != NULL_TEXTURE)
                 SDL_DestroyTexture(target->textures[i]);
         free(target->textures);
-        target->textures = NULL;
     }
-    target->texture_count = 0;
-    
     if (target->rects != NULL)
-    {
         free(target->rects);
-        target->rects = NULL;
-    }
-    
     if (target->cur_texture_indexes != NULL)
-    {
         free(target->cur_texture_indexes);
-        target->cur_texture_indexes = NULL;
-    }
-
     if (target->move_component != NULL)
-    {
         free_move_component(target->move_component);
-        target->move_component = NULL;
-    }
-
-    target->object_count = 0;
+    
+    memset(target, 0, sizeof *target);
     return;
 }
 
@@ -227,8 +208,6 @@ void render_environment(const struct Environment* target)
     }
     
     move_all_rects(target->move_component);
-    //bool rendered_on_path_pt;
-    //bool rendered_on_path_pt_reflected;
     /// Rendering in path point order.
     /// [FALSE FOR NOW] Only 1 texture per path point is actually rendered to avoid visual cluttering.
     for (size_t path_pt = 0; path_pt < target->move_component->path.pt_count; path_pt++)
@@ -275,8 +254,6 @@ void partly_render_environment(const struct Environment* target, const size_t mi
         return;
     }
     
-    //bool rendered_on_path_pt;
-    //bool rendered_on_path_pt_reflected;
     /// Rendering in path point order.
     /// [FALSE FOR NOW] Only 1 texture per path point is actually rendered to avoid visual cluttering.
     if (max_path_pt > target->move_component->path.pt_count)
@@ -296,9 +273,7 @@ void partly_render_environment(const struct Environment* target, const size_t mi
                 continue; /// Out of bounds.
             
             SDL_RenderTexture(graphics_layer.renderer, target->textures[target->cur_texture_indexes[i]], NULL, &target->rects[i]);
-            //if (target->move_component.random_x_reflect == false)
             break;
-            //if (target->move_component.reflected_rect_indices[i])
         }
     }
     

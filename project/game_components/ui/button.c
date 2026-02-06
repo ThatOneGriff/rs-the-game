@@ -4,6 +4,7 @@
 /* C headers */
 #include <stdbool.h> /// `bool is_focused`.
 #include <stdlib.h>  /// Exit codes.
+#include <string.h>  /// `memset()`.
 
 /* SDL3 */
 #include <SDL3/SDL.h> /// SDL3.
@@ -28,8 +29,7 @@ void            free_button(struct Button* target);
 
 struct Button create_button(const char* text, const SDL_Color inner_color, struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int* exit_code)
 {
-    struct Button result;
-    result.is_focused = false;
+    struct Button result = {0};
 
     /* Param checking */
     if (size == 0)
@@ -78,12 +78,14 @@ void render_button(const struct Button* target)
         render_texture(&target->focused_texture);
     else
         render_texture(&target->regular_texture);
+    return;
 }
 
 
 void free_button(struct Button* target)
 {
-    target->is_focused = false;
     free_texture(&target->regular_texture);
     free_texture(&target->focused_texture);
+    memset(target, 0, sizeof *target);
+    return;
 }
