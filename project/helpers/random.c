@@ -75,7 +75,7 @@ SDL_Color rand_color(void)
 /// [95, 105] = [0.95, 1.05]
 float rand_percent(const unsigned int min, const unsigned int max)
 {
-    return (float)(randint(min, max)) / (float)100.0;
+    return (float)(randint(min, max)) / 100.0f;
 }
 
 

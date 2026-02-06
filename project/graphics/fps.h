@@ -9,7 +9,7 @@
 
 extern const unsigned int fps_cap_options[4];
 extern       unsigned int curr_fps_cap_i;
-#define SEC_IN_NS (float)1000000000.0
+#define SEC_IN_NS 1000000000.0f
 
 
 /* Struct */

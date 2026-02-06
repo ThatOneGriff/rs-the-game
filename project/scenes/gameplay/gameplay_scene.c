@@ -296,7 +296,7 @@ void render_gameplay_scene(struct Gameplay_Scene* target)
     for (size_t i = 0; i < 10; i++)
     {
         /// Just a bunch of magic numbers I got after playing around.
-        target->clouds[i].rect.x += (float)CLOUD_VELOCITY * (float)FPS_manager.delta_ns / (float)SEC_IN_NS / target->clouds[i].rect.w;
+        target->clouds[i].rect.x += (float)CLOUD_VELOCITY * (float)FPS_manager.delta_ns / SEC_IN_NS / target->clouds[i].rect.w;
         if (target->clouds[i].rect.x >= RENDER_WIDTH - 1)
             target->clouds[i].rect.x = - target->clouds[i].rect.w + 1;
         render_texture(&target->clouds[i]);

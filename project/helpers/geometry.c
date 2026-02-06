@@ -25,7 +25,7 @@ struct Path flipped_path_x(const struct Path path)
     if (result.points == NULL)
     {
         print_error("`flipped_path_x()`: couldn't allocate memory", NON_SDL_ERROR);
-        return result; /// TODO: add `exit_code`.
+        return result;
     }
     for (size_t i = 0; i < path.pt_count; i++)
     {

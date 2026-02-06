@@ -64,7 +64,7 @@ struct Car load_car(const char path[], int* exit_code)
         return result;
     }
 
-    result.coords = (SDL_FRect){center_x(65.0), RENDER_HEIGHT-65.0, 65.0, 65.0}; /// IDEA: size determined by real-life size.
+    result.coords = (SDL_FRect){center_x(65.0), RENDER_HEIGHT-65.0, 65.0, 65.0};
 
     /// Reading data
     char** car_data = read_file_by_line(path, CAR_DATA_LINES);
