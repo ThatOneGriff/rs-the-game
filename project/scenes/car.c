@@ -7,6 +7,7 @@
 
 /* C headers */
 #include <stdlib.h> /// Exit codes.
+#include <string.h> /// `memset()`.
 
 /* Helper headers */
 #include "../debug.h"             /// Error printing.
@@ -41,20 +42,10 @@ void     render_car        (struct Car* target);
 
 struct Car load_car(const char path[], int* exit_code)
 {
-    struct Car result;
-    result.year = 0;
-    result.hp   = 0;
-    result.top_speed = 0;
-    result.handling  = 0;
-
-    result.base_texture = 0;
-    result.direction_x           = 0;
-    result.prev_turn_direction_x = 0;
-    result.base_texture = 2; /// main texture
-    result.latest_turn_start = 0; /// Temporary value to be reset with the first turn.
-    result.latest_turn_end   = 0; /// Temporary value to be reset with the first turn.
+    struct Car result = {0};
+    result.base_texture = 2;
     result.turn_smoothing_duration = 100;
-    ///result.latest_jump_tick = 0;
+    result.coords = (SDL_FRect){center_x(65.0), RENDER_HEIGHT-65.0, 65.0, 65.0};
 
     /// Checking params
     if (exit_code == NULL)
@@ -65,8 +56,6 @@ struct Car load_car(const char path[], int* exit_code)
         *exit_code = EXIT_FAILURE;
         return result;
     }
-
-    result.coords = (SDL_FRect){center_x(65.0), RENDER_HEIGHT-65.0, 65.0, 65.0};
 
     /// Reading data
     char** car_data = read_file_by_line(path, CAR_DATA_LINES);
@@ -132,23 +121,13 @@ struct Car load_car(const char path[], int* exit_code)
 
 struct Car load_traffic_car(const char path[], int* exit_code)
 {
-    /// Filling unneeded variables with zeroes
-    struct Car result;
-    result.year = 0;
-    result.hp   = 0;
-    result.top_speed = 0; /// NOTE: may be useful later.
-    result.handling  = 0;
+    /// Zero-filling
+    struct Car result = {0};
     for (size_t i = 0; i < 4; i++)
         strcpy(result.quad_paths[i], "\0");
     for (size_t i = 0; i < 2; i++)
         strcpy(result.info_text [i], "\0");
-    result.base_texture = 0;
-    result.direction_x           = 0;
-    result.prev_turn_direction_x = 0;
-    result.base_texture = 2; /// main texture
-    result.latest_turn_start = 0;
-    result.latest_turn_end   = 0;
-    result.turn_smoothing_duration = 0;
+    result.base_texture = 2;
 
     /// Checking params
     if (exit_code == NULL)
@@ -232,9 +211,8 @@ void free_car(struct Car* target)
             target->textures[i] = NULL;
         }
     }
-    target->handling  = 0;
-    target->top_speed = 0;
-    target->direction_x = 0;
+    
+    memset(target, 0, sizeof *target);
     return;
 }
 

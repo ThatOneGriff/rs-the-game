@@ -4,6 +4,7 @@
 #include <stdbool.h>           /// `bool is_traffic`.
 #include <stdlib.h>            /// `*alloc()`.
 #include <stdio.h>             /// File read/write.
+#include <string.h> /// `memset()`.
 #include "car.h"               /// Cars.
 #include "../debug.h"          /// Error message printing.
 #include "../helpers/random.h" /// Random.
@@ -34,9 +35,7 @@ void init_car_manager(struct Car_Manager* target, const bool is_traffic, int* ex
         print_warning("`init_car_manager()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
     /// Objects preparation
-    target->cars = NULL;
-    target->car_count = 0; /// Temporary value to be changed once the memory is allocated.
-    target->cur_car   = 0;
+    memset(target, 0, sizeof *target);
 
     /// File opening
     FILE* car_data_file = NULL;
@@ -104,11 +103,9 @@ void free_car_manager(struct Car_Manager* target)
         for (size_t i = 0; i < target->car_count; i++)
             free_car(&target->cars[i]);
         free(target->cars);
-        target->cars = NULL;
     }
 
-    target->car_count = 0;
-    target->cur_car   = 0;
+    memset(target, 0, sizeof *target);
     return;
 }
 

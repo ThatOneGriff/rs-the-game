@@ -2,6 +2,7 @@
 #include "traffic_manager.h"
 
 /* Helpers */
+#include <string.h>                  /// `memset()`.
 #include "../../debug.h"             /// Error message printing.
 #include "../../deinit_stack.h"      /// Deinitialization stack.
 #include "../../graphics/graphics_layer.h" /// Rendering properties.
@@ -35,12 +36,8 @@ void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct 
 void init_traffic_manager(const size_t car_count, int* exit_code)
 {
     /// Object preparation
-    traffic_manager.cars      = NULL;
-    traffic_manager.car_count = 0; /// Temporary value to be changed once memory is successfully allocated.
-    traffic_manager.car_path_pts = NULL;
-    traffic_manager.car_lane_ids = NULL;
-    traffic_manager.latest_move_tick = 0; /// Will be set with the first move.
-    traffic_manager.move_delta       = 150;
+    memset(&traffic_manager, 0, sizeof traffic_manager);
+    traffic_manager.move_delta = 150;
 
     /// Param checking
     if (exit_code == NULL)
@@ -159,30 +156,17 @@ void free_traffic_manager(void)
         for (size_t i = 0; i < traffic_manager.car_count; i++)
             free_car(&traffic_manager.cars[i]);
         free(traffic_manager.cars);
-        traffic_manager.cars = NULL;
     }
     if (traffic_manager.car_path_pts != NULL)
-    {
         free(traffic_manager.car_path_pts);
-        traffic_manager.car_path_pts = NULL;
-    }
     if (traffic_manager.car_lane_ids != NULL)
-    {
         free(traffic_manager.car_lane_ids);
-        traffic_manager.car_lane_ids = NULL;
-    }
-    traffic_manager.car_count = 0;
-
-    traffic_manager.latest_move_tick = 0;
-    traffic_manager.move_delta       = 0;
-
-    traffic_manager.lane_spawn_cooldowns[0] = 0;
-    traffic_manager.lane_spawn_cooldowns[1] = 0;
-    traffic_manager.lane_spawn_cooldowns[2] = 0;
 
     free_path(&traffic_manager.lanes[0]);
     free_path(&traffic_manager.lanes[1]);
     free_path(&traffic_manager.lanes[2]);
+
+    memset(&traffic_manager, 0, sizeof traffic_manager);
     return;
 }
 

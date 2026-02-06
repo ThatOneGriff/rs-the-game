@@ -3,6 +3,7 @@
 
 /* Headers */
 #include <stdlib.h> /// `*alloc()`.
+#include <string.h> /// `memset()`.
 #include "debug.h"  /// Error printing.
 
 
@@ -21,10 +22,7 @@ struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code)
 {
     if (exit_code == NULL)
         print_warning("`new_deinit_stack()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    struct Deinit_Stack result;
-    result.cur = 0;
-    result.max = 0; /// To be reset once memory is successfully allocated.
-    result.free_functions = NULL; /// To be reset once memory is successfully allocated.
+    struct Deinit_Stack result = {0};
 
     result.elements = calloc(size, sizeof(void*));
     if (result.elements == NULL)
@@ -59,20 +57,15 @@ void free_deinit_stack(struct Deinit_Stack* target)
     if (target == NULL)
         return;
     
+    /// NOTE: we are not freeing members,
+    /// because they're pointers to to-be-used parts of program.
     if (target->elements != NULL)
-    {
-        /// NOTE: we are not freeing members,
-        /// because they're pointers to to-be-used parts of program.
         free(target->elements);
-        target->elements = NULL;
-    }
+    
     if (target->free_functions != NULL)
-    {
         free(target->free_functions);
-        target->free_functions = NULL;
-    }
-    target->max = 0;
-    target->cur = 0;
+
+    memset(target, 0, sizeof *target);
     return;
 }
 

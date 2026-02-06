@@ -4,6 +4,7 @@
 #include <SDL3/SDL.h>                        /// SDL3.
 #include <SDL3/SDL_timer.h>                  /// Time measurement.
 #include <stdbool.h>                         /// `bool is_open`.
+#include <string.h> /// `memset()`.
 #include "../../debug.h"                     /// Error message printing.
 #include "../../deinit_stack.h"              /// Deinitialization stack.
 #include "../../audio/audio_manager.h"       /// `audio_manager.using_audio`.
@@ -34,10 +35,7 @@ struct Pause_Screen init_pause_screen(int* exit_code)
         print_warning("`init_pause_screen()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
 
     /// Preparing the object
-    struct Pause_Screen result;
-    result.is_open = false;
-    result.last_gameplay_frame = NULL;
-    result.pause_open_tick = 0;
+    struct Pause_Screen result = {0};
     
     /// Deinit stack
     struct Deinit_Stack deinit_stack = new_deinit_stack(6, exit_code);
@@ -131,13 +129,8 @@ void free_pause_screen(struct Pause_Screen* target)
         return;
     }
 
-    target->is_open = false;
-    target->pause_open_tick = 0;
     if (target->last_gameplay_frame != NULL)
-    {
         SDL_DestroyTexture(target->last_gameplay_frame);
-        target->last_gameplay_frame = NULL;
-    }
 
     free_texture(&target->pause_text);
     free_button (&target->close_button);
@@ -147,6 +140,8 @@ void free_pause_screen(struct Pause_Screen* target)
     free_button (&target->quit_to_desktop_button);
 
     free_texture(&target->version_text);
+
+    memset(target, 0, sizeof *target);
     return;
 }
 

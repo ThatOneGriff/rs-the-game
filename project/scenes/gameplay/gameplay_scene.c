@@ -6,6 +6,7 @@
 #include <SDL3_image/SDL_image.h> /// SDL3_image.
 
 /* Helper headers */
+#include <string.h>                   /// `memset()`.
 #include "../../debug.h"              /// Error printing.
 #include "../../deinit_stack.h"       /// Deinitialization stack.
 #include "../../resources.h"          /// Null texture.
@@ -38,14 +39,7 @@ void update_points(struct Gameplay_Scene* target);
 
 struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr, int* exit_code)
 {
-    struct Gameplay_Scene result;
-    result.sky_bg  = NULL;
-    result.car_ptr = NULL;
-    result.is_driving = false;
-    result.start_tick  = 0; /// Will be updated once the player starts.
-    result.crash_tick  = 0; /// Will be updated when (if?) the player crashes.
-    result.point_count = 0;
-    result.prev_point_count = 0;
+    struct Gameplay_Scene result = {0};
 
     /// Param checking
     if (exit_code == NULL)
@@ -223,16 +217,14 @@ void free_gameplay_scene(struct Gameplay_Scene* target)
     if (target == NULL)
         return;
     
-    target->is_driving = false;
-    target->point_count = 0;
-    target->prev_point_count = 0;
-    free_texture(&target->personal_best_text);
-    free_pause_screen(&target->pause_screen);
     target->car_ptr->coords.x     = center_x(target->car_ptr->coords.w);
     target->car_ptr->base_texture = 2;
     target->car_ptr->latest_turn_start     = 0;
     target->car_ptr->latest_turn_end       = 0;
     target->car_ptr->prev_turn_direction_x = 0;
+    
+    free_texture(&target->personal_best_text);
+    free_pause_screen(&target->pause_screen);
     for (size_t i = 0; i < 10; i++)
         free_texture(&target->clouds[i]);
     free_environment     (&target->trees);
@@ -244,6 +236,9 @@ void free_gameplay_scene(struct Gameplay_Scene* target)
         SDL_DestroyTexture(target->sky_bg);
         target->sky_bg = NULL;
     }
+
+    memset(target, 0, sizeof *target);
+    return;
 }
 
 

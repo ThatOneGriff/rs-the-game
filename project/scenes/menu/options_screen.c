@@ -3,12 +3,13 @@
 
 #include <SDL3/SDL.h>                        /// SDL3.
 #include <stdbool.h>                         /// `bool is_open`.
+#include <string.h>                          /// `memset()`.
 #include "../../debug.h"                     /// Error message printing.
 #include "../../deinit_stack.h"              /// Deinitialization stack.
 #include "../../audio/audio_manager.h"       /// `audio_manager.using_audio`.
 #include "../../game_components/text/text.h" /// Text.
-#include "../../game_components/ui/button.h"    /// Buttons.
-#include "../../game_components/ui/switch.h"    /// Switches.
+#include "../../game_components/ui/button.h" /// Buttons.
+#include "../../game_components/ui/switch.h" /// Switches.
 #include "../../graphics/fps.h"              /// FPS limit switch.
 #include "../../graphics/graphics_layer.h"   /// Rendering.
 
@@ -33,9 +34,7 @@ struct Options_Screen init_options_screen(int* exit_code)
         print_warning("`init_options_screen()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
 
     /// Preparing the object
-    struct Options_Screen result;
-    result.is_open         = false;
-    result.last_menu_frame = NULL;
+    struct Options_Screen result = {0};
     
     /// Deinit stack
     struct Deinit_Stack deinit_stack = new_deinit_stack(13, exit_code);
@@ -202,12 +201,8 @@ void free_options_screen(struct Options_Screen* target)
         return;
     }
 
-    target->is_open = false;
     if (target->last_menu_frame != NULL)
-    {
         SDL_DestroyTexture(target->last_menu_frame);
-        target->last_menu_frame = NULL;
-    }
 
     free_texture(&target->options_text);
     free_button (&target->close_button);
@@ -219,6 +214,8 @@ void free_options_screen(struct Options_Screen* target)
     free_switch (&target->fps_switch);
 
     free_texture(&target->version_text);
+
+    memset(target, 0, sizeof *target);
     return;
 }
 

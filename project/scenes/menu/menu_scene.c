@@ -8,6 +8,7 @@
 /* C headers */
 #include <stdlib.h>  /// `malloc()`
 #include <stdbool.h> /// Setting button focuses.
+#include <string.h> /// `memset()`.
 
 /* Helper headers */
 #include "../../debug.h"           /// Error printing.
@@ -36,10 +37,7 @@ void            render_menu_scene   (struct Menu_Scene* target);
 
 struct Menu_Scene load_menu_scene(struct Car* car_ptr, int* exit_code)
 {
-    struct Menu_Scene result;
-    result.bg = NULL;
-    result.car_ptr = NULL;
-    //result.button_focus_i = 0;
+    struct Menu_Scene result = {0};
 
     /// Param checking
     if (exit_code == NULL)
@@ -160,12 +158,8 @@ struct Menu_Scene load_menu_scene(struct Car* car_ptr, int* exit_code)
 
 void free_menu_scene(struct Menu_Scene* target)
 {
-    target->car_ptr = NULL;
     if (target->bg != NULL_TEXTURE)
-    {
         SDL_DestroyTexture(target->bg);
-        target->bg = NULL;
-    }
     free_texture(&target->car_name_text);
     free_button(&target->prev_button);
     free_button(&target->next_button);
@@ -186,6 +180,9 @@ void free_menu_scene(struct Menu_Scene* target)
     
     free_texture(&target->info_line1);
     free_texture(&target->info_line2);
+
+    memset(target, 0, sizeof *target);
+    return;
 }
 
 
