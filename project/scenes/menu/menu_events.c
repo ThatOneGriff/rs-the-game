@@ -34,7 +34,7 @@ void process_menu_events(struct Menu_Scene* scene)
         {
         /// Key press.
         case SDL_EVENT_KEY_DOWN:
-            _process_menu_keyboard(scene, logic_layer.event.key.key);
+            process_menu_keyboard(scene, logic_layer.event.key.key);
             break;
         /// Other event.
         default:
@@ -44,7 +44,7 @@ void process_menu_events(struct Menu_Scene* scene)
 }
 
 
-void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key)
+void process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key)
 {
     int exit_code = EXIT_SUCCESS;
 
@@ -221,7 +221,7 @@ void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_ke
             break;
 
         default:
-            _process_global_keyboard(event_key);
+            process_global_keyboard(event_key);
     }
 
     if (exit_code == EXIT_FAILURE)

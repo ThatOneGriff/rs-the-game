@@ -16,5 +16,6 @@
 
 void textcolor(const short int color_code);
 void free_ptr_arr(void** target, const size_t len);
+char** read_file_by_line(const char* path, const size_t target_lines);
 
 #endif /// HELPERS_H

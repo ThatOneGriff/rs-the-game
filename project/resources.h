@@ -18,8 +18,7 @@ extern int PERSONAL_BEST;
 
 /* Predef */
 
-void  _load_global_resources(int* exit_code);
-void  _free_global_resources(void);
-char** read_file_by_line(const char* path, const size_t target_lines);
+void load_global_resources(int* exit_code);
+void free_global_resources(void);
 
 #endif /// RESOURCES_H

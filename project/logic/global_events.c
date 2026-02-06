@@ -33,13 +33,13 @@ void process_global_events(const SDL_Event event)
 }
 
 
-void _process_global_keyboard(const SDL_Keycode event_key)
+void process_global_keyboard(const SDL_Keycode event_key)
 {
     int exit_code = EXIT_SUCCESS;
     switch(event_key)
     {
     case SDLK_R:
-        _load_global_resources(&exit_code);
+        load_global_resources(&exit_code);
         if (exit_code == EXIT_SUCCESS)
             print_success("Hot resource reload; switch to next scene and back to see the effect");
         else /// First multi-line error btw.

@@ -22,14 +22,14 @@
 void process_gameplay_events(struct Gameplay_Scene* scene)
 {
     if (! scene->pause_screen.is_open && scene->is_driving)
-        _process_gameplay_car_input(scene->car_ptr);
+        process_gameplay_car_input(scene->car_ptr);
     while (SDL_PollEvent(&logic_layer.event))
     {
         switch (logic_layer.event.type)
         {
         /// Key press.
         case SDL_EVENT_KEY_DOWN:
-            _process_gameplay_keyboard(scene, logic_layer.event.key.key);
+            process_gameplay_keyboard(scene, logic_layer.event.key.key);
             break;
         /// Other event.
         default:
@@ -39,7 +39,7 @@ void process_gameplay_events(struct Gameplay_Scene* scene)
 }
 
 
-void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode event_key)
+void process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode event_key)
 {
     switch(event_key)
     {
@@ -121,12 +121,12 @@ void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode 
             break;
         
         default:
-            _process_global_keyboard(event_key);
+            process_global_keyboard(event_key);
     }
 }
 
 
-void _process_gameplay_car_input(struct Car* car)
+void process_gameplay_car_input(struct Car* car)
 {
     if (car == NULL)
     {

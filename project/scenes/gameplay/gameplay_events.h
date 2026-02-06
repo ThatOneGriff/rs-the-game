@@ -12,8 +12,8 @@
 
 /* Predef */
 
-void  process_gameplay_events   (struct Gameplay_Scene* scene);
-void _process_gameplay_keyboard (struct Gameplay_Scene* scene, const SDL_Keycode event_key);
-void _process_gameplay_car_input(struct Car* car);
+void process_gameplay_events   (struct Gameplay_Scene* scene);
+void process_gameplay_keyboard (struct Gameplay_Scene* scene, const SDL_Keycode event_key);
+void process_gameplay_car_input(struct Car* car);
 
 #endif /// GAMEPLAY_EVENTS_H

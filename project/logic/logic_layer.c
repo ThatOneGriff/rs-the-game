@@ -15,7 +15,7 @@ struct Logic_Layer logic_layer = {0};
 /* Body */
 
 /// Doesn't check for accidental double initialization.
-void _init_logic_layer(int* exit_code)
+void init_logic_layer(int* exit_code)
 {
     if (exit_code == NULL)
         print_warning("`_init_logic_layer()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
@@ -28,7 +28,7 @@ void _init_logic_layer(int* exit_code)
     return;
 }
 
-void _free_logic_layer(void)
+void free_logic_layer(void)
 {
     logic_layer.game_is_running = false;
     logic_layer.remain_in_scene = false;

@@ -171,7 +171,7 @@ struct Options_Screen init_options_screen(int* exit_code)
     add_to_deinit_stack(&deinit_stack, &result.fps_switch, (void (*)(void*))free_switch);
     
     /// 'Version' text
-    result.version_text = create_text("RS The Game v1.0", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(X_AUTO_CENTER, 150), 9, 1, exit_code);
+    result.version_text = create_text("RS The Game v 1.0", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(X_AUTO_CENTER, 150), 9, 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_options_screen()`: couldn't create the version text", NON_SDL_ERROR);

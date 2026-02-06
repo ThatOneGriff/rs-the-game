@@ -6,6 +6,7 @@
 #include <SDL3/SDL.h> /// `SDL_FRect`.
 #include <stdbool.h>  /// `bool have_x_overlap()`.
 #include "../game_components/movement/path.h" /// Path manipulation.
+#include "../graphics/graphics_layer.h"       /// `RENDER_WIDTH/HEIGHT`.
 
 
 /* Structs */
@@ -21,14 +22,14 @@ struct Vec2
 
 /* Predef */
 
-/// REDO: rewrite using macros.
+#define center_x(w)  (float)(RENDER_WIDTH  - w) / 2.0f
+#define center_y(h)  (float)(RENDER_HEIGHT - h) / 2.0f
+#define reflect_x(x) (float)(RENDER_WIDTH  - x)
+#define reflect_y(y) (float)(RENDER_HEIGHT - y) /// Unused for now.
+#define vec2(x,y) (struct Vec2){x, y}
 
 struct Path flipped_path_x(const struct Path path);
 bool  have_x_overlap  (const SDL_FRect rect1, const SDL_FRect rect2);
 float distance_between(const SDL_FRect rect1, const SDL_FRect rect2);
-float center_x (const float w);
-float center_y (const float h);
-float reflect_x(const float x);
-struct Vec2 vec2(const float x, const float y);
 
 #endif /// GEOMETRY_H

@@ -32,7 +32,7 @@ extern struct Logic_Layer logic_layer; /// Singleton.
 
 /* Predef */
 
-void _init_logic_layer(int* exit_code);
-void _free_logic_layer(void);
+void init_logic_layer(int* exit_code);
+void free_logic_layer(void);
 
 #endif /// LOGIC_LAYER_H

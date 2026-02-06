@@ -7,7 +7,6 @@
 #include <stdlib.h>                           /// `*alloc()`.
 #include "../debug.h"                         /// Error message printing.
 #include "../game_components/movement/path.h" /// Path manipulation.
-#include "../graphics/graphics_layer.h"       /// `RENDER_WIDTH/HEIGHT`.
 
 
 /* Body */
@@ -48,27 +47,4 @@ float distance_between(const SDL_FRect rect1, const SDL_FRect rect2)
         return dist1;
     else
         return (dist1 < dist2 ? dist1 : dist2);
-}
-
-float center_x(const float w)
-{
-    return (RENDER_WIDTH - w) / (float)2.0;
-}
-
-float center_y(const float h)
-{
-    return (RENDER_HEIGHT - h) / (float)2.0;
-}
-
-float reflect_x(const float x)
-{
-    return RENDER_WIDTH - x;
-}
-
-struct Vec2 vec2(const float x, const float y)
-{
-    struct Vec2 result;
-    result.x = x;
-    result.y = y;
-    return result;
 }

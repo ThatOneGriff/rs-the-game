@@ -37,9 +37,6 @@ miniaudio     version: 0.11.24 (last updated 28.01.26) | https://github.com/mack
 nlohmann/json version: 3.12.0  (last checked 28.01.26) | https://github.com/nlohmann/json/releases
 */
 
-/// BEFORE header mitosis: 175 KB
-///  AFTER header mitotis: 130 KB (but broken)
-
 /* Visual TODOs: */
 /// - player's car bouncing in beat to the music.
 
@@ -144,8 +141,8 @@ void game_loop(int* exit_code)
                 logic_layer.real_tick_diff  = 0;
                 if (audio_manager.using_audio)
                 {
-                    _freeze_music_loader(&music_loader_gameplay);
-                    play_random_music   (&music_loader_menu);
+                    freeze_music_loader(&music_loader_gameplay);
+                    play_random_music  (&music_loader_menu);
                 }
             }
         }
@@ -169,8 +166,8 @@ void game_loop(int* exit_code)
                 logic_layer.remain_in_scene = true;
                 if (audio_manager.using_audio)
                 {
-                    _freeze_music_loader(&music_loader_menu);
-                    play_random_music   (&music_loader_gameplay);
+                    freeze_music_loader(&music_loader_menu);
+                    play_random_music  (&music_loader_gameplay);
                 }
             }
         }

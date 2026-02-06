@@ -21,8 +21,8 @@
 
 /* Predef */
 struct Texture create_text(const char* text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const int size, const int border_thickness, int* exit_code);
-void          _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius, const int x, const int y);
-SDL_Surface*  _create_bordered_text_surface(const char* text, const int text_size, const int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color);
+static void          _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius, const int x, const int y);
+static SDL_Surface*  _create_bordered_text_surface(const char* text, const int text_size, const int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color);
 
 
 /* Body */
@@ -86,7 +86,7 @@ struct Texture create_text(const char* text, const SDL_Color inner_color, const 
 
 
 /// Helper for midpoint cicle algorithm. Explanation in `_create_bordered_text_surface()`.
-void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius, const int x, const int y)
+static void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius, const int x, const int y)
 {
     if (surf_out == NULL || surf_target == NULL)
     {
@@ -106,7 +106,7 @@ void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius,
 }
 
 
-SDL_Surface* _create_bordered_text_surface(const char* text, const int text_size, const int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color)
+static SDL_Surface* _create_bordered_text_surface(const char* text, const int text_size, const int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color)
 {
     /// Deinit stack
     int exit_code = EXIT_SUCCESS;

@@ -24,7 +24,7 @@ struct Music_Loader music_loader_menu     = {0};
 
 /* Body */
 
-struct Music_Loader _init_music_loader(const char* music_data_path, int* exit_code)
+struct Music_Loader init_music_loader(const char* music_data_path, int* exit_code)
 {
     struct Music_Loader result;
     /// initial `NULL`-ing of `result`.
@@ -163,7 +163,7 @@ struct Music_Loader _init_music_loader(const char* music_data_path, int* exit_co
 }
 
 
-void _freeze_music_loader(struct Music_Loader* target)
+void freeze_music_loader(struct Music_Loader* target)
 {
     if (target == NULL)
     {
@@ -176,7 +176,7 @@ void _freeze_music_loader(struct Music_Loader* target)
 }
 
 
-void _free_music_loader(struct Music_Loader* target)
+void free_music_loader(struct Music_Loader* target)
 {
     if (target == NULL)
     {

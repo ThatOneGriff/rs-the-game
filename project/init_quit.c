@@ -45,7 +45,7 @@ void init(int* exit_code)
     }
 
     /// Graphics layer
-    _init_graphics_layer(exit_code);
+    init_graphics_layer(exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init()`: failed to init `graphics_layer`", NON_SDL_ERROR);
@@ -66,7 +66,7 @@ void init(int* exit_code)
     add_to_deinit_stack(&deinit_stack, graphics_layer.buffer,   (void (*)(void*))SDL_DestroyTexture);
 
     /// Logic layer
-    _init_logic_layer(exit_code);
+    init_logic_layer(exit_code);
     if (*exit_code == EXIT_FAILURE) /// NOTE: never happens for now.
     {
         print_error("`init()`: failed to init `logic_layer`", NON_SDL_ERROR);
@@ -80,19 +80,19 @@ void init(int* exit_code)
     if (! TTF_Init())
     {
         print_error("`init()`: failed to initialize TTF", IS_SDL_ERROR);
-        _free_logic_layer();
+        free_logic_layer();
         flush_deinit_stack(&deinit_stack);
         SDL_Quit();
         *exit_code = EXIT_FAILURE;
         return;
     }
 
-    _load_global_resources(exit_code);
+    load_global_resources(exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init()`: failed to load global resources", NON_SDL_ERROR);
         TTF_Quit();
-        _free_logic_layer();
+        free_logic_layer();
         flush_deinit_stack(&deinit_stack);
         SDL_Quit();
         *exit_code = EXIT_FAILURE;
@@ -106,7 +106,7 @@ void init(int* exit_code)
     {
         print_error("`init()`: failed to initialize car manager", NON_SDL_ERROR);
         TTF_Quit();
-        _free_logic_layer();
+        free_logic_layer();
         flush_deinit_stack(&deinit_stack);
         SDL_Quit();
         *exit_code = EXIT_FAILURE;
@@ -118,36 +118,35 @@ void init(int* exit_code)
         print_error("`init()`: failed to initialize car manager", NON_SDL_ERROR);
         free_car_manager(&players_car_manager);
         TTF_Quit();
-        _free_logic_layer();
+        free_logic_layer();
         flush_deinit_stack(&deinit_stack);
         SDL_Quit();
         *exit_code = EXIT_FAILURE;
         return;
     }
-    
-    /// Save read
-    read_data();
 
     /// Music loaders
-    music_loader_gameplay = _init_music_loader("./rsdt/music_gameplay.rsdt", exit_code);
+    music_loader_gameplay = init_music_loader("./rsdt/music_gameplay.rsdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_warning("`init()`: music data (gameplay) file not found", NON_SDL_ERROR);
-        _free_music_loader(&music_loader_gameplay);
+        free_music_loader(&music_loader_gameplay);
     }
     else
-        add_to_deinit_stack(&deinit_stack, &music_loader_gameplay, (void (*)(void*))_free_music_loader);
+        add_to_deinit_stack(&deinit_stack, &music_loader_gameplay, (void (*)(void*))free_music_loader);
     
-    music_loader_menu = _init_music_loader("./rsdt/music_menu.rsdt", exit_code);
+    music_loader_menu = init_music_loader("./rsdt/music_menu.rsdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_warning("`init()`: music data (menu) file not found", NON_SDL_ERROR);
-        _free_music_loader(&music_loader_menu);
+        free_music_loader(&music_loader_menu);
     }
     else
-        add_to_deinit_stack(&deinit_stack, &music_loader_menu, (void (*)(void*))_free_music_loader);
+        add_to_deinit_stack(&deinit_stack, &music_loader_menu, (void (*)(void*))free_music_loader);
     
-    audio_manager.using_audio = (music_loader_gameplay.valid && music_loader_menu.valid);
+    /// Save read (needed for `using_audio`)
+    read_data();
+    audio_manager.using_audio = (audio_manager.using_audio && music_loader_gameplay.valid && music_loader_menu.valid);
     
     /// Audio system
     if (audio_manager.using_audio)
@@ -157,9 +156,9 @@ void init(int* exit_code)
             print_error("`init()`: failed to initialize audio engine", NON_SDL_ERROR);
             free_car_manager(&players_car_manager);
             free_car_manager(&traffic_car_manager);
-            _free_global_resources();
+            free_global_resources();
             TTF_Quit();
-            _free_logic_layer();
+            free_logic_layer();
             flush_deinit_stack(&deinit_stack);
             SDL_Quit();
             *exit_code = EXIT_FAILURE;
@@ -215,17 +214,17 @@ void quit(void)
     free_traffic_manager();
     if (audio_manager.using_audio)
     {
-        _free_music_loader(&music_loader_gameplay);
-        _free_music_loader(&music_loader_menu);
+        free_music_loader(&music_loader_gameplay);
+        free_music_loader(&music_loader_menu);
         ma_sound_uninit (&audio_manager.music);
         ma_engine_uninit(&audio_manager.engine);
     }
     free_car_manager(&players_car_manager);
     free_car_manager(&traffic_car_manager);
-    _free_global_resources();
+    free_global_resources();
     TTF_Quit();
-    _free_logic_layer();
-    _free_graphics_layer();
+    free_logic_layer();
+    free_graphics_layer();
     SDL_Quit();
 
     print_success("`quit()`");
