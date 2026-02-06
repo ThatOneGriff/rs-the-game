@@ -15,7 +15,7 @@
 #include "../graphics/graphics_layer.h" /// Graphics layer.
 #include "../helpers/helpers.h"   /// `free_ptr_arr()`.
 #include "../helpers/geometry.h"  /// `center_x()`.
-#include "../logic/logic_layer.h" /// `time_tick_ms`
+#include "../logic/logic_layer.h" /// `time_tick_ms`.
 
 
 const SDL_FRect CAR_COLLISION_BOXES[5] = {

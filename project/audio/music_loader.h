@@ -17,7 +17,7 @@ struct Music_Loader
 
     size_t       curr_track;
     time_tick_ms track_end_tick; /// Is used to control the 2s pause between tracks.
-    time_tick_ms track_start_delay;
+    time_span_ms track_start_delay;
 };
 extern struct Music_Loader music_loader_gameplay;
 extern struct Music_Loader music_loader_menu;

@@ -2,11 +2,9 @@
 #ifndef CAR_H
 #define CAR_H
 
-/* SDL3 */
+/* Headers */
 #include <SDL3/SDL.h> /// SDL things.
-
-/* Helper headers */
-#include "../logic/logic_layer.h" /// `time_tick_ms`
+#include "../logic/logic_layer.h" /// `time_tick_ms`.
 
 
 #define         CAR_DATA_LINES 16
@@ -36,7 +34,7 @@ struct Car
 
     time_tick_ms latest_turn_start;
     time_tick_ms latest_turn_end;
-    time_tick_ms turn_smoothing_duration;
+    time_span_ms turn_smoothing_duration;
     ///time_tick_ms latest_jump_tick;
 };
 

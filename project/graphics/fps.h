@@ -7,12 +7,6 @@
 #include <stdlib.h>  /// `UINT_MAX`.
 #include "../logic/logic_layer.h" /// `time_tick_ns`.
 
-
-#define time_tick_ns unsigned long long int
-#define time_tick_ms unsigned long long int
-#define time_span_ns unsigned long long int
-#define time_span_ms unsigned long long int
-
 extern const unsigned int fps_cap_options[4];
 extern       unsigned int curr_fps_cap_i;
 #define SEC_IN_NS (float)1000000000.0

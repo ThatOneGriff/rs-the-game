@@ -2,14 +2,14 @@
 #include "move_component.h"
 
 /* SDL3 */
-#include <SDL3/SDL.h>             /// `SDL_FRect()`.
+#include <SDL3/SDL.h> /// `SDL_FRect()`.
 
 /* C headers */
-#include <stdbool.h>              /// `bool randomize_positions`
-#include <stdlib.h>               /// `*alloc()`.
+#include <stdbool.h>  /// `bool randomize_positions`
+#include <stdlib.h>   /// `*alloc()`.
 
 /* Related */
-#include "path.h"                 /// The whole `Move_Component` is based on some `Path`.
+#include "path.h"                    /// The whole `Move_Component` is based on some `Path`.
 #include "../../logic/logic_layer.h" /// `logic_layer.curr_tick`.
 
 /* Helpers */
@@ -25,7 +25,7 @@ I wholeheartedly hate this code. Sorry. */
 
 /* Predef */
 
-struct Move_Component init_move_component(const struct Path path, const time_tick_ms step, bool random_x_reflect, int* exit_code);
+struct Move_Component init_move_component(const struct Path path, const time_span_ms step, bool random_x_reflect, int* exit_code);
 void                couple_move_component(struct Move_Component* target, SDL_FRect* manipulated_rects, const size_t rect_count,
                                           struct Vec2 max_offset, bool randomize_positions, int* exit_code);
 void move_all_rects     (struct Move_Component* target);
@@ -34,7 +34,7 @@ void free_move_component(struct Move_Component* target);
 
 /* Body */
 
-struct Move_Component init_move_component(const struct Path path, const time_tick_ms step, bool random_x_reflect, int* exit_code)
+struct Move_Component init_move_component(const struct Path path, const time_span_ms step, bool random_x_reflect, int* exit_code)
 {
     struct Move_Component result;
     result.path = path;

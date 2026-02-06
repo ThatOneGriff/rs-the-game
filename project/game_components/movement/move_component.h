@@ -25,7 +25,7 @@ struct Move_Component
 {
     struct Path path;
     time_tick_ms latest_move;
-    time_tick_ms step;
+    time_span_ms step;
 
     bool  random_x_reflect; /// If `true`, the coordinates will randomly reflect along X axis (like trees do).
     bool* reflected_rect_indices;
@@ -40,7 +40,7 @@ struct Move_Component
 
 /* Predef */
 
-struct Move_Component init_move_component(const struct Path path, const time_tick_ms step, bool random_x_reflect, int* exit_code);
+struct Move_Component init_move_component(const struct Path path, const time_span_ms step, bool random_x_reflect, int* exit_code);
 void                couple_move_component(struct Move_Component* target, SDL_FRect* manipulated_rects, const size_t rect_count,
                                           struct Vec2 max_offset, bool randomize_positions, int* exit_code);
 void move_all_rects     (struct Move_Component* target);
