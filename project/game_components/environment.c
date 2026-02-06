@@ -24,6 +24,16 @@
 I wholeheartedly hate this code. Sorry. */
 
 
+/* Predef */
+
+struct Environment        new_environment(char** texture_paths, const size_t texture_count, const size_t object_count, int* exit_code);
+void couple_move_component_to_environment(struct Environment* to, struct Move_Component* move_component, const struct Vec2 max_offset, int* exit_code);
+void                     free_environment(struct Environment* target);
+
+void        render_environment(const struct Environment* target);
+void partly_render_environment(const struct Environment* target, const size_t min_path_pt, size_t max_path_pt);
+
+
 /* Body */
 
 struct Environment new_environment(char** texture_paths, const size_t texture_count, const size_t object_count, int* exit_code)

@@ -8,15 +8,15 @@
 #include "../debug.h" /// Error message printing.
 
 
-/* Text coloring */
+/* Predef */
 
-void textcolor(const unsigned short int color_code)
-{
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color_code);
-}
+void   free_ptr_arr(void** target, const size_t len);
+char** read_file_by_line(const char* path, const size_t target_lines);
+void   textcolor(const unsigned short int color_code);
 
 
-/* Memory */
+/* Body */
+
 
 void free_ptr_arr(void** target, const size_t len)
 {
@@ -90,4 +90,10 @@ char** read_file_by_line(const char* path, const size_t target_lines)
 
     fclose(data_file);
     return result;
+}
+
+
+void textcolor(const unsigned short int color_code)
+{
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color_code);
 }

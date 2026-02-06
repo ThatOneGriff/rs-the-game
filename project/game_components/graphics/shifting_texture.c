@@ -16,6 +16,14 @@
 #include "../../logic/logic_layer.h"       /// Current tick.
 
 
+/* Predef */
+
+struct Shifting_Texture init_shifting_texture(const SDL_FRect rect, const size_t max_count, const time_tick_ms step, int* exit_code);
+void                    free_shifting_texture(struct Shifting_Texture* target);
+void add_to_shifting_texture(struct Shifting_Texture* to, const char* new_texture_path, int* exit_code);
+void render_shifting_texture(struct Shifting_Texture* target);
+
+
 /* Body */
 
 struct Shifting_Texture init_shifting_texture(const SDL_FRect rect, const size_t max_count, const time_tick_ms step, int* exit_code)

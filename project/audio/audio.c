@@ -22,6 +22,15 @@ struct Music_Loader music_loader_gameplay = {0};
 struct Music_Loader music_loader_menu     = {0};
 
 
+/* Predef */
+
+struct Music_Loader init_music_loader  (const char* music_data_path, int* exit_code);
+void                freeze_music_loader(struct Music_Loader* target);
+void                free_music_loader  (struct Music_Loader* target);
+void check_if_music_ended(struct Music_Loader* target);
+void play_random_music   (struct Music_Loader* target);
+
+
 /* Body */
 
 struct Music_Loader init_music_loader(const char* music_data_path, int* exit_code)

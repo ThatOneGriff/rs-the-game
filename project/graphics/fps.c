@@ -10,6 +10,15 @@
 
 
 struct FPS_Manager FPS_manager = {0};
+const unsigned int fps_cap_options[4] = {30, 60, 120, UINT_MAX};
+      unsigned int curr_fps_cap_i = 1;
+
+
+/* Predef */
+
+void set_fps_cap(const unsigned int new_fps_cap);
+void rem_fps_cap(void);
+void print_compare_fps(const unsigned int curr_fps, const unsigned int prev_fps);
 
 
 /* Body */

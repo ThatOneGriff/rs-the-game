@@ -29,4 +29,5 @@ void        add_to_switch(struct Switch* target, const struct Button new_option)
 void change_switch_option(struct Switch* target);
 void        render_switch(struct Switch* target);
 
+
 #endif /// SWITCH_H

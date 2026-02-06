@@ -35,4 +35,5 @@ extern struct Logic_Layer logic_layer; /// Singleton.
 void init_logic_layer(int* exit_code);
 void free_logic_layer(void);
 
+
 #endif /// LOGIC_LAYER_H

@@ -5,11 +5,17 @@
 #include <SDL3/SDL.h> /// `SDL_FRect()`.
 
 /* C headers */
-//#include <stdbool.h>  /// `bool is_loop` /// For now, every path is a loop.
+//#include <stdbool.h>  /// `bool is_loop` (For now, every path is a loop).
 #include <stdlib.h>   /// `*alloc()`.
 
 /* Helpers */
 #include "../../debug.h" /// Error printing.
+
+
+/* Predef */
+
+struct Path  new_path(const SDL_FRect* points, const size_t pt_count, int* exit_code);
+void        free_path(struct Path* target);
 
 
 /* Body */

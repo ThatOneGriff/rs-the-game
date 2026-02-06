@@ -17,6 +17,12 @@
 #include "../audio/music_loader.h" /// Music manipulation.
 
 
+/* Predef */
+
+void  process_global_events  (const SDL_Event   event);
+void  process_global_keyboard(const SDL_Keycode event_key);
+
+
 /* Body */
 
 /// Receives its `event` as argument because it gets called from scene-related event functions

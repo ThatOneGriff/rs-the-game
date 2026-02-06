@@ -12,6 +12,12 @@
 struct Logic_Layer logic_layer = {0};
 
 
+/* Predef */
+
+void init_logic_layer(int* exit_code);
+void free_logic_layer(void);
+
+
 /* Body */
 
 /// Doesn't check for accidental double initialization.

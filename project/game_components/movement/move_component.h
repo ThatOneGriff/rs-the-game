@@ -46,4 +46,5 @@ void                couple_move_component(struct Move_Component* target, SDL_FRe
 void move_all_rects     (struct Move_Component* target);
 void free_move_component(struct Move_Component* target);
 
+
 #endif /// MOVE_COMPONENT_H

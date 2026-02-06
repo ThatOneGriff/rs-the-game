@@ -11,6 +11,15 @@
 #include "../../graphics/graphics_layer.h" /// `graphics_layer.renderer`.
 
 
+/* Predef */
+
+struct Switch init_switch(const size_t max_option_count, int* exit_code);
+void          free_switch(struct Switch* target);
+void        add_to_switch(struct Switch* target, const struct Button new_option);
+void change_switch_option(struct Switch* target);
+void        render_switch(struct Switch* target);
+
+
 /* Body */
 
 struct Switch init_switch(const size_t max_option_count, int* exit_code)

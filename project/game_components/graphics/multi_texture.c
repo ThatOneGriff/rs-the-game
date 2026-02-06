@@ -8,13 +8,18 @@
 /* C headers */
 #include <stdlib.h>               /// `*alloc()`.
 
-/* Related headers */
-//#include "move_component.h"       /// Moving textures.
-
 /* Helpers */
 #include "../../debug.h"                   /// Error printing.
 #include "../../resources.h"               /// Null texture.
 #include "../../graphics/graphics_layer.h" /// `graphics_layer`.
+
+
+/* Predef */
+
+struct Multi_Texture load_multi_texture(const char* texture_path, const size_t max_count, int* exit_code);
+void                 free_multi_texture(struct Multi_Texture* target);
+void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_rects, int* exit_code);
+void render_multi_texture(const struct Multi_Texture* target);
 
 
 /* Body */
@@ -73,40 +78,6 @@ struct Multi_Texture load_multi_texture(const char* texture_path, const size_t m
     *exit_code = EXIT_SUCCESS;
     return result;
 }
-
-
-/*
-void couple_move_component_to_multi_texture(struct Multi_Texture* to, struct Move_Component* move_component, const struct Vec2 max_offset, bool randomize_positions, int* exit_code)
-{
-    /// Arg checking
-    if (exit_code == NULL)
-        print_warning("`couple_move_component_to_multi_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    if (to == NULL)
-    {
-        print_error("`couple_move_component_to_multi_texture()`: `to` arg is `NULL`", NON_SDL_ERROR);
-        *exit_code = EXIT_FAILURE;
-        return;
-    }
-    if (move_component == NULL)
-    {
-        print_error("`couple_move_component_to_multi_texture()`: `move_component` arg is `NULL`", NON_SDL_ERROR);
-        *exit_code = EXIT_FAILURE;
-        return;
-    }
-
-    /// Coupling
-    couple_move_component(move_component, to->rects, to->cur_count, max_offset, randomize_positions, exit_code);
-    if (*exit_code == EXIT_FAILURE)
-    {
-        print_error("`couple_move_component_to_multi_texture()`: coupling failed", NON_SDL_ERROR);
-        return;
-    }
-    to->move_component = move_component;
-
-    *exit_code = EXIT_SUCCESS;
-    return;
-}
-*/
 
 
 void free_multi_texture(struct Multi_Texture* target)
@@ -170,9 +141,6 @@ void render_multi_texture(const struct Multi_Texture* target)
         print_error("`render_multi_texture()`: `target` or its members are invalid", NON_SDL_ERROR);
         return;
     }
-
-    /*if (target->move_component != NULL)
-        move_all_rects(target->move_component);*/
     
     for (size_t i = 0; i < target->cur_count; i++)
     {

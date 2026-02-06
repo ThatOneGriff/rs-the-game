@@ -3,7 +3,7 @@
 #define TEXTURE_H
 
 /* SDL3 */
-#include <SDL3/SDL.h>             /// `SDL_Texture`, `SDL_FRect`.
+#include <SDL3/SDL.h> /// `SDL_Texture`, `SDL_FRect`.
 
 
 /* Struct */

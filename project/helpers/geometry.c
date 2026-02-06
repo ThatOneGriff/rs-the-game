@@ -9,6 +9,13 @@
 #include "../game_components/movement/path.h" /// Path manipulation.
 
 
+/* Predef */
+
+struct Path flipped_path_x(const struct Path path);
+bool  have_x_overlap  (const SDL_FRect rect1, const SDL_FRect rect2);
+float distance_between(const SDL_FRect rect1, const SDL_FRect rect2);
+
+
 /* Body */
 
 struct Path flipped_path_x(const struct Path path)

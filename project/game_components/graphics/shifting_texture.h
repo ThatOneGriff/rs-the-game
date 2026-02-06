@@ -36,4 +36,5 @@ void                    free_shifting_texture(struct Shifting_Texture* target);
 void add_to_shifting_texture(struct Shifting_Texture* to, const char* new_texture_path, int* exit_code);
 void render_shifting_texture(struct Shifting_Texture* target);
 
+
 #endif /// SHIFTING_TEXTURE_H
