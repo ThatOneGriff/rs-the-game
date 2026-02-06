@@ -13,6 +13,16 @@ struct Car_Manager players_car_manager = {0};
 struct Car_Manager traffic_car_manager = {0};
 
 
+/* Predef */
+
+void init_car_manager(struct Car_Manager* target, const bool is_traffic, int* exit_code);
+void free_car_manager(struct Car_Manager* target);
+struct Car copy_random_car(struct Car_Manager* target);
+struct Car* get_curr_car  (struct Car_Manager* target);
+struct Car* get_next_car  (struct Car_Manager* target);
+struct Car* get_prev_car  (struct Car_Manager* target);
+
+
 /* Body */
 
 void init_car_manager(struct Car_Manager* target, const bool is_traffic, int* exit_code)
@@ -42,7 +52,7 @@ void init_car_manager(struct Car_Manager* target, const bool is_traffic, int* ex
     /// First line indicates track amount.
     char line[100];
     fgets(line, 100, car_data_file);
-    const size_t line_count = atoi(line);
+    const size_t line_count = (size_t)atoi(line);
     if (line_count == 0)
     {
         print_error("`init_car_manager()`: car data line count = 0", NON_SDL_ERROR);

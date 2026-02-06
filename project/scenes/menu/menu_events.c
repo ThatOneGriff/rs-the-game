@@ -24,6 +24,12 @@
 /// I would've shortened a lot of things, if not for the time constraints.
 
 
+/* Predef */
+
+void process_menu_events  (struct Menu_Scene* scene);
+void process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key);
+
+
 /* Body */
 
 void process_menu_events(struct Menu_Scene* scene)

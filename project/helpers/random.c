@@ -29,7 +29,7 @@ unsigned int randint(const unsigned int min, const unsigned int max)
         srand((unsigned int)_seed); /// srand() only needs to be called once.
     }
 
-    return rand() % (max-min+1) + min;
+    return (unsigned)rand() % (max-min+1) + min;
 }
 
 

@@ -19,6 +19,13 @@
 #include "pause_screen.h"   /// Pause screen manipulation.
 
 
+/* Predef */
+
+void process_gameplay_events   (struct Gameplay_Scene* scene);
+void process_gameplay_keyboard (struct Gameplay_Scene* scene, const SDL_Keycode event_key);
+void process_gameplay_car_input(struct Car* car);
+
+
 void process_gameplay_events(struct Gameplay_Scene* scene)
 {
     if (! scene->pause_screen.is_open && scene->is_driving)
@@ -157,13 +164,13 @@ void process_gameplay_car_input(struct Car* car)
         car->latest_turn_start = 0;
     }
 
-    car->base_texture = 2 + car->direction_x;
+    car->base_texture = (size_t)(2 + car->direction_x);
     /// NOTE: those nested `if-else`s are for overflow sanitizer compliance.
     /// - If turn recently started.
     if ((car->latest_turn_start != 0) && (logic_layer.curr_tick - car->latest_turn_start >= car->turn_smoothing_duration))
     {
-        if (car->prev_turn_direction_x >= 0)
-            car->base_texture += car->prev_turn_direction_x;
+        if (car->prev_turn_direction_x > 0)
+            car->base_texture += (size_t)car->prev_turn_direction_x;
         else
         {
             if (car->base_texture <  (size_t)(-car->prev_turn_direction_x))
@@ -176,8 +183,8 @@ void process_gameplay_car_input(struct Car* car)
     /// - If turn recently ended.
     else if ((car->latest_turn_end   != 0) && (logic_layer.curr_tick - car->latest_turn_end   <= car->turn_smoothing_duration))
     {
-        if (car->prev_turn_direction_x >= 0)
-            car->base_texture += car->prev_turn_direction_x;
+        if (car->prev_turn_direction_x > 0)
+            car->base_texture += (size_t)car->prev_turn_direction_x;
         else
         {
             if (car->base_texture <  (size_t)(-car->prev_turn_direction_x))
@@ -199,9 +206,9 @@ void process_gameplay_car_input(struct Car* car)
         coord_based_diff = -1;
     
     /// NOTE: again, integer overflow compliance.
-    if (coord_based_diff >= 0)
+    if (coord_based_diff > 0)
     {
-        car->base_texture += coord_based_diff;
+        car->base_texture += (size_t)coord_based_diff;
         if (car->base_texture >= 5)
             car->base_texture = 4;
     }
@@ -215,10 +222,5 @@ void process_gameplay_car_input(struct Car* car)
     
     /// Moving the car across the screen.
     car->coords.x += (float)(car->direction_x) * (float)car->handling * (float)(FPS_manager.delta_ns) / SEC_IN_NS;
-    
-    /*if (SDL_GetTicks() - car->latest_jump_tick >= (90.0 / 60.0 * 2)*1000 + 250) /// NOTE: should be synchronized with a track's BPM.
-        car->coords.y = 45;
-    else
-        car->coords.y = 50;*/
     return;
 }

@@ -12,13 +12,7 @@
 #define         CAR_DATA_LINES 16
 #define TRAFFIC_CAR_DATA_LINES  4
 
-const static SDL_FRect CAR_COLLISION_BOXES[5] = {
-    (SDL_FRect){9, 0, 65-9, 65}, /// left
-    (SDL_FRect){5, 0, 65-5, 65}, /// half-left
-    (SDL_FRect){2, 0, 65-2, 65}, /// main
-    (SDL_FRect){0, 0, 65-5, 65}, /// half-right
-    (SDL_FRect){0, 0, 65-9, 65}, /// right
-};
+const extern SDL_FRect CAR_COLLISION_BOXES[5];
 
 
 /* Struct */
@@ -53,5 +47,6 @@ struct Car load_car        (const char path[], int* exit_code);
 struct Car load_traffic_car(const char path[], int* exit_code);
 void       free_car        (struct Car* target);
 void     render_car        (struct Car* target);
+
 
 #endif /// CAR_H

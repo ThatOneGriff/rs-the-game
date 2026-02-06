@@ -17,4 +17,5 @@ void save_data(void);
 [[ noreturn ]]
 void program_exit(const int exit_code);
 
+
 #endif /// INIT_QUIT_H

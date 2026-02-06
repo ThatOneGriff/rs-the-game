@@ -9,8 +9,8 @@
 #include "../car.h" /// Cars.
 #include "../../game_components/movement/path.h" /// Traffic's path.
 
-#define TRAFFIC_ON_ROW_CHANCE     (float)0.50 /// (percent)
-#define TRAFFIC_ON_2_LANES_CHANCE (float)0.70 /// (percent)
+#define TRAFFIC_ON_ROW_CHANCE     0.50f /// (percent)
+#define TRAFFIC_ON_2_LANES_CHANCE 0.70f /// (percent)
 
 #define LANE_SPAWN_COOLDOWN 5
 
@@ -43,5 +43,6 @@ void free_traffic_manager(void);
 
 void   move_traffic       (const bool mode);
 void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car* player_car, bool* is_driving, int* point_count);
+
 
 #endif /// TRAFFIC_MANAGER_H

@@ -58,7 +58,7 @@ struct Music_Loader init_music_loader(const char* music_data_path, int* exit_cod
     /// First line indicates track amount.
     char line[100];
     fgets(line, 100, music_data_file);
-    const size_t line_count = atoi(line);
+    const size_t line_count = (size_t)atoi(line);
     if (line_count == 0)
     {
         print_error("`_init_music_loader()`: music data line count = 0", NON_SDL_ERROR);

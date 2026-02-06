@@ -26,6 +26,14 @@
 #include "../../graphics/graphics_layer.h"                   /// `graphics_layer.renderer`.
 
 
+/* Predef */
+
+struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr, int* exit_code);
+void                  free_gameplay_scene(struct Gameplay_Scene* target);
+void                  render_gameplay_scene(struct Gameplay_Scene* target);
+void update_points(struct Gameplay_Scene* target);
+
+
 /* Body */
 
 struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr, int* exit_code)

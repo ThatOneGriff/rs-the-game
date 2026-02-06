@@ -16,4 +16,5 @@ void print_success(const char* text);
 void print_error  (const char* text, const bool is_SDL_error);
 void print_warning(const char* text, const bool is_SDL_error);
 
+
 #endif /// DEBUG_H

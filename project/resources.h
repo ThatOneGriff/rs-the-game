@@ -21,4 +21,5 @@ extern int PERSONAL_BEST;
 void load_global_resources(int* exit_code);
 void free_global_resources(void);
 
+
 #endif /// RESOURCES_H

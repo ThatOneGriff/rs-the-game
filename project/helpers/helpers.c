@@ -10,7 +10,7 @@
 
 /* Text coloring */
 
-void textcolor(const short int color_code)
+void textcolor(const unsigned short int color_code)
 {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color_code);
 }

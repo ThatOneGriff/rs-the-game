@@ -23,4 +23,5 @@ void             add_to_deinit_stack(struct Deinit_Stack* target, void* new_elem
 void              flush_deinit_stack(struct Deinit_Stack* target);
 void           pop_from_deinit_stack(struct Deinit_Stack* target);
 
+
 #endif /// DEINIT_STACK_H

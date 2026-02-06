@@ -29,6 +29,16 @@
 #include "game_components/text/text.h" /// components.
 
 
+/* Predef */
+
+void init(int* exit_code);
+void quit(void);
+void read_data(void);
+void save_data(void);
+[[ noreturn ]]
+void program_exit(const int exit_code);
+
+
 /* Body */
 
 void init(int* exit_code)

@@ -20,14 +20,14 @@
 
 
 /* Predef */
-struct Texture create_text(const char* text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const int size, const int border_thickness, int* exit_code);
-static void          _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius, const int x, const int y);
-static SDL_Surface*  _create_bordered_text_surface(const char* text, const int text_size, const int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color);
+struct Texture create_text(const char* text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int* exit_code);
+static void         _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const unsigned int radius, const int x, const int y);
+static SDL_Surface* _create_bordered_text_surface(const char* text, const unsigned int text_size, const unsigned int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color);
 
 
 /* Body */
 
-struct Texture create_text(const char* text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const int size, const int border_thickness, int* exit_code)
+struct Texture create_text(const char* text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int* exit_code)
 {
     struct Texture result;
     result.texture = NULL;
@@ -86,7 +86,7 @@ struct Texture create_text(const char* text, const SDL_Color inner_color, const 
 
 
 /// Helper for midpoint cicle algorithm. Explanation in `_create_bordered_text_surface()`.
-static void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int radius, const int x, const int y)
+static void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const unsigned int radius, const int x, const int y)
 {
     if (surf_out == NULL || surf_target == NULL)
     {
@@ -98,15 +98,15 @@ static void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const int 
 
     for (int x_mult = -1; x_mult <= 1; x_mult += 2)
         for (int y_mult = -1; y_mult <= 1; y_mult += 2)
-            SDL_BlitSurface(surf_out, NULL, surf_target, &(SDL_Rect){radius + x*x_mult, radius + y*y_mult, surf_out->w, surf_out->h});
+            SDL_BlitSurface(surf_out, NULL, surf_target, &(SDL_Rect){(int)radius + x*x_mult, (int)radius + y*y_mult, surf_out->w, surf_out->h});
     
     for (int y_mult = -1; y_mult <= 1; y_mult += 2)
         for (int x_mult = -1; x_mult <= 1; x_mult += 2)
-            SDL_BlitSurface(surf_out, NULL, surf_target, &(SDL_Rect){radius + y*y_mult, radius + x*x_mult, surf_out->w, surf_out->h});
+            SDL_BlitSurface(surf_out, NULL, surf_target, &(SDL_Rect){(int)radius + y*y_mult, (int)radius + x*x_mult, surf_out->w, surf_out->h});
 }
 
 
-static SDL_Surface* _create_bordered_text_surface(const char* text, const int text_size, const int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color)
+static SDL_Surface* _create_bordered_text_surface(const char* text, const unsigned int text_size, const unsigned int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color)
 {
     /// Deinit stack
     int exit_code = EXIT_SUCCESS;
@@ -170,8 +170,8 @@ static SDL_Surface* _create_bordered_text_surface(const char* text, const int te
     /// Works on all circle sizes.
 
     int x = 0;
-    int y = border_thickness;
-    int d = 3-2*border_thickness; /// I can only assume it's difference / step.
+    int y = (int)border_thickness;
+    int d = 3 - 2 * (int)border_thickness; /// I can only assume it's difference / step.
 
     _blit_8x(surf_out, result, border_thickness, x, y); /// We need 1 run on initial {x, y}.
     while (y >= x)
@@ -189,7 +189,7 @@ static SDL_Surface* _create_bordered_text_surface(const char* text, const int te
     }
 
     /// Slapping the inner surface in center of the outer.
-    SDL_BlitSurface(surf_in, NULL, result, &(SDL_Rect){border_thickness, border_thickness, surf_in->w, surf_in->h});
+    SDL_BlitSurface(surf_in, NULL, result, &(SDL_Rect){(int)border_thickness, (int)border_thickness, surf_in->w, surf_in->h});
 
     flush_deinit_stack(&deinit_stack); /// `flush` because nothing, except the `result`, will be used.
     return result;

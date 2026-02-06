@@ -18,6 +18,15 @@
 struct Traffic_Manager traffic_manager = {0};
 
 
+/* Predef */
+
+void init_traffic_manager(const size_t car_count, int* exit_code);
+void free_traffic_manager(void);
+
+void   move_traffic       (const bool mode);
+void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car* player_car, bool* is_driving, int* point_count);
+
+
 /* Body */
 
 /// Assumes `traffic_car_manager` has been initialized.

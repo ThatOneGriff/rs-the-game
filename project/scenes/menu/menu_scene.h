@@ -53,4 +53,5 @@ void              free_menu_scene   (struct Menu_Scene* target);
 void               set_menu_car_info(struct Menu_Scene* scene, struct Car* car, int* exit_code);
 void            render_menu_scene   (struct Menu_Scene* target);
 
+
 #endif /// MENU_SCENE_H

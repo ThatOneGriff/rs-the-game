@@ -13,7 +13,7 @@ RESET='\033[0m'
 # Clean-up
 set -euo pipefail  # Exit upon any error, undefined variable usage or pipeline failure
 clean_up() {
-    rm -f ./main.o ./audio.o
+    rm -f ./main.o
     echo "Temp files cleaned up."
 }
 trap clean_up EXIT # Will be called any way the compilation goes.
@@ -61,11 +61,11 @@ clang -O3 -DNDEBUG -ffast-math -flto \
 -march=native -mtune=native \
 -Wall -Wextra -Weverything -pedantic-errors -Werror -std=c23 \
 -Wconversion -Wdouble-promotion -Wformat=2 -Wformat-truncation -Wshadow -Wundef \
--Wno-bad-function-cast -Wno-cast-function-type-strict -fno-common -Wno-c++-keyword \
+-Wno-bad-function-cast -Wno-cast-function-type-strict -Wno-c++-keyword \
 -Wno-declaration-after-statement -Wno-documentation-unknown-command -Wno-float-equal \
 -Wno-implicit-fallthrough -Wno-implicit-void-ptr-cast -Wno-newline-eof -Wno-padded \
--Wno-pre-c11-compat -Wno-pre-c23-compat -Wno-reserved-identifier -Wno-sign-conversion \
--Wno-switch-default -Wno-tentative-definition-incomplete-type -Wno-unsafe-buffer-usage \
+-Wno-pre-c11-compat -Wno-pre-c23-compat -Wno-reserved-identifier \
+-Wno-switch-default -Wno-unsafe-buffer-usage \
 $C_FILE_PATHS project/main.c -o $EXE_PATH \
 -I "./SDL3/SDL/x86_64-w64-mingw32/include" -I "./SDL3/SDL_Image/x86_64-w64-mingw32/include" -I "./SDL3/SDL_ttf/x86_64-w64-mingw32/include" -I "./project/_miniaudio/miniaudio.h" \
 -L "./SDL3/SDL/x86_64-w64-mingw32/lib" -L "./SDL3/SDL_image/x86_64-w64-mingw32/lib" -L "./SDL3/SDL_ttf/x86_64-w64-mingw32/lib" -L "./" \

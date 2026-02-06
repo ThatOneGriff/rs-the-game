@@ -18,6 +18,23 @@
 #include "../logic/logic_layer.h" /// `time_tick_ms`
 
 
+const SDL_FRect CAR_COLLISION_BOXES[5] = {
+    (SDL_FRect){9, 0, 65-9, 65}, /// left
+    (SDL_FRect){5, 0, 65-5, 65}, /// half-left
+    (SDL_FRect){2, 0, 65-2, 65}, /// main
+    (SDL_FRect){0, 0, 65-5, 65}, /// half-right
+    (SDL_FRect){0, 0, 65-9, 65}, /// right
+};
+
+
+/* Predef */
+
+struct Car load_car        (const char path[], int* exit_code);
+struct Car load_traffic_car(const char path[], int* exit_code);
+void       free_car        (struct Car* target);
+void     render_car        (struct Car* target);
+
+
 /* Body */
 
 struct Car load_car(const char path[], int* exit_code)

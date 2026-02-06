@@ -1,7 +1,5 @@
 #!/bin/bash
-# Whatever the reason, GDB conflicts with ASan (SIGSEGV). So here, `-g3` is replaced with `-g1`.
-# Purpose of this build script: testing with ASan.
-# Run: `sh run`.
+# Purpose of this build script: fastest possible compilation, just to see the errors.
 
 ### Preparations ###
 
@@ -50,22 +48,22 @@ C_FILE_PATHS="./project/audio/audio.c \
               ./project/init_quit.c    \
               ./project/resources.c"
 EXE_PATH="./rs-the-game.exe"
+
 echo ""
 echo "- Compiling main program..."
 
-# Main program compilation (maximum possible warning checks)
-clang -g1 -ferror-limit=100 -Wall -Wextra -Weverything -pedantic-errors -Werror -std=c23 \
+# Main program compilation (maximum possible optimizations)
+clang -Wall -Wextra -Weverything -pedantic-errors -Werror -std=c23 \
 -Wconversion -Wdouble-promotion -Wformat=2 -Wformat-truncation -Wshadow -Wundef \
 -Wno-bad-function-cast -Wno-cast-function-type-strict -Wno-c++-keyword \
 -Wno-declaration-after-statement -Wno-documentation-unknown-command -Wno-float-equal \
 -Wno-implicit-fallthrough -Wno-implicit-void-ptr-cast -Wno-newline-eof -Wno-padded \
 -Wno-pre-c11-compat -Wno-pre-c23-compat -Wno-reserved-identifier \
 -Wno-switch-default -Wno-unsafe-buffer-usage \
--fsanitize=address -fsanitize=float-divide-by-zero -fsanitize=integer -fsanitize=nullability -fsanitize=shadow-call-stack -fsanitize=undefined -fsanitize=unsigned-integer-overflow -fsanitize=unsigned-shift-base \
 $C_FILE_PATHS project/main.c -o $EXE_PATH \
 -I "./SDL3/SDL/x86_64-w64-mingw32/include" -I "./SDL3/SDL_Image/x86_64-w64-mingw32/include" -I "./SDL3/SDL_ttf/x86_64-w64-mingw32/include" -I "./project/_miniaudio/miniaudio.h" \
 -L "./SDL3/SDL/x86_64-w64-mingw32/lib" -L "./SDL3/SDL_image/x86_64-w64-mingw32/lib" -L "./SDL3/SDL_ttf/x86_64-w64-mingw32/lib" -L "./" \
 -lSDL3 -lSDL3_image -lSDL3_ttf -lminiaudio
 
-echo -e "$GREEN[1/1]$RESET Compiled main program! [ASan] ($EXE_PATH)"
+echo -e "$GREEN[1/1]$RESET Compiled main program! [Plain] ($EXE_PATH)"
 echo ""

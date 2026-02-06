@@ -6,6 +6,15 @@
 #include "debug.h"  /// Error printing.
 
 
+/* Predef */
+
+struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code);
+void               free_deinit_stack(struct Deinit_Stack* target); 
+void             add_to_deinit_stack(struct Deinit_Stack* target, void* new_element, void (*new_free_function)(void*));
+void              flush_deinit_stack(struct Deinit_Stack* target);
+void           pop_from_deinit_stack(struct Deinit_Stack* target);
+
+
 /* Body */
 
 struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code)
@@ -24,24 +33,6 @@ struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code)
         *exit_code = EXIT_FAILURE;
         return result;
     }
-    /*for (size_t i = 0; i < size; i++)
-    {
-        result.elements[i] = malloc(sizeof(void*));
-
-        if (result.elements[i] == NULL)
-        {
-            print_error("`new_deinit_stack()`: couldn't allocate memory for an element", NON_SDL_ERROR);
-            for (size_t j = 0; j < i; j++)
-            {
-                free(result.elements[j]);
-                result.elements[j] = NULL;
-            }
-            free(result.elements);
-            result.elements = NULL;
-            *exit_code = EXIT_FAILURE;
-            return result;
-        }
-    }*/
 
     result.free_functions = calloc(size, sizeof(void (*)(int*)));
     if (result.free_functions == NULL)
@@ -123,12 +114,12 @@ void add_to_deinit_stack(struct Deinit_Stack* target, void* new_element, void (*
 }
 
 
-/// `free`'s at the end, too.
+/// `free`'s the stack at the end, too.
 void flush_deinit_stack(struct Deinit_Stack* target)
 {
     if (target == NULL || target->elements == NULL || target->free_functions == NULL)
     {
-        //print_error("`pop_from_deinit_stack()`: stack, its `elements` or its `functions` are `NULL`", NON_SDL_ERROR);
+        print_error("`flush_deinit_stack()`: stack, its `elements` or its `functions` are `NULL`", NON_SDL_ERROR);
         return;
     }
 
@@ -155,7 +146,7 @@ void pop_from_deinit_stack(struct Deinit_Stack* target)
     if (target->elements[target->cur] != NULL)
     {
         target->free_functions[target->cur](target->elements[target->cur]);
-        ///printf("[freed] "); /// For debug purposes.
+        ///printf("[freed] "); /// For demonstration purposes.
     }
     return;
 }

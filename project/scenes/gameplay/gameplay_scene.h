@@ -52,4 +52,5 @@ void                  free_gameplay_scene(struct Gameplay_Scene* target);
 void                  render_gameplay_scene(struct Gameplay_Scene* target);
 void update_points(struct Gameplay_Scene* target);
 
+
 #endif /// GAMEPLAY_SCENE_H

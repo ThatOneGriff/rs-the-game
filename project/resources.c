@@ -21,8 +21,14 @@
 
 SDL_Surface* ICON_TEXTURE = NULL;
 SDL_Texture* NULL_TEXTURE = NULL;
-char       MAIN_FONT_PATH[64];
+char       MAIN_FONT_PATH[64] = "";
 int PERSONAL_BEST = 0;
+
+
+/* Predef */
+
+void load_global_resources(int* exit_code);
+void free_global_resources(void);
 
 
 /* Body */

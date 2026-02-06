@@ -8,6 +8,13 @@
 #include "helpers/helpers.h" /// Coloured text.
 
 
+/* Predef */
+
+void print_success(const char* text);
+void print_error  (const char* text, const bool is_SDL_error);
+void print_warning(const char* text, const bool is_SDL_error);
+
+
 /* Body */
 
 void print_success(const char* text)
