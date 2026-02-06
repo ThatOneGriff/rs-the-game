@@ -15,6 +15,8 @@
 #include "../../game_components/movement/path.h" /// Traffic path.
 
 
+/* Variables */
+
 struct Traffic_Manager traffic_manager = {0};
 
 

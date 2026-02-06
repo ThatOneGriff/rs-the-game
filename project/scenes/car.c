@@ -18,6 +18,8 @@
 #include "../logic/logic_layer.h" /// `time_tick_ms`.
 
 
+/* Variables */
+
 const SDL_FRect CAR_COLLISION_BOXES[5] = {
     (SDL_FRect){9, 0, 65-9, 65}, /// left
     (SDL_FRect){5, 0, 65-5, 65}, /// half-left

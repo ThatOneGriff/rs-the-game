@@ -18,6 +18,7 @@
 #include "graphics/graphics_layer.h" /// `graphics_layer.renderer` for texture loading.
 #include "helpers/helpers.h"         /// `free_ptr_arr()`.
 
+/* Variables */
 
 SDL_Surface* ICON_TEXTURE = NULL;
 SDL_Texture* NULL_TEXTURE = NULL;

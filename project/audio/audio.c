@@ -17,6 +17,8 @@
 #include "../logic/logic_layer.h"    /// `logic_layer.curr_tick`.
 
 
+/* Variables */
+
 struct Audio_Manager audio_manager        = {0};
 struct Music_Loader music_loader_gameplay = {0};
 struct Music_Loader music_loader_menu     = {0};

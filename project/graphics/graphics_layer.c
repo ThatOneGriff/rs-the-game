@@ -12,6 +12,9 @@
 #include "../debug.h"        /// Error printing.
 #include "../deinit_stack.h" /// Deinitialization stack.
 
+
+/* Variables */
+
 struct Graphics_Layer graphics_layer = {0};
 
 

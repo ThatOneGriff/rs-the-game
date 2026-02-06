@@ -9,6 +9,8 @@
 #include "../helpers/random.h" /// Random.
 
 
+/* Variables */
+
 struct Car_Manager players_car_manager = {0};
 struct Car_Manager traffic_car_manager = {0};
 

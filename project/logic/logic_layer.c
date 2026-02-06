@@ -9,6 +9,8 @@
 #include "../debug.h"       ///  Error printing.
 
 
+/* Variables */
+
 struct Logic_Layer logic_layer = {0};
 
 
