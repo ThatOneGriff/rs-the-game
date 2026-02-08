@@ -54,13 +54,14 @@ void process_menu_events(struct Menu_Scene* scene)
 
 static void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key)
 {
+    /// TODO: param checking.
     int exit_code = EXIT_SUCCESS;
 
     /// Things that can happen both with and without options screen being open:
     switch(event_key)
     {
         case SDLK_ESCAPE:
-            if (! scene->options_screen.is_open)
+            if      (! scene->options_screen.is_open)
                 show_options_screen(&scene->options_screen);
             else if (scene->options_screen.is_open)
                 hide_options_screen(&scene->options_screen);
@@ -174,9 +175,10 @@ static void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode e
 
 static void _process_options_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key)
 {
+    /// TODO: param checking.
     int exit_code = EXIT_SUCCESS;
 
-    /// Options button handling:
+    /// Options screen button handling:
     switch(event_key)
     {
         case SDLK_RETURN:

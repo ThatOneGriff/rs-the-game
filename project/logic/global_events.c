@@ -36,6 +36,7 @@ void process_global_events(const SDL_Event event)
         logic_layer.game_is_running = false;
         break;
     }
+    return;
 }
 
 
@@ -52,4 +53,5 @@ void process_global_keyboard(const SDL_Keycode event_key)
             print_error("Hot resource reload:\n- Scene reloading will result in a crash;\n- You may try to fix invalid paths and reload again", NON_SDL_ERROR);
         break;
     }
+    return;
 }

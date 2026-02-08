@@ -21,22 +21,24 @@
 
 /* Predef */
 
-void process_gameplay_events   (struct Gameplay_Scene* scene);
-void process_gameplay_keyboard (struct Gameplay_Scene* scene, const SDL_Keycode event_key);
-void process_gameplay_car_input(struct Car* car);
+void         process_gameplay_events   (struct Gameplay_Scene* scene);
+static void _process_gameplay_keyboard (struct Gameplay_Scene* scene, const SDL_Keycode event_key);
+static void _process_pause_keyboard    (struct Gameplay_Scene* scene, const SDL_Keycode event_key);
+static void _process_gameplay_car_input(struct Car* car);
 
 
 void process_gameplay_events(struct Gameplay_Scene* scene)
 {
     if (! scene->pause_screen.is_open && scene->is_driving)
-        process_gameplay_car_input(scene->car_ptr);
+        _process_gameplay_car_input(scene->car_ptr);
+    
     while (SDL_PollEvent(&logic_layer.event))
     {
         switch (logic_layer.event.type)
         {
         /// Key press.
         case SDL_EVENT_KEY_DOWN:
-            process_gameplay_keyboard(scene, logic_layer.event.key.key);
+            _process_gameplay_keyboard(scene, logic_layer.event.key.key);
             break;
         /// Other event.
         default:
@@ -46,28 +48,65 @@ void process_gameplay_events(struct Gameplay_Scene* scene)
 }
 
 
-void process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode event_key)
+void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode event_key)
 {
+    /// TODO: param checking.
+    /// Things that can happen both with and without options screen being open:
     switch(event_key)
     {
         case SDLK_ESCAPE:
-            if (scene->pause_screen.is_open)
-            {
-                hide_pause_screen(&scene->pause_screen);
-                if (audio_manager.using_audio)
-                    ma_sound_start(&audio_manager.music);
-            }
-            else
+            if      (! scene->pause_screen.is_open)
             {
                 show_pause_screen(&scene->pause_screen);
                 if (audio_manager.using_audio)
                     ma_sound_stop(&audio_manager.music);
             }
+            else if (scene->pause_screen.is_open)
+            {
+                hide_pause_screen(&scene->pause_screen);
+                if (audio_manager.using_audio)
+                    ma_sound_start(&audio_manager.music);
+            }
             break;
         
+        case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
+            play_random_music(&music_loader_gameplay);
+            break;
+    }
+
+    /// Conditional redirection to 'Options' event handler:
+    if (scene->pause_screen.is_open)
+    {
+        _process_pause_keyboard(scene, event_key);
+        return;
+    }
+
+    /// Gameplay button handling:
+    switch(event_key)
+    {
+        case SDLK_UP:
+            if (! scene->pause_screen.is_open && scene->start_tick == 0 && scene->crash_tick == 0)
+            {
+                scene->is_driving = true;
+                scene->start_tick = logic_layer.curr_tick;
+            }
+            break;
+        
+        default:
+            process_global_keyboard(event_key);
+    }
+    return;
+}
+
+
+static void _process_pause_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode event_key)
+{
+    /// TODO: param checking.
+
+    /// Pause screen button handling:
+    switch(event_key)
+    {
         case SDLK_RETURN:
-            if (! scene->pause_screen.is_open)
-                break;
             if (scene->pause_screen.close_button.is_focused || scene->pause_screen.continue_button.is_focused)
             {
                 hide_pause_screen(&scene->pause_screen);
@@ -79,14 +118,8 @@ void process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode e
                 logic_layer.game_is_running = false;
             break;
         
-        /// TEMP while I'm coming up with a better button management structure.
         case SDLK_UP:
-            if (! scene->pause_screen.is_open && scene->start_tick == 0 && scene->crash_tick == 0)
-            {
-                scene->is_driving = true;
-                scene->start_tick = logic_layer.curr_tick;
-            }
-            else if (scene->pause_screen.continue_button.is_focused)
+            if (scene->pause_screen.continue_button.is_focused)
             {
                 scene->pause_screen.close_button.is_focused    = true;
                 scene->pause_screen.continue_button.is_focused = false;
@@ -104,9 +137,7 @@ void process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode e
             break;
         
         case SDLK_DOWN:
-            if (! scene->pause_screen.is_open)
-                break;
-            else if (scene->pause_screen.close_button.is_focused)
+            if (scene->pause_screen.close_button.is_focused)
             {
                 scene->pause_screen.close_button.is_focused    = false;
                 scene->pause_screen.continue_button.is_focused = true;
@@ -123,17 +154,14 @@ void process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode e
             }
             break;
         
-        case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
-            play_random_music(&music_loader_gameplay);
-            break;
-        
         default:
             process_global_keyboard(event_key);
     }
+    return;
 }
 
 
-void process_gameplay_car_input(struct Car* car)
+void _process_gameplay_car_input(struct Car* car)
 {
     if (car == NULL)
     {
