@@ -188,13 +188,14 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         return result;
     }
     add_to_deinit_stack(&deinit_stack, &result.pause_screen, (void (*)(void*))free_pause_screen);
+    /// Below block: DON'T MOVE out of this function!!! Some memory fuckery will happen.
     /// - Pause screen: setting button neighbours.
-    /// DON'T MOVE out of this function!!! Some memory fuckery will happen.
-    add_neighbors_to_button(&result.pause_screen.continue_button, NULL, NULL, NULL, NULL);
+    ///                    | Target                                     | Up                                      | Down                                       |Left |Right
+    add_neighbors_to_button(&result.pause_screen.          close_button, NULL,                                     &result.pause_screen.       continue_button, NULL, NULL);
+    add_neighbors_to_button(&result.pause_screen.       continue_button, &result.pause_screen.       close_button, &result.pause_screen.   quit_to_menu_button, NULL, NULL);
+    add_neighbors_to_button(&result.pause_screen.   quit_to_menu_button, &result.pause_screen.    continue_button, &result.pause_screen.quit_to_desktop_button, NULL, NULL);
+    add_neighbors_to_button(&result.pause_screen.quit_to_desktop_button, &result.pause_screen.quit_to_menu_button, NULL,                                        NULL, NULL);
     result.pause_screen.curr_button = &result.pause_screen.continue_button;
-    printf("init | curr: %p | up: %p | down: %p\n", (void*)result.pause_screen.curr_button,
-                                                    (void*)result.pause_screen.curr_button->up,
-                                                    (void*)result.pause_screen.curr_button->down); /// TEMP
 
     init_traffic_manager(5, exit_code);
     if (*exit_code == EXIT_FAILURE)
