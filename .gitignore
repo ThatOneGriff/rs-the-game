@@ -6,6 +6,7 @@
 **/SDL3
 **/player.savedata
 **/DISTRIBUTION
+**/miniaudio.dll
 
 # VS Code & extensions
 #**/.VsCodeCounter/**
