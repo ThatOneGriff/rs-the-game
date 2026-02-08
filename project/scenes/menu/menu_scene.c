@@ -91,7 +91,6 @@ struct Menu_Scene load_menu_scene(struct Car* car_ptr, int* exit_code)
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
         return result;
     }
-    result.curr_button = &result.play_button;
     add_to_deinit_stack(&deinit_stack, &result.prev_button, (void (*)(void*))free_button);
 
     /// Next button
@@ -155,6 +154,7 @@ struct Menu_Scene load_menu_scene(struct Car* car_ptr, int* exit_code)
     add_neighbors_to_button(&result.play_button,    &result.prev_button,    &result.options_button, NULL,                NULL);
     add_neighbors_to_button(&result.options_button, &result.play_button,    &result.quit_button,    NULL,                NULL);
     add_neighbors_to_button(&result.quit_button,    &result.options_button, NULL,                   NULL,                NULL);
+    result.curr_button = &result.play_button;
 
     set_menu_car_info(&result, car_ptr, exit_code);
 

@@ -18,11 +18,12 @@ struct Pause_Screen
     SDL_Texture* last_gameplay_frame;
 
     struct Texture pause_text;
-    struct Button  close_button;
 
+    struct Button           close_button;
     struct Button        continue_button;
     struct Button    quit_to_menu_button;
     struct Button quit_to_desktop_button;
+    struct Button*           curr_button;
 
     struct Texture version_text;
     time_tick_ms pause_open_tick;

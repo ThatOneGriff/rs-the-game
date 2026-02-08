@@ -115,6 +115,9 @@ struct Pause_Screen init_pause_screen(int* exit_code)
         return result;
     }
 
+    //result.curr_button = &result.continue_button;
+    result.curr_button = NULL;
+
     free_deinit_stack(&deinit_stack);
     *exit_code = EXIT_SUCCESS;
     return result;
@@ -133,8 +136,8 @@ void free_pause_screen(struct Pause_Screen* target)
         SDL_DestroyTexture(target->last_gameplay_frame);
 
     free_texture(&target->pause_text);
-    free_button (&target->close_button);
 
+    free_button (&target->          close_button);
     free_button (&target->       continue_button);
     free_button (&target->   quit_to_menu_button);
     free_button (&target->quit_to_desktop_button);
@@ -168,7 +171,7 @@ void show_pause_screen(struct Pause_Screen* target)
     SDL_SetRenderDrawBlendMode(graphics_layer.renderer, SDL_BLENDMODE_NONE); /// Allows for semi-transparent layer rendering.
     SDL_SetRenderTarget(graphics_layer.renderer, graphics_layer.buffer);
 
-    /// Setting correct button focus.
+    /// Setting correct button focus. /// WARNING
     target->          close_button.is_focused = false;
     target->       continue_button.is_focused = true;
     target->   quit_to_menu_button.is_focused = false;
@@ -187,8 +190,8 @@ void hide_pause_screen(struct Pause_Screen* target)
 
     target->is_open = false;
     logic_layer.real_tick_diff += logic_layer.curr_tick - target->pause_open_tick; /// Making up for the paused time.
-    logic_layer.curr_tick = SDL_GetTicks() - logic_layer.real_tick_diff;
-    target->pause_open_tick = 0;
+    logic_layer.curr_tick       = SDL_GetTicks() - logic_layer.real_tick_diff;
+    target->pause_open_tick     = 0;
     return;
 }
 
@@ -203,11 +206,11 @@ void render_pause_screen(struct Pause_Screen* target)
 
     SDL_RenderTexture(graphics_layer.renderer, target->last_gameplay_frame, NULL, NULL);
     render_texture(&target->pause_text);
-    render_button (&target->close_button);
 
-    render_button        (&target->continue_button);
-    render_button    (&target->quit_to_menu_button);
-    render_button (&target->quit_to_desktop_button);
+    render_button          (&target->close_button);
+    render_button       (&target->continue_button);
+    render_button   (&target->quit_to_menu_button);
+    render_button(&target->quit_to_desktop_button);
 
     render_texture(&target->version_text);
     return;

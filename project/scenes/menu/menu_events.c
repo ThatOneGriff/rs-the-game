@@ -27,8 +27,8 @@
 /* Predef */
 
 void         process_menu_events     (struct Menu_Scene* scene);
-static void _process_menu_keyboard   (struct Menu_Scene* scene, const SDL_Keycode event_key);
-static void _process_options_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key);
+static void _process_menu_keyboard   (struct Menu_Scene*     scene,          const SDL_Keycode event_key);
+static void _process_options_keyboard(struct Options_Screen* options_screen, const SDL_Keycode event_key);
 
 
 /* Body */
@@ -75,7 +75,7 @@ static void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode e
     /// Conditional redirection to 'Options' event handler:
     if (scene->options_screen.is_open)
     {
-        _process_options_keyboard(scene, event_key);
+        _process_options_keyboard(&scene->options_screen, event_key);
         return;
     }
 
@@ -173,7 +173,7 @@ static void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode e
 }
 
 
-static void _process_options_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key)
+static void _process_options_keyboard(struct Options_Screen* options_screen, const SDL_Keycode event_key)
 {
     /// TODO: param checking.
     int exit_code = EXIT_SUCCESS;
@@ -182,52 +182,52 @@ static void _process_options_keyboard(struct Menu_Scene* scene, const SDL_Keycod
     switch(event_key)
     {
         case SDLK_RETURN:
-            if (scene->options_screen.audio_switch.is_focused)
+            if (options_screen->audio_switch.is_focused)
             {
                 audio_manager.using_audio = ! audio_manager.using_audio;
-                change_switch_option(&scene->options_screen.audio_switch);
+                change_switch_option(&options_screen->audio_switch);
                 if (! audio_manager.using_audio)
                     ma_sound_stop(&audio_manager.music);
                 else
                     play_random_music(&music_loader_menu);
             }
-            else if (scene->options_screen.close_button.is_focused)
+            else if (options_screen->close_button.is_focused)
             {
-                hide_options_screen(&scene->options_screen);
+                hide_options_screen(options_screen);
             }
-            else if (scene->options_screen.fps_switch.is_focused)
+            else if (options_screen->fps_switch.is_focused)
             {       
                 ++curr_fps_cap_i;
                 if (curr_fps_cap_i == 4)
                     curr_fps_cap_i = 0;
                 set_fps_cap(fps_cap_options[curr_fps_cap_i]);
-                change_switch_option(&scene->options_screen.fps_switch);
+                change_switch_option(&options_screen->fps_switch);
             }
             break;
 
         case SDLK_UP:
-            if      (scene->options_screen.audio_switch.is_focused)
+            if      (options_screen->audio_switch.is_focused)
             {
-                scene->options_screen.audio_switch.is_focused = false;
-                scene->options_screen.close_button.is_focused = true;
+                options_screen->audio_switch.is_focused = false;
+                options_screen->close_button.is_focused = true;
             }
-            else if (scene->options_screen.fps_switch.is_focused)
+            else if (options_screen->fps_switch.is_focused)
             {
-                scene->options_screen.fps_switch.  is_focused = false;
-                scene->options_screen.audio_switch.is_focused = true;
+                options_screen->fps_switch.  is_focused = false;
+                options_screen->audio_switch.is_focused = true;
             }
             break;
         
         case SDLK_DOWN:
-            if (scene->options_screen.close_button.is_focused)
+            if (options_screen->close_button.is_focused)
             {
-                scene->options_screen.close_button.is_focused = false;
-                scene->options_screen.audio_switch.is_focused = true;
+                options_screen->close_button.is_focused = false;
+                options_screen->audio_switch.is_focused = true;
             }
-            else if (scene->options_screen.audio_switch.is_focused)
+            else if (options_screen->audio_switch.is_focused)
             {
-                scene->options_screen.audio_switch.is_focused = false;
-                scene->options_screen.fps_switch.is_focused   = true;
+                options_screen->audio_switch.is_focused = false;
+                options_screen->fps_switch.is_focused   = true;
             }
             break;
 

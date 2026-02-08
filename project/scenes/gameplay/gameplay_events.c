@@ -3,6 +3,7 @@
 
 /* SDL3 */
 #include <SDL3/SDL.h> /// Keyboard controls.
+#include <stdio.h>    /// Text debug (TEMP).
 
 /* Helper headers */
 #include "../../debug.h"                   /// Error message printing.
@@ -22,8 +23,8 @@
 /* Predef */
 
 void         process_gameplay_events   (struct Gameplay_Scene* scene);
-static void _process_gameplay_keyboard (struct Gameplay_Scene* scene, const SDL_Keycode event_key);
-static void _process_pause_keyboard    (struct Gameplay_Scene* scene, const SDL_Keycode event_key);
+static void _process_gameplay_keyboard (struct Gameplay_Scene* scene,      const SDL_Keycode event_key);
+static void _process_pause_keyboard    (struct Pause_Screen* pause_screen, const SDL_Keycode event_key);
 static void _process_gameplay_car_input(struct Car* car);
 
 
@@ -77,7 +78,7 @@ void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode 
     /// Conditional redirection to 'Options' event handler:
     if (scene->pause_screen.is_open)
     {
-        _process_pause_keyboard(scene, event_key);
+        _process_pause_keyboard(&scene->pause_screen, event_key);
         return;
     }
 
@@ -99,7 +100,7 @@ void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode 
 }
 
 
-static void _process_pause_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode event_key)
+static void _process_pause_keyboard(struct Pause_Screen* pause_screen, const SDL_Keycode event_key)
 {
     /// TODO: param checking.
 
@@ -107,50 +108,52 @@ static void _process_pause_keyboard(struct Gameplay_Scene* scene, const SDL_Keyc
     switch(event_key)
     {
         case SDLK_RETURN:
-            if (scene->pause_screen.close_button.is_focused || scene->pause_screen.continue_button.is_focused)
+            if (pause_screen->close_button.is_focused || pause_screen->continue_button.is_focused)
             {
-                hide_pause_screen(&scene->pause_screen);
+                hide_pause_screen(pause_screen);
                 ma_sound_start(&audio_manager.music);
             }
-            else if (scene->pause_screen.quit_to_menu_button.is_focused)
+            else if (pause_screen->quit_to_menu_button.is_focused)
                 logic_layer.remain_in_scene = false;
-            else if (scene->pause_screen.quit_to_desktop_button.is_focused)
+            else if (pause_screen->quit_to_desktop_button.is_focused)
                 logic_layer.game_is_running = false;
             break;
         
         case SDLK_UP:
-            if (scene->pause_screen.continue_button.is_focused)
+            printf("%p\n", (void*)pause_screen->curr_button); /// TEMP
+            if (pause_screen->continue_button.is_focused)
             {
-                scene->pause_screen.close_button.is_focused    = true;
-                scene->pause_screen.continue_button.is_focused = false;
+                pause_screen->close_button.is_focused    = true;
+                pause_screen->continue_button.is_focused = false;
             }
-            else if (scene->pause_screen.quit_to_menu_button.is_focused)
+            else if (pause_screen->quit_to_menu_button.is_focused)
             {
-                scene->pause_screen.continue_button.is_focused     = true;
-                scene->pause_screen.quit_to_menu_button.is_focused = false;
+                pause_screen->continue_button.is_focused     = true;
+                pause_screen->quit_to_menu_button.is_focused = false;
             }
-            else if (scene->pause_screen.quit_to_desktop_button.is_focused)
+            else if (pause_screen->quit_to_desktop_button.is_focused)
             {
-                scene->pause_screen.quit_to_menu_button.is_focused    = true;
-                scene->pause_screen.quit_to_desktop_button.is_focused = false;
+                pause_screen->quit_to_menu_button.is_focused    = true;
+                pause_screen->quit_to_desktop_button.is_focused = false;
             }
             break;
         
         case SDLK_DOWN:
-            if (scene->pause_screen.close_button.is_focused)
+            printf("%p\n", (void*)pause_screen->curr_button); /// TEMP
+            if (pause_screen->close_button.is_focused)
             {
-                scene->pause_screen.close_button.is_focused    = false;
-                scene->pause_screen.continue_button.is_focused = true;
+                pause_screen->close_button.is_focused    = false;
+                pause_screen->continue_button.is_focused = true;
             }
-            else if (scene->pause_screen.continue_button.is_focused)
+            else if (pause_screen->continue_button.is_focused)
             {
-                scene->pause_screen.continue_button.is_focused     = false;
-                scene->pause_screen.quit_to_menu_button.is_focused = true;
+                pause_screen->continue_button.is_focused     = false;
+                pause_screen->quit_to_menu_button.is_focused = true;
             }
-            else if (scene->pause_screen.quit_to_menu_button.is_focused)
+            else if (pause_screen->quit_to_menu_button.is_focused)
             {
-                scene->pause_screen.quit_to_menu_button.is_focused    = false;
-                scene->pause_screen.quit_to_desktop_button.is_focused = true;
+                pause_screen->quit_to_menu_button.is_focused    = false;
+                pause_screen->quit_to_desktop_button.is_focused = true;
             }
             break;
         
