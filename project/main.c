@@ -41,6 +41,7 @@ nlohmann/json version: 3.12.0  (last checked 28.01.26) | https://github.com/nloh
 /// - player's car bouncing in beat to the music.
 
 /* TODOs: */
+/// - const ptrs (`int *const example`);
 /// - fix EVERYWHERE:
 /// object creation
 /// deinit_stack creation
@@ -50,6 +51,7 @@ nlohmann/json version: 3.12.0  (last checked 28.01.26) | https://github.com/nloh
 /// - pushing an array of points/textures into array-like members of `game_components`, instead of individual `add_*()` calls.
 
 /* IDEAs: */
+/// - screens (options & menu) to have their own keyboard handlers
 /// - switch between metric and imperial system
 /// - mouse control
 /// ? `null_move_component` and similar things for each `game_components`', for code clarity;

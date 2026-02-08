@@ -18,9 +18,10 @@
 
 /* Graphics and components */
 #include "../car.h"                          /// Car data.
+#include "../car_manager.h"                  /// Minor car manager data pulling for 'Prev'/'Next' button rendering.
 #include "options_screen.h"                  /// Options screen.
-#include "../../game_components/ui/button.h"    /// Button.
-#include "../../game_components/graphics/texture.h"   /// Texture.
+#include "../../game_components/ui/button.h" /// Button.
+#include "../../game_components/graphics/texture.h" /// Texture.
 #include "../../game_components/text/text.h" /// Text creation.
 #include "../../graphics/graphics_layer.h"   /// `graphics_layer`.
 
@@ -90,6 +91,7 @@ struct Menu_Scene load_menu_scene(struct Car* car_ptr, int* exit_code)
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
         return result;
     }
+    result.curr_button = &result.play_button;
     add_to_deinit_stack(&deinit_stack, &result.prev_button, (void (*)(void*))free_button);
 
     /// Next button
@@ -146,6 +148,13 @@ struct Menu_Scene load_menu_scene(struct Car* car_ptr, int* exit_code)
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
         return result;
     }
+
+    /// Button neighbors   | TARGET                | UP                    | DOWN                  | LEFT               | RIGHT
+    add_neighbors_to_button(&result.prev_button,    NULL,                   &result.play_button,    NULL,                &result.next_button);
+    add_neighbors_to_button(&result.next_button,    NULL,                   &result.play_button,    &result.prev_button, NULL);
+    add_neighbors_to_button(&result.play_button,    &result.prev_button,    &result.options_button, NULL,                NULL);
+    add_neighbors_to_button(&result.options_button, &result.play_button,    &result.quit_button,    NULL,                NULL);
+    add_neighbors_to_button(&result.quit_button,    &result.options_button, NULL,                   NULL,                NULL);
 
     set_menu_car_info(&result, car_ptr, exit_code);
 
@@ -248,8 +257,10 @@ void render_menu_scene(struct Menu_Scene* target)
 
     SDL_RenderTexture(graphics_layer.renderer, target->bg, NULL, NULL);
     render_texture(&target->car_name_text);
-    render_button(&target->prev_button);
-    render_button(&target->next_button);
+    if (players_car_manager.cur_car != 0)
+        render_button(&target->prev_button);
+    if (players_car_manager.cur_car != players_car_manager.car_count - 1)
+        render_button(&target->next_button);
 
     render_button(&target->play_button);
     render_button(&target->options_button);

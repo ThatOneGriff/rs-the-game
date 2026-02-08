@@ -20,12 +20,29 @@
 
 /* Predef */
 
-struct Button create_button(const char* text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int* exit_code);
-void          render_button(const struct Button* target);
-void            free_button(struct Button* target);
+void add_neighbors_to_button(struct Button* target, struct Button* up, struct Button* down, struct Button* left, struct Button* right);
+struct Button  create_button(const char* text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int* exit_code);
+void           render_button(const struct Button* target);
+void             free_button(struct Button* target);
 
 
 /* Body */
+
+void add_neighbors_to_button(struct Button* target, struct Button* up, struct Button* down, struct Button* left, struct Button* right)
+{
+    if (target == NULL)
+    {
+        print_error("`add_neighbors_to_button()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        return;
+    }
+
+    target->up    = up;
+    target->down  = down;
+    target->left  = left;
+    target->right = right;
+    return;
+}
+
 
 struct Button create_button(const char* text, const SDL_Color inner_color, struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int* exit_code)
 {

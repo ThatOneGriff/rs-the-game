@@ -23,13 +23,14 @@ struct Menu_Scene
 
     SDL_Texture* bg;
     struct Texture car_name_text;
-    struct Button prev_button;
-    struct Button next_button;
 
-    struct Button play_button;
-    struct Button         options_button;
+    struct Button  prev_button;
+    struct Button  next_button;
+    struct Button  play_button;
+    struct Button  options_button;
+    struct Button  quit_button;
+    struct Button* curr_button;
     struct Options_Screen options_screen;
-    struct Button quit_button;
 
     struct Texture photo_quad1;
     struct Texture photo_quad2;

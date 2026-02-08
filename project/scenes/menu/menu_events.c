@@ -5,6 +5,7 @@
 #include <SDL3/SDL.h> /// Keyboard processing.
 
 /* Logic */
+#include <stdio.h>                     /// TEMP for debug.
 #include <stdbool.h>                   /// Bools.
 #include "../../debug.h"               /// Error message printing.
 #include "../../logic/global_events.h" /// Global event processing.
@@ -75,6 +76,7 @@ void process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key
                 {
                     scene->prev_button.is_focused = false;
                     scene->next_button.is_focused = true;
+                    scene->curr_button = &scene->next_button;
                 }
             }
             else if (scene->next_button.is_focused)
@@ -82,8 +84,9 @@ void process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key
                 set_menu_car_info(scene, get_next_car(&players_car_manager), &exit_code);
                 if (players_car_manager.cur_car == players_car_manager.car_count - 1)
                 {
-                    scene->prev_button.is_focused = true;
                     scene->next_button.is_focused = false;
+                    scene->prev_button.is_focused = true;
+                    scene->curr_button = &scene->prev_button;
                 }
             }
             else if (scene->play_button.is_focused)
@@ -120,28 +123,24 @@ void process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key
             break;
         }
 
-        /// TEMP while I'm coming up with a better button management structure.
         case SDLK_UP:
         /// In menu
         if (! scene->options_screen.is_open)
         {
-            if      (scene->play_button.is_focused)
+            if (scene->curr_button->up == NULL)
+                break;
+            scene->curr_button->    is_focused = false;
+            scene->curr_button->up->is_focused = true;
+            scene->curr_button = scene->curr_button->up;
+
+            /// A little bit of hard-coding to not pick 'prev' button
+            /// when player's car is 1st one [ID = 0]:
+            if (scene->curr_button == &scene->prev_button
+              && players_car_manager.cur_car == 0)
             {
-                scene->play_button.is_focused = false;
-                if (players_car_manager.cur_car == 0)
-                    scene->next_button.is_focused = true;
-                else
-                    scene->prev_button.is_focused = true;
-            }
-            else if (scene->options_button.is_focused)
-            {
-                scene->play_button.   is_focused = true;
-                scene->options_button.is_focused = false;
-            }
-            else if (scene->quit_button.is_focused)
-            {
-                scene->options_button.is_focused = true;
-                scene->quit_button.   is_focused = false;
+                scene->prev_button.is_focused = false;
+                scene->next_button.is_focused = true;
+                scene->curr_button = &scene->next_button;
             }
             break;
         }
@@ -165,23 +164,11 @@ void process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key
         /// In menu
         if (! scene->options_screen.is_open)
         {
-            if      (scene->prev_button.is_focused
-                  || scene->next_button.is_focused)
-            {
-                scene->prev_button.is_focused = false;
-                scene->next_button.is_focused = false;
-                scene->play_button.is_focused = true;
-            }
-            else if (scene->play_button.is_focused)
-            {
-                scene->play_button.   is_focused = false;
-                scene->options_button.is_focused = true;
-            }
-            else if (scene->options_button.is_focused)
-            {
-                scene->options_button.is_focused = false;
-                scene->quit_button.   is_focused = true;
-            }
+            if (scene->curr_button->down == NULL)
+                break;
+            scene->curr_button->      is_focused = false;
+            scene->curr_button->down->is_focused = true;
+            scene->curr_button = scene->curr_button->down;
             break;
         }
         /// In 'Options' screen
@@ -201,24 +188,28 @@ void process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key
         }
 
         case SDLK_LEFT:
+            /// In menu
             if (! scene->options_screen.is_open && players_car_manager.cur_car != 0)
             {
-                if (scene->next_button.is_focused)
-                {
-                    scene->prev_button.is_focused = true;
-                    scene->next_button.is_focused = false;
-                }
+                if (scene->curr_button->left == NULL)
+                    break;
+                scene->curr_button->      is_focused = false;
+                scene->curr_button->left->is_focused = true;
+                scene->curr_button = scene->curr_button->left;
+                break;
             }
             break;
 
         case SDLK_RIGHT:
+            /// In menu
             if (! scene->options_screen.is_open && players_car_manager.cur_car != players_car_manager.car_count - 1)
             {
-                if (scene->prev_button.is_focused)
-                {
-                    scene->prev_button.is_focused = false;
-                    scene->next_button.is_focused = true;
-                }
+                if (scene->curr_button->right == NULL)
+                    break;
+                scene->curr_button->       is_focused = false;
+                scene->curr_button->right->is_focused = true;
+                scene->curr_button = scene->curr_button->right;
+                break;
             }
             break;
         
