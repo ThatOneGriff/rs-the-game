@@ -178,6 +178,7 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
     result.clouds[8] = load_texture(scene_data[18], (SDL_FRect){(float)randint(0, RENDER_WIDTH-41), 29, 41,  8}, exit_code);
     result.clouds[9] = load_texture(scene_data[19], (SDL_FRect){(float)randint(0, RENDER_WIDTH-36), 34, 36,  8}, exit_code);
 
+    /// Pause screen
     result.pause_screen = init_pause_screen(exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
@@ -187,6 +188,13 @@ struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr
         return result;
     }
     add_to_deinit_stack(&deinit_stack, &result.pause_screen, (void (*)(void*))free_pause_screen);
+    /// - Pause screen: setting button neighbours.
+    /// DON'T MOVE out of this function!!! Some memory fuckery will happen.
+    add_neighbors_to_button(&result.pause_screen.continue_button, NULL, NULL, NULL, NULL);
+    result.pause_screen.curr_button = &result.pause_screen.continue_button;
+    printf("init | curr: %p | up: %p | down: %p\n", (void*)result.pause_screen.curr_button,
+                                                    (void*)result.pause_screen.curr_button->up,
+                                                    (void*)result.pause_screen.curr_button->down); /// TEMP
 
     init_traffic_manager(5, exit_code);
     if (*exit_code == EXIT_FAILURE)

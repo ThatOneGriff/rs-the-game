@@ -4,7 +4,8 @@
 #include <SDL3/SDL.h>                        /// SDL3.
 #include <SDL3/SDL_timer.h>                  /// Time measurement.
 #include <stdbool.h>                         /// `bool is_open`.
-#include <string.h> /// `memset()`.
+#include <stdio.h>                           /// Text debug (TEMP).
+#include <string.h>                          /// `memset()`.
 #include "../../debug.h"                     /// Error message printing.
 #include "../../deinit_stack.h"              /// Deinitialization stack.
 #include "../../audio/audio_manager.h"       /// `audio_manager.using_audio`.
@@ -114,9 +115,6 @@ struct Pause_Screen init_pause_screen(int* exit_code)
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-
-    //result.curr_button = &result.continue_button;
-    result.curr_button = NULL;
 
     free_deinit_stack(&deinit_stack);
     *exit_code = EXIT_SUCCESS;

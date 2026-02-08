@@ -120,7 +120,9 @@ static void _process_pause_keyboard(struct Pause_Screen* pause_screen, const SDL
             break;
         
         case SDLK_UP:
-            printf("%p\n", (void*)pause_screen->curr_button); /// TEMP
+            printf("up (before) | curr: %p | up: %p | down: %p\n", (void*)pause_screen->curr_button,
+                                                                   (void*)pause_screen->curr_button->up,
+                                                                   (void*)pause_screen->curr_button->down); /// TEMP
             if (pause_screen->continue_button.is_focused)
             {
                 pause_screen->close_button.is_focused    = true;
@@ -139,7 +141,9 @@ static void _process_pause_keyboard(struct Pause_Screen* pause_screen, const SDL
             break;
         
         case SDLK_DOWN:
-            printf("%p\n", (void*)pause_screen->curr_button); /// TEMP
+            printf("down (before) | curr: %p | up: %p | down: %p\n", (void*)pause_screen->curr_button,
+                                                                     (void*)pause_screen->curr_button->up,
+                                                                     (void*)pause_screen->curr_button->down); /// TEMP
             if (pause_screen->close_button.is_focused)
             {
                 pause_screen->close_button.is_focused    = false;
