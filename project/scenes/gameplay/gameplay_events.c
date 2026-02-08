@@ -86,7 +86,7 @@ void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode 
     switch(event_key)
     {
         case SDLK_UP:
-            if (! scene->pause_screen.is_open && scene->start_tick == 0 && scene->crash_tick == 0)
+            if (scene->start_tick == 0 && scene->crash_tick == 0)
             {
                 scene->is_driving = true;
                 scene->start_tick = logic_layer.curr_tick;
@@ -120,9 +120,6 @@ static void _process_pause_keyboard(struct Pause_Screen* pause_screen, const SDL
             break;
         
         case SDLK_UP:
-            printf("up (before) | curr: %p | up: %p | down: %p\n", (void*)pause_screen->curr_button,
-                                                                   (void*)pause_screen->curr_button->up,
-                                                                   (void*)pause_screen->curr_button->down); /// TEMP
             if (pause_screen->continue_button.is_focused)
             {
                 pause_screen->close_button.is_focused    = true;
@@ -141,9 +138,6 @@ static void _process_pause_keyboard(struct Pause_Screen* pause_screen, const SDL
             break;
         
         case SDLK_DOWN:
-            printf("down (before) | curr: %p | up: %p | down: %p\n", (void*)pause_screen->curr_button,
-                                                                     (void*)pause_screen->curr_button->up,
-                                                                     (void*)pause_screen->curr_button->down); /// TEMP
             if (pause_screen->close_button.is_focused)
             {
                 pause_screen->close_button.is_focused    = false;

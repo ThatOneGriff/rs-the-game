@@ -29,8 +29,7 @@ struct Deinit_Stack
 struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code)
 {
     if (exit_code == NULL)
-        {;} /// TEMP
-    //    print_warning("`new_deinit_stack()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`new_deinit_stack()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     struct Deinit_Stack result;
     result.cur = 0;
     result.max = 0; /// To be reset once memory is successfully allocated.
