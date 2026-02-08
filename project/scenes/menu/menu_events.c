@@ -5,7 +5,6 @@
 #include <SDL3/SDL.h> /// Keyboard processing.
 
 /* Logic */
-#include <stdio.h>                     /// TEMP for debug.
 #include <stdbool.h>                   /// Bools.
 #include "../../debug.h"               /// Error message printing.
 #include "../../logic/global_events.h" /// Global event processing.
@@ -27,8 +26,9 @@
 
 /* Predef */
 
-void process_menu_events  (struct Menu_Scene* scene);
-void process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key);
+void         process_menu_events     (struct Menu_Scene* scene);
+static void _process_menu_keyboard   (struct Menu_Scene* scene, const SDL_Keycode event_key);
+static void _process_options_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key);
 
 
 /* Body */
@@ -41,8 +41,9 @@ void process_menu_events(struct Menu_Scene* scene)
         {
         /// Key press.
         case SDL_EVENT_KEY_DOWN:
-            process_menu_keyboard(scene, logic_layer.event.key.key);
+            _process_menu_keyboard(scene, logic_layer.event.key.key);
             break;
+        
         /// Other event.
         default:
             process_global_events(logic_layer.event);
@@ -51,11 +52,11 @@ void process_menu_events(struct Menu_Scene* scene)
 }
 
 
-void process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key)
+static void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key)
 {
     int exit_code = EXIT_SUCCESS;
 
-    /// NOTE: Forgive me, oh reader, for this hard-coded mess.
+    /// Things that can happen both with and without options screen being open:
     switch(event_key)
     {
         case SDLK_ESCAPE:
@@ -64,11 +65,23 @@ void process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key
             else if (scene->options_screen.is_open)
                 hide_options_screen(&scene->options_screen);
             break;
-
         
+        case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
+            play_random_music(&music_loader_menu);
+            break;
+    }
+
+    /// Conditional redirection to 'Options' event handler:
+    if (scene->options_screen.is_open)
+    {
+        _process_options_keyboard(scene, event_key);
+        return;
+    }
+
+    /// Menu button handling:
+    switch(event_key)
+    {
         case SDLK_RETURN:
-        if (! scene->options_screen.is_open)
-        {
             if      (scene->prev_button.is_focused)
             {
                 set_menu_car_info(scene, get_prev_car(&players_car_manager), &exit_code);
@@ -96,37 +109,8 @@ void process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key
             else if (scene->quit_button.is_focused)
                 logic_layer.game_is_running = false;
             break;
-        }
-        else if (scene->options_screen.is_open)
-        {
-            if (scene->options_screen.audio_switch.is_focused)
-            {
-                audio_manager.using_audio = ! audio_manager.using_audio;
-                change_switch_option(&scene->options_screen.audio_switch);
-                if (! audio_manager.using_audio)
-                    ma_sound_stop(&audio_manager.music);
-                else
-                    play_random_music(&music_loader_menu);
-            }
-            else if (scene->options_screen.close_button.is_focused)
-            {
-                hide_options_screen(&scene->options_screen);
-            }
-            else if (scene->options_screen.fps_switch.is_focused)
-            {       
-                ++curr_fps_cap_i;
-                if (curr_fps_cap_i == 4)
-                    curr_fps_cap_i = 0;
-                set_fps_cap(fps_cap_options[curr_fps_cap_i]);
-                change_switch_option(&scene->options_screen.fps_switch);
-            }
-            break;
-        }
 
         case SDLK_UP:
-        /// In menu
-        if (! scene->options_screen.is_open)
-        {
             if (scene->curr_button->up == NULL)
                 break;
             scene->curr_button->    is_focused = false;
@@ -143,49 +127,14 @@ void process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key
                 scene->curr_button = &scene->next_button;
             }
             break;
-        }
-        /// In 'Options' screen
-        else if (scene->options_screen.is_open)
-        {
-            if      (scene->options_screen.audio_switch.is_focused)
-            {
-                scene->options_screen.audio_switch.is_focused = false;
-                scene->options_screen.close_button.is_focused = true;
-            }
-            else if (scene->options_screen.fps_switch.is_focused)
-            {
-                scene->options_screen.fps_switch.  is_focused = false;
-                scene->options_screen.audio_switch.is_focused = true;
-            }
-            break;
-        }
         
         case SDLK_DOWN:
-        /// In menu
-        if (! scene->options_screen.is_open)
-        {
             if (scene->curr_button->down == NULL)
                 break;
             scene->curr_button->      is_focused = false;
             scene->curr_button->down->is_focused = true;
             scene->curr_button = scene->curr_button->down;
             break;
-        }
-        /// In 'Options' screen
-        else if (scene->options_screen.is_open)
-        {
-            if (scene->options_screen.close_button.is_focused)
-            {
-                scene->options_screen.close_button.is_focused = false;
-                scene->options_screen.audio_switch.is_focused = true;
-            }
-            else if (scene->options_screen.audio_switch.is_focused)
-            {
-                scene->options_screen.audio_switch.is_focused = false;
-                scene->options_screen.fps_switch.is_focused   = true;
-            }
-            break;
-        }
 
         case SDLK_LEFT:
             /// In menu
@@ -212,9 +161,72 @@ void process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key
                 break;
             }
             break;
+
+        default:
+            process_global_keyboard(event_key);
+    }
+
+    if (exit_code == EXIT_FAILURE)
+        print_error("`_process_menu_keyboard()`: an error code was thrown", NON_SDL_ERROR);
+    return;
+}
+
+
+static void _process_options_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key)
+{
+    int exit_code = EXIT_SUCCESS;
+
+    /// Options button handling:
+    switch(event_key)
+    {
+        case SDLK_RETURN:
+            if (scene->options_screen.audio_switch.is_focused)
+            {
+                audio_manager.using_audio = ! audio_manager.using_audio;
+                change_switch_option(&scene->options_screen.audio_switch);
+                if (! audio_manager.using_audio)
+                    ma_sound_stop(&audio_manager.music);
+                else
+                    play_random_music(&music_loader_menu);
+            }
+            else if (scene->options_screen.close_button.is_focused)
+            {
+                hide_options_screen(&scene->options_screen);
+            }
+            else if (scene->options_screen.fps_switch.is_focused)
+            {       
+                ++curr_fps_cap_i;
+                if (curr_fps_cap_i == 4)
+                    curr_fps_cap_i = 0;
+                set_fps_cap(fps_cap_options[curr_fps_cap_i]);
+                change_switch_option(&scene->options_screen.fps_switch);
+            }
+            break;
+
+        case SDLK_UP:
+            if      (scene->options_screen.audio_switch.is_focused)
+            {
+                scene->options_screen.audio_switch.is_focused = false;
+                scene->options_screen.close_button.is_focused = true;
+            }
+            else if (scene->options_screen.fps_switch.is_focused)
+            {
+                scene->options_screen.fps_switch.  is_focused = false;
+                scene->options_screen.audio_switch.is_focused = true;
+            }
+            break;
         
-        case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
-            play_random_music(&music_loader_menu);
+        case SDLK_DOWN:
+            if (scene->options_screen.close_button.is_focused)
+            {
+                scene->options_screen.close_button.is_focused = false;
+                scene->options_screen.audio_switch.is_focused = true;
+            }
+            else if (scene->options_screen.audio_switch.is_focused)
+            {
+                scene->options_screen.audio_switch.is_focused = false;
+                scene->options_screen.fps_switch.is_focused   = true;
+            }
             break;
 
         default:
@@ -223,6 +235,5 @@ void process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key
 
     if (exit_code == EXIT_FAILURE)
         print_error("`_process_menu_keyboard()`: an error code was thrown", NON_SDL_ERROR);
-    
     return;
 }
