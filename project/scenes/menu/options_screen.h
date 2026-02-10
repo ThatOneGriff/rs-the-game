@@ -13,9 +13,10 @@
 struct Options_Screen
 {
     bool is_open;
+    
     SDL_Texture* last_menu_frame;
-
     struct Texture options_text;
+
     struct Button  close_button;
 
     struct Texture audio_text;

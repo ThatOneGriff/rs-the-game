@@ -225,11 +225,14 @@ void load_gameplay_scene(const char path[], struct Car* car_ptr, int* exit_code)
 
 void free_gameplay_scene(void)
 {
-    gameplay_scene.car_ptr->coords.x     = center_x(gameplay_scene.car_ptr->coords.w);
-    gameplay_scene.car_ptr->base_texture = 2;
-    gameplay_scene.car_ptr->latest_turn_start     = 0;
-    gameplay_scene.car_ptr->latest_turn_end       = 0;
-    gameplay_scene.car_ptr->prev_turn_direction_x = 0;
+    if (gameplay_scene.car_ptr != NULL)
+    {
+        gameplay_scene.car_ptr->coords.x     = center_x(gameplay_scene.car_ptr->coords.w);
+        gameplay_scene.car_ptr->base_texture = 2;
+        gameplay_scene.car_ptr->latest_turn_start     = 0;
+        gameplay_scene.car_ptr->latest_turn_end       = 0;
+        gameplay_scene.car_ptr->prev_turn_direction_x = 0;
+    }
     
     free_texture(&gameplay_scene.personal_best_text);
     free_pause_screen(&gameplay_scene.pause_screen);
