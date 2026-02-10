@@ -4,7 +4,6 @@
 #include <SDL3/SDL_timer.h>          /// its parts.
 
 /*- C headers -*/
-#include <stdbool.h>                 /// `bool gameplay_scene_opened` (TEMP).
 #include <stdio.h>                   /// `printf('\n')`.
 
 /* Root folder headers */
@@ -41,20 +40,19 @@ nlohmann/json version: 3.12.0  (last checked 28.01.26) | https://github.com/nloh
 /// - player's car bouncing in beat to the music.
 
 /* TODOs: */
+/// - const ptrs in function bodies;
 /// - `struct Traffic_Car`, overall traffic system revamp;
 /// - global traffic managers;
 /// - global audio managers, maybe tied to scenes via a ptr;
 /// - const tick (15/s? 30/s?) for collision check;
 /// - fix EVERYWHERE:
-/// object creation
-/// deinit_stack creation
+///   object creation
+///   deinit_stack creation
 ///     deinit_stack failed
-///     object NOT deleted manually
-/// ;
+///     object NOT deleted manually;
 /// - pushing an array of points/textures into array-like members of `game_components`, instead of individual `add_*()` calls.
 
 /* IDEAs: */
-/// - screens (options & menu) to have their own keyboard handlers
 /// - switch between metric and imperial system
 /// - mouse control
 /// ? `null_move_component` and similar things for each `game_components`', for code clarity;
@@ -100,7 +98,6 @@ void game_loop(int *const exit_code)
         print_warning("`game_loop()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
     /// Loading & preparing the scene
-    bool gameplay_scene_opened = false; /// TEMP: just not to get an error while deinitializing BEFORE loading the gameplay scene.
     
     load_menu_scene(get_curr_car(&players_car_manager), exit_code);
     if (*exit_code == EXIT_FAILURE)
@@ -130,7 +127,6 @@ void game_loop(int *const exit_code)
         /// Gameplay scene processing
         if (logic_layer.curr_scene == &gameplay_scene)
         {
-            gameplay_scene_opened = true; /// TEMP: just not to get an error while deinitializing BEFORE loading the gameplay scene.
             if (audio_manager.using_audio)
                 check_if_music_ended(&music_loader_gameplay);
             
@@ -205,8 +201,12 @@ void game_loop(int *const exit_code)
         }
     }
 
-    if (gameplay_scene_opened)
+    if      (logic_layer.curr_scene == &gameplay_scene)
         free_gameplay_scene();
-    free_menu_scene();
+    else if (logic_layer.curr_scene == &menu_scene)
+        free_menu_scene();
+    logic_layer.curr_scene = NULL;
+    
     *exit_code = EXIT_SUCCESS;
+    return;
 }
