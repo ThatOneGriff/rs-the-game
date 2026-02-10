@@ -18,7 +18,7 @@ extern int PERSONAL_BEST;
 
 /* Predef */
 
-void load_global_resources(int* exit_code);
+void load_global_resources(int *const exit_code);
 void free_global_resources(void);
 
 

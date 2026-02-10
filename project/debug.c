@@ -10,14 +10,14 @@
 
 /* Predef */
 
-void print_success(const char* text);
-void print_error  (const char* text, const bool is_SDL_error);
-void print_warning(const char* text, const bool is_SDL_error);
+void print_success(const char *const text);
+void print_error  (const char *const text, const bool is_SDL_error);
+void print_warning(const char *const text, const bool is_SDL_error);
 
 
 /* Body */
 
-void print_success(const char* text)
+void print_success(const char *const text)
 {
     if (text == NULL)
         return;
@@ -30,7 +30,7 @@ void print_success(const char* text)
 }
 
 
-void print_error(const char* text, const bool is_SDL_error)
+void print_error(const char *const text, const bool is_SDL_error)
 {
     if (text == NULL)
         return;
@@ -47,7 +47,7 @@ void print_error(const char* text, const bool is_SDL_error)
 }
 
 
-void print_warning(const char* text, const bool is_SDL_error)
+void print_warning(const char *const text, const bool is_SDL_error)
 {
     if (text == NULL)
         return;

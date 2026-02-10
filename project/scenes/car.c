@@ -32,15 +32,15 @@ const SDL_FRect CAR_COLLISION_BOXES[5] = {
 
 /* Predef */
 
-struct Car load_car        (const char path[], int* exit_code);
-struct Car load_traffic_car(const char path[], int* exit_code);
-void       free_car        (struct Car* target);
-void     render_car        (struct Car* target);
+struct Car load_car        (const char *const path, int *const exit_code);
+struct Car load_traffic_car(const char *const path, int *const exit_code);
+void       free_car        (struct Car *const target);
+void     render_car        (struct Car *const target);
 
 
 /* Body */
 
-struct Car load_car(const char path[], int* exit_code)
+struct Car load_car(const char *const path, int *const exit_code)
 {
     struct Car result = {0};
     result.base_texture = 2;
@@ -119,7 +119,7 @@ struct Car load_car(const char path[], int* exit_code)
 }
 
 
-struct Car load_traffic_car(const char path[], int* exit_code)
+struct Car load_traffic_car(const char *const path, int *const exit_code)
 {
     /// Zero-filling
     struct Car result = {0};
@@ -198,7 +198,7 @@ struct Car load_traffic_car(const char path[], int* exit_code)
 }
 
 
-void free_car(struct Car* target)
+void free_car(struct Car *const target)
 {
     if (target == NULL)
         return;
@@ -217,7 +217,7 @@ void free_car(struct Car* target)
 }
 
 
-void render_car(struct Car* target)
+void render_car(struct Car *const target)
 {
     if (target == NULL) /// TODO: check for everything.
     {

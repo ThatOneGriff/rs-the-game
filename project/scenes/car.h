@@ -41,10 +41,10 @@ struct Car
 
 /* Predef */
 
-struct Car load_car        (const char path[], int* exit_code);
-struct Car load_traffic_car(const char path[], int* exit_code);
-void       free_car        (struct Car* target);
-void     render_car        (struct Car* target);
+struct Car load_car        (const char *const path, int *const exit_code);
+struct Car load_traffic_car(const char *const path, int *const exit_code);
+void       free_car        (struct Car *const target);
+void     render_car        (struct Car *const target);
 
 
 #endif /// CAR_H

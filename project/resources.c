@@ -28,7 +28,7 @@ int PERSONAL_BEST = 0;
 
 /* Predef */
 
-void load_global_resources(int* exit_code);
+void load_global_resources(int *const exit_code);
 void free_global_resources(void);
 
 
@@ -36,7 +36,7 @@ void free_global_resources(void);
 
 /// Must be called after SDL, TTF, & `renderer` have been initialized.
 /// Called in `init()` or upon resource reloading.
-void load_global_resources(int* exit_code)
+void load_global_resources(int *const exit_code)
 {
     if (exit_code == NULL)
         print_warning("`load_global_resources()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);

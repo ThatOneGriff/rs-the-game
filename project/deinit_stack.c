@@ -9,16 +9,16 @@
 
 /* Predef */
 
-struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code);
-void               free_deinit_stack(struct Deinit_Stack* target); 
-void             add_to_deinit_stack(struct Deinit_Stack* target, void* new_element, void (*new_free_function)(void*));
-void              flush_deinit_stack(struct Deinit_Stack* target);
-void           pop_from_deinit_stack(struct Deinit_Stack* target);
+struct Deinit_Stack new_deinit_stack(const size_t size, int *const exit_code);
+void               free_deinit_stack(struct Deinit_Stack *const target); 
+void             add_to_deinit_stack(struct Deinit_Stack *const target, void *const new_element, void (*const new_free_function)(void*));
+void              flush_deinit_stack(struct Deinit_Stack *const target);
+void           pop_from_deinit_stack(struct Deinit_Stack *const target);
 
 
 /* Body */
 
-struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code)
+struct Deinit_Stack new_deinit_stack(const size_t size, int *const exit_code)
 {
     if (exit_code == NULL)
         print_warning("`new_deinit_stack()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
@@ -52,7 +52,7 @@ struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code)
     return result;
 }
 
-void free_deinit_stack(struct Deinit_Stack* target)
+void free_deinit_stack(struct Deinit_Stack *const target)
 {
     if (target == NULL)
         return;
@@ -78,7 +78,7 @@ void free_deinit_stack(struct Deinit_Stack* target)
 /// - Say, you wanted to add 7 elements to the stack, but during development it so happened that you started adding 8.
 /// 1) Wouldn't you want to know of such a correction, instead of the program quietly multiplying the stack's memory by 1.5?
 /// 2) Whose problem would that additional memory be?
-void add_to_deinit_stack(struct Deinit_Stack* target, void* new_element, void (*new_free_function)(void*))
+void add_to_deinit_stack(struct Deinit_Stack *const target, void *const new_element, void (*const new_free_function)(void*))
 {
     if (target == NULL || target->elements == NULL)
     {
@@ -108,7 +108,7 @@ void add_to_deinit_stack(struct Deinit_Stack* target, void* new_element, void (*
 
 
 /// `free`'s the stack at the end, too.
-void flush_deinit_stack(struct Deinit_Stack* target)
+void flush_deinit_stack(struct Deinit_Stack *const target)
 {
     if (target == NULL || target->elements == NULL || target->free_functions == NULL)
     {
@@ -122,7 +122,7 @@ void flush_deinit_stack(struct Deinit_Stack* target)
 }
 
 
-void pop_from_deinit_stack(struct Deinit_Stack* target)
+void pop_from_deinit_stack(struct Deinit_Stack *const target)
 {
     if (target == NULL || target->elements == NULL || target->free_functions == NULL)
     {

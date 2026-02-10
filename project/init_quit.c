@@ -31,7 +31,7 @@
 
 /* Predef */
 
-void init(int* exit_code);
+void init(int *const exit_code);
 void quit(void);
 void read_data(void);
 void save_data(void);
@@ -41,7 +41,7 @@ void program_exit(const int exit_code);
 
 /* Body */
 
-void init(int* exit_code)
+void init(int *const exit_code)
 {
     if (exit_code == NULL)
         print_warning("`init()`: `*exit_code` arg is `NULL`", NON_SDL_ERROR);

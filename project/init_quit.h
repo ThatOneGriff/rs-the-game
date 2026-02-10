@@ -10,7 +10,7 @@
 
 /* Predef */
 
-void init(int* exit_code);
+void init(int *const exit_code);
 void quit(void);
 void read_data(void);
 void save_data(void);

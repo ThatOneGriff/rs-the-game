@@ -17,11 +17,11 @@ struct Deinit_Stack
 
 /* Predef */
 
-struct Deinit_Stack new_deinit_stack(const size_t size, int* exit_code);
-void               free_deinit_stack(struct Deinit_Stack* target); 
-void             add_to_deinit_stack(struct Deinit_Stack* target, void* new_element, void (*new_free_function)(void*));
-void              flush_deinit_stack(struct Deinit_Stack* target);
-void           pop_from_deinit_stack(struct Deinit_Stack* target);
+struct Deinit_Stack new_deinit_stack(const size_t size, int *const exit_code);
+void               free_deinit_stack(struct Deinit_Stack *const target); 
+void             add_to_deinit_stack(struct Deinit_Stack *const target, void *const new_element, void (*const new_free_function)(void*));
+void              flush_deinit_stack(struct Deinit_Stack *const target);
+void           pop_from_deinit_stack(struct Deinit_Stack *const target);
 
 
 #endif /// DEINIT_STACK_H
