@@ -6,7 +6,7 @@
 #include "../../logic/logic_layer.h" /// `time_tick_ms`.
 
 /* Related headers */
-#include "../car.h" /// Cars.
+#include "traffic_car.h" /// Cars.
 #include "../../game_components/movement/path.h" /// Traffic's path.
 
 #define TRAFFIC_ON_ROW_CHANCE     0.50f /// (percent)
@@ -22,7 +22,7 @@
 
 struct Traffic_Manager
 {
-    struct Car* cars;
+    struct Traffic_Car* cars;
     size_t      car_count;
     size_t*  car_lane_ids;
     size_t*  car_path_pts;

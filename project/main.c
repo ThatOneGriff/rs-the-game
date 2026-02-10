@@ -36,21 +36,18 @@ miniaudio     version: 0.11.24 (last updated 28.01.26) | https://github.com/mack
 nlohmann/json version: 3.12.0  (last checked 28.01.26) | https://github.com/nlohmann/json/releases
 */
 
-/* Visual TODOs: */
-/// - player's car bouncing in beat to the music.
-
 /* TODOs: */
-/// - const ptrs in function bodies;
 /// - `struct Traffic_Car`, overall traffic system revamp;
+/// - const ptrs in function bodies;
 /// - global traffic managers;
 /// - global audio managers, maybe tied to scenes via a ptr;
-/// - const tick (15/s? 30/s?) for collision check;
 /// - fix EVERYWHERE:
 ///   object creation
 ///   deinit_stack creation
 ///     deinit_stack failed
 ///     object NOT deleted manually;
-/// - pushing an array of points/textures into array-like members of `game_components`, instead of individual `add_*()` calls.
+/// - pushing an array of points/textures into array-like members of `game_components`, instead of individual `add_*()` calls;
+/// - player's car bouncing in beat to the music.
 
 /* IDEAs: */
 /// - switch between metric and imperial system

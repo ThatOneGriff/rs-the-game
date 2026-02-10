@@ -16,9 +16,10 @@
 
 struct Car_Manager
 {
-    struct Car* cars;
+    struct void* cars;
     size_t car_count;
     size_t cur_car;
+    //void (*)(void*) load_func;
 };
 extern struct Car_Manager players_car_manager;
 extern struct Car_Manager traffic_car_manager;

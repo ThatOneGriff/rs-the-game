@@ -11,7 +11,7 @@
 #include "../../logic/logic_layer.h" /// `logic_layer.curr_tick`.
 
 /* Related headers */
-#include "../car.h"         /// Cars.
+#include "traffic_car.h" /// Cars.
 #include "../car_manager.h" /// `traffic_car_manager`.
 #include "../../game_components/movement/path.h" /// Traffic path.
 
@@ -21,9 +21,9 @@
 
 /* Variables */
 
-struct Traffic_Manager traffic_manager = {0};
       static time_tick_ms latest_collision_check = 0;
 const static time_span_ms COLLISION_CHECK_DELTA  = 33; /// 30/sec.
+struct Traffic_Manager traffic_manager = {0};
 
 #define NEAR_MISS_CAR_DISTANCE 135
 

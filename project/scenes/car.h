@@ -3,14 +3,12 @@
 #define CAR_H
 
 /* Headers */
-#include <SDL3/SDL.h> /// SDL things.
+#include <SDL3/SDL.h>             /// SDL things.
 #include "../logic/logic_layer.h" /// `time_tick_ms`.
 
 
-#define         CAR_DATA_LINES 16
-#define TRAFFIC_CAR_DATA_LINES  4
-
-const extern SDL_FRect CAR_COLLISION_BOXES[5];
+#define CAR_DATA_LINES 16
+const extern SDL_FRect CAR_COLLISION_BOXES[5]; /// TODO: think on where to move it.
 
 
 /* Struct */
@@ -41,10 +39,9 @@ struct Car
 
 /* Predef */
 
-struct Car load_car        (const char *const path, int *const exit_code);
-struct Car load_traffic_car(const char *const path, int *const exit_code);
-void       free_car        (struct Car *const target);
-void     render_car        (struct Car *const target);
+struct Car load_car(const char *const path, int *const exit_code);
+void       free_car(struct Car *const target);
+void     render_car(struct Car *const target);
 
 
 #endif /// CAR_H
