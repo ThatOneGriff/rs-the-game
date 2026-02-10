@@ -18,17 +18,17 @@ struct Car_Manager traffic_car_manager = {0};
 
 /* Predef */
 
-void init_car_manager(struct Car_Manager* target, const bool is_traffic, int* exit_code);
-void free_car_manager(struct Car_Manager* target);
-struct Car copy_random_car(struct Car_Manager* target);
-struct Car* get_curr_car  (struct Car_Manager* target);
-struct Car* get_next_car  (struct Car_Manager* target);
-struct Car* get_prev_car  (struct Car_Manager* target);
+void init_car_manager(struct Car_Manager *const target, const bool is_traffic, int *const exit_code);
+void free_car_manager(struct Car_Manager *const target);
+struct Car copy_random_car(struct Car_Manager *const target);
+struct Car* get_curr_car  (struct Car_Manager *const target);
+struct Car* get_next_car  (struct Car_Manager *const target);
+struct Car* get_prev_car  (struct Car_Manager *const target);
 
 
 /* Body */
 
-void init_car_manager(struct Car_Manager* target, const bool is_traffic, int* exit_code)
+void init_car_manager(struct Car_Manager *const target, const bool is_traffic, int *const exit_code)
 {
     /// REDO: memory-unsafe in case of failures.
     if (exit_code == NULL)
@@ -96,7 +96,7 @@ void init_car_manager(struct Car_Manager* target, const bool is_traffic, int* ex
 }
 
 
-void free_car_manager(struct Car_Manager* target)
+void free_car_manager(struct Car_Manager *const target)
 {
     if (target->cars != NULL)
     {
@@ -110,21 +110,21 @@ void free_car_manager(struct Car_Manager* target)
 }
 
 
-struct Car copy_random_car(struct Car_Manager* target)
+struct Car copy_random_car(struct Car_Manager *const target)
 {
     return target->cars[(size_t)randint(0, (unsigned)target->car_count-1)];
 }
 
 
 /// TODO: checks.
-struct Car* get_curr_car(struct Car_Manager* target)
+struct Car* get_curr_car(struct Car_Manager *const target)
 {
     return &target->cars[target->cur_car];
 }
 
 
 /// TODO: checks.
-struct Car* get_next_car(struct Car_Manager* target)
+struct Car* get_next_car(struct Car_Manager *const target)
 {
     ++target->cur_car;
     if (target->cur_car == target->car_count)
@@ -134,7 +134,7 @@ struct Car* get_next_car(struct Car_Manager* target)
 
 
 /// TODO: checks.
-struct Car* get_prev_car(struct Car_Manager* target)
+struct Car* get_prev_car(struct Car_Manager *const target)
 {
     if (target->cur_car > 0)
         --target->cur_car;

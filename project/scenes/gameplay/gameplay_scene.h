@@ -48,7 +48,7 @@ extern struct Gameplay_Scene gameplay_scene; /// Singleton.
 
 /* Predef */
 
-void load_gameplay_scene(const char path[], struct Car* car_ptr, int* exit_code);
+void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int *const exit_code);
 void free_gameplay_scene(void);
 void render_gameplay_scene(void);
 void update_points(void);

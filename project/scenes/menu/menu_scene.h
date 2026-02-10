@@ -50,9 +50,9 @@ extern struct Menu_Scene menu_scene; /// Singleton.
 
 /* Predef */
 
-void load_menu_scene(struct Car* car_ptr, int* exit_code);
-void free_menu_scene(void);
-void set_menu_car_info(struct Car* car, int* exit_code);
+void load_menu_scene  (struct Car *const car_ptr, int *const exit_code);
+void free_menu_scene  (void);
+void set_menu_car_info(struct Car *const car_ptr, int *const exit_code);
 void render_menu_scene(void);
 
 

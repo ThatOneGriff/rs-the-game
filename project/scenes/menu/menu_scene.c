@@ -32,15 +32,15 @@ struct Menu_Scene menu_scene = {0};
 
 /* Predef */
 
-void load_menu_scene(struct Car* car_ptr, int* exit_code);
-void free_menu_scene(void);
-void set_menu_car_info(struct Car* car, int* exit_code);
+void load_menu_scene  (struct Car *const car_ptr, int *const exit_code);
+void free_menu_scene  (void);
+void set_menu_car_info(struct Car *const car_ptr, int *const exit_code);
 void render_menu_scene(void);
 
 
 /* Body */
 
-void load_menu_scene(struct Car* car_ptr, int* exit_code)
+void load_menu_scene(struct Car *const car_ptr, int *const exit_code)
 {
     /// Param checking
     if (exit_code == NULL)
@@ -197,19 +197,19 @@ void free_menu_scene(void)
 }
 
 
-void set_menu_car_info(struct Car* car, int* exit_code)
+void set_menu_car_info(struct Car *const car_ptr, int *const exit_code)
 {
     if (exit_code == NULL)
         print_warning("`set_menu_car_info()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    if (car == NULL) /// TODO: check all members.
+    if (car_ptr == NULL) /// TODO: check all members.
     {
-        print_error("`set_menu_car_info()`: `car` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`set_menu_car_info()`: `car_ptr` arg is `NULL`", NON_SDL_ERROR);
         return;
     }
 
-    menu_scene.car_ptr = car;
+    menu_scene.car_ptr = car_ptr;
     /// Car name text
-    menu_scene.car_name_text = create_text(car->name, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(10, 10), 15, 1, exit_code);
+    menu_scene.car_name_text = create_text(car_ptr->name, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(10, 10), 15, 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`set_menu_car_info()`: couldn't create the text", NON_SDL_ERROR);
@@ -217,26 +217,26 @@ void set_menu_car_info(struct Car* car, int* exit_code)
     }
     
     /// TODO: checks.
-    menu_scene.photo_quad1 = load_texture(car->quad_paths[0], (SDL_FRect){10   , 34   , 72, 54}, exit_code);
-    menu_scene.photo_quad2 = load_texture(car->quad_paths[1], (SDL_FRect){10+72, 34   , 72, 54}, exit_code);
-    menu_scene.photo_quad3 = load_texture(car->quad_paths[2], (SDL_FRect){10   , 34+54, 72, 54}, exit_code);
-    menu_scene.photo_quad4 = load_texture(car->quad_paths[3], (SDL_FRect){10+72, 34+54, 72, 54}, exit_code);
+    menu_scene.photo_quad1 = load_texture(car_ptr->quad_paths[0], (SDL_FRect){10   , 34   , 72, 54}, exit_code);
+    menu_scene.photo_quad2 = load_texture(car_ptr->quad_paths[1], (SDL_FRect){10+72, 34   , 72, 54}, exit_code);
+    menu_scene.photo_quad3 = load_texture(car_ptr->quad_paths[2], (SDL_FRect){10   , 34+54, 72, 54}, exit_code);
+    menu_scene.photo_quad4 = load_texture(car_ptr->quad_paths[3], (SDL_FRect){10+72, 34+54, 72, 54}, exit_code);
     
     char year_text[15];
-    sprintf(year_text, "Year: %d", car->year);
+    sprintf(year_text, "Year: %d", car_ptr->year);
     char engine_text[15];
-    sprintf(engine_text, "Engine: %d hp", car->hp);
+    sprintf(engine_text, "Engine: %d hp", car_ptr->hp);
     char speed_text[15];
-    sprintf(speed_text, "Speed: %d kph", car->top_speed);
+    sprintf(speed_text, "Speed: %d kph", car_ptr->top_speed);
     char handling_text[14];
-    sprintf(handling_text, "Handling: %d", car->handling);
+    sprintf(handling_text, "Handling: %d", car_ptr->handling);
     menu_scene.year_text        = create_text(year_text,     (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(156, 33), 9, 1, exit_code);
     menu_scene.horsepower_text  = create_text(engine_text,   (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(156, 43), 9, 1, exit_code);
     menu_scene.top_speed_text   = create_text(speed_text,    (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(156, 53), 9, 1, exit_code);
     menu_scene.handling_text    = create_text(handling_text, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(156, 63), 9, 1, exit_code);
     
-    menu_scene.info_line1 = create_text(car->info_text[0], (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(10, 150), 9, 1, exit_code);
-    menu_scene.info_line2 = create_text(car->info_text[1], (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(10, 160), 9, 1, exit_code);
+    menu_scene.info_line1 = create_text(car_ptr->info_text[0], (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(10, 150), 9, 1, exit_code);
+    menu_scene.info_line2 = create_text(car_ptr->info_text[1], (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(10, 160), 9, 1, exit_code);
     
     *exit_code = EXIT_SUCCESS;
     return;

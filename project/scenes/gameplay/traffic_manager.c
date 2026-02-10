@@ -16,6 +16,9 @@
 #include "../../game_components/movement/path.h" /// Traffic path.
 
 
+/// WARNING: I hate this code. This will be rewritten.
+
+
 /* Variables */
 
 struct Traffic_Manager traffic_manager = {0};
@@ -23,17 +26,16 @@ struct Traffic_Manager traffic_manager = {0};
 
 /* Predef */
 
-void init_traffic_manager(const size_t car_count, int* exit_code);
+void init_traffic_manager(const size_t car_count, int *const exit_code);
 void free_traffic_manager(void);
-
 void   move_traffic       (const bool mode);
-void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car* player_car, bool* is_driving, int* point_count);
+void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car *const player_car, bool *const is_driving, int *const point_count);
 
 
 /* Body */
 
 /// Assumes `traffic_car_manager` has been initialized.
-void init_traffic_manager(const size_t car_count, int* exit_code)
+void init_traffic_manager(const size_t car_count, int *const exit_code)
 {
     /// Object preparation
     memset(&traffic_manager, 0, sizeof traffic_manager);
@@ -264,7 +266,7 @@ void move_traffic(const bool mode)
 }
 
 
-void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car* player_car, bool* is_driving, int* point_count)
+void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car *const player_car, bool *const is_driving, int *const point_count)
 {
     /// TODO: check args
     if (max_path_pt >= traffic_manager.lanes[0].pt_count)

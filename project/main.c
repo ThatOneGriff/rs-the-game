@@ -41,8 +41,11 @@ nlohmann/json version: 3.12.0  (last checked 28.01.26) | https://github.com/nloh
 /// - player's car bouncing in beat to the music.
 
 /* TODOs: */
-/// - global traffic, audio managers;
 /// - const ptrs (`int *const example`);
+/// - `struct Traffic_Car`, overall traffic system revamp;
+/// - global traffic managers;
+/// - global audio managers, maybe tied to scenes via a ptr;
+/// - const tick for collision check;
 /// - fix EVERYWHERE:
 /// object creation
 /// deinit_stack creation

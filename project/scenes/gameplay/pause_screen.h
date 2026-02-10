@@ -32,11 +32,11 @@ struct Pause_Screen
 
 /* Predef */
 
-struct Pause_Screen init_pause_screen(int* exit_code);
-void                free_pause_screen(struct Pause_Screen* target);
-void show_pause_screen  (struct Pause_Screen* target);
-void hide_pause_screen  (struct Pause_Screen* target);
-void render_pause_screen(struct Pause_Screen* target);
+struct Pause_Screen init_pause_screen(int *const exit_code);
+void                free_pause_screen(struct Pause_Screen *const target);
+void show_pause_screen  (struct Pause_Screen *const target);
+void hide_pause_screen  (struct Pause_Screen *const target);
+void render_pause_screen(struct Pause_Screen *const target);
 
 
 #endif /// PAUSE_SCREEN_H

@@ -33,11 +33,11 @@ struct Options_Screen
 
 /* Predef */
 
-struct Options_Screen init_options_screen(int* exit_code);
-void                  free_options_screen(struct Options_Screen* target);
-void show_options_screen  (struct Options_Screen* target);
-void hide_options_screen  (struct Options_Screen* target);
-void render_options_screen(struct Options_Screen* target);
+struct Options_Screen init_options_screen(int *const exit_code);
+void                  free_options_screen(struct Options_Screen *const target);
+void show_options_screen  (struct Options_Screen *const target);
+void hide_options_screen  (struct Options_Screen *const target);
+void render_options_screen(struct Options_Screen *const target);
 
 
 #endif /// OPTIONS_SCREEN_H

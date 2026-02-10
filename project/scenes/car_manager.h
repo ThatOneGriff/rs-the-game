@@ -26,12 +26,12 @@ extern struct Car_Manager traffic_car_manager;
 
 /* Predef */
 
-void init_car_manager(struct Car_Manager* target, const bool is_traffic, int* exit_code);
-void free_car_manager(struct Car_Manager* target);
-struct Car copy_random_car(struct Car_Manager* target);
-struct Car* get_curr_car  (struct Car_Manager* target);
-struct Car* get_next_car  (struct Car_Manager* target);
-struct Car* get_prev_car  (struct Car_Manager* target);
+void init_car_manager(struct Car_Manager *const target, const bool is_traffic, int *const exit_code);
+void free_car_manager(struct Car_Manager *const target);
+struct Car copy_random_car(struct Car_Manager *const target);
+struct Car* get_curr_car  (struct Car_Manager *const target);
+struct Car* get_next_car  (struct Car_Manager *const target);
+struct Car* get_prev_car  (struct Car_Manager *const target);
 
 
 #endif /// CAR_MANAGER_H
