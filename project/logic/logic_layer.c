@@ -17,14 +17,14 @@ struct Logic_Layer logic_layer = {0};
 
 /* Predef */
 
-void init_logic_layer(int* exit_code);
+void init_logic_layer(int *const exit_code);
 void free_logic_layer(void);
 
 
 /* Body */
 
 /// Doesn't check for accidental double initialization.
-void init_logic_layer(int* exit_code)
+void init_logic_layer(int *const exit_code)
 {
     if (exit_code == NULL)
         print_warning("`_init_logic_layer()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);

@@ -17,15 +17,15 @@
 
 /* Predef */
 
-struct Multi_Texture load_multi_texture(const char* texture_path, const size_t max_count, int* exit_code);
-void                 free_multi_texture(struct Multi_Texture* target);
-void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_rects, int* exit_code);
-void render_multi_texture(const struct Multi_Texture* target);
+struct Multi_Texture load_multi_texture(const char *const texture_path, const size_t max_count, int *const exit_code);
+void                 free_multi_texture(struct Multi_Texture *const target);
+void add_to_multi_texture(struct Multi_Texture *const to, const SDL_FRect new_rects, int *const exit_code);
+void render_multi_texture(const struct Multi_Texture *const target);
 
 
 /* Body */
 
-struct Multi_Texture load_multi_texture(const char* texture_path, const size_t max_count, int* exit_code)
+struct Multi_Texture load_multi_texture(const char *const texture_path, const size_t max_count, int *const exit_code)
 {
     struct Multi_Texture result = {0};
 
@@ -78,7 +78,7 @@ struct Multi_Texture load_multi_texture(const char* texture_path, const size_t m
 }
 
 
-void free_multi_texture(struct Multi_Texture* target)
+void free_multi_texture(struct Multi_Texture *const target)
 {
     if (target == NULL)
         return;
@@ -95,7 +95,7 @@ void free_multi_texture(struct Multi_Texture* target)
 
 /* Functions */
 
-void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_rect, int* exit_code)
+void add_to_multi_texture(struct Multi_Texture *const to, const SDL_FRect new_rect, int *const exit_code)
 {
     /// Param checking
     if (exit_code == NULL)
@@ -126,7 +126,7 @@ void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_rect, in
 }
 
 
-void render_multi_texture(const struct Multi_Texture* target)
+void render_multi_texture(const struct Multi_Texture *const target)
 {
     if (target == NULL || target->texture == NULL || target->rects == NULL || target->cur_count == 0)
     {

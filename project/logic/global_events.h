@@ -8,8 +8,8 @@
 
 /* Predef */
 
-void  process_global_events  (const SDL_Event   event);
-void  process_global_keyboard(const SDL_Keycode event_key);
+void process_global_events  (const SDL_Event   event);
+void process_global_keyboard(const SDL_Keycode event_key);
 
 
 #endif /// GLOBAL_EVENTS_H

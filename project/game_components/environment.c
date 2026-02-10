@@ -27,17 +27,16 @@ I wholeheartedly hate this code. Sorry. */
 
 /* Predef */
 
-struct Environment        new_environment(char** texture_paths, const size_t texture_count, const size_t object_count, int* exit_code);
-void couple_move_component_to_environment(struct Environment* to, struct Move_Component* move_component, const struct Vec2 max_offset, int* exit_code);
-void                     free_environment(struct Environment* target);
-
-void        render_environment(const struct Environment* target);
-void partly_render_environment(const struct Environment* target, const size_t min_path_pt, size_t max_path_pt);
+struct Environment        new_environment(char **const texture_paths, const size_t texture_count, const size_t object_count, int *const exit_code);
+void couple_move_component_to_environment(struct Environment *const to, struct Move_Component *const move_component, const struct Vec2 max_offset, int *const exit_code);
+void                     free_environment(struct Environment *const target);
+void        render_environment(const struct Environment *const target);
+void partly_render_environment(const struct Environment *const target, const size_t min_path_pt, size_t max_path_pt);
 
 
 /* Body */
 
-struct Environment new_environment(char** texture_paths, const size_t texture_count, const size_t object_count, int* exit_code)
+struct Environment new_environment(char **const texture_paths, const size_t texture_count, const size_t object_count, int *const exit_code)
 {
     struct Environment result = {0};
 
@@ -135,7 +134,7 @@ struct Environment new_environment(char** texture_paths, const size_t texture_co
 }
 
 
-void couple_move_component_to_environment(struct Environment* to, struct Move_Component* move_component, const struct Vec2 max_offset, int* exit_code)
+void couple_move_component_to_environment(struct Environment *const to, struct Move_Component *const move_component, const struct Vec2 max_offset, int *const exit_code)
 {
     /// Arg checking
     if (exit_code == NULL)
@@ -167,7 +166,7 @@ void couple_move_component_to_environment(struct Environment* to, struct Move_Co
 }
 
 
-void free_environment(struct Environment* target)
+void free_environment(struct Environment *const target)
 {
     if (target == NULL)
         return;
@@ -193,7 +192,7 @@ void free_environment(struct Environment* target)
 
 /* Functions */
 
-void render_environment(const struct Environment* target)
+void render_environment(const struct Environment *const target)
 {
     if (target == NULL || target->textures == NULL || target->rects == NULL || target->cur_texture_indexes == NULL || target->texture_count == 0 || target->object_count == 0)
     {
@@ -234,7 +233,7 @@ void render_environment(const struct Environment* target)
 
 
 /// REDO according to DRY principle.
-void partly_render_environment(const struct Environment* target, const size_t min_path_pt, size_t max_path_pt)
+void partly_render_environment(const struct Environment *const target, const size_t min_path_pt, size_t max_path_pt)
 {
     if (target == NULL || target->textures == NULL || target->rects == NULL || target->cur_texture_indexes == NULL || target->texture_count == 0 || target->object_count == 0)
     {

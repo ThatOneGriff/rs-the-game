@@ -29,10 +29,10 @@ struct Button
 
 /* Predef */
 
-void add_neighbors_to_button(struct Button* target, struct Button* up, struct Button* down, struct Button* left, struct Button* right);
-struct Button  create_button(const char* text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int* exit_code);
-void           render_button(const struct Button* target);
-void             free_button(struct Button* target);
+struct Button  create_button(const char *const text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int *const exit_code);
+void add_neighbors_to_button(      struct Button *const target, struct Button *const up, struct Button *const down, struct Button *const left, struct Button *const right);
+void           render_button(const struct Button *const target);
+void             free_button(      struct Button *const target);
 
 
 #endif /// BUTTON_H

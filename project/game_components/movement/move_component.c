@@ -26,16 +26,15 @@ I wholeheartedly hate this code. Sorry. */
 
 /* Predef */
 
-struct Move_Component init_move_component(const struct Path path, const time_span_ms step, bool random_x_reflect, int* exit_code);
-void                couple_move_component(struct Move_Component* target, SDL_FRect* manipulated_rects, const size_t rect_count,
-                                          struct Vec2 max_offset, bool randomize_positions, int* exit_code);
-void move_all_rects     (struct Move_Component* target);
-void free_move_component(struct Move_Component* target);
+struct Move_Component init_move_component(const struct Path path, const time_span_ms step, bool random_x_reflect, int *const exit_code);
+void                couple_move_component(struct Move_Component *const target, SDL_FRect *const manipulated_rects, const size_t rect_count, struct Vec2 max_offset, bool randomize_positions, int *const exit_code);
+void move_all_rects     (struct Move_Component *const target);
+void free_move_component(struct Move_Component *const target);
 
 
 /* Body */
 
-struct Move_Component init_move_component(const struct Path path, const time_span_ms step, bool random_x_reflect, int* exit_code)
+struct Move_Component init_move_component(const struct Path path, const time_span_ms step, bool random_x_reflect, int *const exit_code)
 {
     struct Move_Component result = {0};
     result.path = path;
@@ -51,7 +50,7 @@ struct Move_Component init_move_component(const struct Path path, const time_spa
 }
 
 
-void couple_move_component(struct Move_Component* target, SDL_FRect* manipulated_rects, const size_t rect_count, struct Vec2 max_offset, bool randomize_positions, int* exit_code)
+void couple_move_component(struct Move_Component *const target, SDL_FRect *const manipulated_rects, const size_t rect_count, struct Vec2 max_offset, bool randomize_positions, int *const exit_code)
 {
     /// Param checking
     if (exit_code == NULL)
@@ -137,7 +136,6 @@ void couple_move_component(struct Move_Component* target, SDL_FRect* manipulated
             *exit_code = EXIT_FAILURE;
             return;
         }
-        //add_to_deinit_stack(&deinit_stack, target->random_x_reflect, (void (*)(void*))free);
     }
 
     /// Position distribution (+ setting rects to the path's first point)
@@ -159,7 +157,7 @@ void couple_move_component(struct Move_Component* target, SDL_FRect* manipulated
 }
 
 
-void move_all_rects(struct Move_Component* target)
+void move_all_rects(struct Move_Component *const target)
 {
     if (target == NULL)
     {
@@ -218,7 +216,7 @@ void move_all_rects(struct Move_Component* target)
 }
 
 
-void free_move_component(struct Move_Component* target)
+void free_move_component(struct Move_Component *const target)
 {
     if (target == NULL)
     {

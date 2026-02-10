@@ -40,11 +40,10 @@ struct Move_Component
 
 /* Predef */
 
-struct Move_Component init_move_component(const struct Path path, const time_span_ms step, bool random_x_reflect, int* exit_code);
-void                couple_move_component(struct Move_Component* target, SDL_FRect* manipulated_rects, const size_t rect_count,
-                                          struct Vec2 max_offset, bool randomize_positions, int* exit_code);
-void move_all_rects     (struct Move_Component* target);
-void free_move_component(struct Move_Component* target);
+struct Move_Component init_move_component(const struct Path path, const time_span_ms step, bool random_x_reflect, int *const exit_code);
+void                couple_move_component(struct Move_Component *const target, SDL_FRect *const manipulated_rects, const size_t rect_count, struct Vec2 max_offset, bool randomize_positions, int *const exit_code);
+void move_all_rects     (struct Move_Component *const target);
+void free_move_component(struct Move_Component *const target);
 
 
 #endif /// MOVE_COMPONENT_H

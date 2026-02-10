@@ -14,16 +14,16 @@
 
 /* Predef */
 
-struct Switch init_switch(const size_t max_option_count, int* exit_code);
-void          free_switch(struct Switch* target);
-void        add_to_switch(struct Switch* target, const struct Button new_option);
-void change_switch_option(struct Switch* target);
-void        render_switch(struct Switch* target);
+struct Switch init_switch(const size_t max_option_count, int *const exit_code);
+void          free_switch(struct Switch *const target);
+void        add_to_switch(struct Switch *const target, const struct Button new_option);
+void change_switch_option(struct Switch *const target);
+void        render_switch(struct Switch *const target);
 
 
 /* Body */
 
-struct Switch init_switch(const size_t max_option_count, int* exit_code)
+struct Switch init_switch(const size_t max_option_count, int *const exit_code)
 {
     if (exit_code == NULL)
         print_warning("`init_switch()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
@@ -53,7 +53,7 @@ struct Switch init_switch(const size_t max_option_count, int* exit_code)
 }
 
 
-void free_switch(struct Switch* target)
+void free_switch(struct Switch *const target)
 {
     if (target == NULL)
     {
@@ -73,7 +73,7 @@ void free_switch(struct Switch* target)
 }
 
 
-void add_to_switch(struct Switch* target, const struct Button new_option)
+void add_to_switch(struct Switch *const target, const struct Button new_option)
 {
     if (target == NULL || target->options == NULL)
     {
@@ -91,7 +91,7 @@ void add_to_switch(struct Switch* target, const struct Button new_option)
 }
 
 
-void change_switch_option(struct Switch* target)
+void change_switch_option(struct Switch *const target)
 {
     if (target == NULL)
     {
@@ -106,7 +106,7 @@ void change_switch_option(struct Switch* target)
 }
 
 
-void render_switch(struct Switch* target)
+void render_switch(struct Switch *const target)
 {
     if (target == NULL) /// TODO: check all members.
     {

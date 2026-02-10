@@ -27,16 +27,16 @@ struct Music_Loader music_loader_menu     = {0};
 
 /* Predef */
 
-struct Music_Loader init_music_loader  (const char* music_data_path, int* exit_code);
-void                freeze_music_loader(struct Music_Loader* target);
-void                free_music_loader  (struct Music_Loader* target);
-void check_if_music_ended(struct Music_Loader* target);
-void play_random_music   (struct Music_Loader* target);
+struct Music_Loader init_music_loader  (const char *const music_data_path, int *const exit_code);
+void                freeze_music_loader(struct Music_Loader *const target);
+void                free_music_loader  (struct Music_Loader *const target);
+void check_if_music_ended(struct Music_Loader *const target);
+void play_random_music   (struct Music_Loader *const target);
 
 
 /* Body */
 
-struct Music_Loader init_music_loader(const char* music_data_path, int* exit_code)
+struct Music_Loader init_music_loader(const char *const music_data_path, int *const exit_code)
 {
     struct Music_Loader result = {0};
     result.curr_track        = ULONG_LONG_MAX;
@@ -169,7 +169,7 @@ struct Music_Loader init_music_loader(const char* music_data_path, int* exit_cod
 }
 
 
-void freeze_music_loader(struct Music_Loader* target)
+void freeze_music_loader(struct Music_Loader *const target)
 {
     if (target == NULL)
     {
@@ -182,7 +182,7 @@ void freeze_music_loader(struct Music_Loader* target)
 }
 
 
-void free_music_loader(struct Music_Loader* target)
+void free_music_loader(struct Music_Loader *const target)
 {
     if (target == NULL)
     {
@@ -203,7 +203,7 @@ void free_music_loader(struct Music_Loader* target)
 }
 
 
-void check_if_music_ended(struct Music_Loader* target)
+void check_if_music_ended(struct Music_Loader *const target)
 {
     if (target == NULL)
     {
@@ -232,7 +232,7 @@ void check_if_music_ended(struct Music_Loader* target)
 }
 
 
-void play_random_music(struct Music_Loader* target)
+void play_random_music(struct Music_Loader *const target)
 {
     if (target == NULL)
     {

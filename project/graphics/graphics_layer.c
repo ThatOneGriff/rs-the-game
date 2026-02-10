@@ -21,7 +21,7 @@ struct Graphics_Layer graphics_layer = {0};
 
 /* Predef */
 
-void init_graphics_layer(int* exit_code);
+void init_graphics_layer(int *const exit_code);
 void free_graphics_layer(void);
 
 
@@ -29,7 +29,7 @@ void free_graphics_layer(void);
 
 /// [!!!] Assumes SDL has been initialized.
 /// Doesn't check for accidental double initialization.
-void init_graphics_layer(int* exit_code)
+void init_graphics_layer(int *const exit_code)
 {
     if (exit_code == NULL)
         print_warning("`_init_graphics_layer()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);

@@ -15,16 +15,20 @@
 #include "../../graphics/graphics_layer.h" /// Rendering of the texture.
 
 
+/// NOTE: What I call `Texture` is, in fact, a sprite.
+/// I have been told that too deep into development.
+
+
 /* Predef */
 
-struct Texture load_texture(const char* path, const SDL_FRect rect, int* exit_code);
-void           free_texture(struct Texture* target);
-void render_texture(const struct Texture* target);
+struct Texture load_texture(const char *const path, const SDL_FRect rect, int *const exit_code);
+void           free_texture(struct Texture *const target);
+void   render_texture(const struct Texture *const target);
 
 
 /* Body */
 
-struct Texture load_texture(const char* path, const SDL_FRect rect, int* exit_code)
+struct Texture load_texture(const char *const path, const SDL_FRect rect, int *const exit_code)
 {
     struct Texture result = {0};
 
@@ -63,7 +67,7 @@ struct Texture load_texture(const char* path, const SDL_FRect rect, int* exit_co
 }
 
 
-void free_texture(struct Texture* target)
+void free_texture(struct Texture *const target)
 {
     if (target == NULL)
         return;
@@ -76,7 +80,7 @@ void free_texture(struct Texture* target)
 }
 
 
-void render_texture(const struct Texture* target)
+void render_texture(const struct Texture *const target)
 {
     /* Param checking */
     if (target == NULL || target->texture == NULL)

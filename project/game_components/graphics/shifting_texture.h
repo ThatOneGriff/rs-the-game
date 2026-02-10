@@ -27,10 +27,10 @@ struct Shifting_Texture
 
 /* Predef */
 
-struct Shifting_Texture init_shifting_texture(const SDL_FRect rect, const size_t max_count, const time_span_ms step, int* exit_code);
-void                    free_shifting_texture(struct Shifting_Texture* target);
-void add_to_shifting_texture(struct Shifting_Texture* to, const char* new_texture_path, int* exit_code);
-void render_shifting_texture(struct Shifting_Texture* target);
+struct Shifting_Texture init_shifting_texture(const SDL_FRect rect, const size_t max_count, const time_span_ms step, int *const exit_code);
+void                    free_shifting_texture(struct Shifting_Texture *const target);
+void add_to_shifting_texture(struct Shifting_Texture *const to, const char *const new_texture_path, int *const exit_code);
+void render_shifting_texture(struct Shifting_Texture *const target);
 
 
 #endif /// SHIFTING_TEXTURE_H

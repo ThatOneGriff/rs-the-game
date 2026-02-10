@@ -19,8 +19,8 @@ struct Path
 
 /* Predef */
 
-struct Path  new_path(const SDL_FRect* points, const size_t pt_count, int* exit_code);
-void        free_path(struct Path* target);
+struct Path  new_path(const SDL_FRect *const points, const size_t pt_count, int *const exit_code);
+void        free_path(struct Path *const target);
 
 
 #endif /// PATH_H

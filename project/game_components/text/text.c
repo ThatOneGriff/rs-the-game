@@ -21,14 +21,14 @@
 
 /* Predef */
 
-struct Texture create_text(const char* text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int* exit_code);
-static void         _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const unsigned int radius, const int x, const int y);
-static SDL_Surface* _create_bordered_text_surface(const char* text, const unsigned int text_size, const unsigned int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color);
+struct Texture create_text(const char *const text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int *const exit_code);
+static void         _blit_8x(SDL_Surface *const surf_out, SDL_Surface *const surf_target, const unsigned int radius, const int x, const int y);
+static SDL_Surface* _create_bordered_text_surface(const char *const text, const unsigned int text_size, const unsigned int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color);
 
 
 /* Body */
 
-struct Texture create_text(const char* text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int* exit_code)
+struct Texture create_text(const char *const text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int *const exit_code)
 {
     struct Texture result = {0};
 
@@ -85,7 +85,7 @@ struct Texture create_text(const char* text, const SDL_Color inner_color, const 
 
 
 /// Helper for midpoint cicle algorithm. Explanation in `_create_bordered_text_surface()`.
-static void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const unsigned int radius, const int x, const int y)
+static void _blit_8x(SDL_Surface *const surf_out, SDL_Surface *const surf_target, const unsigned int radius, const int x, const int y)
 {
     if (surf_out == NULL || surf_target == NULL)
     {
@@ -105,7 +105,7 @@ static void _blit_8x(SDL_Surface* surf_out, SDL_Surface* surf_target, const unsi
 }
 
 
-static SDL_Surface* _create_bordered_text_surface(const char* text, const unsigned int text_size, const unsigned int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color)
+static SDL_Surface* _create_bordered_text_surface(const char *const text, const unsigned int text_size, const unsigned int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color)
 {
     /// Deinit stack
     int exit_code = EXIT_SUCCESS;

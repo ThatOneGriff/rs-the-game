@@ -25,7 +25,7 @@ extern struct Graphics_Layer graphics_layer; /// Singleton.
 
 /* Predef */
 
-void init_graphics_layer(int* exit_code);
+void init_graphics_layer(int *const exit_code);
 void free_graphics_layer(void);
 
 

@@ -10,15 +10,15 @@
 
 /* Predef */
 
-void   free_ptr_arr(void** target, const size_t len);
-char** read_file_by_line(const char* path, const size_t target_lines);
+void   free_ptr_arr(void **const target, const size_t len);
+char** read_file_by_line(const char *const path, const size_t target_lines);
 void   textcolor(const unsigned short int color_code);
 
 
 /* Body */
 
 
-void free_ptr_arr(void** target, const size_t len)
+void free_ptr_arr(void **const target, const size_t len)
 {
     if (target == NULL)
         return;
@@ -34,7 +34,7 @@ void free_ptr_arr(void** target, const size_t len)
 }
 
 
-char** read_file_by_line(const char* path, const size_t target_lines)
+char** read_file_by_line(const char *const path, const size_t target_lines)
 {
     FILE* data_file = fopen(path, "r");
     if (data_file == NULL)

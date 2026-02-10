@@ -16,8 +16,8 @@
 
 /* Predef */
 
-void   free_ptr_arr(void** target, const size_t len);
-char** read_file_by_line(const char* path, const size_t target_lines);
+void   free_ptr_arr(void **const target, const size_t len);
+char** read_file_by_line(const char *const path, const size_t target_lines);
 void   textcolor(const unsigned short int color_code);
 
 

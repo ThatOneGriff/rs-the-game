@@ -19,10 +19,10 @@ struct Multi_Texture
 
 /* Predef */
 
-struct Multi_Texture load_multi_texture(const char* texture_path, const size_t max_count, int* exit_code);
-void                 free_multi_texture(struct Multi_Texture* target);
-void add_to_multi_texture(struct Multi_Texture* to, const SDL_FRect new_rects, int* exit_code);
-void render_multi_texture(const struct Multi_Texture* target);
+struct Multi_Texture load_multi_texture(const char *const texture_path, const size_t max_count, int *const exit_code);
+void                 free_multi_texture(struct Multi_Texture *const target);
+void add_to_multi_texture(struct Multi_Texture *const to, const SDL_FRect new_rects, int *const exit_code);
+void render_multi_texture(const struct Multi_Texture *const target);
 
 
 #endif /// MULTI_TEXTURE_H
