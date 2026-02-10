@@ -45,14 +45,15 @@ struct Menu_Scene
     struct Texture info_line1;
     struct Texture info_line2;
 };
+extern struct Menu_Scene menu_scene; /// Singleton.
 
 
 /* Predef */
 
-struct Menu_Scene load_menu_scene   (struct Car* car_ptr, int* exit_code);
-void              free_menu_scene   (struct Menu_Scene* target);
-void               set_menu_car_info(struct Menu_Scene* scene, struct Car* car, int* exit_code);
-void            render_menu_scene   (struct Menu_Scene* target);
+void load_menu_scene(struct Car* car_ptr, int* exit_code);
+void free_menu_scene(void);
+void set_menu_car_info(struct Car* car, int* exit_code);
+void render_menu_scene(void);
 
 
 #endif /// MENU_SCENE_H

@@ -26,14 +26,14 @@
 
 /* Predef */
 
-void         process_menu_events     (struct Menu_Scene* scene);
-static void _process_menu_keyboard   (struct Menu_Scene*     scene,          const SDL_Keycode event_key);
-static void _process_options_keyboard(struct Options_Screen* options_screen, const SDL_Keycode event_key);
+void         process_menu_events(void);
+static void _process_menu_keyboard   (const SDL_Keycode event_key);
+static void _process_options_keyboard(const SDL_Keycode event_key);
 
 
 /* Body */
 
-void process_menu_events(struct Menu_Scene* scene)
+void process_menu_events(void)
 {
     while (SDL_PollEvent(&logic_layer.event))
     {
@@ -41,7 +41,7 @@ void process_menu_events(struct Menu_Scene* scene)
         {
         /// Key press.
         case SDL_EVENT_KEY_DOWN:
-            _process_menu_keyboard(scene, logic_layer.event.key.key);
+            _process_menu_keyboard(logic_layer.event.key.key);
             break;
         
         /// Other event.
@@ -49,22 +49,22 @@ void process_menu_events(struct Menu_Scene* scene)
             process_global_events(logic_layer.event);
         }
     }
+    return;
 }
 
 
-static void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode event_key)
+static void _process_menu_keyboard(const SDL_Keycode event_key)
 {
-    /// TODO: param checking.
     int exit_code = EXIT_SUCCESS;
 
     /// Things that can happen both with and without options screen being open:
     switch(event_key)
     {
         case SDLK_ESCAPE:
-            if      (! scene->options_screen.is_open)
-                show_options_screen(&scene->options_screen);
-            else if (scene->options_screen.is_open)
-                hide_options_screen(&scene->options_screen);
+            if    (! menu_scene.options_screen.is_open)
+                show_options_screen(&menu_scene.options_screen);
+            else if (menu_scene.options_screen.is_open)
+                hide_options_screen(&menu_scene.options_screen);
             break;
         
         case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
@@ -73,9 +73,9 @@ static void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode e
     }
 
     /// Conditional redirection to 'Options' event handler:
-    if (scene->options_screen.is_open)
+    if (menu_scene.options_screen.is_open)
     {
-        _process_options_keyboard(&scene->options_screen, event_key);
+        _process_options_keyboard(event_key);
         return;
     }
 
@@ -83,82 +83,82 @@ static void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode e
     switch(event_key)
     {
         case SDLK_RETURN:
-            if      (scene->prev_button.is_focused)
+            if      (menu_scene.prev_button.is_focused)
             {
-                set_menu_car_info(scene, get_prev_car(&players_car_manager), &exit_code);
+                set_menu_car_info(get_prev_car(&players_car_manager), &exit_code);
                 if (players_car_manager.cur_car == 0)
                 {
-                    scene->prev_button.is_focused = false;
-                    scene->next_button.is_focused = true;
-                    scene->curr_button = &scene->next_button;
+                    menu_scene.prev_button.is_focused = false;
+                    menu_scene.next_button.is_focused = true;
+                    menu_scene.curr_button = &menu_scene.next_button;
                 }
             }
-            else if (scene->next_button.is_focused)
+            else if (menu_scene.next_button.is_focused)
             {
-                set_menu_car_info(scene, get_next_car(&players_car_manager), &exit_code);
+                set_menu_car_info(get_next_car(&players_car_manager), &exit_code);
                 if (players_car_manager.cur_car == players_car_manager.car_count - 1)
                 {
-                    scene->next_button.is_focused = false;
-                    scene->prev_button.is_focused = true;
-                    scene->curr_button = &scene->prev_button;
+                    menu_scene.next_button.is_focused = false;
+                    menu_scene.prev_button.is_focused = true;
+                    menu_scene.curr_button = &menu_scene.prev_button;
                 }
             }
-            else if (scene->play_button.is_focused)
+            else if (menu_scene.play_button.is_focused)
                 logic_layer.remain_in_scene = false;
-            else if (scene->options_button.is_focused)
-                show_options_screen(&scene->options_screen);
-            else if (scene->quit_button.is_focused)
+            else if (menu_scene.options_button.is_focused)
+                show_options_screen(&menu_scene.options_screen);
+            else if (menu_scene.quit_button.is_focused)
                 logic_layer.game_is_running = false;
             break;
 
         case SDLK_UP:
-            if (scene->curr_button->up == NULL)
+            if (menu_scene.curr_button->up == NULL)
                 break;
-            scene->curr_button->    is_focused = false;
-            scene->curr_button->up->is_focused = true;
-            scene->curr_button = scene->curr_button->up;
+            menu_scene.curr_button->    is_focused = false;
+            menu_scene.curr_button->up->is_focused = true;
+            menu_scene.curr_button = menu_scene.curr_button->up;
 
             /// A little bit of hard-coding to not pick 'prev' button
             /// when player's car is 1st one [ID = 0]:
-            if (scene->curr_button == &scene->prev_button
+            if (menu_scene.curr_button == &menu_scene.prev_button
               && players_car_manager.cur_car == 0)
             {
-                scene->prev_button.is_focused = false;
-                scene->next_button.is_focused = true;
-                scene->curr_button = &scene->next_button;
+                menu_scene.prev_button.is_focused = false;
+                menu_scene.next_button.is_focused = true;
+                menu_scene.curr_button = &menu_scene.next_button;
             }
             break;
         
         case SDLK_DOWN:
-            if (scene->curr_button->down == NULL)
+            if (menu_scene.curr_button->down == NULL)
                 break;
-            scene->curr_button->      is_focused = false;
-            scene->curr_button->down->is_focused = true;
-            scene->curr_button = scene->curr_button->down;
+            menu_scene.curr_button->      is_focused = false;
+            menu_scene.curr_button->down->is_focused = true;
+            menu_scene.curr_button = menu_scene.curr_button->down;
             break;
 
         case SDLK_LEFT:
             /// In menu
-            if (! scene->options_screen.is_open && players_car_manager.cur_car != 0)
+            if (! menu_scene.options_screen.is_open && players_car_manager.cur_car != 0)
             {
-                if (scene->curr_button->left == NULL)
+                if (menu_scene.curr_button->left == NULL)
                     break;
-                scene->curr_button->      is_focused = false;
-                scene->curr_button->left->is_focused = true;
-                scene->curr_button = scene->curr_button->left;
+                menu_scene.curr_button->      is_focused = false;
+                menu_scene.curr_button->left->is_focused = true;
+                menu_scene.curr_button = menu_scene.curr_button->left;
                 break;
             }
             break;
 
         case SDLK_RIGHT:
             /// In menu
-            if (! scene->options_screen.is_open && players_car_manager.cur_car != players_car_manager.car_count - 1)
+            if (! menu_scene.options_screen.is_open && players_car_manager.cur_car != players_car_manager.car_count - 1)
             {
-                if (scene->curr_button->right == NULL)
+                if (menu_scene.curr_button->right == NULL)
                     break;
-                scene->curr_button->       is_focused = false;
-                scene->curr_button->right->is_focused = true;
-                scene->curr_button = scene->curr_button->right;
+                menu_scene.curr_button->       is_focused = false;
+                menu_scene.curr_button->right->is_focused = true;
+                menu_scene.curr_button = menu_scene.curr_button->right;
                 break;
             }
             break;
@@ -173,61 +173,60 @@ static void _process_menu_keyboard(struct Menu_Scene* scene, const SDL_Keycode e
 }
 
 
-static void _process_options_keyboard(struct Options_Screen* options_screen, const SDL_Keycode event_key)
+static void _process_options_keyboard(const SDL_Keycode event_key)
 {
-    /// TODO: param checking.
     int exit_code = EXIT_SUCCESS;
 
     /// Options screen button handling:
     switch(event_key)
     {
         case SDLK_RETURN:
-            if (options_screen->audio_switch.is_focused)
+            if (menu_scene.options_screen.audio_switch.is_focused)
             {
                 audio_manager.using_audio = ! audio_manager.using_audio;
-                change_switch_option(&options_screen->audio_switch);
+                change_switch_option(&menu_scene.options_screen.audio_switch);
                 if (! audio_manager.using_audio)
                     ma_sound_stop(&audio_manager.music);
                 else
                     play_random_music(&music_loader_menu);
             }
-            else if (options_screen->close_button.is_focused)
+            else if (menu_scene.options_screen.close_button.is_focused)
             {
-                hide_options_screen(options_screen);
+                hide_options_screen(&menu_scene.options_screen);
             }
-            else if (options_screen->fps_switch.is_focused)
+            else if (menu_scene.options_screen.fps_switch.is_focused)
             {       
                 ++curr_fps_cap_i;
                 if (curr_fps_cap_i == 4)
                     curr_fps_cap_i = 0;
                 set_fps_cap(fps_cap_options[curr_fps_cap_i]);
-                change_switch_option(&options_screen->fps_switch);
+                change_switch_option(&menu_scene.options_screen.fps_switch);
             }
             break;
 
         case SDLK_UP:
-            if      (options_screen->audio_switch.is_focused)
+            if      (menu_scene.options_screen.audio_switch.is_focused)
             {
-                options_screen->audio_switch.is_focused = false;
-                options_screen->close_button.is_focused = true;
+                menu_scene.options_screen.audio_switch.is_focused = false;
+                menu_scene.options_screen.close_button.is_focused = true;
             }
-            else if (options_screen->fps_switch.is_focused)
+            else if (menu_scene.options_screen.fps_switch.is_focused)
             {
-                options_screen->fps_switch.  is_focused = false;
-                options_screen->audio_switch.is_focused = true;
+                menu_scene.options_screen.fps_switch.  is_focused = false;
+                menu_scene.options_screen.audio_switch.is_focused = true;
             }
             break;
         
         case SDLK_DOWN:
-            if (options_screen->close_button.is_focused)
+            if (menu_scene.options_screen.close_button.is_focused)
             {
-                options_screen->close_button.is_focused = false;
-                options_screen->audio_switch.is_focused = true;
+                menu_scene.options_screen.close_button.is_focused = false;
+                menu_scene.options_screen.audio_switch.is_focused = true;
             }
-            else if (options_screen->audio_switch.is_focused)
+            else if (menu_scene.options_screen.audio_switch.is_focused)
             {
-                options_screen->audio_switch.is_focused = false;
-                options_screen->fps_switch.is_focused   = true;
+                menu_scene.options_screen.audio_switch.is_focused = false;
+                menu_scene.options_screen.fps_switch.is_focused   = true;
             }
             break;
 

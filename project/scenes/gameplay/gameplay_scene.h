@@ -43,14 +43,15 @@ struct Gameplay_Scene
     struct Car* car_ptr;
     struct Pause_Screen pause_screen;
 };
+extern struct Gameplay_Scene gameplay_scene; /// Singleton.
 
 
 /* Predef */
 
-struct Gameplay_Scene load_gameplay_scene(const char path[], struct Car* car_ptr, int* exit_code);
-void                  free_gameplay_scene(struct Gameplay_Scene* target);
-void                  render_gameplay_scene(struct Gameplay_Scene* target);
-void update_points(struct Gameplay_Scene* target);
+void load_gameplay_scene(const char path[], struct Car* car_ptr, int* exit_code);
+void free_gameplay_scene(void);
+void render_gameplay_scene(void);
+void update_points(void);
 
 
 #endif /// GAMEPLAY_SCENE_H

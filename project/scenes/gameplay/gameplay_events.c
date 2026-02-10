@@ -22,16 +22,16 @@
 
 /* Predef */
 
-void         process_gameplay_events   (struct Gameplay_Scene* scene);
-static void _process_gameplay_keyboard (struct Gameplay_Scene* scene,      const SDL_Keycode event_key);
-static void _process_pause_keyboard    (struct Pause_Screen* pause_screen, const SDL_Keycode event_key);
-static void _process_gameplay_car_input(struct Car* car);
+void         process_gameplay_events   (void);
+static void _process_gameplay_keyboard (const SDL_Keycode event_key);
+static void _process_pause_keyboard    (const SDL_Keycode event_key);
+static void _process_gameplay_car_input(void);
 
 
-void process_gameplay_events(struct Gameplay_Scene* scene)
+void process_gameplay_events(void)
 {
-    if (! scene->pause_screen.is_open && scene->is_driving)
-        _process_gameplay_car_input(scene->car_ptr);
+    if (! gameplay_scene.pause_screen.is_open && gameplay_scene.is_driving)
+        _process_gameplay_car_input();
     
     while (SDL_PollEvent(&logic_layer.event))
     {
@@ -39,7 +39,7 @@ void process_gameplay_events(struct Gameplay_Scene* scene)
         {
         /// Key press.
         case SDL_EVENT_KEY_DOWN:
-            _process_gameplay_keyboard(scene, logic_layer.event.key.key);
+            _process_gameplay_keyboard(logic_layer.event.key.key);
             break;
         /// Other event.
         default:
@@ -49,22 +49,21 @@ void process_gameplay_events(struct Gameplay_Scene* scene)
 }
 
 
-void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode event_key)
+void _process_gameplay_keyboard(const SDL_Keycode event_key)
 {
-    /// TODO: param checking.
     /// Things that can happen both with and without options screen being open:
     switch(event_key)
     {
         case SDLK_ESCAPE:
-            if      (! scene->pause_screen.is_open)
+            if    (! gameplay_scene.pause_screen.is_open)
             {
-                show_pause_screen(&scene->pause_screen);
+                show_pause_screen(&gameplay_scene.pause_screen);
                 if (audio_manager.using_audio)
                     ma_sound_stop(&audio_manager.music);
             }
-            else if (scene->pause_screen.is_open)
+            else if (gameplay_scene.pause_screen.is_open)
             {
-                hide_pause_screen(&scene->pause_screen);
+                hide_pause_screen(&gameplay_scene.pause_screen);
                 if (audio_manager.using_audio)
                     ma_sound_start(&audio_manager.music);
             }
@@ -76,9 +75,9 @@ void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode 
     }
 
     /// Conditional redirection to 'Options' event handler:
-    if (scene->pause_screen.is_open)
+    if (gameplay_scene.pause_screen.is_open)
     {
-        _process_pause_keyboard(&scene->pause_screen, event_key);
+        _process_pause_keyboard(event_key);
         return;
     }
 
@@ -86,10 +85,10 @@ void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode 
     switch(event_key)
     {
         case SDLK_UP:
-            if (scene->start_tick == 0 && scene->crash_tick == 0)
+            if (gameplay_scene.start_tick == 0 && gameplay_scene.crash_tick == 0)
             {
-                scene->is_driving = true;
-                scene->start_tick = logic_layer.curr_tick;
+                gameplay_scene.is_driving = true;
+                gameplay_scene.start_tick = logic_layer.curr_tick;
             }
             break;
         
@@ -100,58 +99,56 @@ void _process_gameplay_keyboard(struct Gameplay_Scene* scene, const SDL_Keycode 
 }
 
 
-static void _process_pause_keyboard(struct Pause_Screen* pause_screen, const SDL_Keycode event_key)
+static void _process_pause_keyboard(const SDL_Keycode event_key)
 {
-    /// TODO: param checking.
-
     /// Pause screen button handling:
     switch(event_key)
     {
         case SDLK_RETURN:
-            if (pause_screen->close_button.is_focused || pause_screen->continue_button.is_focused)
+            if (gameplay_scene.pause_screen.close_button.is_focused || gameplay_scene.pause_screen.continue_button.is_focused)
             {
-                hide_pause_screen(pause_screen);
+                hide_pause_screen(&gameplay_scene.pause_screen);
                 ma_sound_start(&audio_manager.music);
             }
-            else if (pause_screen->quit_to_menu_button.is_focused)
+            else if (gameplay_scene.pause_screen.quit_to_menu_button.is_focused)
                 logic_layer.remain_in_scene = false;
-            else if (pause_screen->quit_to_desktop_button.is_focused)
+            else if (gameplay_scene.pause_screen.quit_to_desktop_button.is_focused)
                 logic_layer.game_is_running = false;
             break;
         
         case SDLK_UP:
-            if (pause_screen->continue_button.is_focused)
+            if (gameplay_scene.pause_screen.continue_button.is_focused)
             {
-                pause_screen->close_button.is_focused    = true;
-                pause_screen->continue_button.is_focused = false;
+                gameplay_scene.pause_screen.close_button.is_focused    = true;
+                gameplay_scene.pause_screen.continue_button.is_focused = false;
             }
-            else if (pause_screen->quit_to_menu_button.is_focused)
+            else if (gameplay_scene.pause_screen.quit_to_menu_button.is_focused)
             {
-                pause_screen->continue_button.is_focused     = true;
-                pause_screen->quit_to_menu_button.is_focused = false;
+                gameplay_scene.pause_screen.continue_button.is_focused     = true;
+                gameplay_scene.pause_screen.quit_to_menu_button.is_focused = false;
             }
-            else if (pause_screen->quit_to_desktop_button.is_focused)
+            else if (gameplay_scene.pause_screen.quit_to_desktop_button.is_focused)
             {
-                pause_screen->quit_to_menu_button.is_focused    = true;
-                pause_screen->quit_to_desktop_button.is_focused = false;
+                gameplay_scene.pause_screen.quit_to_menu_button.is_focused    = true;
+                gameplay_scene.pause_screen.quit_to_desktop_button.is_focused = false;
             }
             break;
         
         case SDLK_DOWN:
-            if (pause_screen->close_button.is_focused)
+            if (gameplay_scene.pause_screen.close_button.is_focused)
             {
-                pause_screen->close_button.is_focused    = false;
-                pause_screen->continue_button.is_focused = true;
+                gameplay_scene.pause_screen.close_button.is_focused    = false;
+                gameplay_scene.pause_screen.continue_button.is_focused = true;
             }
-            else if (pause_screen->continue_button.is_focused)
+            else if (gameplay_scene.pause_screen.continue_button.is_focused)
             {
-                pause_screen->continue_button.is_focused     = false;
-                pause_screen->quit_to_menu_button.is_focused = true;
+                gameplay_scene.pause_screen.continue_button.is_focused     = false;
+                gameplay_scene.pause_screen.quit_to_menu_button.is_focused = true;
             }
-            else if (pause_screen->quit_to_menu_button.is_focused)
+            else if (gameplay_scene.pause_screen.quit_to_menu_button.is_focused)
             {
-                pause_screen->quit_to_menu_button.is_focused    = false;
-                pause_screen->quit_to_desktop_button.is_focused = true;
+                gameplay_scene.pause_screen.quit_to_menu_button.is_focused    = false;
+                gameplay_scene.pause_screen.quit_to_desktop_button.is_focused = true;
             }
             break;
         
@@ -162,94 +159,88 @@ static void _process_pause_keyboard(struct Pause_Screen* pause_screen, const SDL
 }
 
 
-void _process_gameplay_car_input(struct Car* car)
-{
-    if (car == NULL)
-    {
-        print_error("`process_gameplay_car_input()`: `car` arg is `NULL`", NON_SDL_ERROR);
-        return;
-    }
-    
+void _process_gameplay_car_input(void)
+{   
     /// Input reading
     const bool* key_state = SDL_GetKeyboardState(NULL); /// Unlike the scancodes, this provides no delay - just like handling a car requires.
-    car->direction_x = - key_state[SDL_SCANCODE_LEFT] + key_state[SDL_SCANCODE_RIGHT];
+    gameplay_scene.car_ptr->direction_x = - key_state[SDL_SCANCODE_LEFT] + key_state[SDL_SCANCODE_RIGHT];
     /// Boundary processing
-    if (car->direction_x != 0)
-        car->prev_turn_direction_x = car->direction_x;
-    if (car->direction_x == -1 && car->coords.x <= 0)
-        car->direction_x = 0;
-    else if (car->direction_x == 1 && car->coords.x + car->coords.w >= RENDER_WIDTH)
-        car->direction_x = 0;
+    if (gameplay_scene.car_ptr->direction_x != 0)
+        gameplay_scene.car_ptr->prev_turn_direction_x = gameplay_scene.car_ptr->direction_x;
+    if (gameplay_scene.car_ptr->direction_x == -1 && gameplay_scene.car_ptr->coords.x <= 0)
+        gameplay_scene.car_ptr->direction_x = 0;
+    else if (gameplay_scene.car_ptr->direction_x == 1 && gameplay_scene.car_ptr->coords.x + gameplay_scene.car_ptr->coords.w >= RENDER_WIDTH)
+        gameplay_scene.car_ptr->direction_x = 0;
     
     /// Turn smoothing
-    if (car->direction_x != 0 && car->latest_turn_start == 0)
+    if (gameplay_scene.car_ptr->direction_x != 0 && gameplay_scene.car_ptr->latest_turn_start == 0)
     {
-        car->latest_turn_start = logic_layer.curr_tick;
-        car->latest_turn_end   = 0;
+        gameplay_scene.car_ptr->latest_turn_start = logic_layer.curr_tick;
+        gameplay_scene.car_ptr->latest_turn_end   = 0;
     }
-    if (car->direction_x == 0 &car->latest_turn_end == 0)
+    if (gameplay_scene.car_ptr->direction_x == 0 &gameplay_scene.car_ptr->latest_turn_end == 0)
     {
-        car->latest_turn_end   = logic_layer.curr_tick;
-        car->latest_turn_start = 0;
+        gameplay_scene.car_ptr->latest_turn_end   = logic_layer.curr_tick;
+        gameplay_scene.car_ptr->latest_turn_start = 0;
     }
 
-    car->base_texture = (size_t)(2 + car->direction_x);
+    gameplay_scene.car_ptr->base_texture = (size_t)(2 + gameplay_scene.car_ptr->direction_x);
     /// NOTE: those nested `if-else`s are for overflow sanitizer compliance.
     /// - If turn recently started.
-    if ((car->latest_turn_start != 0) && (logic_layer.curr_tick - car->latest_turn_start >= car->turn_smoothing_duration))
+    if ((gameplay_scene.car_ptr->latest_turn_start != 0) && (logic_layer.curr_tick - gameplay_scene.car_ptr->latest_turn_start >= gameplay_scene.car_ptr->turn_smoothing_duration))
     {
-        if (car->prev_turn_direction_x > 0)
-            car->base_texture += (size_t)car->prev_turn_direction_x;
+        if (gameplay_scene.car_ptr->prev_turn_direction_x > 0)
+            gameplay_scene.car_ptr->base_texture += (size_t)gameplay_scene.car_ptr->prev_turn_direction_x;
         else
         {
-            if (car->base_texture <  (size_t)(-car->prev_turn_direction_x))
-                car->base_texture = 0;
+            if (gameplay_scene.car_ptr->base_texture <  (size_t)(-gameplay_scene.car_ptr->prev_turn_direction_x))
+                gameplay_scene.car_ptr->base_texture = 0;
             else
-                car->base_texture -= (size_t)(-car->prev_turn_direction_x);
+                gameplay_scene.car_ptr->base_texture -= (size_t)(-gameplay_scene.car_ptr->prev_turn_direction_x);
         }
     }
     
     /// - If turn recently ended.
-    else if ((car->latest_turn_end   != 0) && (logic_layer.curr_tick - car->latest_turn_end   <= car->turn_smoothing_duration))
+    else if ((gameplay_scene.car_ptr->latest_turn_end   != 0) && (logic_layer.curr_tick - gameplay_scene.car_ptr->latest_turn_end   <= gameplay_scene.car_ptr->turn_smoothing_duration))
     {
-        if (car->prev_turn_direction_x > 0)
-            car->base_texture += (size_t)car->prev_turn_direction_x;
+        if (gameplay_scene.car_ptr->prev_turn_direction_x > 0)
+            gameplay_scene.car_ptr->base_texture += (size_t)gameplay_scene.car_ptr->prev_turn_direction_x;
         else
         {
-            if (car->base_texture <  (size_t)(-car->prev_turn_direction_x))
-                car->base_texture = 0;
+            if (gameplay_scene.car_ptr->base_texture <  (size_t)(-gameplay_scene.car_ptr->prev_turn_direction_x))
+                gameplay_scene.car_ptr->base_texture = 0;
             else
-                car->base_texture -= (size_t)(-car->prev_turn_direction_x);
+                gameplay_scene.car_ptr->base_texture -= (size_t)(-gameplay_scene.car_ptr->prev_turn_direction_x);
         }
     }
     
     /// Turning the texture
     int coord_based_diff = 0;
-    if (car->coords.x <= 30)
+    if (gameplay_scene.car_ptr->coords.x <= 30)
         coord_based_diff =  2;
-    else if (car->coords.x <= 60)
+    else if (gameplay_scene.car_ptr->coords.x <= 60)
         coord_based_diff =  1;
-    else if (car->coords.x + car->coords.w >= 210)
+    else if (gameplay_scene.car_ptr->coords.x + gameplay_scene.car_ptr->coords.w >= 210)
         coord_based_diff = -2;
-    else if (car->coords.x + car->coords.w >= 180)
+    else if (gameplay_scene.car_ptr->coords.x + gameplay_scene.car_ptr->coords.w >= 180)
         coord_based_diff = -1;
     
     /// NOTE: again, integer overflow compliance.
     if (coord_based_diff > 0)
     {
-        car->base_texture += (size_t)coord_based_diff;
-        if (car->base_texture >= 5)
-            car->base_texture = 4;
+        gameplay_scene.car_ptr->base_texture += (size_t)coord_based_diff;
+        if (gameplay_scene.car_ptr->base_texture >= 5)
+            gameplay_scene.car_ptr->base_texture = 4;
     }
     else
     {
-        if (car->base_texture <  (size_t)(-coord_based_diff))
-            car->base_texture = 0;
+        if (gameplay_scene.car_ptr->base_texture <  (size_t)(-coord_based_diff))
+            gameplay_scene.car_ptr->base_texture = 0;
         else
-            car->base_texture -= (size_t)(-coord_based_diff);
+            gameplay_scene.car_ptr->base_texture -= (size_t)(-coord_based_diff);
     }
     
     /// Moving the car across the screen.
-    car->coords.x += (float)(car->direction_x) * (float)car->handling * (float)(FPS_manager.delta_ns) / SEC_IN_NS;
+    gameplay_scene.car_ptr->coords.x += (float)(gameplay_scene.car_ptr->direction_x) * (float)gameplay_scene.car_ptr->handling * (float)(FPS_manager.delta_ns) / SEC_IN_NS;
     return;
 }

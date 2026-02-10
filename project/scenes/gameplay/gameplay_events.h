@@ -8,7 +8,7 @@
 
 /* Predef */
 
-void process_gameplay_events(struct Gameplay_Scene* scene);
+void process_gameplay_events(void);
 
 
 #endif /// GAMEPLAY_EVENTS_H

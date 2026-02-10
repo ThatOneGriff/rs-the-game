@@ -97,12 +97,14 @@ void game_loop(int *const exit_code)
         print_warning("`game_loop()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
     /// Loading & preparing the scene
-    struct Gameplay_Scene gameplay_scene;
     bool gameplay_scene_opened = false; /// TEMP: just not to get an error while deinitializing BEFORE loading the gameplay scene.
     
-    struct Menu_Scene menu_scene = load_menu_scene(get_curr_car(&players_car_manager), exit_code);
+    load_menu_scene(get_curr_car(&players_car_manager), exit_code);
     if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`game_loop()`: failed to load `menu_scene`", NON_SDL_ERROR);
         return;
+    }
     logic_layer.curr_scene = &menu_scene;
 
     /// FPS measurement preparations
@@ -129,13 +131,14 @@ void game_loop(int *const exit_code)
             if (audio_manager.using_audio)
                 check_if_music_ended(&music_loader_gameplay);
             
-            process_gameplay_events(&gameplay_scene);
-            render_gameplay_scene  (&gameplay_scene);
+            process_gameplay_events();
+            render_gameplay_scene();
+            
             /// Scene switch (to menu)
             if (! logic_layer.remain_in_scene)
             {
-                free_gameplay_scene(&gameplay_scene);
-                menu_scene = load_menu_scene(get_curr_car(&players_car_manager), exit_code);
+                free_gameplay_scene();
+                load_menu_scene(get_curr_car(&players_car_manager), exit_code);
                 if (*exit_code == EXIT_FAILURE)
                     return;
                 logic_layer.curr_scene = &menu_scene;
@@ -154,14 +157,14 @@ void game_loop(int *const exit_code)
             if (audio_manager.using_audio)
                 check_if_music_ended(&music_loader_menu);
             
-            process_menu_events(&menu_scene);
-            render_menu_scene  (&menu_scene);
+            process_menu_events();
+            render_menu_scene();
             
             /// Scene switch
             if (! logic_layer.remain_in_scene)
             {
-                free_menu_scene(&menu_scene);
-                gameplay_scene = load_gameplay_scene("./rsdt/scene_data/plains.rsdt", get_curr_car(&players_car_manager), exit_code);
+                free_menu_scene();
+                load_gameplay_scene("./rsdt/scene_data/plains.rsdt", get_curr_car(&players_car_manager), exit_code);
                 if (*exit_code == EXIT_FAILURE)
                     return;
                 logic_layer.curr_scene = &gameplay_scene;
@@ -200,7 +203,7 @@ void game_loop(int *const exit_code)
     }
 
     if (gameplay_scene_opened)
-        free_gameplay_scene(&gameplay_scene);
-    free_menu_scene(&menu_scene);
+        free_gameplay_scene();
+    free_menu_scene();
     *exit_code = EXIT_SUCCESS;
 }

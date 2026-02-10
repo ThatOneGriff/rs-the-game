@@ -8,7 +8,7 @@
 
 /* Predef */
 
-void process_menu_events  (struct Menu_Scene* scene);
+void process_menu_events(void);
 
 
 #endif /// MENU_EVENTS_H
