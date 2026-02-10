@@ -22,6 +22,10 @@
 /* Variables */
 
 struct Traffic_Manager traffic_manager = {0};
+      static time_tick_ms latest_collision_check = 0;
+const static time_span_ms COLLISION_CHECK_DELTA  = 33; /// 30/sec.
+
+#define NEAR_MISS_CAR_DISTANCE 135
 
 
 /* Predef */
@@ -284,6 +288,9 @@ void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct 
                 traffic_manager.cars[car_id].coords = traffic_manager.lanes[lane_id].points[path_pt];
                 render_car(&traffic_manager.cars[car_id]);
 
+                if (logic_layer.curr_tick - latest_collision_check < COLLISION_CHECK_DELTA)
+                    continue;
+
                 /// Collision check. Can be done with math, but I'm tired.
                 if ((path_pt == 9 && (player_car->direction_x == -1 || player_car->base_texture != 2))
                  || (path_pt == 7 && (player_car->direction_x ==  0 && player_car->base_texture == 2))
@@ -295,8 +302,9 @@ void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct 
                     traffic_collision_box.x -= (RENDER_WIDTH - traffic_manager.cars[car_id].coords.x);
                     if (have_x_overlap(players_collision_box, traffic_collision_box))
                         *is_driving = false;
-                    else if (distance_between(players_collision_box, traffic_collision_box) <= 130)
+                    else if (distance_between(players_collision_box, traffic_collision_box) <= NEAR_MISS_CAR_DISTANCE)
                         (*point_count)++;
+                    latest_collision_check = logic_layer.curr_tick;
                 }
             }
         }
