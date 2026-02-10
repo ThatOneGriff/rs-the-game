@@ -41,6 +41,7 @@ nlohmann/json version: 3.12.0  (last checked 28.01.26) | https://github.com/nloh
 /// - player's car bouncing in beat to the music.
 
 /* TODOs: */
+/// - global traffic, audio managers;
 /// - const ptrs (`int *const example`);
 /// - fix EVERYWHERE:
 /// object creation
@@ -133,7 +134,7 @@ void game_loop(int *const exit_code)
             
             process_gameplay_events();
             render_gameplay_scene();
-            
+
             /// Scene switch (to menu)
             if (! logic_layer.remain_in_scene)
             {

@@ -117,39 +117,19 @@ static void _process_pause_keyboard(const SDL_Keycode event_key)
             break;
         
         case SDLK_UP:
-            if (gameplay_scene.pause_screen.continue_button.is_focused)
-            {
-                gameplay_scene.pause_screen.close_button.is_focused    = true;
-                gameplay_scene.pause_screen.continue_button.is_focused = false;
-            }
-            else if (gameplay_scene.pause_screen.quit_to_menu_button.is_focused)
-            {
-                gameplay_scene.pause_screen.continue_button.is_focused     = true;
-                gameplay_scene.pause_screen.quit_to_menu_button.is_focused = false;
-            }
-            else if (gameplay_scene.pause_screen.quit_to_desktop_button.is_focused)
-            {
-                gameplay_scene.pause_screen.quit_to_menu_button.is_focused    = true;
-                gameplay_scene.pause_screen.quit_to_desktop_button.is_focused = false;
-            }
+            if (gameplay_scene.pause_screen.curr_button->up == NULL)
+                break;
+            gameplay_scene.pause_screen.curr_button->    is_focused = false;
+            gameplay_scene.pause_screen.curr_button->up->is_focused = true;
+            gameplay_scene.pause_screen.curr_button = gameplay_scene.pause_screen.curr_button->up;
             break;
         
         case SDLK_DOWN:
-            if (gameplay_scene.pause_screen.close_button.is_focused)
-            {
-                gameplay_scene.pause_screen.close_button.is_focused    = false;
-                gameplay_scene.pause_screen.continue_button.is_focused = true;
-            }
-            else if (gameplay_scene.pause_screen.continue_button.is_focused)
-            {
-                gameplay_scene.pause_screen.continue_button.is_focused     = false;
-                gameplay_scene.pause_screen.quit_to_menu_button.is_focused = true;
-            }
-            else if (gameplay_scene.pause_screen.quit_to_menu_button.is_focused)
-            {
-                gameplay_scene.pause_screen.quit_to_menu_button.is_focused    = false;
-                gameplay_scene.pause_screen.quit_to_desktop_button.is_focused = true;
-            }
+            if (gameplay_scene.pause_screen.curr_button->down == NULL)
+                break;
+            gameplay_scene.pause_screen.curr_button->      is_focused = false;
+            gameplay_scene.pause_screen.curr_button->down->is_focused = true;
+            gameplay_scene.pause_screen.curr_button = gameplay_scene.pause_screen.curr_button->down;
             break;
         
         default:
