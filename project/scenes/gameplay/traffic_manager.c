@@ -2,6 +2,7 @@
 #include "traffic_manager.h"
 
 /* Helpers */
+#include <stdio.h>                   /// `FILE`.
 #include <string.h>                  /// `memset()`.
 #include "../../debug.h"             /// Error message printing.
 #include "../../deinit_stack.h"      /// Deinitialization stack.
@@ -14,6 +15,13 @@
 #include "traffic_car.h" /// Cars.
 #include "../car_manager.h" /// `traffic_car_manager`.
 #include "../../game_components/movement/path.h" /// Traffic path.
+
+#define TRAFFIC_ON_ROW_CHANCE     0.50f /// 50%
+#define TRAFFIC_ON_2_LANES_CHANCE 0.70f /// 70%
+
+#define LANE_SPAWN_COOLDOWN 5
+
+#define TRAFFIC_CAR_DATA_PATH "./rsdt/traffic_data/_traffic-paths.rsdt"
 
 
 /// WARNING: I hate this code. This will be rewritten.
@@ -65,50 +73,56 @@ void init_traffic_manager(const size_t car_count, int *const exit_code)
         return;
     }
 
+    /// Cars (paths)
+    FILE* car_data_file = fopen(TRAFFIC_CAR_DATA_PATH, "r");
+    if (car_data_file == NULL)
+    {
+        print_error("`init_traffic_manager()`: couldn't read traffic data file", NON_SDL_ERROR);
+        fclose(car_data_file);
+        free_deinit_stack(&deinit_stack);
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
+
+    /// Cars (reading paths)
+    char line[100];
+    fgets(line, 100, car_data_file);
+    traffic_manager.car_count = (size_t)atoi(line);
+    if (traffic_manager.car_count == 0)
+    {
+        print_error("`init_car_manager()`: traffic car count == 0", NON_SDL_ERROR);
+        fclose(car_data_file);
+        flush_deinit_stack(&deinit_stack);
+        *exit_code = EXIT_FAILURE;
+        return;
+    }
+    
     /// Cars (memory)
-    traffic_manager.cars = malloc(car_count * sizeof(struct Car));
+    traffic_manager.cars = malloc(traffic_manager.car_count * sizeof(struct Car));
     if (traffic_manager.cars == NULL)
     {
         print_error("`init_traffic_manager()`: couldn't allocate memory for cars", NON_SDL_ERROR);
-        free_deinit_stack(&deinit_stack);
+        fclose(car_data_file);
+        flush_deinit_stack(&deinit_stack);
         *exit_code = EXIT_FAILURE;
         return;
     }
     add_to_deinit_stack(&deinit_stack, traffic_manager.cars, (void (*)(void*))free);
 
-    /// Car path points
-    traffic_manager.car_path_pts = malloc(car_count * sizeof(size_t));
-    if (traffic_manager.car_path_pts == NULL)
-    {
-        print_error("`init_traffic_manager()`: couldn't allocate memory for car path points", NON_SDL_ERROR);
-        flush_deinit_stack(&deinit_stack);
-        *exit_code = EXIT_FAILURE;
-        return;
-    }
+    /// Cars (reading)
     for (size_t i = 0; i < traffic_manager.car_count; i++)
-        traffic_manager.car_path_pts[i] = ULONG_LONG_MAX; /// Means the car is not in traffic.
-    add_to_deinit_stack(&deinit_stack, traffic_manager.car_path_pts, (void (*)(void*))free);
-
-    /// Car lane IDs
-    traffic_manager.car_lane_ids = malloc(car_count * sizeof(size_t));
-    if (traffic_manager.car_lane_ids == NULL)
     {
-        print_error("`init_traffic_manager()`: couldn't allocate memory for car lane IDs", NON_SDL_ERROR);
-        flush_deinit_stack(&deinit_stack);
-        *exit_code = EXIT_FAILURE;
-        return;
+        fgets(line, 100, car_data_file);
+        line[strcspn(line, "\n")] = '\0';
+        traffic_manager.cars[i] = load_traffic_car(line, exit_code);
+        if (*exit_code == EXIT_FAILURE)
+        {
+            print_error("`init_traffic_manager()`: couldn't load a car", NON_SDL_ERROR);
+            fclose(car_data_file);
+            flush_deinit_stack(&deinit_stack);
+            return;
+        }
     }
-    for (size_t i = 0; i < traffic_manager.car_count; i++)
-        traffic_manager.car_lane_ids[i] = ULONG_LONG_MAX; /// Means the car is not on any lane.
-    add_to_deinit_stack(&deinit_stack, traffic_manager.car_lane_ids, (void (*)(void*))free);
-
-    /// Cars (getting randomized)
-    for (size_t i = 0; i < car_count; i++)
-    {
-        traffic_manager.cars[i] = copy_random_car(&traffic_car_manager);
-        add_to_deinit_stack(&deinit_stack, &traffic_manager.cars[i], (void (*)(void*))free_car);
-    }
-    traffic_manager.car_count = car_count;
 
     /// Path (left lane)
     traffic_manager.lanes[0] = new_path(
@@ -120,6 +134,7 @@ void init_traffic_manager(const size_t car_count, int *const exit_code)
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_traffic_manager()`: error creating left lane path", NON_SDL_ERROR);
+        fclose(car_data_file);
         flush_deinit_stack(&deinit_stack);
         *exit_code = EXIT_FAILURE;
         return;
@@ -136,6 +151,7 @@ void init_traffic_manager(const size_t car_count, int *const exit_code)
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_traffic_manager()`: error creating center lane path", NON_SDL_ERROR);
+        fclose(car_data_file);
         flush_deinit_stack(&deinit_stack);
         *exit_code = EXIT_FAILURE;
         return;
@@ -149,6 +165,7 @@ void init_traffic_manager(const size_t car_count, int *const exit_code)
     traffic_manager.lane_spawn_cooldowns[1] = 0;
     traffic_manager.lane_spawn_cooldowns[2] = 0;
 
+    fclose(car_data_file);
     free_deinit_stack(&deinit_stack);
     *exit_code = EXIT_SUCCESS;
     return;
@@ -163,10 +180,6 @@ void free_traffic_manager(void)
             free_car(&traffic_manager.cars[i]);
         free(traffic_manager.cars);
     }
-    if (traffic_manager.car_path_pts != NULL)
-        free(traffic_manager.car_path_pts);
-    if (traffic_manager.car_lane_ids != NULL)
-        free(traffic_manager.car_lane_ids);
 
     free_path(&traffic_manager.lanes[0]);
     free_path(&traffic_manager.lanes[1]);
@@ -182,7 +195,7 @@ void move_traffic(const bool mode)
     /// Delta checking
     if (traffic_manager.latest_move_tick == 0)
     {
-        traffic_manager.latest_move_tick = logic_layer.curr_tick;
+        traffic_manager.latest_move_tick = logic_layer.curr_tick; /// 1st function call.
         return;
     }
     if (logic_layer.curr_tick - traffic_manager.latest_move_tick < traffic_manager.move_delta)
@@ -201,28 +214,28 @@ void move_traffic(const bool mode)
     /// Moving traffic
     for (size_t car_id = 0; car_id < traffic_manager.car_count; car_id++)
     {
-        if (traffic_manager.car_lane_ids[car_id] == ULONG_LONG_MAX) /// Non-active traffic car
+        if (traffic_manager.cars[car_id].lane_id == ULONG_LONG_MAX) /// Non-active traffic car
             continue;
         
         if      (mode == MOVE_NORMAL)
-            ++traffic_manager.car_path_pts[car_id];
+            ++traffic_manager.cars[car_id].path_pt;
         else if (mode == MOVE_REVERSE)
         {
-            if   (traffic_manager.car_path_pts[car_id] > 0)
-                --traffic_manager.car_path_pts[car_id];
+            if   (traffic_manager.cars[car_id].path_pt > 0)
+                --traffic_manager.cars[car_id].path_pt;
             else
             {
-                traffic_manager.car_path_pts[car_id] = ULONG_LONG_MAX;
-                traffic_manager.car_lane_ids[car_id] = ULONG_LONG_MAX;
+                traffic_manager.cars[car_id].path_pt = ULONG_LONG_MAX;
+                traffic_manager.cars[car_id].path_pt = ULONG_LONG_MAX;
                 continue;
             }
         }
         
         /// Removing car (normal mode)
-        if (traffic_manager.car_path_pts[car_id] >= traffic_manager.lanes[0].pt_count)
+        if (traffic_manager.cars[car_id].path_pt >= traffic_manager.lanes[0].pt_count)
         {
-            traffic_manager.car_lane_ids[car_id] = ULONG_LONG_MAX;
-            traffic_manager.car_path_pts[car_id] = ULONG_LONG_MAX;
+            traffic_manager.cars[car_id].lane_id = ULONG_LONG_MAX;
+            traffic_manager.cars[car_id].path_pt = ULONG_LONG_MAX;
         }
 
         traffic_manager.latest_move_tick = logic_layer.curr_tick;
@@ -237,7 +250,6 @@ void move_traffic(const bool mode)
         return;
     
     /// Seeding traffic on row
-    
     for (size_t i = 0; i < 2; i++)
     {
         const size_t lane = (size_t)randint(0,2);
@@ -247,14 +259,14 @@ void move_traffic(const bool mode)
         /// Checking for car availability
         size_t car_id = ULONG_LONG_MAX;
         for (size_t j = 0; j < traffic_manager.car_count; j++)
-            if (traffic_manager.car_lane_ids[j] == ULONG_LONG_MAX)
+            if (traffic_manager.cars[j].lane_id == ULONG_LONG_MAX)
                 car_id = j;
         if (car_id == ULONG_LONG_MAX) /// All cars taken.
             break;
         
         /// Setting car on a lane
-        traffic_manager.car_lane_ids[car_id] = lane;
-        traffic_manager.car_path_pts[car_id] = 0;
+        traffic_manager.cars[car_id].lane_id = lane;
+        traffic_manager.cars[car_id].path_pt = 0;
 
         traffic_manager.cars[car_id].base_texture = 4 - lane * 2;
         traffic_manager.lane_spawn_cooldowns[lane] = LANE_SPAWN_COOLDOWN;
@@ -280,10 +292,10 @@ void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct 
     {
         for (size_t car_id = 0; car_id < traffic_manager.car_count; car_id++)
         {
-            if (traffic_manager.car_path_pts[car_id] == path_pt)
+            if (traffic_manager.cars[car_id].path_pt == path_pt)
             {
-                const size_t lane_id = traffic_manager.car_lane_ids[car_id];
-                if (lane_id > 2) /// Means the car is not on any lane
+                const size_t lane_id = traffic_manager.cars[car_id].lane_id;
+                if (lane_id == ULONG_LONG_MAX) /// Means the car is not on any lane /// UNTESTED change to `ULONG_LONG_MAX`.
                     continue;
                 traffic_manager.cars[car_id].coords = traffic_manager.lanes[lane_id].points[path_pt];
                 render_car(&traffic_manager.cars[car_id]);

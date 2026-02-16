@@ -4,45 +4,38 @@
 #include <stdbool.h>           /// `bool is_traffic`.
 #include <stdlib.h>            /// `*alloc()`.
 #include <stdio.h>             /// File read/write.
-#include <string.h> /// `memset()`.
+#include <string.h>            /// `memset()`.
 #include "car.h"               /// Cars.
 #include "../debug.h"          /// Error message printing.
 #include "../helpers/random.h" /// Random.
+
+#define PLAYERS_CAR_DATA_PATH "./rsdt/car_data/_car-paths.rsdt"
 
 
 /* Variables */
 
 struct Car_Manager players_car_manager = {0};
-struct Car_Manager traffic_car_manager = {0};
 
 
 /* Predef */
 
-void init_car_manager(struct Car_Manager *const target, const bool is_traffic, int *const exit_code);
-void free_car_manager(struct Car_Manager *const target);
-struct Car copy_random_car(struct Car_Manager *const target);
-struct Car* get_curr_car  (struct Car_Manager *const target);
-struct Car* get_next_car  (struct Car_Manager *const target);
-struct Car* get_prev_car  (struct Car_Manager *const target);
+void init_car_manager(int *const exit_code);
+void free_car_manager(void);
+struct Car* get_curr_car(void);
+struct Car* get_next_car(void);
+struct Car* get_prev_car(void);
 
 
 /* Body */
 
-void init_car_manager(struct Car_Manager *const target, const bool is_traffic, int *const exit_code)
+void init_car_manager(int *const exit_code)
 {
     /// REDO: memory-unsafe in case of failures.
     if (exit_code == NULL)
         print_warning("`init_car_manager()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
-    
-    /// Objects preparation
-    memset(target, 0, sizeof *target);
 
     /// File opening
-    FILE* car_data_file = NULL;
-    if (! is_traffic)
-        car_data_file = fopen(PLAYERS_CAR_DATA_PATH, "r");
-    else
-        car_data_file = fopen(TRAFFIC_CAR_DATA_PATH, "r");
+    FILE* car_data_file = fopen(PLAYERS_CAR_DATA_PATH, "r");
     if (car_data_file == NULL)
     {
         print_error("`init_car_manager()`: couldnt't open car data file", NON_SDL_ERROR);
@@ -63,8 +56,8 @@ void init_car_manager(struct Car_Manager *const target, const bool is_traffic, i
     }
 
     /// Memory allocation.
-    target->cars = malloc(line_count * sizeof(struct Car));
-    if (target->cars == NULL)
+    players_car_manager.cars = malloc(line_count * sizeof(struct Car));
+    if (players_car_manager.cars == NULL)
     {
         print_error("`init_car_manager()`: couldn't allocate memory for cars", NON_SDL_ERROR);
         fclose(car_data_file);
@@ -77,10 +70,7 @@ void init_car_manager(struct Car_Manager *const target, const bool is_traffic, i
     {
         fgets(line, 100, car_data_file);
         line[strcspn(line, "\n")] = '\0';
-        if (! is_traffic)
-            target->cars[i] = load_car        (line, exit_code);
-        else
-            target->cars[i] = load_traffic_car(line, exit_code);
+        players_car_manager.cars[i] = load_car(line, exit_code);
         if (*exit_code == EXIT_FAILURE)
         {
             print_error("`init_car_manager()`: couldn't load a car", NON_SDL_ERROR);
@@ -89,54 +79,48 @@ void init_car_manager(struct Car_Manager *const target, const bool is_traffic, i
         }
     }
 
-    target->car_count = line_count;
+    players_car_manager.car_count = line_count;
     fclose(car_data_file);
     *exit_code = EXIT_SUCCESS;
     return;
 }
 
 
-void free_car_manager(struct Car_Manager *const target)
+void free_car_manager(void)
 {
-    if (target->cars != NULL)
+    if (players_car_manager.cars != NULL)
     {
-        for (size_t i = 0; i < target->car_count; i++)
-            free_car(&target->cars[i]);
-        free(target->cars);
+        for (size_t i = 0; i < players_car_manager.car_count; i++)
+            free_car(&players_car_manager.cars[i]);
+        free(players_car_manager.cars);
     }
 
-    memset(target, 0, sizeof *target);
+    memset(&players_car_manager, 0, sizeof players_car_manager);
     return;
 }
 
 
-struct Car copy_random_car(struct Car_Manager *const target)
+/// TODO: checks.
+struct Car* get_curr_car(void)
 {
-    return target->cars[(size_t)randint(0, (unsigned)target->car_count-1)];
+    return &players_car_manager.cars[players_car_manager.cur_car];
 }
 
 
 /// TODO: checks.
-struct Car* get_curr_car(struct Car_Manager *const target)
+struct Car* get_next_car(void)
 {
-    return &target->cars[target->cur_car];
+    ++players_car_manager.cur_car;
+    if (players_car_manager.cur_car == players_car_manager.car_count)
+        players_car_manager.cur_car  = players_car_manager.car_count - 1;
+    return &players_car_manager.cars[players_car_manager.cur_car];
 }
 
 
 /// TODO: checks.
-struct Car* get_next_car(struct Car_Manager *const target)
+struct Car* get_prev_car(void)
 {
-    ++target->cur_car;
-    if (target->cur_car == target->car_count)
-        target->cur_car  = target->car_count - 1;
-    return &target->cars[target->cur_car];
-}
-
-
-/// TODO: checks.
-struct Car* get_prev_car(struct Car_Manager *const target)
-{
-    if (target->cur_car > 0)
-        --target->cur_car;
-    return &target->cars[target->cur_car];
+    if (players_car_manager.cur_car > 0)
+        --players_car_manager.cur_car;
+    return &players_car_manager.cars[players_car_manager.cur_car];
 }

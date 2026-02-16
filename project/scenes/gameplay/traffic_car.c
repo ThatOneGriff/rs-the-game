@@ -34,6 +34,8 @@ struct Traffic_Car load_traffic_car(const char *const path, int *const exit_code
     /// Zero-filling
     struct Traffic_Car result = {0};
     result.base_texture = 2;
+    result.lane_id = ULONG_LONG_MAX;
+    result.path_pt = ULONG_LONG_MAX;
 
     /// Checking params
     if (exit_code == NULL)

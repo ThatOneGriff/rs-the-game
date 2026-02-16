@@ -85,7 +85,7 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
         case SDLK_RETURN:
             if      (menu_scene.prev_button.is_focused)
             {
-                set_menu_car_info(get_prev_car(&players_car_manager), &exit_code);
+                set_menu_car_info(get_prev_car(), &exit_code);
                 if (players_car_manager.cur_car == 0)
                 {
                     menu_scene.prev_button.is_focused = false;
@@ -95,7 +95,7 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
             }
             else if (menu_scene.next_button.is_focused)
             {
-                set_menu_car_info(get_next_car(&players_car_manager), &exit_code);
+                set_menu_car_info(get_next_car(), &exit_code);
                 if (players_car_manager.cur_car == players_car_manager.car_count - 1)
                 {
                     menu_scene.next_button.is_focused = false;

@@ -111,22 +111,10 @@ void init(int *const exit_code)
     SDL_SetWindowIcon(graphics_layer.window, ICON_TEXTURE);
 
     /// Car managers
-    init_car_manager(&players_car_manager, LOAD_PLAYERS, exit_code);
+    init_car_manager(exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init()`: failed to initialize car manager", NON_SDL_ERROR);
-        TTF_Quit();
-        free_logic_layer();
-        flush_deinit_stack(&deinit_stack);
-        SDL_Quit();
-        *exit_code = EXIT_FAILURE;
-        return;
-    }
-    init_car_manager(&traffic_car_manager, LOAD_TRAFFIC, exit_code);
-    if (*exit_code == EXIT_FAILURE)
-    {
-        print_error("`init()`: failed to initialize car manager", NON_SDL_ERROR);
-        free_car_manager(&players_car_manager);
         TTF_Quit();
         free_logic_layer();
         flush_deinit_stack(&deinit_stack);
@@ -163,8 +151,7 @@ void init(int *const exit_code)
         if (ma_engine_init(NULL, &audio_manager.engine) != MA_SUCCESS)
         {
             print_error("`init()`: failed to initialize audio engine", NON_SDL_ERROR);
-            free_car_manager(&players_car_manager);
-            free_car_manager(&traffic_car_manager);
+            free_car_manager();
             free_global_resources();
             TTF_Quit();
             free_logic_layer();
@@ -198,7 +185,7 @@ void read_data(void)
 
     const size_t car_i = (size_t)atoi(save_data[2]);
     for (size_t i = 0; i < car_i; i++)
-        get_next_car(&players_car_manager);
+        get_next_car();
     
     PERSONAL_BEST = atoi(save_data[3]);
 
@@ -229,8 +216,7 @@ void quit(void)
         ma_sound_uninit (&audio_manager.music);
         ma_engine_uninit(&audio_manager.engine);
     }
-    free_car_manager(&players_car_manager);
-    free_car_manager(&traffic_car_manager);
+    free_car_manager();
     free_global_resources();
     TTF_Quit();
     free_logic_layer();

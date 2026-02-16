@@ -96,7 +96,7 @@ void game_loop(int *const exit_code)
     
     /// Loading & preparing the scene
     
-    load_menu_scene(get_curr_car(&players_car_manager), exit_code);
+    load_menu_scene(get_curr_car(), exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`game_loop()`: failed to load `menu_scene`", NON_SDL_ERROR);
@@ -134,7 +134,7 @@ void game_loop(int *const exit_code)
             if (! logic_layer.remain_in_scene)
             {
                 free_gameplay_scene();
-                load_menu_scene(get_curr_car(&players_car_manager), exit_code);
+                load_menu_scene(get_curr_car(), exit_code);
                 if (*exit_code == EXIT_FAILURE)
                     return;
                 logic_layer.curr_scene = &menu_scene;
@@ -160,7 +160,7 @@ void game_loop(int *const exit_code)
             if (! logic_layer.remain_in_scene)
             {
                 free_menu_scene();
-                load_gameplay_scene("./rsdt/scene_data/plains.rsdt", get_curr_car(&players_car_manager), exit_code);
+                load_gameplay_scene("./rsdt/scene_data/plains.rsdt", get_curr_car(), exit_code);
                 if (*exit_code == EXIT_FAILURE)
                     return;
                 logic_layer.curr_scene = &gameplay_scene;
