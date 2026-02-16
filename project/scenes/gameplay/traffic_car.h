@@ -1,4 +1,3 @@
-#pragma once
 #ifndef TRAFFIC_CAR_H
 #define TRAFFIC_CAR_H
 

@@ -1,4 +1,3 @@
-#pragma once
 #ifndef INIT_QUIT_H
 #define INIT_QUIT_H
 

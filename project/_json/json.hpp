@@ -14,15 +14,13 @@
  * removed, but marked deprecated. See "Generate documentation" section in  *
  * file docs/README.md.                                                     *
 \****************************************************************************/
-
 #ifndef INCLUDE_NLOHMANN_JSON_HPP_
 #define INCLUDE_NLOHMANN_JSON_HPP_
 
 #include <algorithm> // all_of, find, for_each
 #include <cstddef> // nullptr_t, ptrdiff_t, size_t
 #include <functional> // hash, less
-#include <initializer_list> // initializer_list
-#ifndef JSON_NO_IO
+#include <initializer_list> // initializer_list#ifndef JSON_NO_IO
     #include <iosfwd> // istream, ostream
 #endif  // JSON_NO_IO
 #include <iterator> // random_access_iterator_tag
@@ -56,7 +54,6 @@
 
 
 // This file contains all macro definitions affecting or depending on the ABI
-
 #ifndef JSON_SKIP_LIBRARY_VERSION_CHECK
     #if defined(NLOHMANN_JSON_VERSION_MAJOR) && defined(NLOHMANN_JSON_VERSION_MINOR) && defined(NLOHMANN_JSON_VERSION_PATCH)
         #if NLOHMANN_JSON_VERSION_MAJOR != 3 || NLOHMANN_JSON_VERSION_MINOR != 12 || NLOHMANN_JSON_VERSION_PATCH != 0
@@ -68,15 +65,12 @@
 #define NLOHMANN_JSON_VERSION_MAJOR 3   // NOLINT(modernize-macro-to-enum)
 #define NLOHMANN_JSON_VERSION_MINOR 12  // NOLINT(modernize-macro-to-enum)
 #define NLOHMANN_JSON_VERSION_PATCH 0   // NOLINT(modernize-macro-to-enum)
-
 #ifndef JSON_DIAGNOSTICS
     #define JSON_DIAGNOSTICS 0
 #endif
-
 #ifndef JSON_DIAGNOSTIC_POSITIONS
     #define JSON_DIAGNOSTIC_POSITIONS 0
 #endif
-
 #ifndef JSON_USE_LEGACY_DISCARDED_VALUE_COMPARISON
     #define JSON_USE_LEGACY_DISCARDED_VALUE_COMPARISON 0
 #endif
@@ -98,7 +92,6 @@
 #else
     #define NLOHMANN_JSON_ABI_TAG_LEGACY_DISCARDED_VALUE_COMPARISON
 #endif
-
 #ifndef NLOHMANN_JSON_NAMESPACE_NO_VERSION
     #define NLOHMANN_JSON_NAMESPACE_NO_VERSION 0
 #endif
@@ -133,14 +126,12 @@
 #define NLOHMANN_JSON_NAMESPACE_CONCAT_EX(a, b) a ## b
 #define NLOHMANN_JSON_NAMESPACE_CONCAT(a, b) \
     NLOHMANN_JSON_NAMESPACE_CONCAT_EX(a, b)
-
 #ifndef NLOHMANN_JSON_NAMESPACE
 #define NLOHMANN_JSON_NAMESPACE               \
     nlohmann::NLOHMANN_JSON_NAMESPACE_CONCAT( \
             NLOHMANN_JSON_ABI_TAGS,           \
             NLOHMANN_JSON_NAMESPACE_VERSION)
 #endif
-
 #ifndef NLOHMANN_JSON_NAMESPACE_BEGIN
 #define NLOHMANN_JSON_NAMESPACE_BEGIN                \
     namespace nlohmann                               \
@@ -150,7 +141,6 @@
                 NLOHMANN_JSON_NAMESPACE_VERSION)     \
     {
 #endif
-
 #ifndef NLOHMANN_JSON_NAMESPACE_END
 #define NLOHMANN_JSON_NAMESPACE_END                                     \
     }  /* namespace (inline namespace) NOLINT(readability/namespace) */ \
@@ -2475,15 +2465,12 @@ JSON_HEDLEY_DIAGNOSTIC_POP
         #endif
     #endif
 #endif
-
 #ifndef JSON_HAS_EXPERIMENTAL_FILESYSTEM
     #define JSON_HAS_EXPERIMENTAL_FILESYSTEM 0
 #endif
-
 #ifndef JSON_HAS_FILESYSTEM
     #define JSON_HAS_FILESYSTEM 0
 #endif
-
 #ifndef JSON_HAS_THREE_WAY_COMPARISON
     #if defined(__cpp_impl_three_way_comparison) && __cpp_impl_three_way_comparison >= 201907L \
         && defined(__cpp_lib_three_way_comparison) && __cpp_lib_three_way_comparison >= 201907L
@@ -2492,7 +2479,6 @@ JSON_HEDLEY_DIAGNOSTIC_POP
         #define JSON_HAS_THREE_WAY_COMPARISON 0
     #endif
 #endif
-
 #ifndef JSON_HAS_RANGES
     // ranges header shipping in GCC 11.1.0 (released 2021-04-27) has syntax error
     #if defined(__GLIBCXX__) && __GLIBCXX__ == 20210427
@@ -2503,7 +2489,6 @@ JSON_HEDLEY_DIAGNOSTIC_POP
         #define JSON_HAS_RANGES 0
     #endif
 #endif
-
 #ifndef JSON_HAS_STATIC_RTTI
     #if !defined(_HAS_STATIC_RTTI) || _HAS_STATIC_RTTI != 0
         #define JSON_HAS_STATIC_RTTI 1
@@ -2941,7 +2926,6 @@ JSON_HEDLEY_DIAGNOSTIC_POP
     struct would_call_std_##std_name : detail2::would_call_std_##std_name<T...>   \
     {                                                                             \
     }
-
 #ifndef JSON_USE_IMPLICIT_CONVERSIONS
     #define JSON_USE_IMPLICIT_CONVERSIONS 1
 #endif
@@ -2951,11 +2935,9 @@ JSON_HEDLEY_DIAGNOSTIC_POP
 #else
     #define JSON_EXPLICIT explicit
 #endif
-
 #ifndef JSON_DISABLE_ENUM_SERIALIZATION
     #define JSON_DISABLE_ENUM_SERIALIZATION 0
 #endif
-
 #ifndef JSON_USE_GLOBAL_UDLS
     #define JSON_USE_GLOBAL_UDLS 1
 #endif
@@ -3339,7 +3321,6 @@ struct static_const
 {
     static JSON_INLINE_VARIABLE constexpr T value{};
 };
-
 #ifndef JSON_HAS_CPP_17
     template<typename T>
     constexpr T static_const<T>::value;
@@ -3491,7 +3472,6 @@ NLOHMANN_JSON_NAMESPACE_END
 //
 // SPDX-FileCopyrightText: 2013 - 2025 Niels Lohmann <https://nlohmann.me>
 // SPDX-License-Identifier: MIT
-
 #ifndef INCLUDE_NLOHMANN_JSON_FWD_HPP_
     #define INCLUDE_NLOHMANN_JSON_FWD_HPP_
 
@@ -4831,8 +4811,7 @@ inline void from_json(const BasicJsonType& j, typename std::nullptr_t& n)
     n = nullptr;
 }
 
-#ifdef JSON_HAS_CPP_17
-#ifndef JSON_USE_IMPLICIT_CONVERSIONS
+#ifdef JSON_HAS_CPP_17#ifndef JSON_USE_IMPLICIT_CONVERSIONS
 template<typename BasicJsonType, typename T>
 void from_json(const BasicJsonType& j, std::optional<T>& opt)
 {
@@ -5345,7 +5324,6 @@ struct from_json_fn
 };
 
 }  // namespace detail
-
 #ifndef JSON_HAS_CPP_17
 /// namespace to hold default `from_json` function
 /// to see why this is required:
@@ -5354,8 +5332,7 @@ namespace // NOLINT(cert-dcl59-cpp,fuchsia-header-anon-namespaces,google-build-n
 {
 #endif
 JSON_INLINE_VARIABLE constexpr const auto& from_json = // NOLINT(misc-definitions-in-headers)
-    detail::static_const<detail::from_json_fn>::value;
-#ifndef JSON_HAS_CPP_17
+    detail::static_const<detail::from_json_fn>::value;#ifndef JSON_HAS_CPP_17
 }  // namespace
 #endif
 
@@ -6109,7 +6086,6 @@ struct to_json_fn
     }
 };
 }  // namespace detail
-
 #ifndef JSON_HAS_CPP_17
 /// namespace to hold default `to_json` function
 /// to see why this is required:
@@ -6118,8 +6094,7 @@ namespace // NOLINT(cert-dcl59-cpp,fuchsia-header-anon-namespaces,google-build-n
 {
 #endif
 JSON_INLINE_VARIABLE constexpr const auto& to_json = // NOLINT(misc-definitions-in-headers)
-    detail::static_const<detail::to_json_fn>::value;
-#ifndef JSON_HAS_CPP_17
+    detail::static_const<detail::to_json_fn>::value;#ifndef JSON_HAS_CPP_17
 }  // namespace
 #endif
 
@@ -6461,7 +6436,6 @@ NLOHMANN_JSON_NAMESPACE_END
 #include <string> // string, char_traits
 #include <type_traits> // enable_if, is_base_of, is_pointer, is_integral, remove_pointer
 #include <utility> // pair, declval
-
 #ifndef JSON_NO_IO
     #include <cstdio>   // FILE *
     #include <istream>  // istream
@@ -6486,7 +6460,6 @@ enum class input_format_t { json, cbor, msgpack, ubjson, bson, bjdata };
 ////////////////////
 // input adapters //
 ////////////////////
-
 #ifndef JSON_NO_IO
 /*!
 Input adapter for stdio file access. This adapter read only 1 byte and do not use any
@@ -6912,7 +6885,6 @@ typename container_input_adapter_factory_impl::container_input_adapter_factory<C
 
 // specialization for std::string
 using string_input_adapter_type = decltype(input_adapter(std::declval<std::string>()));
-
 #ifndef JSON_NO_IO
 // Special cases with fast paths
 inline file_input_adapter input_adapter(std::FILE* file)
@@ -12834,7 +12806,6 @@ class binary_reader
 #undef JSON_BINARY_READER_MAKE_BJD_OPTIMIZED_TYPE_MARKERS_
 #undef JSON_BINARY_READER_MAKE_BJD_TYPES_MAP_
 };
-
 #ifndef JSON_HAS_CPP_17
     template<typename BasicJsonType, typename InputAdapterType, typename SAX>
     constexpr std::size_t binary_reader<BasicJsonType, InputAdapterType, SAX>::npos;
@@ -14510,8 +14481,7 @@ NLOHMANN_JSON_NAMESPACE_END
 #include <algorithm> // all_of
 #include <cctype> // isdigit
 #include <cerrno> // errno, ERANGE
-#include <cstdlib> // strtoull
-#ifndef JSON_NO_IO
+#include <cstdlib> // strtoull#ifndef JSON_NO_IO
     #include <iosfwd> // ostream
 #endif  // JSON_NO_IO
 #include <limits> // max
@@ -14586,7 +14556,6 @@ class json_pointer
     {
         return to_string();
     }
-
 #ifndef JSON_NO_IO
     /// @brief write string representation of the JSON pointer to stream
     /// @sa https://json.nlohmann.me/api/basic_json/operator_ltlt/
@@ -15628,7 +15597,6 @@ NLOHMANN_JSON_NAMESPACE_END
 #include <memory> // shared_ptr, make_shared
 #include <string> // basic_string
 #include <vector> // vector
-
 #ifndef JSON_NO_IO
     #include <ios>      // streamsize
     #include <ostream>  // basic_ostream
@@ -15682,7 +15650,6 @@ class output_vector_adapter : public output_adapter_protocol<CharType>
   private:
     std::vector<CharType, AllocatorType>& v;
 };
-
 #ifndef JSON_NO_IO
 /// output adapter for output streams
 template<typename CharType>
@@ -15740,7 +15707,6 @@ class output_adapter
     template<typename AllocatorType = std::allocator<CharType>>
     output_adapter(std::vector<CharType, AllocatorType>& vec)
         : oa(std::make_shared<output_vector_adapter<CharType, AllocatorType>>(vec)) {}
-
 #ifndef JSON_NO_IO
     output_adapter(std::basic_ostream<CharType>& s)
         : oa(std::make_shared<output_stream_adapter<CharType>>(s)) {}
@@ -24010,8 +23976,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     ///////////////////
 
     /// @name serialization
-    /// @{
-#ifndef JSON_NO_IO
+    /// @{#ifndef JSON_NO_IO
     /// @brief serialize to stream
     /// @sa https://json.nlohmann.me/api/basic_json/operator_ltlt/
     friend std::ostream& operator<<(std::ostream& o, const basic_json& j)
@@ -24166,8 +24131,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
                ? parser(std::move(ia), nullptr, true, ignore_comments).sax_parse(sax, strict)
                // NOLINTNEXTLINE(hicpp-move-const-arg,performance-move-const-arg)
                : detail::binary_reader<basic_json, decltype(ia), SAX>(std::move(ia), format).sax_parse(format, sax, strict);
-    }
-#ifndef JSON_NO_IO
+    }#ifndef JSON_NO_IO
     /// @brief deserialize from stream
     /// @sa https://json.nlohmann.me/api/basic_json/operator_gtgt/
     /// @deprecated This stream operator is deprecated since 3.0.0 and will be removed in
@@ -25288,8 +25252,7 @@ struct less< ::nlohmann::detail::value_t> // do not remove the space after '<', 
     }
 };
 
-// C++20 prohibit function specialization in the std namespace.
-#ifndef JSON_HAS_CPP_20
+// C++20 prohibit function specialization in the std namespace.#ifndef JSON_HAS_CPP_20
 
 /// @brief exchanges the values of two JSON objects
 /// @sa https://json.nlohmann.me/api/basic_json/std_swap/
@@ -25344,7 +25307,6 @@ inline void swap(nlohmann::NLOHMANN_BASIC_JSON_TPL& j1, nlohmann::NLOHMANN_BASIC
 #undef JSON_NO_UNIQUE_ADDRESS
 #undef JSON_DISABLE_ENUM_SERIALIZATION
 #undef JSON_USE_GLOBAL_UDLS
-
 #ifndef JSON_TEST_KEEP_MACROS
     #undef JSON_CATCH
     #undef JSON_TRY

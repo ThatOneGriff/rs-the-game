@@ -1,5 +1,4 @@
-﻿
-#ifndef GRAPHICS_LAYER_H
+﻿#ifndef GRAPHICS_LAYER_H
 #define GRAPHICS_LAYER_H
 
 /* SDL3 */

@@ -1,4 +1,3 @@
-
 #ifndef PAUSE_SCREEN_H
 #define PAUSE_SCREEN_H
 

@@ -1,4 +1,3 @@
-
 #ifndef CAR_MANAGER_H
 #define CAR_MANAGER_H
 

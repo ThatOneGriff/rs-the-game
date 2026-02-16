@@ -1,4 +1,3 @@
-
 #ifndef MOVE_COMPONENT_H
 #define MOVE_COMPONENT_H
 

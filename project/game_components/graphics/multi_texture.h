@@ -1,4 +1,3 @@
-
 #ifndef MULTI_TEXTURE_H
 #define MULTI_TEXTURE_H
 

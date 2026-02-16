@@ -1,4 +1,3 @@
-
 #ifndef GLOBAL_EVENTS_H
 #define GLOBAL_EVENTS_H
 
