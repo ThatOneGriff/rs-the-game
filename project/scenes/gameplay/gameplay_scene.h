@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef GAMEPLAY_SCENE_H
 #define GAMEPLAY_SCENE_H
 

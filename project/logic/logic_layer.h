@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef LOGIC_LAYER_H
 #define LOGIC_LAYER_H
 

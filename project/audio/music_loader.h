@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef MUSIC_LOADER_H
 #define MUSIC_LOADER_H
 

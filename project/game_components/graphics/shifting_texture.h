@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef SHIFTING_TEXTURE_H
 #define SHIFTING_TEXTURE_H
 

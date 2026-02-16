@@ -6,8 +6,8 @@
 #include "../../logic/logic_layer.h" /// `time_tick_ms`.
 
 /* Related headers */
-#include "../car.h"      /// Player's car manager (REDO: remove).
-#include "traffic_car.h" /// Cars.
+#include "../car.h"      /// Player's car manipulations (REDO: remove).
+#include "traffic_car.h" /// `struct Traffic_Car`.
 #include "../../game_components/movement/path.h" /// Traffic's path.
 
 #define MOVE_NORMAL false

@@ -13,10 +13,9 @@
 
 /* Related headers */
 #include "traffic_car.h" /// Cars.
-#include "../car_manager.h" /// `traffic_car_manager`.
 #include "../../game_components/movement/path.h" /// Traffic path.
 
-#define TRAFFIC_ON_ROW_CHANCE     0.50f /// 50%
+//#define TRAFFIC_ON_ROW_CHANCE     0.50f /// 50%
 #define TRAFFIC_ON_2_LANES_CHANCE 0.70f /// 70%
 
 #define LANE_SPAWN_COOLDOWN 5
@@ -177,7 +176,7 @@ void free_traffic_manager(void)
     if (traffic_manager.cars != NULL)
     {
         for (size_t i = 0; i < traffic_manager.car_count; i++)
-            free_car(&traffic_manager.cars[i]);
+            free_traffic_car(&traffic_manager.cars[i]);
         free(traffic_manager.cars);
     }
 
@@ -268,7 +267,7 @@ void move_traffic(const bool mode)
         traffic_manager.cars[car_id].lane_id = lane;
         traffic_manager.cars[car_id].path_pt = 0;
 
-        traffic_manager.cars[car_id].base_texture = 4 - lane * 2;
+        traffic_manager.cars[car_id].base_texture = 2 - lane;
         traffic_manager.lane_spawn_cooldowns[lane] = LANE_SPAWN_COOLDOWN;
 
         if (i == 1 && rand_percent(0,100) <= TRAFFIC_ON_2_LANES_CHANCE)
@@ -298,7 +297,7 @@ void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct 
                 if (lane_id == ULONG_LONG_MAX) /// Means the car is not on any lane /// UNTESTED change to `ULONG_LONG_MAX`.
                     continue;
                 traffic_manager.cars[car_id].coords = traffic_manager.lanes[lane_id].points[path_pt];
-                render_car(&traffic_manager.cars[car_id]);
+                render_traffic_car(&traffic_manager.cars[car_id]);
 
                 if (logic_layer.curr_tick - latest_collision_check < COLLISION_CHECK_DELTA)
                     continue;

@@ -1,4 +1,4 @@
-﻿#pragma once
+﻿
 #ifndef GRAPHICS_LAYER_H
 #define GRAPHICS_LAYER_H
 

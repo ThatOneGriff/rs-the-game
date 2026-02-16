@@ -1,13 +1,12 @@
 #pragma once
-#ifndef CAR_H
-#define CAR_H
+#ifndef TRAFFIC_CAR_H
+#define TRAFFIC_CAR_H
 
 /* Headers */
 #include <SDL3/SDL.h>                /// `SDL_Texture`.
 #include "../../logic/logic_layer.h" /// `time_tick_ms`.
 
 #define TRAFFIC_CAR_DATA_LINES 4
-//const extern SDL_FRect CAR_COLLISION_BOXES[5]; /// TODO: think on where to move it.
 
 
 /* Struct */
@@ -17,8 +16,9 @@ struct Traffic_Car
     char name[25];
     SDL_Texture* textures[3];
     size_t       base_texture;
-    size_t lane_id;
-    size_t path_pt;
+    size_t    lane_id;
+    size_t    path_pt;
+    SDL_FRect coords;
 };
 
 
@@ -29,4 +29,4 @@ void               free_traffic_car(struct Traffic_Car *const target);
 void             render_traffic_car(struct Traffic_Car *const target);
 
 
-#endif /// CAR_H
+#endif /// TRAFFIC_CAR_H

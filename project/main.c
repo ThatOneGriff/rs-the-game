@@ -37,9 +37,7 @@ nlohmann/json version: 3.12.0  (last checked 28.01.26) | https://github.com/nloh
 */
 
 /* TODOs: */
-/// - `struct Traffic_Car`, overall traffic system revamp;
 /// - const ptrs in function bodies;
-/// - global traffic managers;
 /// - global audio managers, maybe tied to scenes via a ptr;
 /// - fix EVERYWHERE:
 ///   object creation

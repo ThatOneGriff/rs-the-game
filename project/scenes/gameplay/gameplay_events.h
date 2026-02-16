@@ -1,4 +1,4 @@
-#pragma once
+
 #ifndef GAMEPLAY_EVENTS_H
 #define GAMEPLAY_EVENTS_H
 

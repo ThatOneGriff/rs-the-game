@@ -31,6 +31,7 @@ C_FILE_PATHS="./project/audio/audio.c \
               ./project/scenes/gameplay/gameplay_events.c \
               ./project/scenes/gameplay/gameplay_scene.c  \
               ./project/scenes/gameplay/pause_screen.c    \
+              ./project/scenes/gameplay/traffic_car.c     \
               ./project/scenes/gameplay/traffic_manager.c \
               ./project/scenes/menu/menu_events.c    \
               ./project/scenes/menu/menu_scene.c     \
