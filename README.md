@@ -22,7 +22,7 @@ Hey everyone! This is my first "big" non-tutorial project. No piece of code was 
 ## Distribution
 
 Run with one of the following scripts:
-	- `sh run` - runs the program;
-	- `sh run-gdb` - runs the program inside of GDB.
+- `sh run` - runs the program;
+- `sh run-gdb` - runs the program inside of GDB.
 
 On running `sh pack-distribution`, you'll get a `./DISTRUBUTION` folder with copies of everything the program needs to run.
