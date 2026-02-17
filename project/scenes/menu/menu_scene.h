@@ -3,7 +3,6 @@
 
 /* SDL3 */
 #include <SDL3/SDL.h> /// SDL stuff.
-#include <stdbool.h>  /// `bool change_happened`.
 
 /* Graphics and components */
 #include "../car.h"                          /// Car data.
@@ -19,7 +18,6 @@
 
 struct Menu_Scene
 {
-    bool change_happened;
     struct Car* car_ptr;
 
     SDL_Texture* bg;

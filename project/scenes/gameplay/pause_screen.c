@@ -156,7 +156,7 @@ void show_pause_screen(struct Pause_Screen *const target)
     }
 
     target->is_open = true;
-    target->pause_open_tick = logic_layer.curr_tick;
+    target->open_tick = logic_layer.curr_tick;
 
     /// Preparing background texture.
     SDL_SetRenderTarget(graphics_layer.renderer, target->last_gameplay_frame);
@@ -173,6 +173,8 @@ void show_pause_screen(struct Pause_Screen *const target)
     target->curr_button->is_focused = false; /// Latest chosen button.
     target->curr_button = &target->continue_button;
     target->curr_button->is_focused = true;
+
+    logic_layer.force_render = true;
     return;
 }
 
@@ -186,9 +188,9 @@ void hide_pause_screen(struct Pause_Screen *const target)
     }
 
     target->is_open = false;
-    logic_layer.real_tick_diff += logic_layer.curr_tick - target->pause_open_tick; /// Making up for the paused time.
+    logic_layer.real_tick_diff += logic_layer.curr_tick - target->open_tick; /// Making up for the paused time.
     logic_layer.curr_tick       = SDL_GetTicks() - logic_layer.real_tick_diff;
-    target->pause_open_tick     = 0;
+    target->open_tick     = 0;
     return;
 }
 

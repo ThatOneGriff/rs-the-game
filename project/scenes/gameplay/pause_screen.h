@@ -25,7 +25,7 @@ struct Pause_Screen
     struct Button*           curr_button;
 
     struct Texture version_text;
-    time_tick_ms pause_open_tick;
+    time_tick_ms open_tick;
 };
 
 

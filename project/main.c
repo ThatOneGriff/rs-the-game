@@ -117,8 +117,20 @@ void game_loop(int *const exit_code)
                 check_if_music_ended(&music_loader_gameplay);
             
             process_gameplay_events();
-            render_gameplay_scene();
-            ++curr_fps;
+            /// Gameplay scene ignores `logic_layer.screen_changed`, as it's dynamic.
+            if (! gameplay_scene.pause_screen.is_open)
+            {
+                render_gameplay_scene();
+                ++curr_fps;
+            }
+            /// Pause screen abides to `logic_layer.screen_changed`.
+            else if (gameplay_scene.pause_screen.is_open && (logic_layer.screen_changed || logic_layer.force_render))
+            {
+                render_pause_screen(&gameplay_scene.pause_screen);
+                ++curr_fps;
+                logic_layer.screen_changed = false;
+                logic_layer.force_render   = false;
+            }
 
             /// Scene switch (to menu)
             if (! logic_layer.remain_in_scene)
@@ -144,11 +156,12 @@ void game_loop(int *const exit_code)
                 check_if_music_ended(&music_loader_menu);
             
             process_menu_events();
-            if (menu_scene.change_happened || curr_fps == 0) /// 2nd part of the equation for the initial render to happen.
+            if (logic_layer.screen_changed || logic_layer.force_render) /// 2nd part of the equation for the initial render to happen.
             {
                 render_menu_scene();
                 ++curr_fps;
-                menu_scene.change_happened = false;
+                logic_layer.screen_changed = false;
+                logic_layer.force_render   = false;
             }
             
             /// Scene switch

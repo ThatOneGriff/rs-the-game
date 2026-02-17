@@ -16,8 +16,10 @@
 
 struct Logic_Layer
 {
-    bool  game_is_running;
-
+    bool game_is_running;
+    bool screen_changed;
+    bool force_render;
+    
     bool  remain_in_scene;
     void* curr_scene;
 

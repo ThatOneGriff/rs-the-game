@@ -60,6 +60,7 @@ void _process_gameplay_keyboard(const SDL_Keycode event_key)
                 show_pause_screen(&gameplay_scene.pause_screen);
                 if (audio_manager.using_audio)
                     ma_sound_stop(&audio_manager.music);
+                logic_layer.screen_changed = true; /// For the initial render to happen.
             }
             else if (gameplay_scene.pause_screen.is_open)
             {
@@ -101,6 +102,8 @@ void _process_gameplay_keyboard(const SDL_Keycode event_key)
 
 static void _process_pause_keyboard(const SDL_Keycode event_key)
 {
+    logic_layer.screen_changed = true;
+
     /// Pause screen button handling:
     switch(event_key)
     {
@@ -114,11 +117,16 @@ static void _process_pause_keyboard(const SDL_Keycode event_key)
                 logic_layer.remain_in_scene = false;
             else if (gameplay_scene.pause_screen.quit_to_desktop_button.is_focused)
                 logic_layer.game_is_running = false;
+            else
+                logic_layer.screen_changed = false;
             break;
         
         case SDLK_UP:
             if (gameplay_scene.pause_screen.curr_button->up == NULL)
+            {
+                logic_layer.screen_changed = false;
                 break;
+            }
             gameplay_scene.pause_screen.curr_button->    is_focused = false;
             gameplay_scene.pause_screen.curr_button->up->is_focused = true;
             gameplay_scene.pause_screen.curr_button = gameplay_scene.pause_screen.curr_button->up;
@@ -126,7 +134,10 @@ static void _process_pause_keyboard(const SDL_Keycode event_key)
         
         case SDLK_DOWN:
             if (gameplay_scene.pause_screen.curr_button->down == NULL)
+            {
+                logic_layer.screen_changed = false;
                 break;
+            }
             gameplay_scene.pause_screen.curr_button->      is_focused = false;
             gameplay_scene.pause_screen.curr_button->down->is_focused = true;
             gameplay_scene.pause_screen.curr_button = gameplay_scene.pause_screen.curr_button->down;
@@ -134,7 +145,10 @@ static void _process_pause_keyboard(const SDL_Keycode event_key)
         
         default:
             process_global_keyboard(event_key);
+            logic_layer.screen_changed = false;
+            break;
     }
+
     return;
 }
 

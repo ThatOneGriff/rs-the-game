@@ -257,12 +257,6 @@ void render_gameplay_scene(void)
 {
     /// TODO: check `gameplay_scene` members.
 
-    if (gameplay_scene.pause_screen.is_open)
-    {
-        render_pause_screen(&gameplay_scene.pause_screen);
-        return;
-    }
-    
     /// Moving stuff
     if (gameplay_scene.is_driving)
     {

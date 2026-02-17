@@ -41,13 +41,13 @@ void process_menu_events(void)
         {
         /// Key press.
         case SDL_EVENT_KEY_DOWN:
-            menu_scene.change_happened = true;
+            logic_layer.screen_changed = true;
             _process_menu_keyboard(logic_layer.event.key.key);
             break;
         
         /// Other event.
         default:
-            menu_scene.change_happened = false;
+            logic_layer.screen_changed = false;
             process_global_events(logic_layer.event);
             break;
         }
@@ -58,7 +58,7 @@ void process_menu_events(void)
 
 static void _process_menu_keyboard(const SDL_Keycode event_key)
 {
-    menu_scene.change_happened = true;
+    logic_layer.screen_changed = true;
     int exit_code = EXIT_SUCCESS;
 
     /// Things that can happen both with and without options screen being open:
@@ -73,7 +73,7 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
         
         case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
             play_random_music(&music_loader_menu);
-            menu_scene.change_happened = false;
+            logic_layer.screen_changed = false;
             break;
     }
 
@@ -115,13 +115,13 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
             else if (menu_scene.quit_button.is_focused)
                 logic_layer.game_is_running = false;
             else
-                menu_scene.change_happened = false;
+                logic_layer.screen_changed = false;
             break;
 
         case SDLK_UP:
             if (menu_scene.curr_button->up == NULL)
             {
-                menu_scene.change_happened = false;
+                logic_layer.screen_changed = false;
                 break;
             }
             menu_scene.curr_button->    is_focused = false;
@@ -142,7 +142,7 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
         case SDLK_DOWN:
             if (menu_scene.curr_button->down == NULL)
             {
-                menu_scene.change_happened = false;
+                logic_layer.screen_changed = false;
                 break;
             }
             menu_scene.curr_button->      is_focused = false;
@@ -156,7 +156,7 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
             {
                 if (menu_scene.curr_button->left == NULL)
                 {
-                    menu_scene.change_happened = false;
+                    logic_layer.screen_changed = false;
                     break;
                 }
                 menu_scene.curr_button->      is_focused = false;
@@ -172,7 +172,7 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
             {
                 if (menu_scene.curr_button->right == NULL)
                 {
-                    menu_scene.change_happened = false;
+                    logic_layer.screen_changed = false;
                     break;
                 }
                 menu_scene.curr_button->       is_focused = false;
@@ -183,7 +183,7 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
             break;
 
         default:
-            menu_scene.change_happened = false;
+            logic_layer.screen_changed = false;
             process_global_keyboard(event_key);
             break;
     }
@@ -196,7 +196,7 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
 
 static void _process_options_keyboard(const SDL_Keycode event_key)
 {
-    menu_scene.change_happened = true;
+    logic_layer.screen_changed = true;
     int exit_code = EXIT_SUCCESS;
 
     /// Options screen button handling:
@@ -238,7 +238,7 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
                 menu_scene.options_screen.audio_switch.is_focused = true;
             }
             else
-                menu_scene.change_happened = false;
+                logic_layer.screen_changed = false;
             break;
         
         case SDLK_DOWN:
@@ -253,11 +253,11 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
                 menu_scene.options_screen.fps_switch.is_focused   = true;
             }
             else
-                menu_scene.change_happened = false;
+                logic_layer.screen_changed = false;
             break;
 
         default:
-            menu_scene.change_happened = false;
+            logic_layer.screen_changed = false;
             process_global_keyboard(event_key);
             break;
     }
