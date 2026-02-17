@@ -40,7 +40,8 @@ struct Music_Loader init_music_loader(const char *const music_data_path, int *co
 {
     struct Music_Loader result = {0};
     result.curr_track        = ULONG_LONG_MAX;
-    result.track_start_delay = 2000;
+    result.track_start_delay = 1500;
+    result.latest_track_end_check_tick = logic_layer.curr_tick;
 
     /// Param checking
     if (exit_code == NULL)
@@ -213,6 +214,9 @@ void check_if_music_ended(struct Music_Loader *const target)
     if (! target->active || ! target->valid || ! audio_manager.using_audio)
         return;
     
+    /// Check tick updated.
+    target->latest_track_end_check_tick = logic_layer.curr_tick;
+    
     /// Music hasn't ended.
     if (! ma_sound_at_end(&audio_manager.music))
         return;
@@ -228,6 +232,7 @@ void check_if_music_ended(struct Music_Loader *const target)
     /// Music ended, and delay elapsed.
     else if (logic_layer.curr_tick - target->track_end_tick >= target->track_start_delay)
         play_random_music(target);
+    
     return;
 }
 

@@ -3,6 +3,8 @@
 
 #include "../logic/logic_layer.h" /// `logic_layer.curr_tick`.
 
+#define TRACK_END_CHECK_DELAY_MS 1000
+
 
 /* Struct */
 
@@ -15,8 +17,9 @@ struct Music_Loader
     size_t track_count;
 
     size_t       curr_track;
-    time_tick_ms track_end_tick; /// Is used to control the 2s pause between tracks.
-    time_span_ms track_start_delay;
+    time_tick_ms        track_end_tick; /// Is used to control the pause between tracks.
+    time_tick_ms latest_track_end_check_tick;
+    time_span_ms        track_start_delay;
 };
 extern struct Music_Loader music_loader_gameplay;
 extern struct Music_Loader music_loader_menu;

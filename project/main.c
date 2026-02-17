@@ -37,8 +37,7 @@ nlohmann/json version: 3.12.0  (last checked 28.01.26) | https://github.com/nloh
 */
 
 /* TODOs: */
-/// - 10/sec tick for checking if music ended;
-/// - same `bool change_happened` for pause screen.
+/// - FPS output into the window, fully disable console on release builds;
 /// - pushing an array of points/textures into array-like members of `game_components`, instead of individual `add_*()` calls;
 /// - player's car bouncing in beat to the music.
 
@@ -113,7 +112,8 @@ void game_loop(int *const exit_code)
         /// Gameplay scene processing
         if (logic_layer.curr_scene == &gameplay_scene)
         {
-            if (audio_manager.using_audio)
+            if (audio_manager.using_audio
+             && logic_layer.curr_tick >= music_loader_gameplay.latest_track_end_check_tick + TRACK_END_CHECK_DELAY_MS)
                 check_if_music_ended(&music_loader_gameplay);
             
             process_gameplay_events();
@@ -152,7 +152,8 @@ void game_loop(int *const exit_code)
         /// Menu scene processing
         else if (logic_layer.curr_scene == &menu_scene)
         {
-            if (audio_manager.using_audio)
+            if (audio_manager.using_audio
+             && logic_layer.curr_tick >= music_loader_menu.latest_track_end_check_tick + TRACK_END_CHECK_DELAY_MS)
                 check_if_music_ended(&music_loader_menu);
             
             process_menu_events();
