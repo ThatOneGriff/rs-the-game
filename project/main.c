@@ -29,21 +29,24 @@
 #include "scenes/menu/menu_scene.h"          /// Menu scene.
 
 /* = Library information =
-SDL3          version: 3.4.0   (last checked 28.01.26) | https://github.com/libsdl-org/SDL/releases
-SDL3_image    version: 3.2.6   (last checked 28.01.26) | https://github.com/libsdl-org/SDL_image/releases
-SDL3_ttf      version: 3.2.2   (last checked 28.01.26) | https://github.com/libsdl-org/SDL_ttf/releases
-miniaudio     version: 0.11.24 (last updated 28.01.26) | https://github.com/mackron/miniaudio/releases
-nlohmann/json version: 3.12.0  (last checked 28.01.26) | https://github.com/nlohmann/json/releases [UNUSED]
+SDL3          version: 3.4.0   (last checked 17.02.26) | https://github.com/libsdl-org/SDL/releases
+SDL3_image    version: 3.4.0   (last updated 17.02.26) | https://github.com/libsdl-org/SDL_image/releases
+SDL3_ttf      version: 3.2.2   (last checked 17.02.26) | https://github.com/libsdl-org/SDL_ttf/releases
+miniaudio     version: 0.11.24 (last updated 17.02.26) | https://github.com/mackron/miniaudio/releases
+nlohmann/json version: 3.12.0  (last checked 17.02.26) | https://github.com/nlohmann/json/releases [UNUSED]
 */
 
 /* TODOs: */
 /// - FPS output into the window, fully disable console on release builds;
-/// - pushing an array of points/textures into array-like members of `game_components`, instead of individual `add_*()` calls;
+/// - optional logs;
+/// - pushing an array of points/textures into array-like members of `game_components/`, instead of individual `add_*()` calls;
 /// - player's car bouncing in beat to the music.
 
 /* IDEAs: */
+/// - progression system;
 /// - switch between metric and imperial system;
-/// - mouse control.
+/// - mouse control;
+/// - click sound (thus an option to disable music and/or sounds, not just the audio).
 
 /* Predef */
 
