@@ -37,18 +37,12 @@ nlohmann/json version: 3.12.0  (last checked 28.01.26) | https://github.com/nloh
 */
 
 /* TODOs: */
-/// - const ptrs in function bodies;
-/// - global audio managers, maybe tied to scenes via a ptr;
 /// - pushing an array of points/textures into array-like members of `game_components`, instead of individual `add_*()` calls;
 /// - player's car bouncing in beat to the music.
 
 /* IDEAs: */
-/// - switch between metric and imperial system
-/// - mouse control
-/// ? `null_move_component` and similar things for each `game_components`', for code clarity;
-/// ? `struct Button_Manager`;
-/// ? a system of rendering layers.
-
+/// - switch between metric and imperial system;
+/// - mouse control.
 
 /* Predef */
 
