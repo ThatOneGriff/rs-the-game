@@ -7,7 +7,7 @@
 
 /* C headers */
 #include <stdlib.h>  /// `malloc()`
-#include <stdbool.h> /// Setting button focuses.
+#include <stdbool.h> /// Setting button foci; `bool change_happened`.
 #include <string.h> /// `memset()`.
 
 /* Helper headers */
@@ -237,7 +237,7 @@ void set_menu_car_info(struct Car *const car_ptr, int *const exit_code)
     
     menu_scene.info_line1 = create_text(car_ptr->info_text[0], (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(10, 150), 9, 1, exit_code);
     menu_scene.info_line2 = create_text(car_ptr->info_text[1], (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(10, 160), 9, 1, exit_code);
-    
+
     *exit_code = EXIT_SUCCESS;
     return;
 }
@@ -245,7 +245,7 @@ void set_menu_car_info(struct Car *const car_ptr, int *const exit_code)
 
 void render_menu_scene(void)
 {
-    /// TODO: `menu_scene` check.
+    /// TODO: `menu_scene` members check.
 
     if (menu_scene.options_screen.is_open)
     {

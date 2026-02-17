@@ -49,8 +49,8 @@ void process_global_keyboard(const SDL_Keycode event_key)
         load_global_resources(&exit_code);
         if (exit_code == EXIT_SUCCESS)
             print_success("Hot resource reload; switch to next scene and back to see the effect");
-        else /// First multi-line error btw.
-            print_error("Hot resource reload:\n- Scene reloading will result in a crash;\n- You may try to fix invalid paths and reload again", NON_SDL_ERROR);
+        else /// First multi-line error message btw.
+            print_error("[!!!] Hot resource reload FAILED:\n- Scene reloading will result in a crash;\n- You may try to fix invalid paths and reload again", NON_SDL_ERROR);
         break;
     }
     return;

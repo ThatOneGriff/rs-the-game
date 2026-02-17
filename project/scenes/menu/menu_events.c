@@ -41,12 +41,15 @@ void process_menu_events(void)
         {
         /// Key press.
         case SDL_EVENT_KEY_DOWN:
+            menu_scene.change_happened = true;
             _process_menu_keyboard(logic_layer.event.key.key);
             break;
         
         /// Other event.
         default:
+            menu_scene.change_happened = false;
             process_global_events(logic_layer.event);
+            break;
         }
     }
     return;
@@ -55,6 +58,7 @@ void process_menu_events(void)
 
 static void _process_menu_keyboard(const SDL_Keycode event_key)
 {
+    menu_scene.change_happened = true;
     int exit_code = EXIT_SUCCESS;
 
     /// Things that can happen both with and without options screen being open:
@@ -69,6 +73,7 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
         
         case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
             play_random_music(&music_loader_menu);
+            menu_scene.change_happened = false;
             break;
     }
 
@@ -109,11 +114,16 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
                 show_options_screen(&menu_scene.options_screen);
             else if (menu_scene.quit_button.is_focused)
                 logic_layer.game_is_running = false;
+            else
+                menu_scene.change_happened = false;
             break;
 
         case SDLK_UP:
             if (menu_scene.curr_button->up == NULL)
+            {
+                menu_scene.change_happened = false;
                 break;
+            }
             menu_scene.curr_button->    is_focused = false;
             menu_scene.curr_button->up->is_focused = true;
             menu_scene.curr_button = menu_scene.curr_button->up;
@@ -131,7 +141,10 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
         
         case SDLK_DOWN:
             if (menu_scene.curr_button->down == NULL)
+            {
+                menu_scene.change_happened = false;
                 break;
+            }
             menu_scene.curr_button->      is_focused = false;
             menu_scene.curr_button->down->is_focused = true;
             menu_scene.curr_button = menu_scene.curr_button->down;
@@ -142,7 +155,10 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
             if (! menu_scene.options_screen.is_open && players_car_manager.cur_car != 0)
             {
                 if (menu_scene.curr_button->left == NULL)
+                {
+                    menu_scene.change_happened = false;
                     break;
+                }
                 menu_scene.curr_button->      is_focused = false;
                 menu_scene.curr_button->left->is_focused = true;
                 menu_scene.curr_button = menu_scene.curr_button->left;
@@ -155,7 +171,10 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
             if (! menu_scene.options_screen.is_open && players_car_manager.cur_car != players_car_manager.car_count - 1)
             {
                 if (menu_scene.curr_button->right == NULL)
+                {
+                    menu_scene.change_happened = false;
                     break;
+                }
                 menu_scene.curr_button->       is_focused = false;
                 menu_scene.curr_button->right->is_focused = true;
                 menu_scene.curr_button = menu_scene.curr_button->right;
@@ -164,7 +183,9 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
             break;
 
         default:
+            menu_scene.change_happened = false;
             process_global_keyboard(event_key);
+            break;
     }
 
     if (exit_code == EXIT_FAILURE)
@@ -175,6 +196,7 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
 
 static void _process_options_keyboard(const SDL_Keycode event_key)
 {
+    menu_scene.change_happened = true;
     int exit_code = EXIT_SUCCESS;
 
     /// Options screen button handling:
@@ -215,6 +237,8 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
                 menu_scene.options_screen.fps_switch.  is_focused = false;
                 menu_scene.options_screen.audio_switch.is_focused = true;
             }
+            else
+                menu_scene.change_happened = false;
             break;
         
         case SDLK_DOWN:
@@ -228,13 +252,17 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
                 menu_scene.options_screen.audio_switch.is_focused = false;
                 menu_scene.options_screen.fps_switch.is_focused   = true;
             }
+            else
+                menu_scene.change_happened = false;
             break;
 
         default:
+            menu_scene.change_happened = false;
             process_global_keyboard(event_key);
+            break;
     }
 
     if (exit_code == EXIT_FAILURE)
-        print_error("`_process_menu_keyboard()`: an error code was thrown", NON_SDL_ERROR);
+        print_error("`_process_options_keyboard()`: an error code was thrown", NON_SDL_ERROR);
     return;
 }

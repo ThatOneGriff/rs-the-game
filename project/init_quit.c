@@ -7,7 +7,7 @@
 #include <SDL3_ttf/SDL_ttf.h>     /// SDL3.
 
 /* C headers */
-#include <stdio.h> /// I/O.
+#include <stdio.h>  /// I/O.
 
 /* Root folder headers */
 #include "debug.h"        /// Error / warning output.
