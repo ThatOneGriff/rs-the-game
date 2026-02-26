@@ -3,7 +3,6 @@
 
 /* SDL3 */
 #include <SDL3/SDL.h> /// Keyboard controls.
-#include <stdio.h>    /// Text debug (TEMP).
 
 /* Helper headers */
 #include "../../debug.h"                   /// Error message printing.
@@ -60,7 +59,7 @@ void _process_gameplay_keyboard(const SDL_Keycode event_key)
                 show_pause_screen(&gameplay_scene.pause_screen);
                 if (audio_manager.using_audio)
                     ma_sound_stop(&audio_manager.music);
-                logic_layer.screen_changed = true; /// For the initial render to happen.
+                graphics_layer.screen_changed = true; /// For the initial render to happen.
             }
             else if (gameplay_scene.pause_screen.is_open)
             {
@@ -102,7 +101,7 @@ void _process_gameplay_keyboard(const SDL_Keycode event_key)
 
 static void _process_pause_keyboard(const SDL_Keycode event_key)
 {
-    logic_layer.screen_changed = true;
+    graphics_layer.screen_changed = true;
 
     /// Pause screen button handling:
     switch(event_key)
@@ -118,13 +117,13 @@ static void _process_pause_keyboard(const SDL_Keycode event_key)
             else if (gameplay_scene.pause_screen.quit_to_desktop_button.is_focused)
                 logic_layer.game_is_running = false;
             else
-                logic_layer.screen_changed = false;
+                graphics_layer.screen_changed = false;
             break;
         
         case SDLK_UP:
             if (gameplay_scene.pause_screen.curr_button->up == NULL)
             {
-                logic_layer.screen_changed = false;
+                graphics_layer.screen_changed = false;
                 break;
             }
             gameplay_scene.pause_screen.curr_button->    is_focused = false;
@@ -135,7 +134,7 @@ static void _process_pause_keyboard(const SDL_Keycode event_key)
         case SDLK_DOWN:
             if (gameplay_scene.pause_screen.curr_button->down == NULL)
             {
-                logic_layer.screen_changed = false;
+                graphics_layer.screen_changed = false;
                 break;
             }
             gameplay_scene.pause_screen.curr_button->      is_focused = false;
@@ -145,7 +144,7 @@ static void _process_pause_keyboard(const SDL_Keycode event_key)
         
         default:
             process_global_keyboard(event_key);
-            logic_layer.screen_changed = false;
+            graphics_layer.screen_changed = false;
             break;
     }
 

@@ -2,8 +2,8 @@
 #define LOGIC_LAYER_H
 
 /* Headers */
-#include <SDL3/SDL.h>       /// `SDL_Event`.
-#include <stdbool.h>        /// `bool game_is_running`.
+#include <SDL3/SDL.h> /// `SDL_Event`.
+#include <stdbool.h>  /// `bool game_is_running`.
 
 /// Purely for code clarity.
 #define time_tick_ms unsigned long long int
@@ -17,8 +17,6 @@
 struct Logic_Layer
 {
     bool game_is_running;
-    bool screen_changed;
-    bool force_render;
     
     bool  remain_in_scene;
     void* curr_scene;

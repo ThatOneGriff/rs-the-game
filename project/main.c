@@ -120,19 +120,19 @@ void game_loop(int *const exit_code)
                 check_if_music_ended(&music_loader_gameplay);
             
             process_gameplay_events();
-            /// Gameplay scene ignores `logic_layer.screen_changed`, as it's dynamic.
+            /// Gameplay scene ignores `graphics_layer.screen_changed`, as it's dynamic.
             if (! gameplay_scene.pause_screen.is_open)
             {
                 render_gameplay_scene();
                 ++curr_fps;
             }
-            /// Pause screen abides to `logic_layer.screen_changed`.
-            else if (gameplay_scene.pause_screen.is_open && (logic_layer.screen_changed || logic_layer.force_render))
+            /// Pause screen abides to `graphics_layer.screen_changed`.
+            else if (gameplay_scene.pause_screen.is_open && (graphics_layer.screen_changed || graphics_layer.force_render))
             {
                 render_pause_screen(&gameplay_scene.pause_screen);
                 ++curr_fps;
-                logic_layer.screen_changed = false;
-                logic_layer.force_render   = false;
+                graphics_layer.screen_changed = false;
+                graphics_layer.force_render   = false;
             }
 
             /// Scene switch (to menu)
@@ -160,12 +160,12 @@ void game_loop(int *const exit_code)
                 check_if_music_ended(&music_loader_menu);
             
             process_menu_events();
-            if (logic_layer.screen_changed || logic_layer.force_render) /// 2nd part of the equation for the initial render to happen.
+            if (graphics_layer.screen_changed || graphics_layer.force_render) /// 2nd part of the equation for the initial render to happen.
             {
                 render_menu_scene();
                 ++curr_fps;
-                logic_layer.screen_changed = false;
-                logic_layer.force_render   = false;
+                graphics_layer.screen_changed = false;
+                graphics_layer.force_render   = false;
             }
             
             /// Scene switch

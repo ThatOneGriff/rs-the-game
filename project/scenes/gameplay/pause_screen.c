@@ -174,7 +174,7 @@ void show_pause_screen(struct Pause_Screen *const target)
     target->curr_button = &target->continue_button;
     target->curr_button->is_focused = true;
 
-    logic_layer.force_render = true;
+    graphics_layer.force_render = true;
     return;
 }
 

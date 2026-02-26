@@ -243,7 +243,7 @@ void show_options_screen(struct Options_Screen *const target)
     target->audio_switch.is_focused = true;
     target->fps_switch.  is_focused = false;
     
-    logic_layer.force_render = true;
+    graphics_layer.force_render = true;
     return;
 }
 

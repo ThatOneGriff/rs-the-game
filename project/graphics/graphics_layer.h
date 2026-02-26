@@ -1,8 +1,9 @@
 ﻿#ifndef GRAPHICS_LAYER_H
 #define GRAPHICS_LAYER_H
 
-/* SDL3 */
+/* Headers */
 #include <SDL3/SDL.h> /// SDL things.
+#include <stdbool.h>  /// `bool screen_changed, force_render`.
 
 #define WINDOW_TITLE "Renault Sport: The Game"
 #define WINDOW_WIDTH  960
@@ -18,6 +19,9 @@ struct Graphics_Layer
     SDL_Window*   window;
     SDL_Renderer* renderer;
     SDL_Texture*  buffer;
+
+    bool screen_changed;
+    bool force_render;
 };
 extern struct Graphics_Layer graphics_layer; /// Singleton.
 

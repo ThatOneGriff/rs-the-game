@@ -159,7 +159,7 @@ void load_menu_scene(struct Car *const car_ptr, int *const exit_code)
     menu_scene.curr_button = &menu_scene.play_button;
 
     set_menu_car_info(car_ptr, exit_code);
-    logic_layer.screen_changed = true; /// For the initial render to happen.
+    graphics_layer.screen_changed = true; /// For the initial render to happen.
 
     free_deinit_stack(&deinit_stack);
     free_ptr_arr((void**)scene_data, MENU_DATA_LINES);

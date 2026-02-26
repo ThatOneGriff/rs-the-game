@@ -35,6 +35,8 @@ void init_graphics_layer(int *const exit_code)
         print_warning("`_init_graphics_layer()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
     memset(&graphics_layer, 0, sizeof graphics_layer);
+    graphics_layer.screen_changed = true;
+    graphics_layer.force_render   = true; /// For the initial render to happen.
     
     /// Window
     graphics_layer.window = SDL_CreateWindow(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
