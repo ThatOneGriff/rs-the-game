@@ -13,6 +13,8 @@
 struct FPS_Manager FPS_manager = {0};
 const unsigned int fps_cap_options[4] = {30, 60, 120, UINT_MAX};
 unsigned int  curr_fps_cap_i = 1;
+unsigned int  prev_fps = 0;
+unsigned int  curr_fps = 0;
 bool          show_fps = false;
 
 

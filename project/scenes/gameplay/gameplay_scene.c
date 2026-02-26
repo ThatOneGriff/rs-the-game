@@ -36,7 +36,8 @@ struct Gameplay_Scene gameplay_scene = {0};
 void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int *const exit_code);
 void free_gameplay_scene(void);
 void render_gameplay_scene(void);
-void update_points(void);
+void update_fps_text(void);
+void update_points  (void);
 
 
 /* Body */
@@ -71,7 +72,7 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
     }
     
     /// Deinit stack
-    struct Deinit_Stack deinit_stack = new_deinit_stack(7, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
+    struct Deinit_Stack deinit_stack = new_deinit_stack(8, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
@@ -215,6 +216,9 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
     add_to_deinit_stack(&deinit_stack, &gameplay_scene.personal_best_text, (void (*)(void*))free_texture);
 
     gameplay_scene.curr_points_text = create_text("Pts: 0", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(5, 20), 15, 1, exit_code);
+    add_to_deinit_stack(&deinit_stack, &gameplay_scene.curr_points_text, (void (*)(void*))free_texture);
+
+    gameplay_scene.fps_text = create_text("FPS: ", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(5, 35), 15, 1, exit_code);
     
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
@@ -235,6 +239,8 @@ void free_gameplay_scene(void)
     }
     
     free_texture(&gameplay_scene.personal_best_text);
+    free_texture(&gameplay_scene.curr_points_text);
+    free_texture(&gameplay_scene.fps_text);
     free_pause_screen(&gameplay_scene.pause_screen);
     for (size_t i = 0; i < 10; i++)
         free_texture(&gameplay_scene.clouds[i]);
@@ -312,6 +318,23 @@ void render_gameplay_scene(void)
         render_traffic_on_pts(10, UINT_MAX, NULL, NULL, NULL);
     render_texture(&gameplay_scene.personal_best_text);
     render_texture(&gameplay_scene.curr_points_text);
+    if (show_fps)
+        render_texture(&gameplay_scene.fps_text);
+    return;
+}
+
+
+
+void update_fps_text(void)
+{
+    int exit_code = EXIT_SUCCESS; /// A dummy for now.
+    if (prev_fps == curr_fps)
+        return;
+
+    char fps_text_c[9]; /// REDO this naming.
+    sprintf(fps_text_c, "FPS: %u", (curr_fps <= 9999 ? curr_fps : 9999));
+    free_texture(&gameplay_scene.fps_text);
+    gameplay_scene.fps_text = create_text(fps_text_c, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(5, 35), 15, 1, &exit_code);
     return;
 }
 
@@ -332,4 +355,5 @@ void update_points(void)
         logic_layer.save_needed = true;
         PERSONAL_BEST = gameplay_scene.point_count; /// Text will be updated in the next gameplay scene loading.
     }
+    return;
 }

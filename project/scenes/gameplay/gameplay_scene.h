@@ -39,6 +39,8 @@ struct Gameplay_Scene
     struct Texture personal_best_text;
     struct Texture   curr_points_text;
 
+    struct Texture fps_text;
+
     struct Car* car_ptr;
     struct Pause_Screen pause_screen;
 };
@@ -50,7 +52,8 @@ extern struct Gameplay_Scene gameplay_scene; /// Singleton.
 void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int *const exit_code);
 void free_gameplay_scene(void);
 void render_gameplay_scene(void);
-void update_points(void);
+void update_fps_text(void);
+void update_points  (void);
 
 
 #endif /// GAMEPLAY_SCENE_H

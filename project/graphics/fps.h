@@ -9,6 +9,8 @@
 #define SEC_IN_NS 1000000000.0f
 extern const unsigned int fps_cap_options[4];
 extern unsigned int  curr_fps_cap_i;
+extern unsigned int  prev_fps;
+extern unsigned int  curr_fps;
 extern bool          show_fps;
 
 
