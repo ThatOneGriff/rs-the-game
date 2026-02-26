@@ -34,7 +34,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     struct Options_Screen result = {0};
     
     /// Deinit stack
-    struct Deinit_Stack deinit_stack = new_deinit_stack(13, exit_code);
+    struct Deinit_Stack deinit_stack = new_deinit_stack(17, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_options_screen()`: couldn't create deinit stack", NON_SDL_ERROR);
@@ -111,7 +111,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     add_to_switch(&result.audio_switch, audio_off_button);
     result.audio_switch.is_focused = true;
     if (! audio_manager.using_audio)
-        change_switch_option(&result.audio_switch);
+        next_switch_option(&result.audio_switch);
     add_to_deinit_stack(&deinit_stack, &result.audio_switch, (void (*)(void*))free_switch);
 
     /// 'FPS limit' text
@@ -172,8 +172,50 @@ struct Options_Screen init_options_screen(int *const exit_code)
     add_to_switch(&result.fps_switch, fps_button_120);
     add_to_switch(&result.fps_switch, fps_button_none);
     for (unsigned int i = 0; i < curr_fps_cap_i; i++)
-        change_switch_option(&result.fps_switch); /// Set to curr FPS cap.
+        next_switch_option(&result.fps_switch); /// Set to curr FPS cap.
     add_to_deinit_stack(&deinit_stack, &result.fps_switch, (void (*)(void*))free_switch);
+
+    /// 'Show FPS' text
+    result.show_fps_text = create_text("Show FPS:", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(10, 90), 15, 1, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init_options_screen()`: couldn't create the 'Show FPS:' text", NON_SDL_ERROR);
+        flush_deinit_stack(&deinit_stack);
+        return result;
+    }
+    add_to_deinit_stack(&deinit_stack, &result.show_fps_text, (void (*)(void*))free_texture);
+
+    /// Show FPS 'ON' button
+    struct Button show_fps_on_button = create_button("ON", (SDL_Color){22,196,127,255}, vec2(102, 90), 15, 2, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init_options_screen()`: couldn't create the audio 'ON' button", NON_SDL_ERROR);
+        flush_deinit_stack(&deinit_stack);
+        return result;
+    }
+    add_to_deinit_stack(&deinit_stack, &show_fps_on_button, (void (*)(void*))free_button);
+    /// Show FPS 'OFF' button
+    struct Button show_fps_off_button = create_button("OFF", (SDL_Color){237,63,39,255}, vec2(102, 90), 15, 2, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init_options_screen()`: couldn't create the audio 'OFF' button", NON_SDL_ERROR);
+        flush_deinit_stack(&deinit_stack);
+        return result;
+    }
+    add_to_deinit_stack(&deinit_stack, &show_fps_off_button, (void (*)(void*))free_button);
+    /// 'Show FPS' switch
+    result.show_fps_switch = init_switch(2, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init_options_screen()`: couldn't create the audio switch", NON_SDL_ERROR);
+        flush_deinit_stack(&deinit_stack);
+        return result;
+    }
+    add_to_switch(&result.show_fps_switch, show_fps_on_button );
+    add_to_switch(&result.show_fps_switch, show_fps_off_button);
+    if (! show_fps)
+        next_switch_option(&result.show_fps_switch);
+    add_to_deinit_stack(&deinit_stack, &result.show_fps_switch, (void (*)(void*))free_switch);
     
     /// 'Version' text
     result.version_text = create_text("RS The Game v 1.0", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(X_AUTO_CENTER, 150), 9, 1, exit_code);
@@ -209,6 +251,9 @@ void free_options_screen(struct Options_Screen *const target)
     
     free_texture(&target->fps_text);
     free_switch (&target->fps_switch);
+
+    free_texture(&target->show_fps_text);
+    free_switch (&target->show_fps_switch);
 
     free_texture(&target->version_text);
 
@@ -278,6 +323,9 @@ void render_options_screen(struct Options_Screen *const target)
 
     render_texture(&target->fps_text);
     render_switch (&target->fps_switch);
+
+    render_texture(&target->show_fps_text);
+    render_switch (&target->show_fps_switch);
 
     render_texture(&target->version_text);
     return;

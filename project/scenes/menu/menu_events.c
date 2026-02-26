@@ -206,7 +206,7 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
             if (menu_scene.options_screen.audio_switch.is_focused)
             {
                 audio_manager.using_audio = ! audio_manager.using_audio;
-                change_switch_option(&menu_scene.options_screen.audio_switch);
+                next_switch_option(&menu_scene.options_screen.audio_switch);
                 if (! audio_manager.using_audio)
                     ma_sound_stop(&audio_manager.music);
                 else
@@ -222,7 +222,12 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
                 if (curr_fps_cap_i == 4)
                     curr_fps_cap_i = 0;
                 set_fps_cap(fps_cap_options[curr_fps_cap_i]);
-                change_switch_option(&menu_scene.options_screen.fps_switch);
+                next_switch_option(&menu_scene.options_screen.fps_switch);
+            }
+            else if (menu_scene.options_screen.show_fps_switch.is_focused)
+            {       
+                show_fps = ! show_fps;
+                next_switch_option(&menu_scene.options_screen.show_fps_switch);
             }
             break;
 
@@ -236,6 +241,11 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
             {
                 menu_scene.options_screen.fps_switch.  is_focused = false;
                 menu_scene.options_screen.audio_switch.is_focused = true;
+            }
+            else if (menu_scene.options_screen.show_fps_switch.is_focused)
+            {
+                menu_scene.options_screen.fps_switch.is_focused      = true;
+                menu_scene.options_screen.show_fps_switch.is_focused = false;
             }
             else
                 graphics_layer.screen_changed = false;
@@ -251,6 +261,11 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
             {
                 menu_scene.options_screen.audio_switch.is_focused = false;
                 menu_scene.options_screen.fps_switch.is_focused   = true;
+            }
+            else if (menu_scene.options_screen.fps_switch.is_focused)
+            {
+                menu_scene.options_screen.fps_switch.is_focused      = false;
+                menu_scene.options_screen.show_fps_switch.is_focused = true;
             }
             else
                 graphics_layer.screen_changed = false;

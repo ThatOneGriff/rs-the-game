@@ -17,7 +17,7 @@
 struct Switch init_switch(const size_t max_option_count, int *const exit_code);
 void          free_switch(struct Switch *const target);
 void        add_to_switch(struct Switch *const target, const struct Button new_option);
-void change_switch_option(struct Switch *const target);
+void next_switch_option(struct Switch *const target);
 void        render_switch(struct Switch *const target);
 
 
@@ -91,11 +91,11 @@ void add_to_switch(struct Switch *const target, const struct Button new_option)
 }
 
 
-void change_switch_option(struct Switch *const target)
+void next_switch_option(struct Switch *const target)
 {
     if (target == NULL)
     {
-        print_error("`change_switch_option()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`next_switch_option()`: `target` arg is `NULL`", NON_SDL_ERROR);
         return;
     }
     

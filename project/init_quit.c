@@ -187,7 +187,8 @@ void read_data(void)
     for (size_t i = 0; i < car_i; i++)
         get_next_car();
     
-    PERSONAL_BEST = atoi(save_data[3]);
+    PERSONAL_BEST =  atoi(save_data[3]);
+    show_fps = (bool)atoi(save_data[4]);
 
     print_success("Save data read");
     free_ptr_arr((void**)save_data, SAVE_DATA_LINES);
@@ -198,7 +199,7 @@ void read_data(void)
 void save_data(void)
 {
     FILE* save_data = fopen(SAVE_DATA_PATH, "w");
-    fprintf(save_data, "%d\n%u\n%llu\n%d", audio_manager.using_audio, curr_fps_cap_i, players_car_manager.cur_car, PERSONAL_BEST);
+    fprintf(save_data, "%d\n%u\n%llu\n%d\n%d", audio_manager.using_audio, curr_fps_cap_i, players_car_manager.cur_car, PERSONAL_BEST, show_fps);
     fclose(save_data);
     print_success("Data saved");
     return;

@@ -24,6 +24,8 @@ struct Options_Screen
     struct Texture fps_text;
     struct Switch  fps_switch;
 
+    struct Texture show_fps_text;
+    struct Switch  show_fps_switch;
     //void*  curr_button; /// Either a `Button` or a `Switch`.
 
     struct Texture version_text;
