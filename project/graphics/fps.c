@@ -16,6 +16,7 @@ unsigned int  curr_fps_cap_i = 1;
 unsigned int  prev_fps = 0;
 unsigned int  curr_fps = 0;
 bool          show_fps = false;
+struct Vec2 fps_counter_position = FPS_POS_2_DIGITS;
 
 
 /* Predef */
@@ -36,15 +37,24 @@ void set_fps_cap(const unsigned int new_fps_cap)
     }
 
     FPS_manager.fps_capped = true; /// `set_fps_cap()` can just be used to put the FPS cap back on.
-    if (new_fps_cap != FPS_manager.fps_cap)
-    {
-        FPS_manager.fps_cap = new_fps_cap;
-        FPS_manager.target_delta_ns = (time_tick_ns)(SEC_IN_NS / (float)new_fps_cap);
-    }
+    if (new_fps_cap == FPS_manager.fps_cap)
+        return;
+    
+    FPS_manager.fps_cap = new_fps_cap;
+    FPS_manager.target_delta_ns = (time_tick_ns)(SEC_IN_NS / (float)new_fps_cap);
+
+    if (new_fps_cap <= 99)
+        fps_counter_position = FPS_POS_2_DIGITS;
+    else if (new_fps_cap <= 999)
+        fps_counter_position = FPS_POS_3_DIGITS;
+    else
+        fps_counter_position = FPS_POS_UNLIMITED;
+    return;
 }
 
 
 void rem_fps_cap(void)
 {
     FPS_manager.fps_capped = false;
+    return;
 }

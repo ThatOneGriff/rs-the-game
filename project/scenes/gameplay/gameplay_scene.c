@@ -191,10 +191,10 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
         return;
     }
     add_to_deinit_stack(&deinit_stack, &gameplay_scene.pause_screen, (void (*)(void*))free_pause_screen);
-    /// Below block: DON'T MOVE out of this function!!! Some memory fuckery will happen.
-    /// - Pause screen: setting button neighbours.
-    ///                    | Target                                     | Up                                      | Down                                       |Left |Right
-    add_neighbors_to_button(&gameplay_scene.pause_screen.          close_button, NULL,                                     &gameplay_scene.pause_screen.       continue_button, NULL, NULL);
+    /// - Pause screen: setting up a button neighbourhood.
+    /// Below block: DON'T MOVE out of this function!!! Memory fuckery will happen.
+    ///                    | Target                                             | Up                                              | Down                                               |Left |Right
+    add_neighbors_to_button(&gameplay_scene.pause_screen.          close_button, NULL,                                             &gameplay_scene.pause_screen.       continue_button, NULL, NULL);
     add_neighbors_to_button(&gameplay_scene.pause_screen.       continue_button, &gameplay_scene.pause_screen.       close_button, &gameplay_scene.pause_screen.   quit_to_menu_button, NULL, NULL);
     add_neighbors_to_button(&gameplay_scene.pause_screen.   quit_to_menu_button, &gameplay_scene.pause_screen.    continue_button, &gameplay_scene.pause_screen.quit_to_desktop_button, NULL, NULL);
     add_neighbors_to_button(&gameplay_scene.pause_screen.quit_to_desktop_button, &gameplay_scene.pause_screen.quit_to_menu_button, NULL,                                        NULL, NULL);
@@ -218,7 +218,7 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
     gameplay_scene.curr_points_text = create_text("Pts: 0", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(5, 20), 15, 1, exit_code);
     add_to_deinit_stack(&deinit_stack, &gameplay_scene.curr_points_text, (void (*)(void*))free_texture);
 
-    gameplay_scene.fps_text = create_text("FPS: ", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(5, 35), 15, 1, exit_code);
+    gameplay_scene.fps_text = create_text("FPS: ", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, fps_counter_position, 15, 1, exit_code);
     
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
@@ -331,10 +331,10 @@ void update_fps_text(void)
     if (prev_fps == curr_fps)
         return;
 
-    char fps_text_c[9]; /// REDO this naming.
+    char fps_text_c[9]; /// REDO the naming.
     sprintf(fps_text_c, "FPS: %u", (curr_fps <= 9999 ? curr_fps : 9999));
     free_texture(&gameplay_scene.fps_text);
-    gameplay_scene.fps_text = create_text(fps_text_c, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(5, 35), 15, 1, &exit_code);
+    gameplay_scene.fps_text = create_text(fps_text_c, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, fps_counter_position, 15, 1, &exit_code);
     return;
 }
 

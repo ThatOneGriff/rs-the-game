@@ -4,6 +4,7 @@
 /* Headers */
 #include <stdbool.h>              /// `bool fps_capped`.
 #include <stdlib.h>               /// `UINT_MAX`.
+#include "../helpers/geometry.h"  /// `struct Vec2`.
 #include "../logic/logic_layer.h" /// `time_tick_ns`.
 
 #define SEC_IN_NS 1000000000.0f
@@ -12,6 +13,11 @@ extern unsigned int  curr_fps_cap_i;
 extern unsigned int  prev_fps;
 extern unsigned int  curr_fps;
 extern bool          show_fps;
+
+#define FPS_POS_2_DIGITS  vec2(165, 5)
+#define FPS_POS_3_DIGITS  vec2(160, 5)
+#define FPS_POS_UNLIMITED vec2(155, 5)
+extern struct Vec2 fps_counter_position;
 
 
 /* Struct */
