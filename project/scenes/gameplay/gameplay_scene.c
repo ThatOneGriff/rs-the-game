@@ -328,5 +328,8 @@ void update_points(void)
     gameplay_scene.curr_points_text = create_text(curr_pts, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(5, 20), 15, 1, &exit_code);
 
     if (gameplay_scene.point_count > PERSONAL_BEST)
+    {
+        logic_layer.save_needed = true;
         PERSONAL_BEST = gameplay_scene.point_count; /// Text will be updated in the next gameplay scene loading.
+    }
 }

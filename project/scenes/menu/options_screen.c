@@ -80,9 +80,10 @@ struct Options_Screen init_options_screen(int *const exit_code)
         return result;
     }
     add_to_deinit_stack(&deinit_stack, &result.audio_text, (void (*)(void*))free_texture);
-
+    
     /// Audio 'ON' button
-    struct Button audio_on_button = create_button("ON", (SDL_Color){22,196,127,255}, vec2(65, 50), 15, 2, exit_code);
+    const SDL_Color AUDIO_ON_SWITCH_COLOR = (audio_manager.audio_is_valid ? (SDL_Color){22,196,127,255} : (SDL_Color){57,62,70,255});
+    struct Button audio_on_button = create_button("ON", AUDIO_ON_SWITCH_COLOR, vec2(65, 50), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_options_screen()`: couldn't create the audio 'ON' button", NON_SDL_ERROR);
@@ -91,7 +92,8 @@ struct Options_Screen init_options_screen(int *const exit_code)
     }
     add_to_deinit_stack(&deinit_stack, &audio_on_button, (void (*)(void*))free_button);
     /// Audio 'OFF' button
-    struct Button audio_off_button = create_button("OFF", (SDL_Color){237,63,39,255}, vec2(65, 50), 15, 2, exit_code);
+    const SDL_Color AUDIO_OFF_SWITCH_COLOR = (audio_manager.audio_is_valid ? (SDL_Color){237,63,39,255} : (SDL_Color){57,62,70,255});
+    struct Button audio_off_button = create_button("OFF", AUDIO_OFF_SWITCH_COLOR, vec2(65, 50), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_options_screen()`: couldn't create the audio 'OFF' button", NON_SDL_ERROR);
@@ -109,8 +111,9 @@ struct Options_Screen init_options_screen(int *const exit_code)
     }
     add_to_switch(&result.audio_switch, audio_on_button);
     add_to_switch(&result.audio_switch, audio_off_button);
-    result.audio_switch.is_focused = true;
-    if (! audio_manager.using_audio)
+    if (audio_manager.audio_is_valid)
+        result.audio_switch.is_focused = true;
+    if (! audio_manager.using_audio || ! audio_manager.audio_is_valid)
         next_switch_option(&result.audio_switch);
     add_to_deinit_stack(&deinit_stack, &result.audio_switch, (void (*)(void*))free_switch);
 
@@ -171,6 +174,8 @@ struct Options_Screen init_options_screen(int *const exit_code)
     add_to_switch(&result.fps_switch, fps_button_60);
     add_to_switch(&result.fps_switch, fps_button_120);
     add_to_switch(&result.fps_switch, fps_button_none);
+    if (! audio_manager.audio_is_valid)
+        result.fps_switch.is_focused = true;
     for (unsigned int i = 0; i < curr_fps_cap_i; i++)
         next_switch_option(&result.fps_switch); /// Set to curr FPS cap.
     add_to_deinit_stack(&deinit_stack, &result.fps_switch, (void (*)(void*))free_switch);
@@ -285,8 +290,16 @@ void show_options_screen(struct Options_Screen *const target)
 
     /// Setting correct button focus.
     target->close_button.is_focused = false;
-    target->audio_switch.is_focused = true;
-    target->fps_switch.  is_focused = false;
+    if (audio_manager.audio_is_valid)
+    {
+        target->audio_switch.is_focused = true ;
+        target->fps_switch. is_focused  = false;
+    }
+    else
+    {
+        target->audio_switch.is_focused = false;
+        target->fps_switch. is_focused  = true ;
+    }
     
     graphics_layer.force_render = true;
     return;

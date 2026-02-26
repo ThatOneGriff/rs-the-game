@@ -70,7 +70,8 @@ void _process_gameplay_keyboard(const SDL_Keycode event_key)
             break;
         
         case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
-            play_random_music(&music_loader_gameplay);
+            if (audio_manager.audio_is_valid)
+                play_random_music(&music_loader_gameplay);
             break;
     }
 

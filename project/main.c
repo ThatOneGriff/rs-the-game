@@ -101,7 +101,7 @@ void game_loop(int *const exit_code)
     unsigned int curr_fps = 0;
     UNUSED(curr_fps); /// TEMP
 
-    if (audio_manager.using_audio)
+    if (audio_manager.using_audio && audio_manager.audio_is_valid)
         play_random_music(&music_loader_menu);
     
     /// The loop

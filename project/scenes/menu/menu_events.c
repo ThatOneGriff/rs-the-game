@@ -72,7 +72,8 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
             break;
         
         case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
-            play_random_music(&music_loader_menu);
+            if (audio_manager.audio_is_valid)
+                play_random_music(&music_loader_menu);
             graphics_layer.screen_changed = false;
             break;
     }
@@ -87,9 +88,10 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
     /// Menu button handling:
     switch(event_key)
     {
-        case SDLK_RETURN:
+        case SDLK_RETURN:        
             if      (menu_scene.prev_button.is_focused)
             {
+                logic_layer.save_needed = true; /// NOTE: a smarter system may take place, that compares initial values and the newly set ones (so that a save only happens when something was actually changed, and not changed and then set back to original).
                 set_menu_car_info(get_prev_car(), &exit_code);
                 if (players_car_manager.cur_car == 0)
                 {
@@ -100,6 +102,7 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
             }
             else if (menu_scene.next_button.is_focused)
             {
+                logic_layer.save_needed = true; /// NOTE: a smarter system may take place, that compares initial values and the newly set ones (so that a save only happens when something was actually changed, and not changed and then set back to original).
                 set_menu_car_info(get_next_car(), &exit_code);
                 if (players_car_manager.cur_car == players_car_manager.car_count - 1)
                 {
@@ -203,21 +206,21 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
     switch(event_key)
     {
         case SDLK_RETURN:
-            if (menu_scene.options_screen.audio_switch.is_focused)
+            if (menu_scene.options_screen.audio_switch.is_focused && audio_manager.audio_is_valid)
             {
-                audio_manager.using_audio = ! audio_manager.using_audio;
+                logic_layer.save_needed = true;
                 next_switch_option(&menu_scene.options_screen.audio_switch);
+                audio_manager.using_audio = ! audio_manager.using_audio;
                 if (! audio_manager.using_audio)
                     ma_sound_stop(&audio_manager.music);
                 else
                     play_random_music(&music_loader_menu);
             }
             else if (menu_scene.options_screen.close_button.is_focused)
-            {
                 hide_options_screen(&menu_scene.options_screen);
-            }
             else if (menu_scene.options_screen.fps_switch.is_focused)
-            {       
+            {
+                logic_layer.save_needed = true;
                 ++curr_fps_cap_i;
                 if (curr_fps_cap_i == 4)
                     curr_fps_cap_i = 0;
@@ -225,7 +228,8 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
                 next_switch_option(&menu_scene.options_screen.fps_switch);
             }
             else if (menu_scene.options_screen.show_fps_switch.is_focused)
-            {       
+            {
+                logic_layer.save_needed = true;
                 show_fps = ! show_fps;
                 next_switch_option(&menu_scene.options_screen.show_fps_switch);
             }
@@ -239,8 +243,11 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
             }
             else if (menu_scene.options_screen.fps_switch.is_focused)
             {
-                menu_scene.options_screen.fps_switch.  is_focused = false;
-                menu_scene.options_screen.audio_switch.is_focused = true;
+                menu_scene.options_screen.fps_switch.is_focused = false;
+                if (audio_manager.audio_is_valid)
+                    menu_scene.options_screen.audio_switch.is_focused = true;
+                else
+                    menu_scene.options_screen.close_button.is_focused   = true;
             }
             else if (menu_scene.options_screen.show_fps_switch.is_focused)
             {
@@ -255,7 +262,10 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
             if (menu_scene.options_screen.close_button.is_focused)
             {
                 menu_scene.options_screen.close_button.is_focused = false;
-                menu_scene.options_screen.audio_switch.is_focused = true;
+                if (audio_manager.audio_is_valid)
+                    menu_scene.options_screen.audio_switch.is_focused = true;
+                else
+                    menu_scene.options_screen.fps_switch.is_focused   = true;
             }
             else if (menu_scene.options_screen.audio_switch.is_focused)
             {

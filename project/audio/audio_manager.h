@@ -12,6 +12,7 @@ struct Audio_Manager
     ma_engine engine;
     ma_sound  music;
     bool using_audio;
+    bool audio_is_valid;
 };
 extern struct Audio_Manager audio_manager; /// Singleton.
 

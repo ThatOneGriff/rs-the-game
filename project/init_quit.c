@@ -143,22 +143,15 @@ void init(int *const exit_code)
         add_to_deinit_stack(&deinit_stack, &music_loader_menu, (void (*)(void*))free_music_loader);
     
     
-    audio_manager.using_audio = (music_loader_gameplay.valid && music_loader_menu.valid);
+    audio_manager.audio_is_valid = (music_loader_gameplay.valid && music_loader_menu.valid);
     
     /// Audio system
-    if (audio_manager.using_audio)
+    if (audio_manager.audio_is_valid)
     {
         if (ma_engine_init(NULL, &audio_manager.engine) != MA_SUCCESS)
         {
             print_error("`init()`: failed to initialize audio engine", NON_SDL_ERROR);
-            free_car_manager();
-            free_global_resources();
-            TTF_Quit();
-            free_logic_layer();
-            flush_deinit_stack(&deinit_stack);
-            SDL_Quit();
-            *exit_code = EXIT_FAILURE;
-            return;
+            audio_manager.audio_is_valid = false;
         }
     }
 
@@ -179,7 +172,10 @@ void read_data(void)
         return;
     }
 
-    audio_manager.using_audio = (bool)    atoi(save_data[0]);
+    if (audio_manager.audio_is_valid)
+        audio_manager.using_audio = (bool)    atoi(save_data[0]);
+    else
+        audio_manager.using_audio = false;
     curr_fps_cap_i            = (unsigned)atoi(save_data[1]);
     set_fps_cap(fps_cap_options[curr_fps_cap_i]);
 
@@ -232,7 +228,8 @@ void quit(void)
 [[ noreturn ]]
 void program_exit(const int exit_code)
 {
-    save_data();
+    if (logic_layer.save_needed) /// NOTE: a smarter system may take place, that compares initial values and the newly set ones (so that a save only happens when something was actually changed, and not changed and then set back to original).
+        save_data();
     quit();
     printf("\n");
     exit(exit_code);

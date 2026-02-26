@@ -23,6 +23,8 @@ struct Logic_Layer
 
     SDL_Event event;
 
+    bool save_needed;
+
     time_tick_ms curr_tick;
     time_tick_ms real_tick_diff;
 };
