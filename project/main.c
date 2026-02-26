@@ -99,7 +99,7 @@ void game_loop(int *const exit_code)
     time_tick_ns render_start_tick   = SDL_GetTicksNS();
     time_tick_ms fps_measure_1s_tick = SDL_GetTicks();
     unsigned int curr_fps = 0;
-    unsigned int prev_fps = UINT_MAX;
+    UNUSED(curr_fps); /// TEMP
 
     if (audio_manager.using_audio)
         play_random_music(&music_loader_menu);
@@ -202,9 +202,7 @@ void game_loop(int *const exit_code)
         /// FPS output
         if (SDL_GetTicks() - fps_measure_1s_tick >= 1000) /// 1s since last measurement elapsed.
         {
-            print_compare_fps(curr_fps, prev_fps);
             fps_measure_1s_tick = SDL_GetTicks();
-            prev_fps = curr_fps;
             curr_fps = 0;
         }
     }

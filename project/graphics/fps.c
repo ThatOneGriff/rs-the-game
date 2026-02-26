@@ -2,25 +2,24 @@
 #include "fps.h"
 
 /* Headers */
-#include <stdbool.h>  /// `bool fps_capped`.
+#include <stdbool.h>  /// `bool fps_capped, show_fps`.
 #include <stdio.h>    /// I/O.
 #include <stdlib.h>   /// `UINT_MAX`.
 #include "../debug.h" /// Error printing.
-#include "../helpers/helpers.h" /// Colored output.
 
 
 /* Variables */
 
 struct FPS_Manager FPS_manager = {0};
 const unsigned int fps_cap_options[4] = {30, 60, 120, UINT_MAX};
-      unsigned int curr_fps_cap_i = 1;
+unsigned int  curr_fps_cap_i = 1;
+bool          show_fps = false;
 
 
 /* Predef */
 
 void set_fps_cap(const unsigned int new_fps_cap);
 void rem_fps_cap(void);
-void print_compare_fps(const unsigned int curr_fps, const unsigned int prev_fps);
 
 
 /* Body */
@@ -46,28 +45,4 @@ void set_fps_cap(const unsigned int new_fps_cap)
 void rem_fps_cap(void)
 {
     FPS_manager.fps_capped = false;
-}
-
-
-void print_compare_fps(const unsigned int curr_fps, const unsigned int prev_fps)
-{
-    if (curr_fps == prev_fps || prev_fps == UINT_MAX) /// `prev_fps == 0` means it's the first FPS measurement
-    {
-        textcolor(GRAY);
-        printf("[~]");
-        textcolor(WHITE);
-    }
-    else if (curr_fps > prev_fps)
-    {
-        textcolor(GREEN);
-        printf("[+]");
-        textcolor(WHITE);
-    }
-    else if (curr_fps < prev_fps)
-    {
-        textcolor(RED);
-        printf("[-]");
-        textcolor(WHITE);
-    }
-    printf(" %u FPS\n", curr_fps);
 }
