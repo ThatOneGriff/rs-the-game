@@ -37,7 +37,7 @@ nlohmann/json version: 3.12.0  (last checked 17.02.26) | https://github.com/nloh
 */
 
 /* TODOs: */
-/// - FPS output into the window, fully disable console on release builds;
+/// - FPS output on the screen, fully disable console on release builds;
 /// - optional logs;
 /// - pushing an array of points/textures into array-like members of `game_components/`, instead of individual `add_*()` calls;
 /// - player's car bouncing in beat to the music.

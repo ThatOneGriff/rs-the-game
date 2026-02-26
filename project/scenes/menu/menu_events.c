@@ -5,6 +5,7 @@
 #include <SDL3/SDL.h> /// Keyboard processing.
 
 /* Logic */
+#include <stdio.h> /// TEMP (Debug)
 #include <stdbool.h>                   /// Bools.
 #include "../../debug.h"               /// Error message printing.
 #include "../../logic/global_events.h" /// Global event processing.
@@ -68,13 +69,18 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
             if    (! menu_scene.options_screen.is_open)
                 show_options_screen(&menu_scene.options_screen);
             else if (menu_scene.options_screen.is_open)
+            {
                 hide_options_screen(&menu_scene.options_screen);
+                graphics_layer.force_render = true; /// NOTE: kind of clumsy, because `screen_changed` is defaulted to `false` in the next switch.
+            }
             break;
         
         case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
             if (audio_manager.audio_is_valid)
+            {
                 play_random_music(&music_loader_menu);
-            graphics_layer.screen_changed = false;
+                graphics_layer.screen_changed = false;
+            }
             break;
     }
 
