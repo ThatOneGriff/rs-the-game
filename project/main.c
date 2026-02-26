@@ -19,7 +19,7 @@
 #include "graphics/graphics_layer.h" /// Graphics layer.
 
 /* Logic */
-#include "logic/logic_layer.h"       /// Logic layer.s
+#include "logic/logic_layer.h"       /// Logic layer.
 
 /* Scenes */
 #include "scenes/car_manager.h"              /// Car manager.
@@ -49,14 +49,14 @@ miniaudio     version: 0.11.24 (last checked 26.02.26) | https://github.com/mack
 
 /* Predef */
 
-[[ noreturn ]] /// Reason: `program_exit` at the end handles quitting.
+[[ noreturn ]] /// Reason: `program_exit()` at the end handles quitting.
 int  main(const int argc, char* argv[]);
 void game_loop(int *const exit_code);
 
 
 /* Body */
 
-[[ noreturn ]] /// Reason: `program_exit` at the end handles quitting.
+[[ noreturn ]] /// Reason: `program_exit()` at the end handles quitting.
 int main(const int argc, char* argv[])
 {
     UNUSED(argc);
@@ -85,7 +85,6 @@ void game_loop(int *const exit_code)
         print_warning("`game_loop()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
     
     /// Loading & preparing the scene
-    
     load_menu_scene(get_curr_car(), exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
