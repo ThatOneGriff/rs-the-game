@@ -3,18 +3,18 @@
 *.tmp
 
 # Project files
-**/SDL3
-**/player.savedata
-**/DISTRIBUTION
+_playground/
+project/_json/
+project/.vscode/
+SDL3/
+**/.obsidian/
+**/.vscode/
+**/DISTRIBUTION/
 **/miniaudio.dll
-**/.obsidian
-**/.vscode
-**/_playground
-**/project/_json
-**/project/.vscode
+**/player.savedata
 
 # Music (due to licensing impossibility)
-**/music
+**/music/
 
 # Prerequisites
 *.d
