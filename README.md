@@ -2,7 +2,7 @@ Hey everyone! This is my first "big" non-tutorial project. No piece of code was 
 
 ## Notes
 
-0) Work was done on a Windows machine. That said, Windows dependencies should be minimal: I only reckon one `#include <windows.h>` in `./project/helpers/helpers.c` for colored console output.
+0) Work was done on a Windows machine. That said, Windows dependencies should be minimal: there's only one `#include <windows.h>` in `./project/helpers/helpers.c` for colored console output, and the build instruction themselves would need to be rewritten (as they use `.dll`'s).
 1) **Download the libraries.** Put the folders into `./SDL3/` and the `.dll` files into the root folder:
 	- SDL3: https://github.com/libsdl-org/SDL/releases - `./SDL3/SDL/`, `./SDL3.dll`;
 	- SDL3_image: https://github.com/libsdl-org/SDL_image/releases - `./SDL3/SDL_image/`, `./SDL3_image.dll`;
@@ -19,10 +19,12 @@ Hey everyone! This is my first "big" non-tutorial project. No piece of code was 
 	 - `sh compile-asan` - debug build (ASan). Strangely, conflicts with GDB on my machine, so beware;
 	 - `sh compile-gdb` - debug build (GDB).
 
-## Distribution
+## Running
 
 Run with one of the following scripts:
 - `sh run` - runs the program;
 - `sh run-gdb` - runs the program inside of GDB.
 
-On running `sh pack-distribution`, you'll get a `./DISTRUBUTION` folder with copies of everything the program needs to run.
+## Distribution
+
+On running `sh pack-distribution`, you'll get a `./DISTRUBUTION/` folder with copies of everything the program needs to run.
