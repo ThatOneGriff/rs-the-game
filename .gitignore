@@ -8,9 +8,10 @@
 **/DISTRIBUTION
 **/miniaudio.dll
 **/.obsidian
-
-# VS Code & extensions
-#**/.VsCodeCounter/**
+**/.vscode
+**/_playground
+**/project/_json
+**/project/.vscode
 
 # Music (due to licensing impossibility)
 **/music
