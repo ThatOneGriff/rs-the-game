@@ -3,11 +3,10 @@ Hey everyone! This is my first "big" non-tutorial project. No piece of code was 
 ## Notes
 
 0) Work was done on a Windows machine. That said, Windows dependencies should be minimal: I only reckon one `#include <windows.h>` in `./project/helpers/helpers.c` for colored console output.
-1) `./SDL3.dll`, `./SDL3_image.dll`, `./SDL3_ttf.dll` are all for x86_64. I know storing such files in a repository is something of a bad tone, but I wanted to avoid redownloading them, considering it's my personal project only. **If you want to download those libraries:**
-	- SDL3: https://github.com/libsdl-org/SDL/releases
-	- SDL3_image: https://github.com/libsdl-org/SDL_image/releases
-	- SDL3_TTF: https://github.com/libsdl-org/SDL_ttf/releases
-	- miniaudio: https://github.com/mackron/miniaudio/releases - header-only library, so should be platform independent.
+1) **Download the libraries.** Put the folders into `./SDL3/` and the `.dll` files into the root folder:
+	- SDL3: https://github.com/libsdl-org/SDL/releases - `./SDL3/SDL/`, `./SDL3.dll`;
+	- SDL3_image: https://github.com/libsdl-org/SDL_image/releases - `./SDL3/SDL_image/`, `./SDL3_image.dll`;
+	- SDL3_TTF: https://github.com/libsdl-org/SDL_ttf/releases - `./SDL3/SDL_ttf/`, `./SDL3_ttf.dll`.
 
 ## Compilation
 
