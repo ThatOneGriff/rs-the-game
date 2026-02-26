@@ -12,8 +12,6 @@ extern SDL_Texture* NULL_TEXTURE;
 extern char       MAIN_FONT_PATH[64];
 extern int PERSONAL_BEST;
 
-/// NOTE: `.rsdt` is a compromise born from a lack of time. JSON loading is preferable and will eventually be the mechanism.
-
 
 /* Predef */
 

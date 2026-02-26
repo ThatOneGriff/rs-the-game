@@ -33,7 +33,6 @@ SDL3          version: 3.4.0   (last checked 17.02.26) | https://github.com/libs
 SDL3_image    version: 3.4.0   (last updated 17.02.26) | https://github.com/libsdl-org/SDL_image/releases
 SDL3_ttf      version: 3.2.2   (last checked 17.02.26) | https://github.com/libsdl-org/SDL_ttf/releases
 miniaudio     version: 0.11.24 (last updated 17.02.26) | https://github.com/mackron/miniaudio/releases
-nlohmann/json version: 3.12.0  (last checked 17.02.26) | https://github.com/nlohmann/json/releases [UNUSED]
 */
 
 /* TODOs: */
