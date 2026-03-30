@@ -48,6 +48,7 @@ struct Switch init_switch(const size_t max_option_count, int *const exit_code)
     }
 
     result.max_option_count = max_option_count;
+    result.cur_option = &result.options[0];
     *exit_code = EXIT_SUCCESS;
     return result;
 }
