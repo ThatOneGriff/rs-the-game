@@ -108,7 +108,7 @@ struct Pause_Screen init_pause_screen(int *const exit_code)
     add_to_deinit_stack(&deinit_stack, &result.quit_to_desktop_button, (void (*)(void*))free_button);
     
     /// 'Version' text
-    result.version_text = create_text("RS The Game v 1.1", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(X_AUTO_CENTER, 150), 9, 1, exit_code);
+    result.version_text = create_text("RS The Game v 1.1.1", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(X_AUTO_CENTER, 150), 9, 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_pause_screen()`: couldn't create the version text", NON_SDL_ERROR);

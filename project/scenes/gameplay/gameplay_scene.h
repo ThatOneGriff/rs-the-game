@@ -30,16 +30,16 @@ struct Gameplay_Scene
     int prev_point_count;
 
     SDL_Texture* sky_bg; /// Not a `Texture`, because it's rendered on the whole screen.
-    struct Shifting_Texture ground;
-    struct Shifting_Texture road;
-    struct Shifting_Texture stripes;
+    struct Animated_Sprite ground;
+    struct Animated_Sprite road;
+    struct Animated_Sprite stripes;
     struct Environment      trees;
 
-    struct Texture clouds[10];
-    struct Texture personal_best_text;
-    struct Texture   curr_points_text;
+    struct Sprite clouds[10];
+    struct Sprite personal_best_text;
+    struct Sprite   curr_points_text;
 
-    struct Texture fps_text;
+    struct Sprite fps_text;
 
     struct Car* car_ptr;
     struct Pause_Screen pause_screen;

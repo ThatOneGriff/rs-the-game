@@ -21,7 +21,7 @@ struct Menu_Scene
     struct Car* car_ptr;
 
     SDL_Texture* bg;
-    struct Texture car_name_text;
+    struct Sprite car_name_text;
 
     struct Button  prev_button;
     struct Button  next_button;
@@ -31,18 +31,18 @@ struct Menu_Scene
     struct Button* curr_button;
     struct Options_Screen options_screen;
 
-    struct Texture photo_quad1;
-    struct Texture photo_quad2;
-    struct Texture photo_quad3;
-    struct Texture photo_quad4;
+    struct Sprite photo_quad1;
+    struct Sprite photo_quad2;
+    struct Sprite photo_quad3;
+    struct Sprite photo_quad4;
     
-    struct Texture year_text;
-    struct Texture horsepower_text;
-    struct Texture top_speed_text;
-    struct Texture handling_text;
+    struct Sprite year_text;
+    struct Sprite horsepower_text;
+    struct Sprite top_speed_text;
+    struct Sprite handling_text;
     
-    struct Texture info_line1;
-    struct Texture info_line2;
+    struct Sprite info_line1;
+    struct Sprite info_line2;
 };
 extern struct Menu_Scene menu_scene; /// Singleton.
 

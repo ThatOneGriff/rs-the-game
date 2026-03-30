@@ -14,21 +14,21 @@ struct Options_Screen
     bool is_open;
     
     SDL_Texture* last_menu_frame;
-    struct Texture options_text;
+    struct Sprite options_text;
 
     struct Button  close_button;
 
-    struct Texture audio_text;
+    struct Sprite audio_text;
     struct Switch  audio_switch;
     
-    struct Texture fps_text;
+    struct Sprite fps_text;
     struct Switch  fps_switch;
 
-    struct Texture show_fps_text;
+    struct Sprite show_fps_text;
     struct Switch  show_fps_switch;
     //void*  curr_button; /// Either a `Button` or a `Switch`.
 
-    struct Texture version_text;
+    struct Sprite version_text;
 };
 
 

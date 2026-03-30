@@ -16,7 +16,7 @@ struct Pause_Screen
     bool is_open;
     SDL_Texture* last_gameplay_frame;
 
-    struct Texture pause_text;
+    struct Sprite pause_text;
 
     struct Button           close_button;
     struct Button        continue_button;
@@ -24,7 +24,7 @@ struct Pause_Screen
     struct Button quit_to_desktop_button;
     struct Button*           curr_button;
 
-    struct Texture version_text;
+    struct Sprite version_text;
     time_tick_ms open_tick;
 };
 
