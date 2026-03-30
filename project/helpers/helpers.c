@@ -39,14 +39,14 @@ char** read_file_by_line(const char *const path, const size_t target_lines)
     FILE* data_file = fopen(path, "r");
     if (data_file == NULL)
     {
-        print_error("`read_file_by_line()`: couldnt't open data file", NON_SDL_ERROR);
+        print_error("`read_file_by_line()`: couldnt't open data file");
         return NULL;
     }
 
     char** result = malloc(target_lines * sizeof(char*));
     if (result == NULL)
     {
-        print_error("`read_file_by_line()`: couldnt't allocate memory for result object", NON_SDL_ERROR);
+        print_error("`read_file_by_line()`: couldnt't allocate memory for result object");
         fclose(data_file);
         data_file = NULL;
         return NULL;
@@ -56,7 +56,7 @@ char** read_file_by_line(const char *const path, const size_t target_lines)
         result[i] = malloc(64 * sizeof(char));
         if (result[i] == NULL)
         {
-            print_error("`read_file_by_line()`: couldnt't allocate memory for result lines", NON_SDL_ERROR);
+            print_error("`read_file_by_line()`: couldnt't allocate memory for result lines");
             for (size_t j = 0; j < i; j++)
             {
                 free(result[j]);
@@ -73,7 +73,7 @@ char** read_file_by_line(const char *const path, const size_t target_lines)
     {
         if (fgets(result[i], 64, data_file) == NULL)
         {
-            print_error("`read_file_by_line()`: premature EOF", NON_SDL_ERROR);
+            print_error("`read_file_by_line()`: premature EOF");
             for (size_t j = 0; j < target_lines; j++)
             {
                 free(result[j]);
@@ -96,4 +96,5 @@ char** read_file_by_line(const char *const path, const size_t target_lines)
 void textcolor(const unsigned short int color_code)
 {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color_code);
+    return;
 }

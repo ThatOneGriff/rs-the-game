@@ -32,7 +32,7 @@ void set_fps_cap(const unsigned int new_fps_cap)
 {
     if (new_fps_cap == 0)
     {
-        print_warning("`set_fps_cap()`: attempt to set an invalid frame cap of 0", NON_SDL_ERROR);
+        print_warning("`set_fps_cap()`: attempt to set an invalid frame cap of 0");
         return;
     }
 

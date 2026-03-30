@@ -42,16 +42,16 @@ struct Environment new_environment(char **const texture_paths, const size_t text
 
     /// Param checking
     if (exit_code == NULL)
-        print_warning("`new_environment()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`new_environment()`: `exit_code` arg is `NULL`");
     if (object_count == 0 || texture_count == 0)
     {
-        print_warning("`new_environment()`: `object_count` or `texture_count` arg is 0. `Environment` is not dynamic-memory", NON_SDL_ERROR);
+        print_warning("`new_environment()`: `object_count` or `texture_count` arg is 0. `Environment` is not dynamic-memory");
         *exit_code = EXIT_FAILURE;
         return result;
     }
     if (texture_paths == NULL)
     {
-        print_error("`new_environment()`: `texture_paths` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`new_environment()`: `texture_paths` arg is `NULL`");
         *exit_code = EXIT_FAILURE;
         return result;
     }
@@ -60,7 +60,7 @@ struct Environment new_environment(char **const texture_paths, const size_t text
     struct Deinit_Stack deinit_stack = new_deinit_stack(3+texture_count, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`new_environment()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        print_error("`new_environment()`: couldn't instance a deinitialization stack");
         free_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)texture_paths, texture_count);
         return result;
@@ -71,7 +71,7 @@ struct Environment new_environment(char **const texture_paths, const size_t text
     result.textures = calloc(texture_count, sizeof(SDL_Texture*));
     if (result.textures == NULL)
     {
-        print_error("`new_environment()`: couldn't allocate memory for textures", NON_SDL_ERROR);
+        print_error("`new_environment()`: couldn't allocate memory for textures");
         free_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)texture_paths, texture_count);
         *exit_code = EXIT_FAILURE;
@@ -86,12 +86,12 @@ struct Environment new_environment(char **const texture_paths, const size_t text
         {
             if (NULL_TEXTURE != NULL)
             {
-                print_warning("`new_environment()`: couldn't load the texture, replaced with null texture", IS_SDL_ERROR);
+                print_SDL_warning("`new_environment()`: couldn't load the texture, replaced with null texture");
                 result.textures[i] = NULL_TEXTURE;
             }
             else
             {
-                print_error("`new_environment()`: couldn't load the texture, and null texture is empty", IS_SDL_ERROR);
+                print_SDL_error("`new_environment()`: couldn't load the texture, and null texture is empty");
                 flush_deinit_stack(&deinit_stack);
                 free_ptr_arr((void**)texture_paths, texture_count);
                 *exit_code = EXIT_FAILURE;
@@ -106,7 +106,7 @@ struct Environment new_environment(char **const texture_paths, const size_t text
     result.rects = calloc(object_count, sizeof(SDL_FRect)); /// We don't need to actually fill them, as that's `move_component`'s job.
     if (result.rects == NULL)
     {
-        print_error("`new_environment()`: couldn't allocate memory to rects", NON_SDL_ERROR);
+        print_error("`new_environment()`: couldn't allocate memory to rects");
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)texture_paths, texture_count);
         *exit_code = EXIT_FAILURE;
@@ -117,7 +117,7 @@ struct Environment new_environment(char **const texture_paths, const size_t text
     result.cur_texture_indexes = calloc(object_count, sizeof(size_t)); /// We don't need to actually fill them, as that's `move_component`'s job.
     if (result.cur_texture_indexes == NULL)
     {
-        print_error("`new_environment()`: couldn't allocate memory to `cur_texture_indexes`", NON_SDL_ERROR);
+        print_error("`new_environment()`: couldn't allocate memory to `cur_texture_indexes`");
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)texture_paths, texture_count);
         *exit_code = EXIT_FAILURE;
@@ -138,16 +138,16 @@ void couple_move_component_to_environment(struct Environment *const to, struct M
 {
     /// Arg checking
     if (exit_code == NULL)
-        print_warning("`couple_move_component_to_environment()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`couple_move_component_to_environment()`: `exit_code` arg is `NULL`");
     if (to == NULL)
     {
-        print_error("`couple_move_component_to_environment()`: `to` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`couple_move_component_to_environment()`: `to` arg is `NULL`");
         *exit_code = EXIT_FAILURE;
         return;
     }
     if (move_component == NULL)
     {
-        print_error("`couple_move_component_to_environment()`: `move_component` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`couple_move_component_to_environment()`: `move_component` arg is `NULL`");
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -156,7 +156,7 @@ void couple_move_component_to_environment(struct Environment *const to, struct M
     couple_move_component(move_component, to->rects, to->object_count, max_offset, RANDOMIZED_POSITIONS, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`couple_move_component_to_environment()`: coupling failed", NON_SDL_ERROR);
+        print_error("`couple_move_component_to_environment()`: coupling failed");
         return;
     }
     to->move_component = move_component;
@@ -196,13 +196,13 @@ void render_environment(const struct Environment *const target)
 {
     if (target == NULL || target->textures == NULL || target->rects == NULL || target->cur_texture_indexes == NULL || target->texture_count == 0 || target->object_count == 0)
     {
-        print_error("`render_environment()`: `target` or its members are invalid", NON_SDL_ERROR);
+        print_error("`render_environment()`: `target` or its members are invalid");
         return;
     }
 
     if (target->move_component == NULL)
     {
-        print_error("`render_environment()`: `target->move_component` is not coupled", NON_SDL_ERROR);
+        print_error("`render_environment()`: `target->move_component` is not coupled");
         return;
     }
     
@@ -237,19 +237,19 @@ void partly_render_environment(const struct Environment *const target, const siz
 {
     if (target == NULL || target->textures == NULL || target->rects == NULL || target->cur_texture_indexes == NULL || target->texture_count == 0 || target->object_count == 0)
     {
-        print_error("`render_environment()`: `target` or its members are invalid", NON_SDL_ERROR);
+        print_error("`render_environment()`: `target` or its members are invalid");
         return;
     }
 
     if (max_path_pt < min_path_pt)
     {
-        print_error("`render_environment()`: `max_path_pt` < `min_path_pt`", NON_SDL_ERROR);
+        print_error("`render_environment()`: `max_path_pt` < `min_path_pt`");
         return;
     }
 
     if (target->move_component == NULL)
     {
-        print_error("`render_environment()`: `target->move_component` is not coupled", NON_SDL_ERROR);
+        print_error("`render_environment()`: `target->move_component` is not coupled");
         return;
     }
     

@@ -28,16 +28,16 @@ struct Path new_path(const SDL_FRect *const points, const size_t pt_count, int *
 
     /// Param checking
     if (exit_code == NULL)
-        print_warning("`init_path()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`init_path()`: `exit_code` arg is `NULL`");
     if (pt_count == 0)
     {
-        print_error("`init_path()`: `pt_count` arg is 0. `Path` is not dynamic-memory", NON_SDL_ERROR);
+        print_error("`init_path()`: `pt_count` arg is 0. `Path` is not dynamic-memory");
         *exit_code = EXIT_FAILURE;
         return result;
     }
     if (points == NULL)
     {
-        print_error("`init_path()`: `points` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`init_path()`: `points` arg is `NULL`");
         *exit_code = EXIT_FAILURE;
         return result;
     }
@@ -46,7 +46,7 @@ struct Path new_path(const SDL_FRect *const points, const size_t pt_count, int *
     result.points = calloc(pt_count, sizeof(SDL_FRect));
     if (result.points == NULL)
     {
-        print_error("`init_path()`: couldn't allocate memory to path points", NON_SDL_ERROR);
+        print_error("`init_path()`: couldn't allocate memory to path points");
         *exit_code = EXIT_FAILURE;
         return result;
     }
@@ -71,4 +71,5 @@ void free_path(struct Path *const target)
     }
 
     target->pt_count = 0;
+    return;
 }

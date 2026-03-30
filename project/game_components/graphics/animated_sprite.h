@@ -9,11 +9,11 @@
 
 /* Struct */
 
-struct Shifting_Texture
+struct Animated_Sprite
 {
     bool freeze_shifting;
 
-    SDL_Texture** textures;
+    SDL_Texture** frames;
     SDL_FRect     rect;
     size_t cur_count;
     size_t max_count;
@@ -26,10 +26,10 @@ struct Shifting_Texture
 
 /* Predef */
 
-struct Shifting_Texture init_shifting_texture(const SDL_FRect rect, const size_t max_count, const time_span_ms step, int *const exit_code);
-void                    free_shifting_texture(struct Shifting_Texture *const target);
-void add_to_shifting_texture(struct Shifting_Texture *const to, const char *const new_texture_path, int *const exit_code);
-void render_shifting_texture(struct Shifting_Texture *const target);
+struct Animated_Sprite init_animated_sprite(const SDL_FRect rect, const size_t max_count, const time_span_ms step, int *const exit_code);
+void                   free_animated_sprite(struct Animated_Sprite *const target);
+void add_to_animated_sprite(struct Animated_Sprite *const to, const char *const new_texture_path, int *const exit_code);
+void render_animated_sprite(struct Animated_Sprite *const target);
 
 
 #endif /// SHIFTING_TEXTURE_H

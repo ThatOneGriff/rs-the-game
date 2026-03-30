@@ -27,7 +27,7 @@ void free_logic_layer(void);
 void init_logic_layer(int *const exit_code)
 {
     if (exit_code == NULL)
-        print_warning("`_init_logic_layer()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`_init_logic_layer()`: `exit_code` arg is `NULL`");
     logic_layer.game_is_running = true;
     logic_layer.remain_in_scene = true;
     logic_layer.curr_scene = NULL;

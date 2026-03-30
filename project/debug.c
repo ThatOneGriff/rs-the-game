@@ -2,17 +2,18 @@
 #include "debug.h"
 
 /* Headers */
-#include <SDL3/SDL.h> /// SDL_GetError().
-#include <stdio.h>    /// I/O.
-#include <stdbool.h>  /// `bool` args for `print_*()`.
+#include <SDL3/SDL.h>        /// SDL_GetError().
+#include <stdio.h>           /// I/O.
 #include "helpers/helpers.h" /// Coloured text.
 
 
 /* Predef */
 
 void print_success(const char *const text);
-void print_error  (const char *const text, const bool is_SDL_error);
-void print_warning(const char *const text, const bool is_SDL_error);
+void print_error  (const char *const text);
+void print_warning(const char *const text);
+void print_SDL_error  (const char *const text);
+void print_SDL_warning(const char *const text);
 
 
 /* Body */
@@ -30,7 +31,7 @@ void print_success(const char *const text)
 }
 
 
-void print_error(const char *const text, const bool is_SDL_error)
+void print_error(const char *const text)
 {
     if (text == NULL)
         return;
@@ -39,15 +40,40 @@ void print_error(const char *const text, const bool is_SDL_error)
     fprintf(stderr, "~ [ERROR] ");
     textcolor(WHITE);
 
-    fprintf(stderr, "%s", text);
-    if (is_SDL_error)
-        fprintf(stderr, ": \"%s\".\n", SDL_GetError());
-    else
-        fprintf(stderr, ".\n");
+    fprintf(stderr, "%s.\n", text);
+    return;
 }
 
 
-void print_warning(const char *const text, const bool is_SDL_error)
+void print_warning(const char *const text)
+{
+    if (text == NULL)
+        return;
+    
+    textcolor(YELLOW);
+    fprintf(stderr, "~ [WRNNG] %s.\n", text);
+    textcolor(WHITE);
+
+    fprintf(stderr, "%s.\n", text);
+    return;
+}
+
+
+void print_SDL_error(const char *const text)
+{
+    if (text == NULL)
+        return;
+    
+    textcolor(RED);
+    fprintf(stderr, "~ [ERROR] ");
+    textcolor(WHITE);
+
+    fprintf(stderr, "%s: \"%s\".\n", text, SDL_GetError());
+    return;
+}
+
+
+void print_SDL_warning(const char *const text)
 {
     if (text == NULL)
         return;
@@ -56,9 +82,6 @@ void print_warning(const char *const text, const bool is_SDL_error)
     fprintf(stderr, "~ [WRNNG] ");
     textcolor(WHITE);
 
-    fprintf(stderr, "%s", text);
-    if (is_SDL_error)
-        fprintf(stderr, ": \"%s\".\n", SDL_GetError());
-    else
-        fprintf(stderr, ".\n");
+    fprintf(stderr, "%s: \"%s\".\n", text, SDL_GetError());
+    return;
 }

@@ -32,7 +32,7 @@ void free_graphics_layer(void);
 void init_graphics_layer(int *const exit_code)
 {
     if (exit_code == NULL)
-        print_warning("`_init_graphics_layer()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`_init_graphics_layer()`: `exit_code` arg is `NULL`");
     
     memset(&graphics_layer, 0, sizeof graphics_layer);
     graphics_layer.screen_changed = true;
@@ -42,7 +42,7 @@ void init_graphics_layer(int *const exit_code)
     graphics_layer.window = SDL_CreateWindow(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
     if (graphics_layer.window == NULL)
     {
-        print_error("`_init_graphics_layer()`: failed to create a window", IS_SDL_ERROR);
+        print_SDL_error("`_init_graphics_layer()`: failed to create a window");
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -50,7 +50,7 @@ void init_graphics_layer(int *const exit_code)
     struct Deinit_Stack deinit_stack = new_deinit_stack(2, exit_code); /// Not adding the last element (font loading). Also, `global_data` needs its own treatment.
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        print_error("`init()`: couldn't instance a deinitialization stack");
         free_deinit_stack(&deinit_stack);
         *exit_code = EXIT_FAILURE;
         return;
@@ -61,7 +61,7 @@ void init_graphics_layer(int *const exit_code)
     graphics_layer.renderer = SDL_CreateRenderer(graphics_layer.window, NULL); /// `name` is related to drivers; SDL determines it automatically on `NULL`.
     if (graphics_layer.renderer == NULL)
     {
-        print_error("`_init_graphics_layer()`: failed to create a renderer", IS_SDL_ERROR);
+        print_SDL_error("`_init_graphics_layer()`: failed to create a renderer");
         flush_deinit_stack(&deinit_stack);
         *exit_code = EXIT_FAILURE;
         return;
@@ -72,7 +72,7 @@ void init_graphics_layer(int *const exit_code)
     graphics_layer.buffer = SDL_CreateTexture(graphics_layer.renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, RENDER_WIDTH, RENDER_HEIGHT);
     if (graphics_layer.buffer == NULL)
     {
-        print_error("`_init_graphics_layer()`: failed to create rendering buffer texture", IS_SDL_ERROR);
+        print_SDL_error("`_init_graphics_layer()`: failed to create rendering buffer texture");
         flush_deinit_stack(&deinit_stack);
         *exit_code = EXIT_FAILURE;
         return;

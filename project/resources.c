@@ -23,7 +23,6 @@
 SDL_Surface* ICON_TEXTURE = NULL;
 SDL_Texture* NULL_TEXTURE = NULL;
 char       MAIN_FONT_PATH[64] = "";
-int PERSONAL_BEST = 0;
 
 
 /* Predef */
@@ -39,13 +38,13 @@ void free_global_resources(void);
 void load_global_resources(int *const exit_code)
 {
     if (exit_code == NULL)
-        print_warning("`load_global_resources()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`load_global_resources()`: `exit_code` arg is `NULL`");
 
     /// Reading global data file
     char** global_data = read_file_by_line(GLOBAL_DATA_PATH, GLOBAL_DATA_LINES);
     if (global_data == NULL)
     {
-        print_error("`load_global_resources()`: couldn't read global data", NON_SDL_ERROR);
+        print_error("`load_global_resources()`: couldn't read global data");
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -54,7 +53,7 @@ void load_global_resources(int *const exit_code)
     ICON_TEXTURE = IMG_Load(global_data[0]);
     if (ICON_TEXTURE == NULL)
     {
-        print_error("`load_global_resources()`: couldn't load app icon", IS_SDL_ERROR);
+        print_SDL_error("`load_global_resources()`: couldn't load app icon");
         free_ptr_arr((void**)global_data, GLOBAL_DATA_LINES);
         *exit_code = EXIT_FAILURE;
         return;
@@ -63,7 +62,7 @@ void load_global_resources(int *const exit_code)
     struct Deinit_Stack deinit_stack = new_deinit_stack(2, exit_code); /// Not adding the last element (font loading). Also, `global_data` needs its own treatment.
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_global_resources()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        print_error("`load_global_resources()`: couldn't instance a deinitialization stack");
         free_deinit_stack(&deinit_stack);
         return;
     }
@@ -72,7 +71,7 @@ void load_global_resources(int *const exit_code)
     /// Null texture
     NULL_TEXTURE = IMG_LoadTexture(graphics_layer.renderer, global_data[1]);
     if (NULL_TEXTURE == NULL)
-        print_warning("`load_global_resources()`: couldn't load null texture (not critical)", IS_SDL_ERROR);
+        print_SDL_warning("`load_global_resources()`: couldn't load null texture (not critical)");
     else
         add_to_deinit_stack(&deinit_stack, NULL_TEXTURE, (void (*)(void*))SDL_DestroyTexture);
 
@@ -81,7 +80,7 @@ void load_global_resources(int *const exit_code)
     TTF_Font* test_main_font_load = TTF_OpenFont(MAIN_FONT_PATH, 1);
     if (test_main_font_load == NULL)
     {
-        print_error("`load_global_resources()`: test font loading failed", IS_SDL_ERROR);
+        print_SDL_error("`load_global_resources()`: test font loading failed");
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)global_data, GLOBAL_DATA_LINES);
         *exit_code = EXIT_FAILURE;
@@ -113,4 +112,6 @@ void free_global_resources(void)
         SDL_DestroyTexture(NULL_TEXTURE);
         NULL_TEXTURE = NULL;
     }
+    
+    return;
 }

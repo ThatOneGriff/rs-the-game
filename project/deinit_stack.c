@@ -21,13 +21,13 @@ void           pop_from_deinit_stack(struct Deinit_Stack *const target);
 struct Deinit_Stack new_deinit_stack(const size_t size, int *const exit_code)
 {
     if (exit_code == NULL)
-        print_warning("`new_deinit_stack()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`new_deinit_stack()`: `exit_code` arg is `NULL`");
     struct Deinit_Stack result = {0};
 
     result.elements = calloc(size, sizeof(void*));
     if (result.elements == NULL)
     {
-        print_error("`new_deinit_stack()`: couldn't allocate memory for elements' array", NON_SDL_ERROR);
+        print_error("`new_deinit_stack()`: couldn't allocate memory for elements' array");
         *exit_code = EXIT_FAILURE;
         return result;
     }
@@ -35,7 +35,7 @@ struct Deinit_Stack new_deinit_stack(const size_t size, int *const exit_code)
     result.free_functions = calloc(size, sizeof(void (*)(int*)));
     if (result.free_functions == NULL)
     {
-        print_error("`new_deinit_stack()`: couldn't allocate memory for free_functions", NON_SDL_ERROR);
+        print_error("`new_deinit_stack()`: couldn't allocate memory for free_functions");
         for (size_t i = 0; i < size; i++)
         {
             free(result.elements[i]);
@@ -82,22 +82,22 @@ void add_to_deinit_stack(struct Deinit_Stack *const target, void *const new_elem
 {
     if (target == NULL || target->elements == NULL)
     {
-        print_error("`add_to_deinit_stack()`: stack or its `elements` are `NULL`", NON_SDL_ERROR);
+        print_error("`add_to_deinit_stack()`: stack or its `elements` are `NULL`");
         return;
     }
     if (new_element == NULL)
     {
-        print_error("`add_to_deinit_stack()`: `new_element` is `NULL`", NON_SDL_ERROR);
+        print_error("`add_to_deinit_stack()`: `new_element` is `NULL`");
         return;
     }
     if (new_free_function == NULL)
     {
-        print_error("`add_to_deinit_stack()`: `new_free_function` is `NULL`", NON_SDL_ERROR);
+        print_error("`add_to_deinit_stack()`: `new_free_function` is `NULL`");
         return;
     }
     if (target->cur == target->max)
     {
-        print_error("`add_to_deinit_stack()`: stack is full", NON_SDL_ERROR);
+        print_error("`add_to_deinit_stack()`: stack is full");
         return;
     }
 
@@ -112,7 +112,7 @@ void flush_deinit_stack(struct Deinit_Stack *const target)
 {
     if (target == NULL || target->elements == NULL || target->free_functions == NULL)
     {
-        print_error("`flush_deinit_stack()`: stack, its `elements` or its `functions` are `NULL`", NON_SDL_ERROR);
+        print_error("`flush_deinit_stack()`: stack, its `elements` or its `functions` are `NULL`");
         return;
     }
 
@@ -126,12 +126,12 @@ void pop_from_deinit_stack(struct Deinit_Stack *const target)
 {
     if (target == NULL || target->elements == NULL || target->free_functions == NULL)
     {
-        print_error("`pop_from_deinit_stack()`: stack, its `elements` or its `functions` are `NULL`", NON_SDL_ERROR);
+        print_error("`pop_from_deinit_stack()`: stack, its `elements` or its `functions` are `NULL`");
         return;
     }
     if (target->cur == 0)
     {
-        print_error("`pop_from_deinit_stack()`: stack is empty", NON_SDL_ERROR);
+        print_error("`pop_from_deinit_stack()`: stack is empty");
         return;
     }
 

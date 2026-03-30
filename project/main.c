@@ -29,10 +29,10 @@
 #include "scenes/menu/menu_scene.h"          /// Menu scene.
 
 /* = Library information =
-SDL3          version: 3.4.2   (last updated 26.02.26) | https://github.com/libsdl-org/SDL/releases
-SDL3_image    version: 3.4.0   (last checked 26.02.26) | https://github.com/libsdl-org/SDL_image/releases
-SDL3_ttf      version: 3.2.2   (last checked 26.02.26) | https://github.com/libsdl-org/SDL_ttf/releases
-miniaudio     version: 0.11.24 (last checked 26.02.26) | https://github.com/mackron/miniaudio/releases
+SDL3       version: 3.4.2   (updated 26.02.26 | checked 30.03.26) | https://github.com/libsdl-org/SDL/releases
+SDL3_image version: 3.4.0   (updated 22.01.26 | checked 30.03.26) | https://github.com/libsdl-org/SDL_image/releases
+SDL3_ttf   version: 3.2.2   (updated 31.03.25 | checked 30.03.26) | https://github.com/libsdl-org/SDL_ttf/releases
+miniaudio  version: 0.11.25 (updated 30.03.26 | checked 30.03.26) | https://github.com/mackron/miniaudio/releases
 */
 
 /* TODOs: */
@@ -50,8 +50,8 @@ miniaudio     version: 0.11.24 (last checked 26.02.26) | https://github.com/mack
 /* Predef */
 
 [[ noreturn ]] /// Reason: `program_exit()` at the end handles quitting.
-int  main(const int argc, char* argv[]);
-void game_loop(int *const exit_code);
+int main(const int argc, char* argv[]);
+static void game_loop(int *const exit_code);
 
 
 /* Body */
@@ -79,7 +79,7 @@ int main(const int argc, char* argv[])
 }
 
 
-void game_loop(int *const exit_code)
+static void game_loop(int *const exit_code)
 {
     if (exit_code == NULL)
         print_warning("`game_loop()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);

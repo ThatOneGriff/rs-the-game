@@ -1,5 +1,5 @@
 ﻿/* Related header */
-#include "multi_texture.h"
+#include "multi_sprite.h"
 
 /* SDL3 */
 #include <SDL3/SDL.h>             /// `SDL_DestroyTexture()`.
@@ -17,30 +17,30 @@
 
 /* Predef */
 
-struct Multi_Texture load_multi_texture(const char *const texture_path, const size_t max_count, int *const exit_code);
-void                 free_multi_texture(struct Multi_Texture *const target);
-void add_to_multi_texture(struct Multi_Texture *const to, const SDL_FRect new_rects, int *const exit_code);
-void render_multi_texture(const struct Multi_Texture *const target);
+struct Multi_Sprite load_multi_sprite(const char *const texture_path, const size_t max_count, int *const exit_code);
+void                free_multi_sprite(struct Multi_Sprite *const target);
+void add_to_multi_sprite(struct Multi_Sprite *const to, const SDL_FRect new_rects, int *const exit_code);
+void render_multi_sprite(const struct Multi_Sprite *const target);
 
 
 /* Body */
 
-struct Multi_Texture load_multi_texture(const char *const texture_path, const size_t max_count, int *const exit_code)
+struct Multi_Sprite load_multi_sprite(const char *const texture_path, const size_t max_count, int *const exit_code)
 {
-    struct Multi_Texture result = {0};
+    struct Multi_Sprite result = {0};
 
     /// Param checking
     if (exit_code == NULL)
-        print_warning("`new_multi_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`new_multi_sprite()`: `exit_code` arg is `NULL`");
     if (max_count == 0)
     {
-        print_warning("`new_multi_texture()`: `max_count` arg is 0. `Multi_Texture` is not dynamic-memory", NON_SDL_ERROR);
+        print_warning("`new_multi_sprite()`: `max_count` arg is 0. `Multi_Texture` is not dynamic-memory");
         *exit_code = EXIT_FAILURE;
         return result;
     }
     if (texture_path == NULL)
     {
-        print_error("`new_multi_texture()`: `texture_path` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`new_multi_sprite()`: `texture_path` arg is `NULL`");
         result.texture = NULL;
         *exit_code = EXIT_FAILURE;
         return result;
@@ -52,12 +52,12 @@ struct Multi_Texture load_multi_texture(const char *const texture_path, const si
     {
         if (NULL_TEXTURE != NULL)
         {
-            print_warning("`new_multi_texture()`: couldn't load the texture, replaced with null texture", IS_SDL_ERROR);
+            print_SDL_warning("`new_multi_sprite()`: couldn't load the texture, replaced with null texture");
             result.texture = NULL_TEXTURE;
         }
         else
         {
-            print_error("`new_multi_texture()`: couldn't load the texture, and null texture is empty", IS_SDL_ERROR);
+            print_SDL_error("`new_multi_sprite()`: couldn't load the texture, and null texture is empty");
             *exit_code = EXIT_FAILURE;
             return result;
         }
@@ -65,7 +65,7 @@ struct Multi_Texture load_multi_texture(const char *const texture_path, const si
     result.rects = calloc(max_count, sizeof(SDL_FRect));
     if (result.rects == NULL)
     {
-        print_error("`new_multi_texture()`: couldn't allocate memory to coordinates", NON_SDL_ERROR);
+        print_error("`new_multi_sprite()`: couldn't allocate memory to coordinates");
         SDL_DestroyTexture(result.texture);
         result.texture = NULL;
         *exit_code = EXIT_FAILURE;
@@ -78,7 +78,7 @@ struct Multi_Texture load_multi_texture(const char *const texture_path, const si
 }
 
 
-void free_multi_texture(struct Multi_Texture *const target)
+void free_multi_sprite(struct Multi_Sprite *const target)
 {
     if (target == NULL)
         return;
@@ -95,20 +95,20 @@ void free_multi_texture(struct Multi_Texture *const target)
 
 /* Functions */
 
-void add_to_multi_texture(struct Multi_Texture *const to, const SDL_FRect new_rect, int *const exit_code)
+void add_to_multi_sprite(struct Multi_Sprite *const to, const SDL_FRect new_rect, int *const exit_code)
 {
     /// Param checking
     if (exit_code == NULL)
-        print_warning("`add_to_multi_texture()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`add_to_multi_sprite()`: `exit_code` arg is `NULL`");
     if (to == NULL)
     {
-        print_error("`add_to_multi_texture()`: `to` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`add_to_multi_sprite()`: `to` arg is `NULL`");
         *exit_code = EXIT_FAILURE;
         return;
     }
     if (to->rects == NULL)
     {
-        print_error("`add_to_multi_texture()`: `to->rects` is `NULL`", NON_SDL_ERROR);
+        print_error("`add_to_multi_sprite()`: `to->rects` is `NULL`");
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -116,7 +116,7 @@ void add_to_multi_texture(struct Multi_Texture *const to, const SDL_FRect new_re
     /// Check if full
     if (to->max_count == to->cur_count)
     {
-        print_error("`add_to_multi_texture()`: `to->rects` is full", NON_SDL_ERROR);
+        print_error("`add_to_multi_sprite()`: `to->rects` is full");
         return;
     }
 
@@ -126,11 +126,11 @@ void add_to_multi_texture(struct Multi_Texture *const to, const SDL_FRect new_re
 }
 
 
-void render_multi_texture(const struct Multi_Texture *const target)
+void render_multi_sprite(const struct Multi_Sprite *const target)
 {
     if (target == NULL || target->texture == NULL || target->rects == NULL || target->cur_count == 0)
     {
-        print_error("`render_multi_texture()`: `target` or its members are invalid", NON_SDL_ERROR);
+        print_error("`render_multi_sprite()`: `target` or its members are invalid");
         return;
     }
     
@@ -141,7 +141,7 @@ void render_multi_texture(const struct Multi_Texture *const target)
             target->rects[i].x >= RENDER_WIDTH ||
             target->rects[i].y >= RENDER_HEIGHT)
         {
-            print_warning("`render_multi_texture()`: texture rendering out of bounds", NON_SDL_ERROR);
+            print_warning("`render_multi_sprite()`: texture rendering out of bounds");
             continue; /// While it's not an error, why waste a draw call on something not seen anyway?
         }
         else

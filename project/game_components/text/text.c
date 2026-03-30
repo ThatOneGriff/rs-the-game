@@ -16,37 +16,37 @@
 #include "../../helpers/geometry.h"        /// `Vec2`.
 
 /* Text-related headers */
-#include "../../game_components/graphics/texture.h" /// Making a texture from text surface.
+#include "../../game_components/graphics/sprite.h" /// Making a texture from text surface.
 
 
 /* Predef */
 
-struct Texture create_text(const char *const text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int *const exit_code);
+struct Sprite create_text(const char *const text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int *const exit_code);
 static void         _blit_8x(SDL_Surface *const surf_out, SDL_Surface *const surf_target, const unsigned int radius, const int x, const int y);
 static SDL_Surface* _create_bordered_text_surface(const char *const text, const unsigned int text_size, const unsigned int border_thickness, const SDL_Color inner_color, const SDL_Color outer_color);
 
 
 /* Body */
 
-struct Texture create_text(const char *const text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int *const exit_code)
+struct Sprite create_text(const char *const text, const SDL_Color inner_color, const SDL_Color outer_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int *const exit_code)
 {
-    struct Texture result = {0};
+    struct Sprite result = {0};
 
     /// Checking args
     if (size == 0)
     {
-        print_error("`create_text()`: `size` == 0", NON_SDL_ERROR);
+        print_error("`create_text()`: `size` == 0");
         *exit_code = EXIT_FAILURE;
         return result;
     }
     if (exit_code == NULL)
-        print_warning("`create_text()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`create_text()`: `exit_code` arg is `NULL`");
 
     /// Creating text surface
     SDL_Surface* text_surf = _create_bordered_text_surface(text, size, border_thickness, inner_color, outer_color);
     if (text_surf == NULL)
     {
-        print_error("`create_text()`: couldn't create `text_surf`", IS_SDL_ERROR);
+        print_SDL_error("`create_text()`: couldn't create `text_surf`");
         *exit_code = EXIT_FAILURE;
         return result;
     }
@@ -55,7 +55,7 @@ struct Texture create_text(const char *const text, const SDL_Color inner_color, 
     result.texture = SDL_CreateTextureFromSurface(graphics_layer.renderer, text_surf);
     if (result.texture == NULL)
     {
-        print_error("`create_text()`: couldn't create a resulting texture from `text_surf`", IS_SDL_ERROR);
+        print_SDL_error("`create_text()`: couldn't create a resulting texture from `text_surf`");
         SDL_DestroySurface(text_surf);
         text_surf = NULL;
         *exit_code = EXIT_FAILURE;
@@ -89,7 +89,7 @@ static void _blit_8x(SDL_Surface *const surf_out, SDL_Surface *const surf_target
 {
     if (surf_out == NULL || surf_target == NULL)
     {
-        print_error("`_blit_8x()`: `NULL` surface arg(s)", NON_SDL_ERROR);
+        print_error("`_blit_8x()`: `NULL` surface arg(s)");
         return;
     }
     if (radius == 0)
@@ -112,7 +112,7 @@ static SDL_Surface* _create_bordered_text_surface(const char *const text, const 
     struct Deinit_Stack deinit_stack = new_deinit_stack(3, &exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
     if (exit_code == EXIT_FAILURE)
     {
-        print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        print_error("`init()`: couldn't instance a deinitialization stack");
         free_deinit_stack(&deinit_stack);
         return NULL;
     }
@@ -121,7 +121,7 @@ static SDL_Surface* _create_bordered_text_surface(const char *const text, const 
     TTF_Font *font = TTF_OpenFont(MAIN_FONT_PATH, (float)text_size); /// IDEA: loading the font each time we create a text is actually wasteful?
     if (font == NULL)
     {
-        print_error("`_create_bordered_text_surface()`: error loading the font", IS_SDL_ERROR);
+        print_SDL_error("`_create_bordered_text_surface()`: error loading the font");
         free_deinit_stack(&deinit_stack);
         return NULL;
     }
@@ -131,7 +131,7 @@ static SDL_Surface* _create_bordered_text_surface(const char *const text, const 
     SDL_Surface* surf_in = TTF_RenderText_Blended(font, text, 0, inner_color);
     if (surf_in == NULL)
     {
-        print_error("`_create_bordered_text_surface()`: couldn't render `surf_in`", IS_SDL_ERROR);
+        print_SDL_error("`_create_bordered_text_surface()`: couldn't render `surf_in`");
         flush_deinit_stack(&deinit_stack);
         return NULL;
     }
@@ -146,7 +146,7 @@ static SDL_Surface* _create_bordered_text_surface(const char *const text, const 
     SDL_Surface* surf_out = TTF_RenderText_Blended(font, text, 0, outer_color);
     if (surf_out == NULL)
     {
-        print_error("`_create_bordered_text_surface()`: couldn't render `surf_out`", IS_SDL_ERROR);
+        print_SDL_error("`_create_bordered_text_surface()`: couldn't render `surf_out`");
         flush_deinit_stack(&deinit_stack);
         return NULL;
     }
@@ -156,7 +156,7 @@ static SDL_Surface* _create_bordered_text_surface(const char *const text, const 
     SDL_Surface* result = SDL_CreateSurface((int)surf_out->w + (int)border_thickness*2, (int)surf_out->h + (int)border_thickness*2, SDL_PIXELFORMAT_ARGB32);
     if (result == NULL)
     {
-        print_error("`_create_bordered_text_surface()`: couldn't create `result` surface", IS_SDL_ERROR);
+        print_SDL_error("`_create_bordered_text_surface()`: couldn't create `result` surface");
         flush_deinit_stack(&deinit_stack);
         return NULL;
     }

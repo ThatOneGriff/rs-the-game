@@ -8,15 +8,15 @@
 #include "../../helpers/geometry.h" /// `struct Vec2`.
 
 /* Components */
-#include "../graphics/texture.h"    /// Rendering text into a texture.
+#include "../graphics/sprite.h"    /// Rendering text into a texture.
 
 
 /* Struct */
 
 struct Button
 {
-    struct Texture regular_texture;
-    struct Texture focused_texture;
+    struct Sprite regular_texture;
+    struct Sprite focused_texture;
     bool is_focused;
 
     struct Button* up;

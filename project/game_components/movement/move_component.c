@@ -43,7 +43,7 @@ struct Move_Component init_move_component(const struct Path path, const time_spa
 
     /// Param checking
     if (exit_code == NULL)
-        print_warning("`new_move_component()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`new_move_component()`: `exit_code` arg is `NULL`");
     
     *exit_code = EXIT_SUCCESS;
     return result;
@@ -54,22 +54,22 @@ void couple_move_component(struct Move_Component *const target, SDL_FRect *const
 {
     /// Param checking
     if (exit_code == NULL)
-        print_warning("`couple_move_component()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`couple_move_component()`: `exit_code` arg is `NULL`");
     if (target == NULL)
     {
-        print_error("`couple_move_component()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`couple_move_component()`: `target` arg is `NULL`");
         *exit_code = EXIT_FAILURE;
         return;
     }
     if (rect_count == 0)
     {
-        print_error("`couple_move_component()`: `rect_count` arg is 0. `Move_Component` is not dynamic-memory", NON_SDL_ERROR);
+        print_error("`couple_move_component()`: `rect_count` arg is 0. `Move_Component` is not dynamic in memory");
         *exit_code = EXIT_FAILURE;
         return;
     }
     if (manipulated_rects == NULL)
     {
-        print_error("`couple_move_component()`: `manipulated_rects` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`couple_move_component()`: `manipulated_rects` arg is `NULL`");
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -78,7 +78,7 @@ void couple_move_component(struct Move_Component *const target, SDL_FRect *const
     struct Deinit_Stack deinit_stack = new_deinit_stack(3, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`new_environment()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        print_error("`new_environment()`: couldn't instance a deinitialization stack");
         free_deinit_stack(&deinit_stack);
         return;
     }
@@ -87,7 +87,7 @@ void couple_move_component(struct Move_Component *const target, SDL_FRect *const
     target->manipulated_rects = calloc(rect_count, sizeof(SDL_FRect*));
     if (target->manipulated_rects == NULL)
     {
-        print_error("`couple_move_component()`: couldn't allocate memory for `manipulated_rects`", NON_SDL_ERROR);
+        print_error("`couple_move_component()`: couldn't allocate memory for `manipulated_rects`");
         free_deinit_stack(&deinit_stack);
         *exit_code = EXIT_FAILURE;
         return;
@@ -103,7 +103,7 @@ void couple_move_component(struct Move_Component *const target, SDL_FRect *const
         target->offsets = calloc(rect_count, sizeof(struct Vec2));
         if (target->manipulated_rects == NULL)
         {
-            print_error("`couple_move_component()`: couldn't allocate memory for `manipulated_rects`", NON_SDL_ERROR);
+            print_error("`couple_move_component()`: couldn't allocate memory for `manipulated_rects`");
             flush_deinit_stack(&deinit_stack);
             *exit_code = EXIT_FAILURE;
             return;
@@ -118,7 +118,7 @@ void couple_move_component(struct Move_Component *const target, SDL_FRect *const
     target->rects_pt_indices = calloc(rect_count, sizeof(size_t));
     if (target->rects_pt_indices == NULL)
     {
-        print_error("`couple_move_component()`: couldn't allocate memory for `rects_pt_indices`", NON_SDL_ERROR);
+        print_error("`couple_move_component()`: couldn't allocate memory for `rects_pt_indices`");
         flush_deinit_stack(&deinit_stack);
         *exit_code = EXIT_FAILURE;
         return;
@@ -131,7 +131,7 @@ void couple_move_component(struct Move_Component *const target, SDL_FRect *const
         target->reflected_rect_indices = calloc(target->rect_count, sizeof(bool)); /// NOTE: could we pack that into an `int`?
         if (target->reflected_rect_indices == NULL)
         {
-            print_error("`couple_move_component()`: couldn't allocate memory for `reflected_rect_indices`", NON_SDL_ERROR);
+            print_error("`couple_move_component()`: couldn't allocate memory for `reflected_rect_indices`");
             flush_deinit_stack(&deinit_stack);
             *exit_code = EXIT_FAILURE;
             return;
@@ -161,12 +161,12 @@ void move_all_rects(struct Move_Component *const target)
 {
     if (target == NULL)
     {
-        print_error("`move_all_rects()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`move_all_rects()`: `target` arg is `NULL`");
         return;
     }
     if (target->manipulated_rects == NULL || target->rects_pt_indices == NULL || target->rect_count == 0)
     {
-        print_error("`move_all_rects()`: trying to use an uncoupled `target`", NON_SDL_ERROR);
+        print_error("`move_all_rects()`: trying to use an uncoupled `target`");
         return;
     }
 
@@ -220,7 +220,7 @@ void free_move_component(struct Move_Component *const target)
 {
     if (target == NULL)
     {
-        print_error("`free_move_component()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`free_move_component()`: `target` arg is `NULL`");
         return;
     }
 

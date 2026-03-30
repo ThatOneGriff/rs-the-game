@@ -4,7 +4,7 @@
 /* SDL3 */
 #include <SDL3/SDL.h> /// SDL3.
 
-#define GLOBAL_DATA_PATH "./rsdt/global.rsdt"
+#define GLOBAL_DATA_PATH "./res/global.rsdt"
 #define GLOBAL_DATA_LINES 3
 
 extern SDL_Surface* ICON_TEXTURE;
