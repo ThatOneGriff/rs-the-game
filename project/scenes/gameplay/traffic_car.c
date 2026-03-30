@@ -77,12 +77,12 @@ struct Traffic_Car load_traffic_car(const char *const path, int *const exit_code
         {
             if (NULL_TEXTURE != NULL)
             {
-                print_warning("`load_traffic_car()`: couldn't load texture, replaced with null texture", IS_SDL_ERROR);
+                print_SDL_warning("`load_traffic_car()`: couldn't load texture, replaced with null texture");
                 result.textures[i] = NULL_TEXTURE;
             }
             else
             {
-                print_error("`load_traffic_car()`: couldn't load texture, and null texture is empty", IS_SDL_ERROR);
+                print_SDL_error("`load_traffic_car()`: couldn't load texture, and null texture is empty");
                 flush_deinit_stack(&deinit_stack);
                 free_ptr_arr((void**)car_data, TRAFFIC_CAR_DATA_LINES);
                 *exit_code = EXIT_FAILURE;

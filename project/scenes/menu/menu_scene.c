@@ -61,12 +61,12 @@ void load_menu_scene(struct Car *const car_ptr, int *const exit_code)
     {
         if (NULL_TEXTURE != NULL)
         {
-            print_warning("`load_menu_scene()`: couldn't load the bg texture, replaced by null texture", IS_SDL_ERROR);
+            print_SDL_warning("`load_menu_scene()`: couldn't load the bg texture, replaced by null texture");
             menu_scene.bg = NULL_TEXTURE;
         }
         else
         {
-            print_error("`load_menu_scene()`: couldn't load the bg texture, and null texture is empty", IS_SDL_ERROR);
+            print_SDL_error("`load_menu_scene()`: couldn't load the bg texture, and null texture is empty");
             free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
             *exit_code = EXIT_FAILURE;
             return;

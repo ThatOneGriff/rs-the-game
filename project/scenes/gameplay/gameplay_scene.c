@@ -87,12 +87,12 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
     {
         if (NULL_TEXTURE != NULL)
         {
-            print_warning("`load_gameplay_scene()`: couldn't load the sky texture, replaced with null texture", IS_SDL_ERROR);
+            print_SDL_warning("`load_gameplay_scene()`: couldn't load the sky texture, replaced with null texture");
             gameplay_scene.sky_bg = NULL_TEXTURE;
         }
         else
         {
-            print_error("`load_gameplay_scene()`: couldn't load the sky texture, and null texture is empty", IS_SDL_ERROR);
+            print_SDL_error("`load_gameplay_scene()`: couldn't load the sky texture, and null texture is empty");
             free_deinit_stack(&deinit_stack);
             free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
             *exit_code = EXIT_FAILURE;

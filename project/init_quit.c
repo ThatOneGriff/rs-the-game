@@ -49,7 +49,7 @@ void init(int *const exit_code)
     /// SDL3 initialization
     if (! SDL_Init(SDL_FLAGS))
     {
-        print_error("`init()`: failed SDL3 initialization", IS_SDL_ERROR);
+        print_SDL_error("`init()`: failed SDL3 initialization");
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -89,7 +89,7 @@ void init(int *const exit_code)
     /// TTF initialization
     if (! TTF_Init())
     {
-        print_error("`init()`: failed to initialize TTF", IS_SDL_ERROR);
+        print_SDL_error("`init()`: failed to initialize TTF");
         free_logic_layer();
         flush_deinit_stack(&deinit_stack);
         SDL_Quit();
