@@ -39,10 +39,10 @@ struct Traffic_Car load_traffic_car(const char *const path, int *const exit_code
 
     /// Checking params
     if (exit_code == NULL)
-        print_warning("`load_traffic_car()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`load_traffic_car()`: `exit_code` arg is `NULL`");
     if (path == NULL)
     {
-        print_error("`load_traffic_car()`: `path` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`load_traffic_car()`: `path` arg is `NULL`");
         *exit_code = EXIT_FAILURE;
         return result;
     }
@@ -51,7 +51,7 @@ struct Traffic_Car load_traffic_car(const char *const path, int *const exit_code
     char** car_data = read_file_by_line(path, TRAFFIC_CAR_DATA_LINES);
     if (car_data == NULL)
     {
-        print_error("`load_traffic_car()`: couldn't read the contents of car data file", NON_SDL_ERROR);
+        print_error("`load_traffic_car()`: couldn't read the contents of car data file");
         *exit_code = EXIT_FAILURE;
         return result;
     }
@@ -60,7 +60,7 @@ struct Traffic_Car load_traffic_car(const char *const path, int *const exit_code
     struct Deinit_Stack deinit_stack = new_deinit_stack(3, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_traffic_car()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        print_error("`load_traffic_car()`: couldn't instance a deinitialization stack");
         free_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)car_data, TRAFFIC_CAR_DATA_LINES);
         return result;
@@ -123,7 +123,7 @@ void render_traffic_car(struct Traffic_Car *const target)
 {
     if (target == NULL) /// TODO: check for everything.
     {
-        print_error("`render_traffic_car()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`render_traffic_car()`: `target` arg is `NULL`");
         return;
     }
 

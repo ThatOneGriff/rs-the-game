@@ -28,7 +28,7 @@ void render_options_screen(struct Options_Screen *const target);
 struct Options_Screen init_options_screen(int *const exit_code)
 {
     if (exit_code == NULL)
-        print_warning("`init_options_screen()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`init_options_screen()`: `exit_code` arg is `NULL`");
 
     /// Preparing the object
     struct Options_Screen result = {0};
@@ -37,7 +37,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     struct Deinit_Stack deinit_stack = new_deinit_stack(17, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create deinit stack", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create deinit stack");
         free_deinit_stack(&deinit_stack);
         return result;
     }
@@ -45,7 +45,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     result.last_menu_frame = SDL_CreateTexture(graphics_layer.renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, RENDER_WIDTH, RENDER_HEIGHT);
     if (result.last_menu_frame == NULL)
     {
-        print_error("`init_options_screen()`: couldn't create the last menu frame texture", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the last menu frame texture");
         free_deinit_stack(&deinit_stack);
         return result;
     }
@@ -55,7 +55,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     result.options_text = create_text("Options", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(X_AUTO_CENTER, 10), 20, 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the 'Options' text", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the 'Options' text");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -65,7 +65,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     result.close_button = create_button("Close", (SDL_Color){237,63,39,255}, vec2(180, 14), 12, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the 'X' button", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the 'X' button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -75,7 +75,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     result.audio_text = create_text("Audio:", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(10, 50), 15, 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the 'Audio:' text", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the 'Audio:' text");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -86,7 +86,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     struct Button audio_on_button = create_button("ON", AUDIO_ON_SWITCH_COLOR, vec2(65, 50), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the audio 'ON' button", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the audio 'ON' button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -96,7 +96,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     struct Button audio_off_button = create_button("OFF", AUDIO_OFF_SWITCH_COLOR, vec2(65, 50), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the audio 'OFF' button", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the audio 'OFF' button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -105,7 +105,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     result.audio_switch = init_switch(2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the audio switch", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the audio switch");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -121,7 +121,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     result.fps_text = create_text("Gameplay FPS limit:", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(10, 70), 15, 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the 'FPS limit:' text", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the 'FPS limit:' text");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -130,7 +130,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     struct Button fps_button_30 = create_button("30", (SDL_Color){246,255,153,255}, vec2(189, 70), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the FPS limit (30) button", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the FPS limit (30) button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -139,7 +139,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     struct Button fps_button_60 = create_button("60", (SDL_Color){22,196,127,255}, vec2(189, 70), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the FPS limit (60) button", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the FPS limit (60) button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -148,7 +148,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     struct Button fps_button_120 = create_button("120", (SDL_Color){22,196,127,255}, vec2(189, 70), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the FPS limit (120) button", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the FPS limit (120) button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -157,7 +157,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     struct Button fps_button_none = create_button("None", (SDL_Color){69,71,75,255}, vec2(189, 70), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the FPS limit (120) button", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the FPS limit (120) button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -166,7 +166,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     result.fps_switch = init_switch(4, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the FPS switch", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the FPS switch");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -184,7 +184,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     result.show_fps_text = create_text("Show FPS:", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(10, 90), 15, 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the 'Show FPS:' text", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the 'Show FPS:' text");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -194,7 +194,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     struct Button show_fps_on_button = create_button("ON", (SDL_Color){22,196,127,255}, vec2(102, 90), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the audio 'ON' button", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the audio 'ON' button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -203,7 +203,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     struct Button show_fps_off_button = create_button("OFF", (SDL_Color){237,63,39,255}, vec2(102, 90), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the audio 'OFF' button", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the audio 'OFF' button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -212,7 +212,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     result.show_fps_switch = init_switch(2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the audio switch", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the audio switch");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -226,7 +226,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     result.version_text = create_text("RS The Game v 1.1.1", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(X_AUTO_CENTER, 150), 9, 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the version text", NON_SDL_ERROR);
+        print_error("`init_options_screen()`: couldn't create the version text");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -241,7 +241,7 @@ void free_options_screen(struct Options_Screen *const target)
 {
     if (target == NULL)
     {
-        print_error("`free_options_screen()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`free_options_screen()`: `target` arg is `NULL`");
         return;
     }
 
@@ -271,7 +271,7 @@ void show_options_screen(struct Options_Screen *const target)
 {
     if (target == NULL)
     {
-        print_error("`show_options_screen()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`show_options_screen()`: `target` arg is `NULL`");
         return;
     }
 
@@ -310,7 +310,7 @@ void hide_options_screen(struct Options_Screen *const target)
 {
     if (target == NULL)
     {
-        print_error("`hide_options_screen()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`hide_options_screen()`: `target` arg is `NULL`");
         return;
     }
 
@@ -323,7 +323,7 @@ void render_options_screen(struct Options_Screen *const target)
 {
     if (target == NULL)
     {
-        print_error("`hide_options_screen()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`hide_options_screen()`: `target` arg is `NULL`");
         return;
     }
 

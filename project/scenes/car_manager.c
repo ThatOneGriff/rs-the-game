@@ -32,13 +32,13 @@ void init_car_manager(int *const exit_code)
 {
     /// REDO: memory-unsafe in case of failures.
     if (exit_code == NULL)
-        print_warning("`init_car_manager()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`init_car_manager()`: `exit_code` arg is `NULL`");
 
     /// File opening
     FILE* car_data_file = fopen(PLAYERS_CAR_DATA_PATH, "r");
     if (car_data_file == NULL)
     {
-        print_error("`init_car_manager()`: couldnt't open car data file", NON_SDL_ERROR);
+        print_error("`init_car_manager()`: couldnt't open car data file");
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -49,7 +49,7 @@ void init_car_manager(int *const exit_code)
     const size_t line_count = (size_t)atoi(line);
     if (line_count == 0)
     {
-        print_error("`init_car_manager()`: car data line count = 0", NON_SDL_ERROR);
+        print_error("`init_car_manager()`: car data line count = 0");
         fclose(car_data_file);
         *exit_code = EXIT_FAILURE;
         return;
@@ -59,7 +59,7 @@ void init_car_manager(int *const exit_code)
     players_car_manager.cars = malloc(line_count * sizeof(struct Car));
     if (players_car_manager.cars == NULL)
     {
-        print_error("`init_car_manager()`: couldn't allocate memory for cars", NON_SDL_ERROR);
+        print_error("`init_car_manager()`: couldn't allocate memory for cars");
         fclose(car_data_file);
         *exit_code = EXIT_FAILURE;
         return;
@@ -73,7 +73,7 @@ void init_car_manager(int *const exit_code)
         players_car_manager.cars[i] = load_car(line, exit_code);
         if (*exit_code == EXIT_FAILURE)
         {
-            print_error("`init_car_manager()`: couldn't load a car", NON_SDL_ERROR);
+            print_error("`init_car_manager()`: couldn't load a car");
             fclose(car_data_file);
             return;
         }

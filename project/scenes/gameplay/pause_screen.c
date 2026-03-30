@@ -33,7 +33,7 @@ void render_pause_screen(struct Pause_Screen *const target);
 struct Pause_Screen init_pause_screen(int *const exit_code)
 {
     if (exit_code == NULL)
-        print_warning("`init_pause_screen()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`init_pause_screen()`: `exit_code` arg is `NULL`");
 
     /// Preparing the object
     struct Pause_Screen result = {0};
@@ -42,7 +42,7 @@ struct Pause_Screen init_pause_screen(int *const exit_code)
     struct Deinit_Stack deinit_stack = new_deinit_stack(6, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_pause_screen()`: couldn't create deinit stack", NON_SDL_ERROR);
+        print_error("`init_pause_screen()`: couldn't create deinit stack");
         free_deinit_stack(&deinit_stack);
         return result;
     }
@@ -50,7 +50,7 @@ struct Pause_Screen init_pause_screen(int *const exit_code)
     result.last_gameplay_frame = SDL_CreateTexture(graphics_layer.renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, RENDER_WIDTH, RENDER_HEIGHT);
     if (result.last_gameplay_frame == NULL)
     {
-        print_error("`init_pause_screen()`: couldn't create the last menu frame texture", NON_SDL_ERROR);
+        print_error("`init_pause_screen()`: couldn't create the last menu frame texture");
         free_deinit_stack(&deinit_stack);
         return result;
     }
@@ -60,7 +60,7 @@ struct Pause_Screen init_pause_screen(int *const exit_code)
     result.pause_text = create_text("Pause", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(X_AUTO_CENTER, 10), 20, 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_pause_screen()`: couldn't create the 'Pause' text", NON_SDL_ERROR);
+        print_error("`init_pause_screen()`: couldn't create the 'Pause' text");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -70,7 +70,7 @@ struct Pause_Screen init_pause_screen(int *const exit_code)
     result.close_button = create_button("Close", (SDL_Color){237,63,39,255}, vec2(180, 14), 12, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_pause_screen()`: couldn't create the 'X' button", NON_SDL_ERROR);
+        print_error("`init_pause_screen()`: couldn't create the 'X' button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -80,7 +80,7 @@ struct Pause_Screen init_pause_screen(int *const exit_code)
     result.continue_button = create_button("Continue", (SDL_Color){22,196,127,255}, vec2(10, 50), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_pause_screen()`: couldn't create the 'Continue' button", NON_SDL_ERROR);
+        print_error("`init_pause_screen()`: couldn't create the 'Continue' button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -91,7 +91,7 @@ struct Pause_Screen init_pause_screen(int *const exit_code)
     result.quit_to_menu_button = create_button("Quit to menu", (SDL_Color){69,71,75,255}, vec2(10, 70), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_pause_screen()`: couldn't create the 'Quit to menu' button", NON_SDL_ERROR);
+        print_error("`init_pause_screen()`: couldn't create the 'Quit to menu' button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -101,7 +101,7 @@ struct Pause_Screen init_pause_screen(int *const exit_code)
     result.quit_to_desktop_button = create_button("Quit to desktop", (SDL_Color){69,71,75,255}, vec2(10, 90), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_pause_screen()`: couldn't create the 'Quit to desktop' button", NON_SDL_ERROR);
+        print_error("`init_pause_screen()`: couldn't create the 'Quit to desktop' button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -111,7 +111,7 @@ struct Pause_Screen init_pause_screen(int *const exit_code)
     result.version_text = create_text("RS The Game v 1.1.1", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(X_AUTO_CENTER, 150), 9, 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_pause_screen()`: couldn't create the version text", NON_SDL_ERROR);
+        print_error("`init_pause_screen()`: couldn't create the version text");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -126,7 +126,7 @@ void free_pause_screen(struct Pause_Screen *const target)
 {
     if (target == NULL)
     {
-        print_error("`free_pause_screen()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`free_pause_screen()`: `target` arg is `NULL`");
         return;
     }
 
@@ -151,7 +151,7 @@ void show_pause_screen(struct Pause_Screen *const target)
 {
     if (target == NULL)
     {
-        print_error("`show_pause_screen()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`show_pause_screen()`: `target` arg is `NULL`");
         return;
     }
 
@@ -183,7 +183,7 @@ void hide_pause_screen(struct Pause_Screen *const target)
 {
     if (target == NULL)
     {
-        print_error("`hide_pause_screen()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`hide_pause_screen()`: `target` arg is `NULL`");
         return;
     }
 
@@ -199,7 +199,7 @@ void render_pause_screen(struct Pause_Screen *const target)
 {
     if (target == NULL)
     {
-        print_error("`hide_pause_screen()`: `target` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`hide_pause_screen()`: `target` arg is `NULL`");
         return;
     }
 

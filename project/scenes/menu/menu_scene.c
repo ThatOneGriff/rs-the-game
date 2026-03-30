@@ -44,13 +44,13 @@ void load_menu_scene(struct Car *const car_ptr, int *const exit_code)
 {
     /// Param checking
     if (exit_code == NULL)
-        print_warning("`load_menu_scene()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`load_menu_scene()`: `exit_code` arg is `NULL`");
     
     /// Reading the file
     char** scene_data = read_file_by_line(MENU_DATA_PATH, MENU_DATA_LINES);
     if (scene_data == NULL)
     {
-        print_error("`load_gameplay_scene()`: couldn't read data from file", NON_SDL_ERROR);
+        print_error("`load_gameplay_scene()`: couldn't read data from file");
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -76,7 +76,7 @@ void load_menu_scene(struct Car *const car_ptr, int *const exit_code)
     struct Deinit_Stack deinit_stack = new_deinit_stack(6, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        print_error("`init()`: couldn't instance a deinitialization stack");
         free_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
         return;
@@ -88,7 +88,7 @@ void load_menu_scene(struct Car *const car_ptr, int *const exit_code)
     menu_scene.prev_button = create_button("PREV", (SDL_Color){69,71,75,255}, vec2(155, 15), 12, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_menu_scene()`: couldn't create prev button", NON_SDL_ERROR);
+        print_error("`load_menu_scene()`: couldn't create prev button");
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
         return;
@@ -99,7 +99,7 @@ void load_menu_scene(struct Car *const car_ptr, int *const exit_code)
     menu_scene.next_button = create_button("NEXT", (SDL_Color){69,71,75,255}, vec2(195, 15), 12, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_menu_scene()`: couldn't create next button", NON_SDL_ERROR);
+        print_error("`load_menu_scene()`: couldn't create next button");
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
         return;
@@ -110,7 +110,7 @@ void load_menu_scene(struct Car *const car_ptr, int *const exit_code)
     menu_scene.play_button = create_button("PLAY", (SDL_Color){254,178,26,255}, vec2(155, 82), 25, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_menu_scene()`: couldn't create play button", NON_SDL_ERROR);
+        print_error("`load_menu_scene()`: couldn't create play button");
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
         return;
@@ -122,7 +122,7 @@ void load_menu_scene(struct Car *const car_ptr, int *const exit_code)
     menu_scene.options_button = create_button("OPTIONS", (SDL_Color){19,70,134,255}, vec2(155, 107), 18, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_menu_scene()`: couldn't create options button", NON_SDL_ERROR);
+        print_error("`load_menu_scene()`: couldn't create options button");
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
         return;
@@ -133,7 +133,7 @@ void load_menu_scene(struct Car *const car_ptr, int *const exit_code)
     menu_scene.options_screen = init_options_screen(exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_menu_scene()`: couldn't init options screen", NON_SDL_ERROR);
+        print_error("`load_menu_scene()`: couldn't init options screen");
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
         return;
@@ -144,7 +144,7 @@ void load_menu_scene(struct Car *const car_ptr, int *const exit_code)
     menu_scene.quit_button = create_button("QUIT", (SDL_Color){237,63,39,255}, vec2(155, 125), 18, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_menu_scene()`: couldn't create quit button", NON_SDL_ERROR);
+        print_error("`load_menu_scene()`: couldn't create quit button", );
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
         return;
@@ -201,10 +201,10 @@ void free_menu_scene(void)
 void set_menu_car_info(struct Car *const car_ptr, int *const exit_code)
 {
     if (exit_code == NULL)
-        print_warning("`set_menu_car_info()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`set_menu_car_info()`: `exit_code` arg is `NULL`");
     if (car_ptr == NULL) /// TODO: check all members.
     {
-        print_error("`set_menu_car_info()`: `car_ptr` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`set_menu_car_info()`: `car_ptr` arg is `NULL`");
         return;
     }
 
@@ -213,7 +213,7 @@ void set_menu_car_info(struct Car *const car_ptr, int *const exit_code)
     menu_scene.car_name_text = create_text(car_ptr->name, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(10, 10), 15, 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`set_menu_car_info()`: couldn't create the text", NON_SDL_ERROR);
+        print_error("`set_menu_car_info()`: couldn't create the text");
         return;
     }
     

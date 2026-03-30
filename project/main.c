@@ -68,7 +68,7 @@ int main(const int argc, char* argv[])
     init(&exit_code);
     if (exit_code == EXIT_FAILURE)
     {
-        print_error("Failure initializing the program", NON_SDL_ERROR);
+        print_error("Failure initializing the program");
         program_exit(exit_code);
     }
     /// , because you don't want to work uninitialized.
@@ -82,13 +82,13 @@ int main(const int argc, char* argv[])
 static void game_loop(int *const exit_code)
 {
     if (exit_code == NULL)
-        print_warning("`game_loop()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`game_loop()`: `exit_code` arg is `NULL`");
     
     /// Loading & preparing the scene
     load_menu_scene(get_curr_car(), exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`game_loop()`: failed to load `menu_scene`", NON_SDL_ERROR);
+        print_error("`game_loop()`: failed to load `menu_scene`");
         return;
     }
     logic_layer.curr_scene = &menu_scene;

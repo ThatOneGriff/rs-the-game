@@ -46,16 +46,16 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
 {
     /// Param checking
     if (exit_code == NULL)
-        print_warning("`load_gameplay_scene()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`load_gameplay_scene()`: `exit_code` arg is `NULL`");
     if (path == NULL)
     {
-        print_error("`load_gameplay_scene()`: `path` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`load_gameplay_scene()`: `path` arg is `NULL`");
         *exit_code = EXIT_FAILURE;
         return;
     }
     if (car_ptr == NULL)
     {
-        print_error("`load_gameplay_scene()`: `car_ptr` arg is `NULL`", NON_SDL_ERROR);
+        print_error("`load_gameplay_scene()`: `car_ptr` arg is `NULL`");
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -66,7 +66,7 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
     char** scene_data = read_file_by_line(path, GAMEPLAY_DATA_LINES);
     if (scene_data == NULL)
     {
-        print_error("`load_gameplay_scene()`: couldn't read data from file", NON_SDL_ERROR);
+        print_error("`load_gameplay_scene()`: couldn't read data from file");
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -75,7 +75,7 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
     struct Deinit_Stack deinit_stack = new_deinit_stack(8, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        print_error("`init()`: couldn't instance a deinitialization stack");
         free_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
         return;
@@ -106,7 +106,7 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
     gameplay_scene.ground = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 4, 150, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_gameplay_scene()`: couldn't load the ground texture", NON_SDL_ERROR);
+        print_error("`load_gameplay_scene()`: couldn't load the ground texture");
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
         return;
@@ -122,7 +122,7 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
     gameplay_scene.road = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 100, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_gameplay_scene()`: couldn't load the road texture", NON_SDL_ERROR);
+        print_error("`load_gameplay_scene()`: couldn't load the road texture");
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
         return;
@@ -137,7 +137,7 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
     gameplay_scene.stripes = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 100, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_gameplay_scene()`: couldn't load the stripes texture", NON_SDL_ERROR);
+        print_error("`load_gameplay_scene()`: couldn't load the stripes texture");
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
         return;
@@ -152,7 +152,7 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
     gameplay_scene.trees = new_environment((char*[]){scene_data[11], scene_data[12], scene_data[13], scene_data[14]}, 4, 7, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_gameplay_scene()`: couldn't load the trees", NON_SDL_ERROR);
+        print_error("`load_gameplay_scene()`: couldn't load the trees");
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
         return;
@@ -185,7 +185,7 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
     gameplay_scene.pause_screen = init_pause_screen(exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_gameplay_scene()`: couldn't create pause screen", NON_SDL_ERROR);
+        print_error("`load_gameplay_scene()`: couldn't create pause screen");
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);
         return;
@@ -203,7 +203,7 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
     init_traffic_manager(5, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_gameplay_scene()`: couldn't initialize traffic manager", NON_SDL_ERROR);
+        print_error("`load_gameplay_scene()`: couldn't initialize traffic manager");
         free_traffic_manager();
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, GAMEPLAY_DATA_LINES);

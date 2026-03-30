@@ -54,10 +54,10 @@ void init_traffic_manager(const size_t car_count, int *const exit_code)
 
     /// Param checking
     if (exit_code == NULL)
-        print_warning("`init_traffic_manager()`: `exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`init_traffic_manager()`: `exit_code` arg is `NULL`");
     if (car_count == 0)
     {
-        print_error("`init_traffic_manager()`: `car_count` arg = 0", NON_SDL_ERROR);
+        print_error("`init_traffic_manager()`: `car_count` arg = 0");
         *exit_code = EXIT_FAILURE;
         return;
     }
@@ -66,7 +66,7 @@ void init_traffic_manager(const size_t car_count, int *const exit_code)
     struct Deinit_Stack deinit_stack = new_deinit_stack(5 + car_count, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_traffic_manager()`: couldn't create deinit stack", NON_SDL_ERROR);
+        print_error("`init_traffic_manager()`: couldn't create deinit stack");
         free_deinit_stack(&deinit_stack);
         *exit_code = EXIT_FAILURE;
         return;
@@ -76,7 +76,7 @@ void init_traffic_manager(const size_t car_count, int *const exit_code)
     FILE* car_data_file = fopen(TRAFFIC_CAR_DATA_PATH, "r");
     if (car_data_file == NULL)
     {
-        print_error("`init_traffic_manager()`: couldn't read traffic data file", NON_SDL_ERROR);
+        print_error("`init_traffic_manager()`: couldn't read traffic data file");
         fclose(car_data_file);
         free_deinit_stack(&deinit_stack);
         *exit_code = EXIT_FAILURE;
@@ -89,7 +89,7 @@ void init_traffic_manager(const size_t car_count, int *const exit_code)
     traffic_manager.car_count = (size_t)atoi(line);
     if (traffic_manager.car_count == 0)
     {
-        print_error("`init_car_manager()`: traffic car count == 0", NON_SDL_ERROR);
+        print_error("`init_car_manager()`: traffic car count == 0");
         fclose(car_data_file);
         flush_deinit_stack(&deinit_stack);
         *exit_code = EXIT_FAILURE;
@@ -100,7 +100,7 @@ void init_traffic_manager(const size_t car_count, int *const exit_code)
     traffic_manager.cars = malloc(traffic_manager.car_count * sizeof(struct Car));
     if (traffic_manager.cars == NULL)
     {
-        print_error("`init_traffic_manager()`: couldn't allocate memory for cars", NON_SDL_ERROR);
+        print_error("`init_traffic_manager()`: couldn't allocate memory for cars");
         fclose(car_data_file);
         flush_deinit_stack(&deinit_stack);
         *exit_code = EXIT_FAILURE;
@@ -116,7 +116,7 @@ void init_traffic_manager(const size_t car_count, int *const exit_code)
         traffic_manager.cars[i] = load_traffic_car(line, exit_code);
         if (*exit_code == EXIT_FAILURE)
         {
-            print_error("`init_traffic_manager()`: couldn't load a car", NON_SDL_ERROR);
+            print_error("`init_traffic_manager()`: couldn't load a car");
             fclose(car_data_file);
             flush_deinit_stack(&deinit_stack);
             return;
@@ -132,7 +132,7 @@ void init_traffic_manager(const size_t car_count, int *const exit_code)
                        12, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_traffic_manager()`: error creating left lane path", NON_SDL_ERROR);
+        print_error("`init_traffic_manager()`: error creating left lane path");
         fclose(car_data_file);
         flush_deinit_stack(&deinit_stack);
         *exit_code = EXIT_FAILURE;
@@ -149,7 +149,7 @@ void init_traffic_manager(const size_t car_count, int *const exit_code)
                        12, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_traffic_manager()`: error creating center lane path", NON_SDL_ERROR);
+        print_error("`init_traffic_manager()`: error creating center lane path");
         fclose(car_data_file);
         flush_deinit_stack(&deinit_stack);
         *exit_code = EXIT_FAILURE;

@@ -44,7 +44,7 @@ void program_exit(const int exit_code);
 void init(int *const exit_code)
 {
     if (exit_code == NULL)
-        print_warning("`init()`: `*exit_code` arg is `NULL`", NON_SDL_ERROR);
+        print_warning("`init()`: `*exit_code` arg is `NULL`");
 
     /// SDL3 initialization
     if (! SDL_Init(SDL_FLAGS))
@@ -58,7 +58,7 @@ void init(int *const exit_code)
     init_graphics_layer(exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init()`: failed to init `graphics_layer`", NON_SDL_ERROR);
+        print_error("`init()`: failed to init `graphics_layer`");
         SDL_Quit();
         return;
     }
@@ -66,7 +66,7 @@ void init(int *const exit_code)
     struct Deinit_Stack deinit_stack = new_deinit_stack(5, exit_code); /// Not adding the last element (font loading) or those that need their own function treatment.
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init()`: couldn't instance a deinitialization stack", NON_SDL_ERROR);
+        print_error("`init()`: couldn't instance a deinitialization stack");
         free_deinit_stack(&deinit_stack);
         SDL_Quit();
         return;
@@ -79,7 +79,7 @@ void init(int *const exit_code)
     init_logic_layer(exit_code);
     if (*exit_code == EXIT_FAILURE) /// NOTE: never happens for now.
     {
-        print_error("`init()`: failed to init `logic_layer`", NON_SDL_ERROR);
+        print_error("`init()`: failed to init `logic_layer`");
         flush_deinit_stack(&deinit_stack);
         SDL_Quit();
         return;
@@ -100,7 +100,7 @@ void init(int *const exit_code)
     load_global_resources(exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init()`: failed to load global resources", NON_SDL_ERROR);
+        print_error("`init()`: failed to load global resources");
         TTF_Quit();
         free_logic_layer();
         flush_deinit_stack(&deinit_stack);
@@ -114,7 +114,7 @@ void init(int *const exit_code)
     init_car_manager(exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init()`: failed to initialize car manager", NON_SDL_ERROR);
+        print_error("`init()`: failed to initialize car manager");
         TTF_Quit();
         free_logic_layer();
         flush_deinit_stack(&deinit_stack);
@@ -127,7 +127,7 @@ void init(int *const exit_code)
     music_loader_gameplay = init_music_loader("./rsdt/music_gameplay.rsdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_warning("`init()`: music data (gameplay) file not found", NON_SDL_ERROR);
+        print_warning("`init()`: music data (gameplay) file not found");
         free_music_loader(&music_loader_gameplay);
     }
     else
@@ -136,7 +136,7 @@ void init(int *const exit_code)
     music_loader_menu = init_music_loader("./rsdt/music_menu.rsdt", exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_warning("`init()`: music data (menu) file not found", NON_SDL_ERROR);
+        print_warning("`init()`: music data (menu) file not found");
         free_music_loader(&music_loader_menu);
     }
     else
@@ -150,7 +150,7 @@ void init(int *const exit_code)
     {
         if (ma_engine_init(NULL, &audio_manager.engine) != MA_SUCCESS)
         {
-            print_error("`init()`: failed to initialize audio engine", NON_SDL_ERROR);
+            print_error("`init()`: failed to initialize audio engine");
             audio_manager.audio_is_valid = false;
         }
     }

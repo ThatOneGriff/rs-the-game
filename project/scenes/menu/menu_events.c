@@ -198,7 +198,7 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
     }
 
     if (exit_code == EXIT_FAILURE)
-        print_error("`_process_menu_keyboard()`: an error code was thrown", NON_SDL_ERROR);
+        print_error("`_process_menu_keyboard()`: an error code was thrown");
     return;
 }
 
@@ -294,6 +294,6 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
     }
 
     if (exit_code == EXIT_FAILURE)
-        print_error("`_process_options_keyboard()`: an error code was thrown", NON_SDL_ERROR);
+        print_error("`_process_options_keyboard()`: an error code was thrown");
     return;
 }
