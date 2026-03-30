@@ -9,8 +9,8 @@
 #define WINDOW_WIDTH  960
 #define WINDOW_HEIGHT 720
 #define WINDOW_RECT (SDL_FRect){0, 0, WINDOW_WIDTH, WINDOW_HEIGHT}
-#define RENDER_WIDTH  960
-#define RENDER_HEIGHT 720
+#define RENDER_WIDTH  240
+#define RENDER_HEIGHT 180
 #define RENDER_RECT (SDL_FRect){0, 0, RENDER_WIDTH, RENDER_HEIGHT}
 #define RENDER_TO_WINDOW_RATIO ((float)RENDER_WIDTH / WINDOW_WIDTH) /// Assumes the aspect ratios of render and window rectangles match.
 #define WINDOW_TO_RENDER_RATIO ((float)WINDOW_WIDTH / RENDER_WIDTH) /// Assumes the aspect ratios of window and render rectangles match.
