@@ -26,8 +26,8 @@ struct Gameplay_Scene
     bool is_driving;
     time_tick_ms start_tick;
     time_tick_ms crash_tick;
-    int point_count;
-    int prev_point_count;
+    unsigned int point_count;
+    unsigned int prev_point_count;
 
     SDL_Texture* sky_bg; /// Not a `Texture`, because it's rendered on the whole screen.
     struct Animated_Sprite ground;

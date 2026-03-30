@@ -34,7 +34,7 @@ extern struct Traffic_Manager traffic_manager; /// Singleton.
 void init_traffic_manager(const size_t car_count, int *const exit_code);
 void free_traffic_manager(void);
 void   move_traffic       (const bool mode);
-void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car *const player_car, bool *const is_driving, int *const point_count);
+void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car *const player_car, bool *const is_driving, unsigned int *const point_count);
 
 
 #endif /// TRAFFIC_MANAGER_H

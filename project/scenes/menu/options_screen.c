@@ -59,7 +59,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &result.options_text, (void (*)(void*))free_texture);
+    add_to_deinit_stack(&deinit_stack, &result.options_text, (void (*)(void*))free_sprite);
 
     /// 'X' button
     result.close_button = create_button("Close", (SDL_Color){237,63,39,255}, vec2(180, 14), 12, 2, exit_code);
@@ -79,7 +79,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &result.audio_text, (void (*)(void*))free_texture);
+    add_to_deinit_stack(&deinit_stack, &result.audio_text, (void (*)(void*))free_sprite);
     
     /// Audio 'ON' button
     const SDL_Color AUDIO_ON_SWITCH_COLOR = (audio_manager.audio_is_valid ? (SDL_Color){22,196,127,255} : (SDL_Color){57,62,70,255});
@@ -125,7 +125,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &result.fps_text, (void (*)(void*))free_texture);
+    add_to_deinit_stack(&deinit_stack, &result.fps_text, (void (*)(void*))free_sprite);
     /// FPS limit (30) button
     struct Button fps_button_30 = create_button("30", (SDL_Color){246,255,153,255}, vec2(189, 70), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
@@ -188,7 +188,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &result.show_fps_text, (void (*)(void*))free_texture);
+    add_to_deinit_stack(&deinit_stack, &result.show_fps_text, (void (*)(void*))free_sprite);
 
     /// Show FPS 'ON' button
     struct Button show_fps_on_button = create_button("ON", (SDL_Color){22,196,127,255}, vec2(102, 90), 15, 2, exit_code);
@@ -248,19 +248,19 @@ void free_options_screen(struct Options_Screen *const target)
     if (target->last_menu_frame != NULL)
         SDL_DestroyTexture(target->last_menu_frame);
 
-    free_texture(&target->options_text);
+    free_sprite(&target->options_text);
     free_button (&target->close_button);
 
-    free_texture(&target->audio_text);
+    free_sprite(&target->audio_text);
     free_switch (&target->audio_switch);
     
-    free_texture(&target->fps_text);
+    free_sprite(&target->fps_text);
     free_switch (&target->fps_switch);
 
-    free_texture(&target->show_fps_text);
+    free_sprite(&target->show_fps_text);
     free_switch (&target->show_fps_switch);
 
-    free_texture(&target->version_text);
+    free_sprite(&target->version_text);
 
     memset(target, 0, sizeof *target);
     return;
@@ -328,18 +328,18 @@ void render_options_screen(struct Options_Screen *const target)
     }
 
     SDL_RenderTexture(graphics_layer.renderer, target->last_menu_frame, NULL, NULL);
-    render_texture(&target->options_text);
+    render_sprite(&target->options_text);
     render_button (&target->close_button);
 
-    render_texture(&target->audio_text);
+    render_sprite(&target->audio_text);
     render_switch (&target->audio_switch);
 
-    render_texture(&target->fps_text);
+    render_sprite(&target->fps_text);
     render_switch (&target->fps_switch);
 
-    render_texture(&target->show_fps_text);
+    render_sprite(&target->show_fps_text);
     render_switch (&target->show_fps_switch);
 
-    render_texture(&target->version_text);
+    render_sprite(&target->version_text);
     return;
 }

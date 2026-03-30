@@ -4,13 +4,13 @@
 /* SDL3 */
 #include <SDL3/SDL.h> /// SDL3.
 
-#define GLOBAL_DATA_PATH "./res/global.rsdt"
+#define GLOBAL_DATA_PATH "./rsdt/global.rsdt"
 #define GLOBAL_DATA_LINES 3
 
 extern SDL_Surface* ICON_TEXTURE;
 extern SDL_Texture* NULL_TEXTURE;
-extern char       MAIN_FONT_PATH[64];
-extern int PERSONAL_BEST;
+extern char         MAIN_FONT_PATH[64];
+extern unsigned int PERSONAL_BEST;
 
 
 /* Predef */

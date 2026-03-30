@@ -144,7 +144,7 @@ void load_menu_scene(struct Car *const car_ptr, int *const exit_code)
     menu_scene.quit_button = create_button("QUIT", (SDL_Color){237,63,39,255}, vec2(155, 125), 18, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`load_menu_scene()`: couldn't create quit button", );
+        print_error("`load_menu_scene()`: couldn't create quit button");
         flush_deinit_stack(&deinit_stack);
         free_ptr_arr((void**)scene_data, MENU_DATA_LINES);
         return;
@@ -172,7 +172,7 @@ void free_menu_scene(void)
 {
     if (menu_scene.bg != NULL_TEXTURE)
         SDL_DestroyTexture(menu_scene.bg);
-    free_texture(&menu_scene.car_name_text);
+    free_sprite(&menu_scene.car_name_text);
     free_button(&menu_scene.prev_button);
     free_button(&menu_scene.next_button);
 
@@ -180,18 +180,18 @@ void free_menu_scene(void)
     free_button(&menu_scene.options_button);
     free_button(&menu_scene.quit_button);
 
-    free_texture(&menu_scene.photo_quad1);
-    free_texture(&menu_scene.photo_quad2);
-    free_texture(&menu_scene.photo_quad3);
-    free_texture(&menu_scene.photo_quad4);
+    free_sprite(&menu_scene.photo_quad1);
+    free_sprite(&menu_scene.photo_quad2);
+    free_sprite(&menu_scene.photo_quad3);
+    free_sprite(&menu_scene.photo_quad4);
     
-    free_texture(&menu_scene.year_text);
-    free_texture(&menu_scene.horsepower_text);
-    free_texture(&menu_scene.top_speed_text);
-    free_texture(&menu_scene.handling_text);
+    free_sprite(&menu_scene.year_text);
+    free_sprite(&menu_scene.horsepower_text);
+    free_sprite(&menu_scene.top_speed_text);
+    free_sprite(&menu_scene.handling_text);
     
-    free_texture(&menu_scene.info_line1);
-    free_texture(&menu_scene.info_line2);
+    free_sprite(&menu_scene.info_line1);
+    free_sprite(&menu_scene.info_line2);
 
     memset(&menu_scene, 0, sizeof menu_scene);
     return;
@@ -218,10 +218,10 @@ void set_menu_car_info(struct Car *const car_ptr, int *const exit_code)
     }
     
     /// TODO: checks.
-    menu_scene.photo_quad1 = load_texture(car_ptr->quad_paths[0], (SDL_FRect){10   , 34   , 72, 54}, exit_code);
-    menu_scene.photo_quad2 = load_texture(car_ptr->quad_paths[1], (SDL_FRect){10+72, 34   , 72, 54}, exit_code);
-    menu_scene.photo_quad3 = load_texture(car_ptr->quad_paths[2], (SDL_FRect){10   , 34+54, 72, 54}, exit_code);
-    menu_scene.photo_quad4 = load_texture(car_ptr->quad_paths[3], (SDL_FRect){10+72, 34+54, 72, 54}, exit_code);
+    menu_scene.photo_quad1 = load_sprite(car_ptr->quad_paths[0], (SDL_FRect){10   , 34   , 72, 54}, exit_code);
+    menu_scene.photo_quad2 = load_sprite(car_ptr->quad_paths[1], (SDL_FRect){10+72, 34   , 72, 54}, exit_code);
+    menu_scene.photo_quad3 = load_sprite(car_ptr->quad_paths[2], (SDL_FRect){10   , 34+54, 72, 54}, exit_code);
+    menu_scene.photo_quad4 = load_sprite(car_ptr->quad_paths[3], (SDL_FRect){10+72, 34+54, 72, 54}, exit_code);
     
     char year_text[15];
     sprintf(year_text, "Year: %d", car_ptr->year);
@@ -255,7 +255,7 @@ void render_menu_scene(void)
     }
 
     SDL_RenderTexture(graphics_layer.renderer, menu_scene.bg, NULL, NULL);
-    render_texture(&menu_scene.car_name_text);
+    render_sprite(&menu_scene.car_name_text);
     if (players_car_manager.cur_car != 0)
         render_button(&menu_scene.prev_button);
     if (players_car_manager.cur_car != players_car_manager.car_count - 1)
@@ -265,17 +265,17 @@ void render_menu_scene(void)
     render_button(&menu_scene.options_button);
     render_button(&menu_scene.quit_button);
 
-    render_texture(&menu_scene.photo_quad1);
-    render_texture(&menu_scene.photo_quad2);
-    render_texture(&menu_scene.photo_quad3);
-    render_texture(&menu_scene.photo_quad4);
+    render_sprite(&menu_scene.photo_quad1);
+    render_sprite(&menu_scene.photo_quad2);
+    render_sprite(&menu_scene.photo_quad3);
+    render_sprite(&menu_scene.photo_quad4);
     
-    render_texture(&menu_scene.year_text);
-    render_texture(&menu_scene.horsepower_text);
-    render_texture(&menu_scene.top_speed_text);
-    render_texture(&menu_scene.handling_text);
+    render_sprite(&menu_scene.year_text);
+    render_sprite(&menu_scene.horsepower_text);
+    render_sprite(&menu_scene.top_speed_text);
+    render_sprite(&menu_scene.handling_text);
     
-    render_texture(&menu_scene.info_line1);
-    render_texture(&menu_scene.info_line2);
+    render_sprite(&menu_scene.info_line1);
+    render_sprite(&menu_scene.info_line2);
     return;
 }

@@ -15,15 +15,11 @@
 #include "../../graphics/graphics_layer.h" /// Rendering of the texture.
 
 
-/// NOTE: What I call `Texture` is, in fact, a sprite.
-/// I have been told that too deep into development.
-
-
 /* Predef */
 
 struct Sprite load_sprite(const char *const path, const SDL_FRect rect, int *const exit_code);
 void          free_sprite(struct Sprite *const target);
-void   render_sprite(const struct Sprite *const target);
+void        render_sprite(const struct Sprite *const target);
 
 
 /* Body */

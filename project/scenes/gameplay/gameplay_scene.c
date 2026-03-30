@@ -103,7 +103,7 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
         add_to_deinit_stack(&deinit_stack, gameplay_scene.sky_bg, (void (*)(void*))SDL_DestroyTexture);
 
     /// Ground
-    gameplay_scene.ground = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 4, 150, exit_code);
+    gameplay_scene.ground = init_animated_sprite((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 4, 150, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the ground texture");
@@ -112,14 +112,14 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
         return;
     }
     gameplay_scene.ground.freeze_shifting = true;
-    add_to_shifting_texture(&gameplay_scene.ground, scene_data[1], exit_code); /// TODO: find a way
-    add_to_shifting_texture(&gameplay_scene.ground, scene_data[2], exit_code); /// to check `exit_code`
-    add_to_shifting_texture(&gameplay_scene.ground, scene_data[3], exit_code); /// w/o obnoxious
-    add_to_shifting_texture(&gameplay_scene.ground, scene_data[4], exit_code); /// `if() {}` blocks.
-    add_to_deinit_stack(&deinit_stack, &gameplay_scene.ground, (void (*)(void*))free_shifting_texture);
+    add_to_animated_sprite(&gameplay_scene.ground, scene_data[1], exit_code); /// TODO: find a way
+    add_to_animated_sprite(&gameplay_scene.ground, scene_data[2], exit_code); /// to check `exit_code`
+    add_to_animated_sprite(&gameplay_scene.ground, scene_data[3], exit_code); /// w/o obnoxious
+    add_to_animated_sprite(&gameplay_scene.ground, scene_data[4], exit_code); /// `if() {}` blocks.
+    add_to_deinit_stack(&deinit_stack, &gameplay_scene.ground, (void (*)(void*))free_animated_sprite);
 
     /// Road
-    gameplay_scene.road = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 100, exit_code);
+    gameplay_scene.road = init_animated_sprite((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 100, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the road texture");
@@ -128,13 +128,13 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
         return;
     }
     gameplay_scene.road.freeze_shifting = true;
-    add_to_shifting_texture(&gameplay_scene.road, scene_data[5], exit_code);
-    add_to_shifting_texture(&gameplay_scene.road, scene_data[6], exit_code);
-    add_to_shifting_texture(&gameplay_scene.road, scene_data[7], exit_code);
-    add_to_deinit_stack(&deinit_stack, &gameplay_scene.road, (void (*)(void*))free_shifting_texture);
+    add_to_animated_sprite(&gameplay_scene.road, scene_data[5], exit_code);
+    add_to_animated_sprite(&gameplay_scene.road, scene_data[6], exit_code);
+    add_to_animated_sprite(&gameplay_scene.road, scene_data[7], exit_code);
+    add_to_deinit_stack(&deinit_stack, &gameplay_scene.road, (void (*)(void*))free_animated_sprite);
     
     /// Stripes
-    gameplay_scene.stripes = init_shifting_texture((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 100, exit_code);
+    gameplay_scene.stripes = init_animated_sprite((SDL_FRect){0, RENDER_HEIGHT - 100, 240, 100}, 3, 100, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`load_gameplay_scene()`: couldn't load the stripes texture");
@@ -143,10 +143,10 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
         return;
     }
     gameplay_scene.stripes.freeze_shifting = true;
-    add_to_shifting_texture(&gameplay_scene.stripes, scene_data[8], exit_code);
-    add_to_shifting_texture(&gameplay_scene.stripes, scene_data[9], exit_code);
-    add_to_shifting_texture(&gameplay_scene.stripes, scene_data[10], exit_code);
-    add_to_deinit_stack(&deinit_stack, &gameplay_scene.stripes, (void (*)(void*))free_shifting_texture);
+    add_to_animated_sprite(&gameplay_scene.stripes, scene_data[8], exit_code);
+    add_to_animated_sprite(&gameplay_scene.stripes, scene_data[9], exit_code);
+    add_to_animated_sprite(&gameplay_scene.stripes, scene_data[10], exit_code);
+    add_to_deinit_stack(&deinit_stack, &gameplay_scene.stripes, (void (*)(void*))free_animated_sprite);
 
     /// Trees
     gameplay_scene.trees = new_environment((char*[]){scene_data[11], scene_data[12], scene_data[13], scene_data[14]}, 4, 7, exit_code);
@@ -170,16 +170,16 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
     add_to_deinit_stack(&deinit_stack, &gameplay_scene.trees, (void (*)(void*))free_environment); /// Don't delete. More elements will be added later
 
     /// TODO: checks.
-    gameplay_scene.clouds[0] = load_texture(scene_data[15], (SDL_FRect){(float)randint(0, RENDER_WIDTH-30),  5, 30, 10}, exit_code);
-    gameplay_scene.clouds[1] = load_texture(scene_data[16], (SDL_FRect){(float)randint(0, RENDER_WIDTH-32), 12, 32, 15}, exit_code);
-    gameplay_scene.clouds[2] = load_texture(scene_data[17], (SDL_FRect){(float)randint(0, RENDER_WIDTH-23), 24, 23,  8}, exit_code);
-    gameplay_scene.clouds[3] = load_texture(scene_data[18], (SDL_FRect){(float)randint(0, RENDER_WIDTH-41), 29, 41,  8}, exit_code);
-    gameplay_scene.clouds[4] = load_texture(scene_data[19], (SDL_FRect){(float)randint(0, RENDER_WIDTH-36), 34, 36,  8}, exit_code);
-    gameplay_scene.clouds[5] = load_texture(scene_data[15], (SDL_FRect){(float)randint(0, RENDER_WIDTH-30),  5, 30, 10}, exit_code);
-    gameplay_scene.clouds[6] = load_texture(scene_data[16], (SDL_FRect){(float)randint(0, RENDER_WIDTH-32), 12, 32, 15}, exit_code);
-    gameplay_scene.clouds[7] = load_texture(scene_data[17], (SDL_FRect){(float)randint(0, RENDER_WIDTH-23), 24, 23,  8}, exit_code);
-    gameplay_scene.clouds[8] = load_texture(scene_data[18], (SDL_FRect){(float)randint(0, RENDER_WIDTH-41), 29, 41,  8}, exit_code);
-    gameplay_scene.clouds[9] = load_texture(scene_data[19], (SDL_FRect){(float)randint(0, RENDER_WIDTH-36), 34, 36,  8}, exit_code);
+    gameplay_scene.clouds[0] = load_sprite(scene_data[15], (SDL_FRect){(float)randint(0, RENDER_WIDTH-30),  5, 30, 10}, exit_code);
+    gameplay_scene.clouds[1] = load_sprite(scene_data[16], (SDL_FRect){(float)randint(0, RENDER_WIDTH-32), 12, 32, 15}, exit_code);
+    gameplay_scene.clouds[2] = load_sprite(scene_data[17], (SDL_FRect){(float)randint(0, RENDER_WIDTH-23), 24, 23,  8}, exit_code);
+    gameplay_scene.clouds[3] = load_sprite(scene_data[18], (SDL_FRect){(float)randint(0, RENDER_WIDTH-41), 29, 41,  8}, exit_code);
+    gameplay_scene.clouds[4] = load_sprite(scene_data[19], (SDL_FRect){(float)randint(0, RENDER_WIDTH-36), 34, 36,  8}, exit_code);
+    gameplay_scene.clouds[5] = load_sprite(scene_data[15], (SDL_FRect){(float)randint(0, RENDER_WIDTH-30),  5, 30, 10}, exit_code);
+    gameplay_scene.clouds[6] = load_sprite(scene_data[16], (SDL_FRect){(float)randint(0, RENDER_WIDTH-32), 12, 32, 15}, exit_code);
+    gameplay_scene.clouds[7] = load_sprite(scene_data[17], (SDL_FRect){(float)randint(0, RENDER_WIDTH-23), 24, 23,  8}, exit_code);
+    gameplay_scene.clouds[8] = load_sprite(scene_data[18], (SDL_FRect){(float)randint(0, RENDER_WIDTH-41), 29, 41,  8}, exit_code);
+    gameplay_scene.clouds[9] = load_sprite(scene_data[19], (SDL_FRect){(float)randint(0, RENDER_WIDTH-36), 34, 36,  8}, exit_code);
 
     /// Pause screen
     gameplay_scene.pause_screen = init_pause_screen(exit_code);
@@ -211,12 +211,12 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
     }
     
     char personal_best_text[10];
-    sprintf(personal_best_text, "PB: %d", PERSONAL_BEST);
+    sprintf(personal_best_text, "PB: %u", PERSONAL_BEST);
     gameplay_scene.personal_best_text = create_text(personal_best_text, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(5, 5), 15, 1, exit_code);
-    add_to_deinit_stack(&deinit_stack, &gameplay_scene.personal_best_text, (void (*)(void*))free_texture);
+    add_to_deinit_stack(&deinit_stack, &gameplay_scene.personal_best_text, (void (*)(void*))free_sprite);
 
     gameplay_scene.curr_points_text = create_text("Pts: 0", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(5, 20), 15, 1, exit_code);
-    add_to_deinit_stack(&deinit_stack, &gameplay_scene.curr_points_text, (void (*)(void*))free_texture);
+    add_to_deinit_stack(&deinit_stack, &gameplay_scene.curr_points_text, (void (*)(void*))free_sprite);
 
     gameplay_scene.fps_text = create_text("FPS: ", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, fps_counter_position, 15, 1, exit_code);
     
@@ -238,16 +238,16 @@ void free_gameplay_scene(void)
         gameplay_scene.car_ptr->prev_turn_direction_x = 0;
     }
     
-    free_texture(&gameplay_scene.personal_best_text);
-    free_texture(&gameplay_scene.curr_points_text);
-    free_texture(&gameplay_scene.fps_text);
+    free_sprite(&gameplay_scene.personal_best_text);
+    free_sprite(&gameplay_scene.curr_points_text);
+    free_sprite(&gameplay_scene.fps_text);
     free_pause_screen(&gameplay_scene.pause_screen);
     for (size_t i = 0; i < 10; i++)
-        free_texture(&gameplay_scene.clouds[i]);
+        free_sprite(&gameplay_scene.clouds[i]);
     free_environment     (&gameplay_scene.trees);
-    free_shifting_texture(&gameplay_scene.stripes);
-    free_shifting_texture(&gameplay_scene.road);
-    free_shifting_texture(&gameplay_scene.ground);
+    free_animated_sprite(&gameplay_scene.stripes);
+    free_animated_sprite(&gameplay_scene.road);
+    free_animated_sprite(&gameplay_scene.ground);
     if (gameplay_scene.sky_bg != NULL && gameplay_scene.sky_bg != NULL_TEXTURE)
     {
         SDL_DestroyTexture(gameplay_scene.sky_bg);
@@ -300,14 +300,14 @@ void render_gameplay_scene(void)
         gameplay_scene.clouds[i].rect.x += (float)CLOUD_VELOCITY * (float)FPS_manager.delta_ns / SEC_IN_NS / gameplay_scene.clouds[i].rect.w;
         if (gameplay_scene.clouds[i].rect.x >= RENDER_WIDTH - 1)
             gameplay_scene.clouds[i].rect.x = - gameplay_scene.clouds[i].rect.w + 1;
-        render_texture(&gameplay_scene.clouds[i]);
+        render_sprite(&gameplay_scene.clouds[i]);
     }
     if ((gameplay_scene.is_driving && (logic_layer.curr_tick - gameplay_scene.start_tick >= 2000)) || gameplay_scene.crash_tick != 0)
         render_traffic_on_pts(0, 0, NULL, NULL, NULL);
     partly_render_environment(&gameplay_scene.trees, 0, 2);
-    render_shifting_texture(&gameplay_scene.ground);
-    render_shifting_texture(&gameplay_scene.road);
-    render_shifting_texture(&gameplay_scene.stripes);
+    render_animated_sprite(&gameplay_scene.ground);
+    render_animated_sprite(&gameplay_scene.road);
+    render_animated_sprite(&gameplay_scene.stripes);
     gameplay_scene.prev_point_count = gameplay_scene.point_count;
     if ((gameplay_scene.is_driving && (logic_layer.curr_tick - gameplay_scene.start_tick >= 2000)) || gameplay_scene.crash_tick != 0)
         render_traffic_on_pts(1, 9, gameplay_scene.car_ptr, &gameplay_scene.is_driving, &gameplay_scene.point_count);
@@ -316,10 +316,10 @@ void render_gameplay_scene(void)
     render_car(gameplay_scene.car_ptr);
     if ((gameplay_scene.is_driving && (logic_layer.curr_tick - gameplay_scene.start_tick >= 2000)) || gameplay_scene.crash_tick != 0)
         render_traffic_on_pts(10, UINT_MAX, NULL, NULL, NULL);
-    render_texture(&gameplay_scene.personal_best_text);
-    render_texture(&gameplay_scene.curr_points_text);
+    render_sprite(&gameplay_scene.personal_best_text);
+    render_sprite(&gameplay_scene.curr_points_text);
     if (show_fps)
-        render_texture(&gameplay_scene.fps_text);
+        render_sprite(&gameplay_scene.fps_text);
     return;
 }
 
@@ -333,7 +333,7 @@ void update_fps_text(void)
 
     char fps_text_c[9]; /// REDO the naming.
     sprintf(fps_text_c, "FPS: %u", (curr_fps <= 9999 ? curr_fps : 9999));
-    free_texture(&gameplay_scene.fps_text);
+    free_sprite(&gameplay_scene.fps_text);
     gameplay_scene.fps_text = create_text(fps_text_c, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, fps_counter_position, 15, 1, &exit_code);
     return;
 }
@@ -346,8 +346,8 @@ void update_points(void)
         return;
     
     char curr_pts[10];
-    sprintf(curr_pts, "Pts: %d", gameplay_scene.point_count);
-    free_texture(&gameplay_scene.curr_points_text);
+    sprintf(curr_pts, "Pts: %u", gameplay_scene.point_count);
+    free_sprite(&gameplay_scene.curr_points_text);
     gameplay_scene.curr_points_text = create_text(curr_pts, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(5, 20), 15, 1, &exit_code);
 
     if (gameplay_scene.point_count > PERSONAL_BEST)

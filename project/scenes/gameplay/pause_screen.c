@@ -64,7 +64,7 @@ struct Pause_Screen init_pause_screen(int *const exit_code)
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &result.pause_text, (void (*)(void*))free_texture);
+    add_to_deinit_stack(&deinit_stack, &result.pause_text, (void (*)(void*))free_sprite);
 
     /// 'X' button
     result.close_button = create_button("Close", (SDL_Color){237,63,39,255}, vec2(180, 14), 12, 2, exit_code);
@@ -133,14 +133,14 @@ void free_pause_screen(struct Pause_Screen *const target)
     if (target->last_gameplay_frame != NULL)
         SDL_DestroyTexture(target->last_gameplay_frame);
 
-    free_texture(&target->pause_text);
+    free_sprite(&target->pause_text);
 
     free_button (&target->          close_button);
     free_button (&target->       continue_button);
     free_button (&target->   quit_to_menu_button);
     free_button (&target->quit_to_desktop_button);
 
-    free_texture(&target->version_text);
+    free_sprite(&target->version_text);
 
     memset(target, 0, sizeof *target);
     return;
@@ -204,13 +204,13 @@ void render_pause_screen(struct Pause_Screen *const target)
     }
 
     SDL_RenderTexture(graphics_layer.renderer, target->last_gameplay_frame, NULL, NULL);
-    render_texture(&target->pause_text);
+    render_sprite(&target->pause_text);
 
     render_button          (&target->close_button);
     render_button       (&target->continue_button);
     render_button   (&target->quit_to_menu_button);
     render_button(&target->quit_to_desktop_button);
 
-    render_texture(&target->version_text);
+    render_sprite(&target->version_text);
     return;
 }
