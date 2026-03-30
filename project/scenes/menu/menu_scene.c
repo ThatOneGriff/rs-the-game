@@ -21,7 +21,7 @@
 #include "../car_manager.h"                  /// Minor car manager data pulling for 'Prev'/'Next' button rendering.
 #include "options_screen.h"                  /// Options screen.
 #include "../../game_components/ui/button.h" /// Button.
-#include "../../game_components/graphics/texture.h" /// Texture.
+#include "../../game_components/graphics/sprite.h" /// Texture.
 #include "../../game_components/text/text.h" /// Text creation.
 #include "../../graphics/graphics_layer.h"   /// `graphics_layer`.
 

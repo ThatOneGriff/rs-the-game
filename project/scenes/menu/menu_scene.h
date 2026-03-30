@@ -8,7 +8,7 @@
 #include "../car.h"                          /// Car data.
 #include "options_screen.h"                  /// Options screen.
 #include "../../game_components/ui/button.h"          /// Button.
-#include "../../game_components/graphics/texture.h"   /// Texture.
+#include "../../game_components/graphics/sprite.h"   /// Texture.
 
 #define MENU_DATA_PATH "./rsdt/scene_data/menu.rsdt"
 #define MENU_DATA_LINES 1

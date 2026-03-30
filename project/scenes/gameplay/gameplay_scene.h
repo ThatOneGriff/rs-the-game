@@ -10,9 +10,9 @@
 #include "pause_screen.h"                                    /// Pause screen.
 #include "traffic_manager.h"                                 /// Traffic manager.
 #include "../../game_components/environment.h"               /// `struct Environment`.
-#include "../../game_components/graphics/multi_texture.h"    /// Multi-textures.
-#include "../../game_components/graphics/shifting_texture.h" /// Shifting textures.
-#include "../../game_components/graphics/texture.h"          /// Textures.
+#include "../../game_components/graphics/multi_sprite.h"    /// Multi-textures.
+#include "../../game_components/graphics/animated_sprite.h" /// Shifting textures.
+#include "../../game_components/graphics/sprite.h"          /// Textures.
 #include "../../game_components/movement/move_component.h"   /// `struct Move_Component`.
 
 #define GAMEPLAY_DATA_LINES 20

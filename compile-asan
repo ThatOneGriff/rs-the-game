@@ -21,9 +21,9 @@ trap clean_up EXIT # Will be called any way the compilation goes.
 
 C_FILE_PATHS="./project/audio/audio.c \
               ./project/game_components/environment.c \
-              ./project/game_components/graphics/multi_texture.c    \
-              ./project/game_components/graphics/shifting_texture.c \
-              ./project/game_components/graphics/texture.c          \
+              ./project/game_components/graphics/multi_sprite.c    \
+              ./project/game_components/graphics/animated_sprite.c \
+              ./project/game_components/graphics/sprite.c          \
               ./project/game_components/movement/move_component.c \
               ./project/game_components/movement/path.c           \
               ./project/game_components/text/text.c  \
