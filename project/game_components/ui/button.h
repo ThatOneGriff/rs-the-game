@@ -1,14 +1,11 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
-/* C headers */
-#include <stdbool.h> /// `bool is_focused`.
-
-/* Helpers */
+/* Headers */
+#include <stdbool.h>                /// `bool is_focused`.
+#include "ui_neighbor.h"            /// For arrow navigation.
+#include "../graphics/sprite.h"     /// Rendering text into a texture.
 #include "../../helpers/geometry.h" /// `struct Vec2`.
-
-/* Components */
-#include "../graphics/sprite.h"    /// Rendering text into a texture.
 
 
 /* Struct */
@@ -19,10 +16,10 @@ struct Button
     struct Sprite focused_texture;
     bool is_focused;
 
-    struct Button* up;
-    struct Button* down;
-    struct Button* left;
-    struct Button* right;
+    union UI_Neighbor up;
+    union UI_Neighbor down;
+    union UI_Neighbor left;
+    union UI_Neighbor right;
 };
 
 

@@ -2,8 +2,9 @@
 #define SWITCH_H
 
 /* Headers */
-#include <stdbool.h>  /// `bool is_focused()`.
-#include "button.h"   /// Buttons.
+#include <stdbool.h>     /// `bool is_focused()`.
+#include "button.h"      /// Buttons.
+#include "ui_neighbor.h" /// For arrow navigation.
 
 
 /* Struct */
@@ -17,6 +18,11 @@ struct Switch
     size_t max_option_count;
     size_t cur_option_count;
     size_t cur_option_id;
+
+    union UI_Neighbor up;
+    union UI_Neighbor down;
+    union UI_Neighbor left;
+    union UI_Neighbor right;
 };
 
 
