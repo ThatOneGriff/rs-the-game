@@ -4,26 +4,25 @@
 /* Headers */
 #include <stdbool.h>     /// `bool is_focused()`.
 #include "button.h"      /// Buttons.
-#include "ui_neighbor.h" /// For arrow navigation.
 
 
 /* Struct */
 
 struct Switch
 {
-    bool   is_focused;
-    
+    bool is_focused;
+
+    void* up;
+    void* down;
+    void* left;
+    void* right;
+
     struct Button* options;
     struct Button* cur_option;
 
     size_t max_option_count;
     size_t cur_option_count;
     size_t cur_option_id;
-
-    struct UI_Neighbor up;
-    struct UI_Neighbor down;
-    struct UI_Neighbor left;
-    struct UI_Neighbor right;
 };
 
 

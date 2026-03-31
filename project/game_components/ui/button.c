@@ -64,6 +64,22 @@ struct Button create_button(const char *const text, const SDL_Color inner_color,
 }
 
 
+void add_neighbors_to_button(struct Button *const target, void *const up, void *const down, void *const left, void *const right)
+{
+    if (target == NULL)
+    {
+        print_error("`add_neighbors_to_button()`: `target` arg is `NULL`");
+        return;
+    }
+
+    target->up    = up;
+    target->down  = down;
+    target->left  = left;
+    target->right = right;
+    return;
+}
+
+
 void render_button(const struct Button *const target)
 {
     /* Param checking */

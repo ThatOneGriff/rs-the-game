@@ -27,9 +27,8 @@ C_FILE_PATHS="./project/audio/audio.c \
               ./project/game_components/movement/move_component.c \
               ./project/game_components/movement/path.c           \
               ./project/game_components/text/text.c  \
-              ./project/game_components/ui/button.c      \
-              ./project/game_components/ui/switch.c      \
-              ./project/game_components/ui/ui_neighbor.c \
+              ./project/game_components/ui/button.c \
+              ./project/game_components/ui/switch.c \
               ./project/graphics/fps.c            \
               ./project/graphics/graphics_layer.c \
               ./project/helpers/geometry.c \

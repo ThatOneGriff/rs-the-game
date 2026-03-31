@@ -3,7 +3,6 @@
 
 /* Headers */
 #include <stdbool.h>                /// `bool is_focused`.
-#include "ui_neighbor.h"            /// For arrow navigation.
 #include "../graphics/sprite.h"     /// Rendering text into a texture.
 #include "../../helpers/geometry.h" /// `struct Vec2`.
 
@@ -13,22 +12,23 @@
 struct Button
 {
     bool is_focused;
-    
+
+    void* up;
+    void* down;
+    void* left;
+    void* right;
+
     struct Sprite regular_texture;
     struct Sprite focused_texture;
-
-    struct UI_Neighbor up;
-    struct UI_Neighbor down;
-    struct UI_Neighbor left;
-    struct UI_Neighbor right;
 };
 
 
 /* Predef */
 
-struct Button create_button(const char *const text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int *const exit_code);
-void          render_button(const struct Button *const target);
-void            free_button(      struct Button *const target);
+struct Button  create_button(const char *const text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int *const exit_code);
+void add_neighbors_to_button(struct Button *const target, void *const up, void *const down, void *const left, void *const right);
+void           render_button(const struct Button *const target);
+void             free_button(      struct Button *const target);
 
 
 #endif /// BUTTON_H
