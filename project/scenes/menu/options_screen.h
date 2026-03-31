@@ -16,17 +16,12 @@ struct Options_Screen
     SDL_Texture* last_menu_frame;
     struct Sprite options_text;
 
-    struct Button  close_button;
-
-    struct Sprite audio_text;
-    struct Switch  audio_switch;
+    struct Button close_button;
+    struct Sprite    audio_text; struct Switch    audio_switch;
+    struct Sprite      fps_text; struct Switch      fps_switch;
+    struct Sprite show_fps_text; struct Switch show_fps_switch;
     
-    struct Sprite fps_text;
-    struct Switch  fps_switch;
-
-    struct Sprite show_fps_text;
-    struct Switch  show_fps_switch;
-    //void*  curr_button; /// Either a `Button` or a `Switch`.
+    void* curr_focus; /// Either a `Button` or a `Switch`.
 
     struct Sprite version_text;
 };

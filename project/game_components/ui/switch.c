@@ -14,8 +14,9 @@
 
 /* Predef */
 
-struct Switch init_switch(const size_t max_option_count, int *const exit_code);
-void          free_switch(struct Switch *const target);
+struct Switch    init_switch(const size_t max_option_count, int *const exit_code);
+void add_neighbors_to_switch(struct Switch *const target, void *const up, void *const down, void *const left, void *const right);
+void             free_switch(struct Switch *const target);
 void        add_to_switch(struct Switch *const target, const struct Button new_option);
 void   next_switch_option(struct Switch *const target);
 void        render_switch(struct Switch *const target);
@@ -51,6 +52,22 @@ struct Switch init_switch(const size_t max_option_count, int *const exit_code)
     result.cur_option = &result.options[0];
     *exit_code = EXIT_SUCCESS;
     return result;
+}
+
+
+void add_neighbors_to_switch(struct Switch *const target, void *const up, void *const down, void *const left, void *const right)
+{
+    if (target == NULL)
+    {
+        print_error("`add_neighbors_to_switch()`: `target` arg is `NULL`");
+        return;
+    }
+
+    target->up    = up;
+    target->down  = down;
+    target->left  = left;
+    target->right = right;
+    return;
 }
 
 

@@ -292,13 +292,13 @@ void show_options_screen(struct Options_Screen *const target)
     target->close_button.is_focused = false;
     if (audio_manager.audio_is_valid)
     {
-        target->audio_switch.is_focused = true ;
-        target->fps_switch. is_focused  = false;
+        target->audio_switch.is_focused = true;
+        target->fps_switch.  is_focused = false;
     }
     else
     {
         target->audio_switch.is_focused = false;
-        target->fps_switch. is_focused  = true ;
+        target->fps_switch.  is_focused = true;
     }
     
     graphics_layer.force_render = true;
