@@ -16,10 +16,10 @@ struct Button
     struct Sprite focused_texture;
     bool is_focused;
 
-    union UI_Neighbor up;
-    union UI_Neighbor down;
-    union UI_Neighbor left;
-    union UI_Neighbor right;
+    struct UI_Neighbor up;
+    struct UI_Neighbor down;
+    struct UI_Neighbor left;
+    struct UI_Neighbor right;
 };
 
 
