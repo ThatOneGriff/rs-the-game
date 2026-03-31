@@ -1,7 +1,5 @@
 ﻿#ifndef UI_OBJECT_H
 #define UI_OBJECT_H
-#include <stdbool.h> /// `bool focus`.
-#include <stddef.h>  /// `offsetof()`.
 
 
 /* Defines */
@@ -17,8 +15,9 @@
 
 /* Predef */
 
-void  set_focus   (void *const ui_obj, const bool focus);
+void  focus       (void *const ui_obj);
+//void  unfocus     (void *const ui_obj);
 void* get_neighbor(void *const ui_obj, const unsigned short int direction);
-void  set_neighbor(void *const ui_obj, const unsigned short int direction, void *const new_neighbor);
+//void  set_neighbor(void *const ui_obj, const unsigned short int direction, void *const new_neighbor);
 
 #endif /// UI_OBJECT_H

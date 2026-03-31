@@ -128,7 +128,7 @@ static void _process_pause_keyboard(const SDL_Keycode event_key)
                 break;
             }
             gameplay_scene.pause_screen.curr_focus->    is_focused = false;
-            gameplay_scene.pause_screen.curr_focus->up->is_focused = true;
+            focus(get_neighbor(gameplay_scene.pause_screen.curr_focus, UP));
             gameplay_scene.pause_screen.curr_focus = gameplay_scene.pause_screen.curr_focus->up;
             break;
         
