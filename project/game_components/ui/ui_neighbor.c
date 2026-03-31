@@ -9,51 +9,34 @@
 
 /* Predef */
 
-void couple(struct UI_Neighbor *const dst, struct UI_Neighbor *const src);
-void focus (struct UI_Neighbor *const target);
-void free  (struct UI_Neighbor *const target);
-static void couple_button(struct UI_Neighbor *const dst, struct UI_Neighbor *const src);
-static void couple_switch(struct UI_Neighbor *const dst, struct UI_Neighbor *const src);
+void focus_ui_neighbor(struct UI_Neighbor *const target);
+void  free_ui_neighbor(struct UI_Neighbor *const target);
 
 
 /* Body */
 
-void couple(struct UI_Neighbor *const dst, struct UI_Neighbor *const src)
+void focus_ui_neighbor(struct UI_Neighbor *const target)
 {
-    switch (src->type)
+    switch (target->type)
     {
+    case (UI_Neighbor_type::undefined):
+        print_error("`focus_ui_neighbor()`: can't focus a `struct UI_Neighbor` of type `undefined`");
+        return;
+    
     case (UI_Neighbor_type::button_t):
-        couple_button(dst, src);
+        (struct Button)(*target->pointer).is_focused = true;
         return;
     
-    case (UI_Neighbor_type::switch_t)
-        couple_switch(dst, src);
-        return;
-    
-    case (UI_Neighbor_type::undefined)
-        print_error("`couple()`: `src->type` cannot be undefined");
+    case (UI_Neighbor_type::switch_t):
+        (struct Switch)(*target->pointer).is_focused = true;
         return;
     }
-
-    return;
 }
 
 
-void free(struct UI_Neighbor *const target)
+void free_ui_neighbor(struct UI_Neighbor *const target)
 {
-    target->pointer = NULL; /// We don't free any memory, as it merely points to an already existing object.
+    target->pointer = NULL; /// We don't free any memory, as it points to an already existing object.
     target->type    = UI_Neighbor_type::undefined;
-    return;
-}
-
-
-static void couple_button(struct UI_Neighbor *const dst, struct UI_Neighbor *const src)
-{
-    /// We may ignore check for `src->type`: it's guaranteed to only be called through `couple()`, which already does the check.
-
-    if (dst->type != UI_Neighbor_type::undefined)
-        free(dst);
-    
-    dst->pointer::bu
     return;
 }

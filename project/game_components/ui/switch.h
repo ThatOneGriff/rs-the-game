@@ -11,7 +11,8 @@
 
 struct Switch
 {
-    bool is_focused;
+    bool   is_focused;
+    
     struct Button* options;
     struct Button* cur_option;
 
