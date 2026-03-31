@@ -2,20 +2,20 @@
 #define SWITCH_H
 
 /* Headers */
-#include <stdbool.h>     /// `bool is_focused()`.
-#include "button.h"      /// Buttons.
+#include <stdbool.h>   /// `bool is_focused()`.
+#include "button.h"    /// Buttons.
+#include "ui_object.h" /// Common framework for `struct Switch` and `struct Button`.
 
 
 /* Struct */
 
 struct Switch
 {
+    /// [!!!] UNTOUCHABLE [!!!]
     bool is_focused;
 
-    void* up;
-    void* down;
-    void* left;
-    void* right;
+    void* neighbors[UI_NEIGHBORS_COUNT];
+    /// [!!!] UNTOUCHABLE [!!!]
 
     struct Button* options;
     struct Button* cur_option;

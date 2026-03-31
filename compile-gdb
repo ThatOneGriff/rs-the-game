@@ -27,9 +27,10 @@ C_FILE_PATHS="./project/audio/audio.c \
               ./project/game_components/graphics/sprite.c          \
               ./project/game_components/movement/move_component.c \
               ./project/game_components/movement/path.c           \
-              ./project/game_components/text/text.c  \
-              ./project/game_components/ui/button.c \
-              ./project/game_components/ui/switch.c \
+              ./project/game_components/text/text.c \
+              ./project/game_components/ui/button.c    \
+              ./project/game_components/ui/switch.c    \
+              ./project/game_components/ui/ui_object.c \
               ./project/graphics/fps.c            \
               ./project/graphics/graphics_layer.c \
               ./project/helpers/geometry.c \
@@ -66,8 +67,8 @@ clang -g3 -ferror-limit=100 -Wall -Wextra -Weverything -Werror -std=c23 \
 -fsanitize=float-divide-by-zero -fsanitize=integer -fsanitize=nullability -fsanitize=shadow-call-stack -fsanitize=undefined -fsanitize=unsigned-integer-overflow -fsanitize=unsigned-shift-base \
 $C_FILE_PATHS project/main.c -o $EXE_PATH \
 -I "./SDL3/SDL/x86_64-w64-mingw32/include" -I "./SDL3/SDL_Image/x86_64-w64-mingw32/include" -I "./SDL3/SDL_ttf/x86_64-w64-mingw32/include" -I "./project/_miniaudio/miniaudio.h" \
--L "./SDL3/SDL/x86_64-w64-mingw32/lib" -L "./SDL3/SDL_image/x86_64-w64-mingw32/lib" -L "./SDL3/SDL_ttf/x86_64-w64-mingw32/lib" -L "./" \
--lSDL3 -lSDL3_image -lSDL3_ttf -lminiaudio
+-L "./SDL3/SDL/x86_64-w64-mingw32/lib"     -L "./SDL3/SDL_image/x86_64-w64-mingw32/lib"     -L "./SDL3/SDL_ttf/x86_64-w64-mingw32/lib"     -L "./" \
+-lSDL3                                     -lSDL3_image                                     -lSDL3_ttf                                     -lminiaudio
 
 echo -e "$GREEN[1/1]$RESET Compiled main program! [GDB] ($EXE_PATH)"
 echo ""

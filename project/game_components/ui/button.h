@@ -3,6 +3,7 @@
 
 /* Headers */
 #include <stdbool.h>                /// `bool is_focused`.
+#include "ui_object.h"              /// Common framework for `struct Switch` and `struct Button`.
 #include "../graphics/sprite.h"     /// Rendering text into a texture.
 #include "../../helpers/geometry.h" /// `struct Vec2`.
 
@@ -11,12 +12,11 @@
 
 struct Button
 {
+    /// [!!!] UNTOUCHABLE [!!!]
     bool is_focused;
 
-    void* up;
-    void* down;
-    void* left;
-    void* right;
+    void* neighbors[UI_NEIGHBORS_COUNT];
+    /// [!!!] UNTOUCHABLE [!!!]
 
     struct Sprite regular_texture;
     struct Sprite focused_texture;
