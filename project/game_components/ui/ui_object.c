@@ -13,22 +13,33 @@
 
 /* Predef */
 
-void  focus       (void *const ui_obj);
+void  set_focus   (void *const ui_obj, const bool focus);
 void* get_neighbor(void *const ui_obj, const unsigned short int direction);
+void  set_neighbor(void *const ui_obj, const unsigned short int direction, void *const new_neighbor);
 
 
 /* Body */
 
-void focus(void *const ui_obj)
+void set_focus(void *const ui_obj, const bool focus)
 {
     bool *const obj_is_focused = (bool*)((char*)ui_obj + UI_IS_FOCUSED_OFFSET);
-    *obj_is_focused = true;
+    *obj_is_focused = focus;
     return;
 }
 
 
 void* get_neighbor(void *const ui_obj, const unsigned short int direction)
 {
-    void *const neighbor = (void*)((char*)ui_obj + UI_NEIGHBORS_OFFSET + direction);
-    return neighbor;
+    uintptr_t addr = (uintptr_t)ui_obj + UI_NEIGHBORS_OFFSET;
+    void** neighbors = (void**)addr;
+    return neighbors[direction];
+}
+
+
+void set_neighbor(void *const ui_obj, const unsigned short int direction, void *const new_neighbor)
+{
+    uintptr_t addr = (uintptr_t)ui_obj + UI_NEIGHBORS_OFFSET;
+    void** neighbors = (void**)addr;
+    neighbors[direction] = new_neighbor;
+    return;
 }

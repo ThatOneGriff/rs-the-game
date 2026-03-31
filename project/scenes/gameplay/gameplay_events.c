@@ -122,7 +122,7 @@ static void _process_pause_keyboard(const SDL_Keycode event_key)
             break;
         
         case SDLK_UP:
-            if (gameplay_scene.pause_screen.curr_focus->up == NULL)
+            if (get_neighbor(gameplay_scene.pause_screen.curr_focus, UP) == NULL)
             {
                 graphics_layer.screen_changed = false;
                 break;
@@ -133,7 +133,7 @@ static void _process_pause_keyboard(const SDL_Keycode event_key)
             break;
         
         case SDLK_DOWN:
-            if (gameplay_scene.pause_screen.curr_focus->down == NULL)
+            if (get_neighbor(gameplay_scene.pause_screen.curr_focus, DOWN) == NULL)
             {
                 graphics_layer.screen_changed = false;
                 break;

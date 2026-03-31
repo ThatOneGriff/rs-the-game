@@ -72,10 +72,10 @@ void add_neighbors_to_button(struct Button *const target, void *const up, void *
         return;
     }
 
-    target->up    = up;
-    target->down  = down;
-    target->left  = left;
-    target->right = right;
+    target->neighbors[UP]    = up;
+    target->neighbors[DOWN]  = down;
+    target->neighbors[LEFT]  = left;
+    target->neighbors[RIGHT] = right;
     return;
 }
 
