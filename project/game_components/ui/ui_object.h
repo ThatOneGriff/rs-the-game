@@ -16,7 +16,7 @@
 /* Predef */
 
 void  focus       (void *const ui_obj);
-//void  unfocus     (void *const ui_obj);
+void  unfocus     (void *const ui_obj);
 void* get_neighbor(void *const ui_obj, const unsigned short int direction);
 //void  set_neighbor(void *const ui_obj, const unsigned short int direction, void *const new_neighbor);
 

@@ -127,9 +127,9 @@ static void _process_pause_keyboard(const SDL_Keycode event_key)
                 graphics_layer.screen_changed = false;
                 break;
             }
-            gameplay_scene.pause_screen.curr_focus->    is_focused = false;
+            unfocus(gameplay_scene.pause_screen.curr_focus);
             focus(get_neighbor(gameplay_scene.pause_screen.curr_focus, UP));
-            gameplay_scene.pause_screen.curr_focus = gameplay_scene.pause_screen.curr_focus->up;
+            gameplay_scene.pause_screen.curr_focus = get_neighbor(gameplay_scene.pause_screen.curr_focus, UP);
             break;
         
         case SDLK_DOWN:
@@ -138,9 +138,9 @@ static void _process_pause_keyboard(const SDL_Keycode event_key)
                 graphics_layer.screen_changed = false;
                 break;
             }
-            gameplay_scene.pause_screen.curr_focus->      is_focused = false;
-            gameplay_scene.pause_screen.curr_focus->down->is_focused = true;
-            gameplay_scene.pause_screen.curr_focus = gameplay_scene.pause_screen.curr_focus->down;
+            unfocus(gameplay_scene.pause_screen.curr_focus);
+            focus(get_neighbor(gameplay_scene.pause_screen.curr_focus, DOWN));
+            gameplay_scene.pause_screen.curr_focus = get_neighbor(gameplay_scene.pause_screen.curr_focus, DOWN);
             break;
         
         default:

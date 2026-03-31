@@ -2,6 +2,7 @@
 #include "ui_object.h"
 #include "button.h"
 
+#include <stddef.h>  /// `offsetof()`.
 #include <stdbool.h> /// `bool`.
 
 
@@ -16,7 +17,7 @@
 /* Predef */
 
 void  focus       (void *const ui_obj);
-//void  unfocus     (void *const ui_obj);
+void  unfocus     (void *const ui_obj);
 void* get_neighbor(void *const ui_obj, const unsigned short int direction);
 //void  set_neighbor(void *const ui_obj, const unsigned short int direction, void *const new_neighbor);
 
@@ -31,12 +32,12 @@ void focus(void *const ui_obj)
 }
 
 
-/*void unfocus(void *const ui_obj)
+void unfocus(void *const ui_obj)
 {
     bool *const obj_is_focused = (bool*)((char*)ui_obj + UI_IS_FOCUSED_OFFSET);
     *obj_is_focused = false;
     return;
-}*/
+}
 
 
 void* get_neighbor(void *const ui_obj, const unsigned short int direction)

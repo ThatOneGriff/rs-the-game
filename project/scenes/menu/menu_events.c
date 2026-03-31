@@ -128,14 +128,14 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
             break;
 
         case SDLK_UP:
-            if (menu_scene.curr_button->up == NULL)
+            if (menu_scene.curr_button->neighbors[UP] == NULL)
             {
                 graphics_layer.screen_changed = false;
                 break;
             }
-            menu_scene.curr_button->    is_focused = false;
-            menu_scene.curr_button->up->is_focused = true;
-            menu_scene.curr_button = menu_scene.curr_button->up;
+            unfocus(menu_scene.curr_button);
+            focus(menu_scene.curr_button->neighbors[UP]);
+            menu_scene.curr_button = menu_scene.curr_button->neighbors[UP];
 
             /// A little bit of hard-coding to not pick 'prev' button
             /// when player's car is 1st one [ID = 0]:
@@ -149,44 +149,42 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
             break;
         
         case SDLK_DOWN:
-            if (menu_scene.curr_button->down == NULL)
+            if (menu_scene.curr_button->neighbors[DOWN] == NULL)
             {
                 graphics_layer.screen_changed = false;
                 break;
             }
-            menu_scene.curr_button->      is_focused = false;
-            menu_scene.curr_button->down->is_focused = true;
-            menu_scene.curr_button = menu_scene.curr_button->down;
+            unfocus(menu_scene.curr_button);
+            focus(menu_scene.curr_button->neighbors[DOWN]);
+            menu_scene.curr_button = menu_scene.curr_button->neighbors[DOWN];
             break;
 
         case SDLK_LEFT:
-            /// In menu
-            if (! menu_scene.options_screen.is_open && players_car_manager.cur_car != 0)
+            if (! menu_scene.options_screen.is_open && players_car_manager.cur_car != 0) /// REDO: is the second part really needed?
             {
-                if (menu_scene.curr_button->left == NULL)
+                if (menu_scene.curr_button->neighbors[LEFT] == NULL)
                 {
                     graphics_layer.screen_changed = false;
                     break;
                 }
-                menu_scene.curr_button->      is_focused = false;
-                menu_scene.curr_button->left->is_focused = true;
-                menu_scene.curr_button = menu_scene.curr_button->left;
+                unfocus(menu_scene.curr_button);
+                focus(menu_scene.curr_button->neighbors[LEFT]);
+                menu_scene.curr_button = menu_scene.curr_button->neighbors[LEFT];
                 break;
             }
             break;
 
         case SDLK_RIGHT:
-            /// In menu
-            if (! menu_scene.options_screen.is_open && players_car_manager.cur_car != players_car_manager.car_count - 1)
+            if (! menu_scene.options_screen.is_open && players_car_manager.cur_car != players_car_manager.car_count - 1) /// REDO: is the second part really needed?
             {
-                if (menu_scene.curr_button->right == NULL)
+                if (menu_scene.curr_button->neighbors[RIGHT] == NULL)
                 {
                     graphics_layer.screen_changed = false;
                     break;
                 }
-                menu_scene.curr_button->       is_focused = false;
-                menu_scene.curr_button->right->is_focused = true;
-                menu_scene.curr_button = menu_scene.curr_button->right;
+                unfocus(menu_scene.curr_button);
+                focus(menu_scene.curr_button->neighbors[RIGHT]);
+                menu_scene.curr_button = menu_scene.curr_button->neighbors[RIGHT];
                 break;
             }
             break;
