@@ -122,25 +122,25 @@ static void _process_pause_keyboard(const SDL_Keycode event_key)
             break;
         
         case SDLK_UP:
-            if (gameplay_scene.pause_screen.curr_button->up == NULL)
+            if (gameplay_scene.pause_screen.curr_focus->up == NULL)
             {
                 graphics_layer.screen_changed = false;
                 break;
             }
-            gameplay_scene.pause_screen.curr_button->    is_focused = false;
-            gameplay_scene.pause_screen.curr_button->up->is_focused = true;
-            gameplay_scene.pause_screen.curr_button = gameplay_scene.pause_screen.curr_button->up;
+            gameplay_scene.pause_screen.curr_focus->    is_focused = false;
+            gameplay_scene.pause_screen.curr_focus->up->is_focused = true;
+            gameplay_scene.pause_screen.curr_focus = gameplay_scene.pause_screen.curr_focus->up;
             break;
         
         case SDLK_DOWN:
-            if (gameplay_scene.pause_screen.curr_button->down == NULL)
+            if (gameplay_scene.pause_screen.curr_focus->down == NULL)
             {
                 graphics_layer.screen_changed = false;
                 break;
             }
-            gameplay_scene.pause_screen.curr_button->      is_focused = false;
-            gameplay_scene.pause_screen.curr_button->down->is_focused = true;
-            gameplay_scene.pause_screen.curr_button = gameplay_scene.pause_screen.curr_button->down;
+            gameplay_scene.pause_screen.curr_focus->      is_focused = false;
+            gameplay_scene.pause_screen.curr_focus->down->is_focused = true;
+            gameplay_scene.pause_screen.curr_focus = gameplay_scene.pause_screen.curr_focus->down;
             break;
         
         default:

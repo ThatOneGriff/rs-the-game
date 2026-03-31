@@ -198,7 +198,7 @@ void load_gameplay_scene(const char *const path, struct Car *const car_ptr, int 
     add_neighbors_to_button(&gameplay_scene.pause_screen.       continue_button, &gameplay_scene.pause_screen.       close_button, &gameplay_scene.pause_screen.   quit_to_menu_button, NULL, NULL);
     add_neighbors_to_button(&gameplay_scene.pause_screen.   quit_to_menu_button, &gameplay_scene.pause_screen.    continue_button, &gameplay_scene.pause_screen.quit_to_desktop_button, NULL, NULL);
     add_neighbors_to_button(&gameplay_scene.pause_screen.quit_to_desktop_button, &gameplay_scene.pause_screen.quit_to_menu_button, NULL,                                        NULL, NULL);
-    gameplay_scene.pause_screen.curr_button = &gameplay_scene.pause_screen.continue_button;
+    gameplay_scene.pause_screen.curr_focus = &gameplay_scene.pause_screen.continue_button;
 
     init_traffic_manager(5, exit_code);
     if (*exit_code == EXIT_FAILURE)

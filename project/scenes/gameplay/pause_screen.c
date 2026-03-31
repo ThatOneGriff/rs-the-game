@@ -170,9 +170,9 @@ void show_pause_screen(struct Pause_Screen *const target)
     SDL_SetRenderTarget(graphics_layer.renderer, graphics_layer.buffer);
 
     /// Setting correct button focus.
-    target->curr_button->is_focused = false; /// Latest chosen button.
-    target->curr_button = &target->continue_button;
-    target->curr_button->is_focused = true;
+    target->curr_focus->is_focused = false; /// Latest chosen button.
+    target->curr_focus = &target->continue_button;
+    target->curr_focus->is_focused = true;
 
     graphics_layer.force_render = true;
     return;

@@ -22,7 +22,8 @@ struct Pause_Screen
     struct Button        continue_button;
     struct Button    quit_to_menu_button;
     struct Button quit_to_desktop_button;
-    struct Button*           curr_button;
+
+    void* curr_focus;
 
     struct Sprite version_text;
     time_tick_ms open_tick;
