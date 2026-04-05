@@ -38,7 +38,7 @@ miniaudio  version: 0.11.25 (updated 30.03.26 | checked 30.03.26) | https://gith
 /* TODOs: */
 /// - `struct Text`, more optimized for reusing text components;
 /// - optional logs;
-/// - pushing an array of points/textures into array-like members of `game_components/`, instead of individual `add_*()` calls;
+/// - pushing an array of points/textures into array-like members of `game_components/*`, instead of individual `add_*()` calls;
 /// - player's car bouncing in beat to the music.
 
 /* IDEAs: */

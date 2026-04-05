@@ -289,17 +289,9 @@ void show_options_screen(struct Options_Screen *const target)
     SDL_SetRenderTarget(graphics_layer.renderer, graphics_layer.buffer);
 
     /// Setting correct button focus.
-    target->close_button.is_focused = false;
-    if (audio_manager.audio_is_valid)
-    {
-        target->audio_switch.is_focused = true;
-        target->fps_switch.  is_focused = false;
-    }
-    else
-    {
-        target->audio_switch.is_focused = false;
-        target->fps_switch.  is_focused = true;
-    }
+    target->close_button.is_focused =   false;
+    target->audio_switch.is_focused =   audio_manager.audio_is_valid;
+    target->fps_switch.  is_focused = ! audio_manager.audio_is_valid;
     
     graphics_layer.force_render = true;
     return;
