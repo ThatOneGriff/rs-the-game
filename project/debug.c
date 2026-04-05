@@ -2,9 +2,11 @@
 #include "debug.h"
 
 /* Headers */
-#include <SDL3/SDL.h>        /// SDL_GetError().
-#include <stdio.h>           /// I/O.
-#include "helpers/helpers.h" /// Coloured text.
+#include <SDL3/SDL.h>          /// SDL_GetError().
+#include <stdio.h>             /// I/O.
+#include "logs.h"              /// Auto-logging if ! STDIO_ENABLED`.
+#include "helpers/helpers.h"   /// Coloured text.
+#include "logic/logic_layer.h" /// `logic_layer.logging_enabled()`.
 
 
 /* Predef */
@@ -22,6 +24,12 @@ void print_success(const char *const text)
 {
     if (text == NULL)
         return;
+    if (! STDIO_ENABLED)
+    {
+        if (logic_layer.logging_enabled)
+            log_success(text);
+        return;
+    }
     
     textcolor(GREEN);
     fprintf(stderr, "~ [SUCCESS] ");
@@ -35,6 +43,12 @@ void print_error(const char *const text)
 {
     if (text == NULL)
         return;
+    if (! STDIO_ENABLED)
+    {
+        if (logic_layer.logging_enabled)
+            log_error(text);
+        return;
+    }
     
     textcolor(RED);
     fprintf(stderr, "~ [ERROR] ");
@@ -49,6 +63,12 @@ void print_warning(const char *const text)
 {
     if (text == NULL)
         return;
+    if (! STDIO_ENABLED)
+    {
+        if (logic_layer.logging_enabled)
+            log_warning(text);
+        return;
+    }
     
     textcolor(YELLOW);
     fprintf(stderr, "~ [WRNNG] %s.\n", text);
@@ -63,6 +83,12 @@ void print_SDL_error(const char *const text)
 {
     if (text == NULL)
         return;
+    if (! STDIO_ENABLED)
+    {
+        if (logic_layer.logging_enabled)
+            log_SDL_error(text);
+        return;
+    }
     
     textcolor(RED);
     fprintf(stderr, "~ [ERROR] ");
@@ -77,6 +103,12 @@ void print_SDL_warning(const char *const text)
 {
     if (text == NULL)
         return;
+    if (! STDIO_ENABLED)
+    {
+        if (logic_layer.logging_enabled)
+            log_SDL_warning(text);
+        return;
+    }
     
     textcolor(YELLOW);
     fprintf(stderr, "~ [WRNNG] ");

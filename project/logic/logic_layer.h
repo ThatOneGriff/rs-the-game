@@ -16,8 +16,9 @@
 
 struct Logic_Layer
 {
+    bool logging_enabled;
+
     bool game_is_running;
-    
     bool  remain_in_scene;
     void* curr_scene;
 

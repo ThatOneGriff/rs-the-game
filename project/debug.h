@@ -2,6 +2,7 @@
 #define DEBUG_H
 
 #define UNUSED(expr) do { (void)(expr); } while (0)
+#define STDIO_ENABLED false
 
 
 /* Predef */

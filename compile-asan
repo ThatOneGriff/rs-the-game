@@ -56,7 +56,7 @@ echo ""
 echo "- Compiling main program..."
 
 # Main program compilation (maximum possible warning checks)
-clang -g1 -ferror-limit=100 -Wall -Wextra -Weverything -pedantic-errors -Werror -std=c23 \
+clang -g1 -ferror-limit=100 -Wall -Wextra -Weverything -pedantic-errors -Werror -std=c23 -mwindows \
 -Wconversion -Wdouble-promotion -Wformat=2 -Wformat-truncation -Wshadow -Wundef \
 -Wno-bad-function-cast -Wno-cast-function-type-strict -Wno-c++-keyword \
 -Wno-declaration-after-statement -Wno-documentation-unknown-command -Wno-float-equal \
