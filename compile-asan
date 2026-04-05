@@ -50,6 +50,7 @@ C_FILE_PATHS="./project/audio/audio.c \
               ./project/debug.c        \
               ./project/deinit_stack.c \
               ./project/init_quit.c    \
+              ./project/logs.c         \
               ./project/resources.c"
 EXE_PATH="./rs-the-game.exe"
 echo ""

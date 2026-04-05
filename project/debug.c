@@ -4,9 +4,8 @@
 /* Headers */
 #include <SDL3/SDL.h>          /// SDL_GetError().
 #include <stdio.h>             /// I/O.
-#include "logs.h"              /// Auto-logging if ! STDIO_ENABLED`.
+#include "logs.h"              /// Auto-logging if ! STDIO_ENABLED.
 #include "helpers/helpers.h"   /// Coloured text.
-#include "logic/logic_layer.h" /// `logic_layer.logging_enabled()`.
 
 
 /* Predef */
@@ -26,8 +25,7 @@ void print_success(const char *const text)
         return;
     if (! STDIO_ENABLED)
     {
-        if (logic_layer.logging_enabled)
-            log_success(text);
+        log_success(text);
         return;
     }
     
@@ -45,8 +43,7 @@ void print_error(const char *const text)
         return;
     if (! STDIO_ENABLED)
     {
-        if (logic_layer.logging_enabled)
-            log_error(text);
+        log_error(text);
         return;
     }
     
@@ -65,8 +62,7 @@ void print_warning(const char *const text)
         return;
     if (! STDIO_ENABLED)
     {
-        if (logic_layer.logging_enabled)
-            log_warning(text);
+        log_warning(text);
         return;
     }
     
@@ -85,8 +81,7 @@ void print_SDL_error(const char *const text)
         return;
     if (! STDIO_ENABLED)
     {
-        if (logic_layer.logging_enabled)
-            log_SDL_error(text);
+        log_SDL_error(text);
         return;
     }
     
@@ -105,8 +100,7 @@ void print_SDL_warning(const char *const text)
         return;
     if (! STDIO_ENABLED)
     {
-        if (logic_layer.logging_enabled)
-            log_SDL_warning(text);
+        log_SDL_warning(text);
         return;
     }
     
