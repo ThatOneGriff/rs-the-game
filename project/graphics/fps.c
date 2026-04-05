@@ -2,6 +2,7 @@
 #include "fps.h"
 
 /* Headers */
+#include <SDL3/SDL.h> /// `SDL_Delay()`.
 #include <stdbool.h>  /// `bool fps_capped, show_fps`.
 #include <stdio.h>    /// I/O.
 #include <stdlib.h>   /// `UINT_MAX`.
@@ -56,5 +57,16 @@ void set_fps_cap(const unsigned int new_fps_cap)
 void rem_fps_cap(void)
 {
     FPS_manager.fps_capped = false;
+    return;
+}
+
+
+void wait_until_target_delta(void)
+{
+    if (! FPS_manager.fps_capped || FPS_manager.target_delta_ns <= FPS_manager.delta_ns)
+        return;
+    
+    SDL_DelayNS(FPS_manager.target_delta_ns - FPS_manager.delta_ns);
+    FPS_manager.delta_ns = FPS_manager.target_delta_ns;
     return;
 }

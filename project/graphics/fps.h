@@ -36,6 +36,7 @@ extern struct FPS_Manager FPS_manager; /// Singleton.
 
 void set_fps_cap(const unsigned int new_fps_cap);
 void rem_fps_cap(void);
+void wait_until_target_delta(void);
 
 
 #endif /// FPS_H

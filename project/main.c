@@ -188,17 +188,14 @@ static void game_loop(int *const exit_code)
 
         /// FPS & delay management
         FPS_manager.delta_ns = SDL_GetTicksNS() - render_start_tick;
-        if (FPS_manager.fps_capped && FPS_manager.target_delta_ns > FPS_manager.delta_ns)
-        {
-            SDL_DelayNS(FPS_manager.target_delta_ns - FPS_manager.delta_ns);
-            FPS_manager.delta_ns = FPS_manager.target_delta_ns;
-        }
+        wait_until_target_delta();
         render_start_tick = SDL_GetTicksNS();
         
         /// FPS output
         if (SDL_GetTicks() - fps_measure_1s_tick >= 1000) /// 1s since last measurement elapsed.
         {
-            update_fps_text();
+            if (logic_layer.curr_scene == &gameplay_scene)
+                update_fps_text();
             fps_measure_1s_tick = SDL_GetTicks();
             prev_fps = curr_fps;
             curr_fps = 0;
