@@ -259,6 +259,8 @@ struct Options_Screen init_options_screen(int *const exit_code)
     }
     add_to_switch(&result.logging_switch, logging_on_button );
     add_to_switch(&result.logging_switch, logging_off_button);
+    if (! logic_layer.logging_enabled)
+        next_switch_option(&result.logging_switch);
     add_to_deinit_stack(&deinit_stack, &result.logging_switch, (void (*)(void*))free_switch);
     
     /// 'Version' text

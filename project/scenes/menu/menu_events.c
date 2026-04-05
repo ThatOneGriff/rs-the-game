@@ -210,6 +210,7 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
     switch(event_key)
     {
         case SDLK_RETURN:
+            /// IDEA: we could `switch (menu_scene.options_screen.curr_focus)` (maybe when cast to `uintptr_t`).
             if (menu_scene.options_screen.audio_switch.is_focused && audio_manager.audio_is_valid)
             {
                 logic_layer.save_needed = true;
@@ -236,6 +237,12 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
                 logic_layer.save_needed = true;
                 show_fps = ! show_fps;
                 next_switch_option(&menu_scene.options_screen.show_fps_switch);
+            }
+            else if (menu_scene.options_screen.logging_switch.is_focused)
+            {
+                logic_layer.save_needed     = true;
+                logic_layer.logging_enabled = ! logic_layer.logging_enabled;
+                next_switch_option(&menu_scene.options_screen.logging_switch);
             }
             break;
 

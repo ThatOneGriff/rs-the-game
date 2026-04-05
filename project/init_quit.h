@@ -4,7 +4,7 @@
 #define SDL_FLAGS (SDL_INIT_VIDEO)
 
 #define SAVE_DATA_PATH "./player.savedata"
-#define SAVE_DATA_LINES 5
+#define SAVE_DATA_LINES 6
 
 
 /* Predef */

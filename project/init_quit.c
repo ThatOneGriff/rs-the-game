@@ -156,12 +156,8 @@ void init(int *const exit_code)
         }
     }
 
-    /// Emptying the log file
-    FILE *const log_file = fopen(LOG_FILE_PATH, "w");
-    fprintf(log_file, "");
-    fclose(log_file);
-
     read_data();
+
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.
     print_success("`init()`");
     *exit_code = EXIT_SUCCESS;
@@ -179,7 +175,7 @@ void read_data(void)
     }
 
     if (audio_manager.audio_is_valid)
-        audio_manager.using_audio = (bool)    atoi(save_data[0]);
+        audio_manager.using_audio = (bool)atoi(save_data[0]);
     else
         audio_manager.using_audio = false;
     curr_fps_cap_i            = (unsigned)atoi(save_data[1]);
@@ -191,6 +187,15 @@ void read_data(void)
     
     PERSONAL_BEST = (unsigned)atoi(save_data[3]);
     show_fps      =     (bool)atoi(save_data[4]);
+    
+    logic_layer.logging_enabled = (bool)atoi(save_data[5]);
+    /// Emptying the log file (if enabled logging)
+    if (logic_layer.logging_enabled)
+    {
+        FILE *const log_file = fopen(LOG_FILE_PATH, "w");
+        fprintf(log_file, "");
+        fclose(log_file);
+    }
 
     print_success("Save data read");
     free_ptr_arr((void**)save_data, SAVE_DATA_LINES);
@@ -201,7 +206,7 @@ void read_data(void)
 void save_data(void)
 {
     FILE* save_data = fopen(SAVE_DATA_PATH, "w");
-    fprintf(save_data, "%d\n%u\n%llu\n%u\n%d", audio_manager.using_audio, curr_fps_cap_i, players_car_manager.cur_car, PERSONAL_BEST, show_fps);
+    fprintf(save_data, "%d\n%u\n%llu\n%u\n%d\n%d", audio_manager.using_audio, curr_fps_cap_i, players_car_manager.cur_car, PERSONAL_BEST, show_fps, logic_layer.logging_enabled);
     fclose(save_data);
     print_success("Data saved");
     return;
@@ -211,6 +216,7 @@ void save_data(void)
 /// Works by FILO principle.
 void quit(void)
 {
+    print_success("`quit()`"); /// Doing it before the `free_logic_layer()` so that it's logged successfully.
     free_traffic_manager();
     if (audio_manager.using_audio)
     {
@@ -225,8 +231,6 @@ void quit(void)
     free_logic_layer();
     free_graphics_layer();
     SDL_Quit();
-
-    print_success("`quit()`");
     return;
 }
 
@@ -237,6 +241,8 @@ void program_exit(const int exit_code)
     if (logic_layer.save_needed) /// NOTE: a smarter system may take place, that compares initial values and the newly set ones (so that a save only happens when something was actually changed, and not changed and then set back to original).
         save_data();
     quit();
-    printf("\n");
+    #if STDIO_ENABLED
+        printf("\n");
+    #endif /// STDIO_ENABLED
     exit(exit_code);
 }
