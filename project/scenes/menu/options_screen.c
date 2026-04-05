@@ -34,7 +34,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     struct Options_Screen result = {0};
     
     /// Deinit stack
-    struct Deinit_Stack deinit_stack = new_deinit_stack(17, exit_code);
+    struct Deinit_Stack deinit_stack = new_deinit_stack(21, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
         print_error("`init_options_screen()`: couldn't create deinit stack");
@@ -194,7 +194,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     struct Button show_fps_on_button = create_button("ON", (SDL_Color){22,196,127,255}, vec2(102, 90), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the audio 'ON' button");
+        print_error("`init_options_screen()`: couldn't create the 'Show FPS/ON' button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -203,7 +203,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     struct Button show_fps_off_button = create_button("OFF", (SDL_Color){237,63,39,255}, vec2(102, 90), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the audio 'OFF' button");
+        print_error("`init_options_screen()`: couldn't create the 'Show FPS/OFF' button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -212,7 +212,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     result.show_fps_switch = init_switch(2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the audio switch");
+        print_error("`init_options_screen()`: couldn't create the 'Show FPS' switch");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
@@ -221,6 +221,45 @@ struct Options_Screen init_options_screen(int *const exit_code)
     if (! show_fps)
         next_switch_option(&result.show_fps_switch);
     add_to_deinit_stack(&deinit_stack, &result.show_fps_switch, (void (*)(void*))free_switch);
+
+    /// 'Logging' text
+    result.logging_text = create_text("Logging:", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, vec2(10, 110), 15, 1, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init_options_screen()`: couldn't create the 'Logging:' text");
+        flush_deinit_stack(&deinit_stack);
+        return result;
+    }
+    add_to_deinit_stack(&deinit_stack, &result.logging_text, (void (*)(void*))free_sprite);
+    /// Logging 'ON' button
+    struct Button logging_on_button = create_button("ON", (SDL_Color){22,196,127,255}, vec2(82, 110), 15, 2, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init_options_screen()`: couldn't create the logging 'ON' button");
+        flush_deinit_stack(&deinit_stack);
+        return result;
+    }
+    add_to_deinit_stack(&deinit_stack, &logging_on_button, (void (*)(void*))free_button);
+    /// Logging 'OFF' button
+    struct Button logging_off_button = create_button("OFF", (SDL_Color){237,63,39,255}, vec2(82, 110), 15, 2, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init_options_screen()`: couldn't create the logging 'OFF' button");
+        flush_deinit_stack(&deinit_stack);
+        return result;
+    }
+    add_to_deinit_stack(&deinit_stack, &logging_off_button, (void (*)(void*))free_button);
+    /// 'Logging' switch
+    result.logging_switch = init_switch(2, exit_code);
+    if (*exit_code == EXIT_FAILURE)
+    {
+        print_error("`init_options_screen()`: couldn't create the logging switch");
+        flush_deinit_stack(&deinit_stack);
+        return result;
+    }
+    add_to_switch(&result.logging_switch, logging_on_button );
+    add_to_switch(&result.logging_switch, logging_off_button);
+    add_to_deinit_stack(&deinit_stack, &result.logging_switch, (void (*)(void*))free_switch);
     
     /// 'Version' text
     result.version_text = create_text("RS The Game v 1.1.1", (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,255}, vec2(X_AUTO_CENTER, 150), 9, 1, exit_code);
@@ -249,16 +288,19 @@ void free_options_screen(struct Options_Screen *const target)
         SDL_DestroyTexture(target->last_menu_frame);
 
     free_sprite(&target->options_text);
-    free_button (&target->close_button);
+    free_button(&target->close_button);
 
     free_sprite(&target->audio_text);
-    free_switch (&target->audio_switch);
+    free_switch(&target->audio_switch);
     
     free_sprite(&target->fps_text);
-    free_switch (&target->fps_switch);
+    free_switch(&target->fps_switch);
 
     free_sprite(&target->show_fps_text);
-    free_switch (&target->show_fps_switch);
+    free_switch(&target->show_fps_switch);
+
+    free_sprite(&target->logging_text);
+    free_switch(&target->logging_switch);
 
     free_sprite(&target->version_text);
 
@@ -322,16 +364,19 @@ void render_options_screen(struct Options_Screen *const target)
 
     SDL_RenderTexture(graphics_layer.renderer, target->last_menu_frame, NULL, NULL);
     render_sprite(&target->options_text);
-    render_button (&target->close_button);
+    render_button(&target->close_button);
 
     render_sprite(&target->audio_text);
-    render_switch (&target->audio_switch);
+    render_switch(&target->audio_switch);
 
     render_sprite(&target->fps_text);
-    render_switch (&target->fps_switch);
+    render_switch(&target->fps_switch);
 
     render_sprite(&target->show_fps_text);
-    render_switch (&target->show_fps_switch);
+    render_switch(&target->show_fps_switch);
+
+    render_sprite(&target->logging_text);
+    render_switch(&target->logging_switch);
 
     render_sprite(&target->version_text);
     return;

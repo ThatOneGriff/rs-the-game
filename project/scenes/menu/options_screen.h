@@ -20,6 +20,7 @@ struct Options_Screen
     struct Sprite    audio_text; struct Switch    audio_switch;
     struct Sprite      fps_text; struct Switch      fps_switch;
     struct Sprite show_fps_text; struct Switch show_fps_switch;
+    struct Sprite  logging_text; struct Switch  logging_switch;
     
     void* curr_focus; /// Either a `Button` or a `Switch`.
 

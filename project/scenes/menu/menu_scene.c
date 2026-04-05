@@ -156,11 +156,12 @@ void load_menu_scene(struct Car *const car_ptr, int *const exit_code)
     add_neighbors_to_button(&menu_scene.play_button,    &menu_scene.prev_button,    &menu_scene.options_button, NULL,                    NULL);
     add_neighbors_to_button(&menu_scene.options_button, &menu_scene.play_button,    &menu_scene.quit_button,    NULL,                    NULL);
     add_neighbors_to_button(&menu_scene.quit_button,    &menu_scene.options_button, NULL,                       NULL,                    NULL);
-    /// Options' neighbors | TARGET                                   | UP                                     | DOWN                                      | LEFT | RIGHT
-    add_neighbors_to_button(&menu_scene.options_screen.close_button,    NULL,                                    &menu_scene.options_screen.audio_switch,    NULL,  NULL);
-    add_neighbors_to_switch(&menu_scene.options_screen.audio_switch,    &menu_scene.options_screen.close_button, &menu_scene.options_screen.fps_switch,      NULL,  NULL);
-    add_neighbors_to_switch(&menu_scene.options_screen.fps_switch,      &menu_scene.options_screen.audio_switch, &menu_scene.options_screen.show_fps_switch, NULL,  NULL);
-    add_neighbors_to_switch(&menu_scene.options_screen.show_fps_switch, &menu_scene.options_screen.fps_switch,   NULL,                                       NULL,  NULL);
+    /// Options' neighbors | TARGET                                   | UP                                        | DOWN                                      | LEFT | RIGHT
+    add_neighbors_to_button(&menu_scene.options_screen.close_button,    NULL,                                       &menu_scene.options_screen.audio_switch,    NULL,  NULL);
+    add_neighbors_to_switch(&menu_scene.options_screen.audio_switch,    &menu_scene.options_screen.close_button,    &menu_scene.options_screen.fps_switch,      NULL,  NULL);
+    add_neighbors_to_switch(&menu_scene.options_screen.fps_switch,      &menu_scene.options_screen.audio_switch,    &menu_scene.options_screen.show_fps_switch, NULL,  NULL);
+    add_neighbors_to_switch(&menu_scene.options_screen.show_fps_switch, &menu_scene.options_screen.fps_switch,      &menu_scene.options_screen.logging_switch,  NULL,  NULL);
+    add_neighbors_to_switch(&menu_scene.options_screen.logging_switch,  &menu_scene.options_screen.show_fps_switch, NULL,                                       NULL,  NULL);
     menu_scene.curr_button = &menu_scene.play_button;
 
     set_menu_car_info(car_ptr, exit_code);
