@@ -61,7 +61,9 @@ int main(const int argc, char* argv[])
 {
     UNUSED(argc);
     UNUSED(argv);
-    printf("\n");
+    #if STDIO_ENABLED
+        printf("\n");
+    #endif // STDIO_ENABLED
     /// [!!!] STRICTLY ON TOP [!!!]
     int exit_code = EXIT_SUCCESS;
     SDL_SetMainReady();
