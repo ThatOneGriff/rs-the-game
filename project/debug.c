@@ -34,6 +34,7 @@ void print_success(const char *const text)
     textcolor(WHITE);
 
     fprintf(stderr, "%s.\n", text);
+    return;
 }
 
 
@@ -67,7 +68,7 @@ void print_warning(const char *const text)
     }
     
     textcolor(YELLOW);
-    fprintf(stderr, "~ [WRNNG] %s.\n", text);
+    fprintf(stderr, "~ [WRNNG] ");
     textcolor(WHITE);
 
     fprintf(stderr, "%s.\n", text);

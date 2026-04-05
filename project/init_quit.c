@@ -12,6 +12,7 @@
 /* Root folder headers */
 #include "debug.h"        /// Error / warning output.
 #include "deinit_stack.h" /// Deinitialization stack.
+#include "logs.h"         /// Emptying the log file.
 #include "resources.h"    /// Texture & font paths.
 #include "helpers/helpers.h" /// `free_ptr_arr()`.
 
@@ -154,6 +155,11 @@ void init(int *const exit_code)
             audio_manager.audio_is_valid = false;
         }
     }
+
+    /// Emptying the log file
+    FILE *const log_file = fopen(LOG_FILE_PATH, "w");
+    fprintf(log_file, "");
+    fclose(log_file);
 
     read_data();
     free_deinit_stack(&deinit_stack); /// `free` because those resources will be used.

@@ -2,6 +2,8 @@
 #ifndef LOGS_H
 #define LOGS_H
 
+#define LOG_FILE_PATH "./rs-the-game.log"
+
 
 /* Predef */
 

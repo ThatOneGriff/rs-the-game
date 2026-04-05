@@ -12,6 +12,7 @@ SDL3/
 **/DISTRIBUTION/
 **/miniaudio.dll
 **/player.savedata
+**/rs-the-game.log
 
 # Music (due to licensing impossibility)
 **/music/
