@@ -39,16 +39,17 @@ void play_random_music   (struct Music_Loader *const target);
 struct Music_Loader init_music_loader(const char *const music_data_path, int *const exit_code)
 {
     struct Music_Loader result = {0};
-    result.curr_track        = ULONG_LONG_MAX;
+    memset(&result.latest_tracks_buffer, INT_MAX, sizeof(result.latest_tracks_buffer));
+    result.curr_track        = UINT_MAX;
     result.track_start_delay = 1500;
     result.latest_track_end_check_tick = logic_layer.curr_tick;
 
     /// Param checking
     if (exit_code == NULL)
-        print_warning("`_init_music_loader()`: `exit_code` arg is `NULL`");
+        print_warning("`init_music_loader()`: `exit_code` arg is `NULL`");
     if (music_data_path == NULL)
     {
-        print_error("`_init_music_loader()`: `music_data_path` arg is `NULL`");
+        print_error("`init_music_loader()`: `music_data_path` arg is `NULL`");
         *exit_code = EXIT_FAILURE;
         return result;
     }
@@ -57,7 +58,7 @@ struct Music_Loader init_music_loader(const char *const music_data_path, int *co
     FILE* music_data_file = fopen(music_data_path, "r");
     if (music_data_file == NULL)
     {
-        print_error("`_init_music_loader()`: couldnt't open music data file");
+        print_error("`init_music_loader()`: couldnt't open music data file");
         *exit_code = EXIT_FAILURE;
         return result;
     }
@@ -65,10 +66,10 @@ struct Music_Loader init_music_loader(const char *const music_data_path, int *co
     /// First line indicates track amount.
     char line[100];
     fgets(line, 100, music_data_file);
-    const size_t line_count = (size_t)atoi(line);
+    const unsigned int line_count = (unsigned int)atoi(line);
     if (line_count == 0)
     {
-        print_error("`_init_music_loader()`: music data line count = 0");
+        print_error("`init_music_loader()`: music data line count = 0");
         fclose(music_data_file);
         *exit_code = EXIT_FAILURE;
         return result;
@@ -78,7 +79,7 @@ struct Music_Loader init_music_loader(const char *const music_data_path, int *co
     struct Deinit_Stack deinit_stack = new_deinit_stack(line_count + 1, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`_init_music_loader()`: error while creating deinit stack");
+        print_error("`init_music_loader()`: error while creating deinit stack");
         free_deinit_stack(&deinit_stack);
         fclose(music_data_file);
         *exit_code = EXIT_FAILURE;
@@ -89,7 +90,7 @@ struct Music_Loader init_music_loader(const char *const music_data_path, int *co
     result.track_paths = calloc(line_count, sizeof(char*));
     if (result.track_paths == NULL)
     {
-        print_error("`_init_music_loader()`: couldn't allocate memory for track paths");
+        print_error("`init_music_loader()`: couldn't allocate memory for track paths");
         free_deinit_stack(&deinit_stack);
         fclose(music_data_file);
         *exit_code = EXIT_FAILURE;
@@ -105,7 +106,7 @@ struct Music_Loader init_music_loader(const char *const music_data_path, int *co
         result.track_paths[i] = malloc(100 * sizeof(char));
         if (result.track_paths[i] == NULL)
         {
-            print_error("`_init_music_loader()`: couldn't allocate memory for a track path");
+            print_error("`init_music_loader()`: couldn't allocate memory for a track path");
             flush_deinit_stack(&deinit_stack);
             fclose(music_data_file);
             *exit_code = EXIT_FAILURE;
@@ -120,7 +121,7 @@ struct Music_Loader init_music_loader(const char *const music_data_path, int *co
         if (music_data_file == NULL)
         {
             printf("(%s) ", line);
-            print_warning("`_init_music_loader()`: couldnt't open track");
+            print_warning("`init_music_loader()`: couldnt't open track");
             --i;
             continue;
         }
@@ -136,7 +137,7 @@ struct Music_Loader init_music_loader(const char *const music_data_path, int *co
 
     if (result.track_count == 0)
     {
-        print_error("`_init_music_loader()`: no tracks have been loaded");
+        print_error("`init_music_loader()`: no tracks have been loaded");
         flush_deinit_stack(&deinit_stack);
         fclose(music_data_file);
         *exit_code = EXIT_FAILURE;
@@ -145,7 +146,7 @@ struct Music_Loader init_music_loader(const char *const music_data_path, int *co
 
     if (result.track_count < line_count)
     {
-        print_warning("`_init_music_loader()`: not all tracks have been loaded");
+        print_warning("`init_music_loader()`: not all tracks have been loaded");
         void* temp = realloc(result.track_paths, result.track_count * sizeof(char*));
         if (temp != NULL)
         {
@@ -154,13 +155,16 @@ struct Music_Loader init_music_loader(const char *const music_data_path, int *co
         }
         else
         {
-            print_error("`_init_music_loader()`: failed to resize `result.track_paths`");
+            print_error("`init_music_loader()`: failed to resize `result.track_paths`");
             flush_deinit_stack(&deinit_stack);
             fclose(music_data_file);
             *exit_code = EXIT_FAILURE;
             return result;
         }
     }
+
+    if (result.track_count <= LATEST_TRACKS_BUFFER_SIZE)
+        print_error("`init_music_loader()`: track count is smaller than `LATEST_TRACKS_BUFFER_SIZE`; consider adding more tracks or resizing the buffer in code");
 
     free_deinit_stack(&deinit_stack);
     fclose(music_data_file);
@@ -174,12 +178,13 @@ void freeze_music_loader(struct Music_Loader *const target)
 {
     if (target == NULL)
     {
-        print_error("`_free_music_loader()`: `target` arg is `NULL`");
+        print_error("`free_music_loader()`: `target` arg is `NULL`");
         return;
     }
 
     target->active     = false;
-    target->curr_track = ULONG_LONG_MAX;
+    target->curr_track = UINT_MAX;
+    return;
 }
 
 
@@ -187,19 +192,19 @@ void free_music_loader(struct Music_Loader *const target)
 {
     if (target == NULL)
     {
-        print_error("`_free_music_loader()`: `target` arg is `NULL`");
+        print_error("`free_music_loader()`: `target` arg is `NULL`");
         return;
     }
 
     if (target->track_paths != NULL)
     {
-        for (size_t i = 0; i < target->track_count; i++)
+        for (unsigned i = 0; i < target->track_count; i++)
             free(target->track_paths[i]);
         free(target->track_paths);
     }
     
     memset(target, 0, sizeof *target);
-    target->curr_track = ULONG_LONG_MAX;
+    target->curr_track = UINT_MAX;
     return;
 }
 
@@ -248,23 +253,27 @@ void play_random_music(struct Music_Loader *const target)
         return;
     
     target->active = true;
-
     if (target->track_count == 1)
     {
         ma_sound_start(&audio_manager.music);
         return;
     }
-
     ma_sound_uninit(&audio_manager.music);
-    char         track_path[100];
-    const size_t track_i = randint_except(0, (unsigned)target->track_count-1, (unsigned)target->curr_track);
+
+    const unsigned track_i = randint_except_array(0, target->track_count - 1, target->latest_tracks_buffer, LATEST_TRACKS_BUFFER_SIZE);
+    if (++target->latest_track_i == LATEST_TRACKS_BUFFER_SIZE)
+        target->latest_track_i = 0;
+    target->latest_tracks_buffer[target->latest_track_i] = track_i;
+
+    char track_path[100];
     strcpy(track_path, target->track_paths[track_i]);
     if (ma_sound_init_from_file(&audio_manager.engine, track_path, 0, NULL, NULL, &audio_manager.music) != MA_SUCCESS)
     {
-        printf("([%llu] %s) ", target->curr_track, track_path);
+        printf("([%u] %s) ", target->curr_track, track_path);
         print_warning("`play_random_music()`: couldn't play music");
         return;
     }
+    
     target->curr_track = track_i;
     target->track_end_tick = 0;
     ma_sound_start(&audio_manager.music);

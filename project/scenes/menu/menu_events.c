@@ -247,8 +247,9 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
             }
             unfocus(menu_scene.options_screen.curr_focus);
             menu_scene.options_screen.curr_focus = get_neighbor(menu_scene.options_screen.curr_focus, UP);
+            /// REDO (+ a generalized way to mark a button/switch disabled):
             if ((menu_scene.options_screen.curr_focus == &menu_scene.options_screen.audio_switch) && ! audio_manager.audio_is_valid)
-                menu_scene.options_screen.curr_focus = &menu_scene.options_screen.close_button;
+                menu_scene.options_screen.curr_focus = get_neighbor(menu_scene.options_screen.curr_focus, UP);
             focus(menu_scene.options_screen.curr_focus);
             break;
         
@@ -260,8 +261,9 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
             }
             unfocus(menu_scene.options_screen.curr_focus);
             menu_scene.options_screen.curr_focus = get_neighbor(menu_scene.options_screen.curr_focus, DOWN);
+            /// REDO (+ a generalized way to mark a button/switch disabled):
             if ((menu_scene.options_screen.curr_focus == &menu_scene.options_screen.audio_switch) && ! audio_manager.audio_is_valid)
-                menu_scene.options_screen.curr_focus = &menu_scene.options_screen.fps_switch;
+                menu_scene.options_screen.curr_focus = get_neighbor(menu_scene.options_screen.curr_focus, DOWN);
             focus(menu_scene.options_screen.curr_focus);
             break;
 

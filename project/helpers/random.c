@@ -3,6 +3,7 @@
 
 /* Headers */
 #include <SDL3/SDL.h> /// `rand_color()`.
+#include <stdbool.h>  /// `bool is_in_except_array`.
 #include <stdio.h>    /// I/O.
 #include <stdlib.h>   /// `rand()`.
 #include <time.h>     /// Time-based random seeding.
@@ -14,6 +15,7 @@
 unsigned int randint       (const unsigned int min, const unsigned int max);
          int randint_w_neg (         const int min,          const int max);
 unsigned int randint_except(      unsigned int min,       unsigned int max, const unsigned int except);
+unsigned int randint_except_array(unsigned int min,       unsigned int max,       unsigned int *const except_array, const size_t except_array_size);
 SDL_Color    rand_color  (void);
 float        rand_percent(const unsigned int min, const unsigned int max);
 struct Vec2  rand_vec2   (const struct Vec2  min, const struct Vec2  max);
@@ -62,6 +64,28 @@ unsigned int randint_except(unsigned int min, unsigned int max, const unsigned i
     if (result >= except)
         ++result;
     
+    return result;
+}
+
+
+unsigned int randint_except_array(unsigned int min, unsigned int max, unsigned int *const except_array, const size_t except_array_size)
+{
+    unsigned int result = UINT_MAX;
+    bool is_in_except_array = false;
+    do
+    {
+        result = randint(min, max);
+        is_in_except_array = false;
+        for (size_t i = 0; i < except_array_size; i++)
+        {
+            if (result == except_array[i])
+            {
+                is_in_except_array = true;
+                break;
+            }
+        }
+    }
+    while (is_in_except_array);
     return result;
 }
 

@@ -4,6 +4,7 @@
 #include "../logic/logic_layer.h" /// `logic_layer.curr_tick`.
 
 #define TRACK_END_CHECK_DELAY_MS 1000
+#define LATEST_TRACKS_BUFFER_SIZE 5
 
 
 /* Struct */
@@ -14,9 +15,12 @@ struct Music_Loader
     bool active;
 
     char** track_paths;
-    size_t track_count;
+    unsigned int track_count;
+    unsigned int curr_track;
 
-    size_t       curr_track;
+    unsigned int latest_tracks_buffer[LATEST_TRACKS_BUFFER_SIZE];
+    unsigned int latest_track_i;
+
     time_tick_ms        track_end_tick; /// Is used to control the pause between tracks.
     time_tick_ms latest_track_end_check_tick;
     time_span_ms        track_start_delay;
