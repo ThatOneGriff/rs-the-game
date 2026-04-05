@@ -240,49 +240,29 @@ static void _process_options_keyboard(const SDL_Keycode event_key)
             break;
 
         case SDLK_UP:
-            if      (menu_scene.options_screen.audio_switch.is_focused)
+            if (get_neighbor(menu_scene.options_screen.curr_focus, UP) == NULL)
             {
-                menu_scene.options_screen.audio_switch.is_focused = false;
-                menu_scene.options_screen.close_button.is_focused = true;
-            }
-            else if (menu_scene.options_screen.fps_switch.is_focused)
-            {
-                menu_scene.options_screen.fps_switch.is_focused = false;
-                if (audio_manager.audio_is_valid)
-                    menu_scene.options_screen.audio_switch.is_focused = true;
-                else
-                    menu_scene.options_screen.close_button.is_focused   = true;
-            }
-            else if (menu_scene.options_screen.show_fps_switch.is_focused)
-            {
-                menu_scene.options_screen.fps_switch.is_focused      = true;
-                menu_scene.options_screen.show_fps_switch.is_focused = false;
-            }
-            else
                 graphics_layer.screen_changed = false;
+                break;
+            }
+            unfocus(menu_scene.options_screen.curr_focus);
+            menu_scene.options_screen.curr_focus = get_neighbor(menu_scene.options_screen.curr_focus, UP);
+            if ((menu_scene.options_screen.curr_focus == &menu_scene.options_screen.audio_switch) && ! audio_manager.audio_is_valid)
+                menu_scene.options_screen.curr_focus = &menu_scene.options_screen.close_button;
+            focus(menu_scene.options_screen.curr_focus);
             break;
         
         case SDLK_DOWN:
-            if (menu_scene.options_screen.close_button.is_focused)
+            if (get_neighbor(menu_scene.options_screen.curr_focus, DOWN) == NULL)
             {
-                menu_scene.options_screen.close_button.is_focused = false;
-                if (audio_manager.audio_is_valid)
-                    menu_scene.options_screen.audio_switch.is_focused = true;
-                else
-                    menu_scene.options_screen.fps_switch.is_focused   = true;
-            }
-            else if (menu_scene.options_screen.audio_switch.is_focused)
-            {
-                menu_scene.options_screen.audio_switch.is_focused = false;
-                menu_scene.options_screen.fps_switch.is_focused   = true;
-            }
-            else if (menu_scene.options_screen.fps_switch.is_focused)
-            {
-                menu_scene.options_screen.fps_switch.is_focused      = false;
-                menu_scene.options_screen.show_fps_switch.is_focused = true;
-            }
-            else
                 graphics_layer.screen_changed = false;
+                break;
+            }
+            unfocus(menu_scene.options_screen.curr_focus);
+            menu_scene.options_screen.curr_focus = get_neighbor(menu_scene.options_screen.curr_focus, DOWN);
+            if ((menu_scene.options_screen.curr_focus == &menu_scene.options_screen.audio_switch) && ! audio_manager.audio_is_valid)
+                menu_scene.options_screen.curr_focus = &menu_scene.options_screen.fps_switch;
+            focus(menu_scene.options_screen.curr_focus);
             break;
 
         default:
