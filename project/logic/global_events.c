@@ -6,7 +6,6 @@
 
 /* C headers */
 #include <stdbool.h> /// For `logic_layer` manipulation.
-#include <stdio.h>   /// I/O.
 #include <stdlib.h>  /// Exit codes.
 
 /* Helper headers */
@@ -37,9 +36,6 @@ void process_global_events(const SDL_Event event)
     /// Keyboard
     case SDL_EVENT_KEY_DOWN:
         process_global_keyboard(event.key.key);
-        break;
-    case SDL_EVENT_MOUSE_WHEEL:
-        printf("wheel");
         break;
     }
     return;

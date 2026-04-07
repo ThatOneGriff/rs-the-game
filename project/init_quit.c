@@ -7,10 +7,13 @@
 #include <SDL3_ttf/SDL_ttf.h>     /// SDL3.
 
 /* C headers */
-#include <stdio.h>  /// I/O.
+#include "debug.h"        /// Error / warning output (Moved on top because of `STDIO_ENABLED`).
+#if STDIO_ENABLED
+    #include <stdio.h>    /// I/O.
+#endif /// STDIO_ENABLED
 
 /* Root folder headers */
-#include "debug.h"        /// Error / warning output.
+//#include "debug.h"      /// Error / warning output.
 #include "deinit_stack.h" /// Deinitialization stack.
 #include "logs.h"         /// Emptying the log file.
 #include "resources.h"    /// Texture & font paths.
@@ -170,7 +173,7 @@ void read_data(void)
     char** save_data = read_file_by_line(SAVE_DATA_PATH, SAVE_DATA_LINES);
     if (save_data == NULL)
     {
-        printf("Save file not found or empty.\n");
+        print_error("`read_data()`: Save file not found or empty");
         return;
     }
 

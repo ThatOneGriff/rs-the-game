@@ -4,10 +4,13 @@
 #include <SDL3/SDL_timer.h>          /// its parts.
 
 /*- C headers -*/
-#include <stdio.h>                   /// `printf('\n')`.
+#include "debug.h"                   /// Error / warning output (Moved on top because of `STDIO_ENABLED`).
+#if STDIO_ENABLED
+    #include <stdio.h>               /// `printf('\n')`.
+#endif /// STDIO_ENABLED    
 
 /* Root folder headers */
-#include "debug.h"                   /// Error printing.
+//#include "debug.h"                 /// Error printing.
 #include "init_quit.h"               /// Program initialization.
 
 /* Audio */

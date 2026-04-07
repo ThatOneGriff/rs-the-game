@@ -3,7 +3,9 @@
 
 /* Headers */
 #include <SDL3/SDL.h>          /// SDL_GetError().
-#include <stdio.h>             /// I/O.
+#if STDIO_ENABLED
+    #include <stdio.h>         /// I/O.
+#endif /// STDIO_ENABLED
 #include "logs.h"              /// Auto-logging if ! STDIO_ENABLED.
 #include "helpers/helpers.h"   /// Coloured text.
 

@@ -4,7 +4,6 @@
 /* Headers */
 #include <SDL3/SDL.h> /// `SDL_Delay()`.
 #include <stdbool.h>  /// `bool fps_capped, show_fps`.
-#include <stdio.h>    /// I/O.
 #include <stdlib.h>   /// `UINT_MAX`.
 #include "../debug.h" /// Error printing.
 

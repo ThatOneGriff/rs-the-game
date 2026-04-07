@@ -5,7 +5,6 @@
 #include <SDL3/SDL.h> /// Keyboard processing.
 
 /* Logic */
-#include <stdio.h> /// TEMP (Debug)
 #include <stdbool.h>                   /// Bools.
 #include "../../debug.h"               /// Error message printing.
 #include "../../logic/global_events.h" /// Global event processing.
@@ -75,7 +74,7 @@ static void _process_menu_keyboard(const SDL_Keycode event_key)
             }
             break;
         
-        case SDLK_M: /// TEMP: will be extended to playing next/previous track and pausing.
+        case SDLK_M: /// TODO: extend to playing next/previous track and pausing.
             if (audio_manager.audio_is_valid)
             {
                 play_random_music(&music_loader_menu);

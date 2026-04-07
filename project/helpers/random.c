@@ -27,10 +27,7 @@ static time_t _seed = 0; /// Temporary value (time-initialized with the first fu
 unsigned int randint(const unsigned int min, const unsigned int max)
 {
     if (min > max)
-    {
-        fprintf(stderr, "~ Incorrect `randint()` arguments: %u %u\n", min, max);
         return 0;
-    }
     else if (min == max)
         return min;
     
