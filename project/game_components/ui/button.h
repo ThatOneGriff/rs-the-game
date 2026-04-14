@@ -3,7 +3,7 @@
 
 /* Headers */
 #include <stdbool.h>                /// `bool is_focused`.
-#include "ui_object.h"              /// Common framework for `struct Switch` and `struct Button`.
+#include "ui_common.h"              /// Common framework for `struct Switch` and `struct Button`.
 #include "../graphics/sprite.h"     /// Rendering text into a texture.
 #include "../../helpers/geometry.h" /// `struct Vec2`.
 
@@ -25,7 +25,7 @@ struct Button
 
 /* Predef */
 
-struct Button  create_button(const char *const text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned int size, const unsigned int border_thickness, int *const exit_code);
+struct Button  create_button(const char *const text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned int text_size, const unsigned int border_thickness, int *const exit_code);
 void add_neighbors_to_button(struct Button *const target, void *const up, void *const down, void *const left, void *const right);
 void           render_button(const struct Button *const target);
 void             free_button(      struct Button *const target);

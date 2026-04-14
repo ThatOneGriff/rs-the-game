@@ -7,8 +7,8 @@
 #include <string.h>  /// `memset()`.
 
 /* Helper headers */
-#include "button.h"   /// Buttons.
-#include "../../debug.h" /// Error message printing.
+#include "pseudo_button.h"                 /// Switches' options.
+#include "../../debug.h"                   /// Error message printing.
 #include "../../graphics/graphics_layer.h" /// `graphics_layer.renderer`.
 
 
@@ -17,9 +17,9 @@
 struct Switch    init_switch(const size_t max_option_count, int *const exit_code);
 void add_neighbors_to_switch(struct Switch *const target, void *const up, void *const down, void *const left, void *const right);
 void             free_switch(struct Switch *const target);
-void        add_to_switch(struct Switch *const target, const struct Button new_option);
-void   next_switch_option(struct Switch *const target);
-void        render_switch(struct Switch *const target);
+void           add_to_switch(struct Switch *const target, const struct Pseudo_Button new_option);
+void      next_switch_option(struct Switch *const target);
+void           render_switch(struct Switch *const target);
 
 
 /* Body */
@@ -40,7 +40,7 @@ struct Switch init_switch(const size_t max_option_count, int *const exit_code)
     }
 
     /// Memory allocation
-    result.options = malloc(max_option_count * sizeof(struct Button));
+    result.options = malloc(max_option_count * sizeof(struct Pseudo_Button));
     if (result.options == NULL)
     {
         print_error("`init_switch()`: couldn't allocate memory");
@@ -82,7 +82,7 @@ void free_switch(struct Switch *const target)
     if (target->options != NULL)
     {
         for (size_t i = 0; i < target->cur_option_count; i++)
-            free_button(&target->options[i]);
+            free_pseudo_button(&target->options[i]);
         free(target->options);
     }
     
@@ -91,7 +91,7 @@ void free_switch(struct Switch *const target)
 }
 
 
-void add_to_switch(struct Switch *const target, const struct Button new_option)
+void add_to_switch(struct Switch *const target, const struct Pseudo_Button new_option)
 {
     if (target == NULL || target->options == NULL)
     {
@@ -133,7 +133,9 @@ void render_switch(struct Switch *const target)
         return;
     }
 
-    target->cur_option->is_focused = target->is_focused;
-    render_button(target->cur_option);
+    if (target->is_focused)
+        render_sprite(&target->cur_option->focused_texture);
+    else
+        render_sprite(&target->cur_option->regular_texture);
     return;
 }
