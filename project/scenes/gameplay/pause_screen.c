@@ -4,6 +4,7 @@
 #include <SDL3/SDL.h>                        /// SDL3.
 #include <SDL3/SDL_timer.h>                  /// Time measurement.
 #include <stdbool.h>                         /// `bool is_open`.
+#include <stdlib.h>                          /// Exit codes.
 #include <string.h>                          /// `memset()`.
 #include "../../debug.h"                     /// Error message printing.
 #include "../../deinit_stack.h"              /// Deinitialization stack.

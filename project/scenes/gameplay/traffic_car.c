@@ -34,8 +34,8 @@ struct Traffic_Car load_traffic_car(const char *const path, int *const exit_code
     /// Zero-filling
     struct Traffic_Car result = {0};
     result.base_texture = 2;
-    result.lane_id = ULONG_LONG_MAX;
-    result.path_pt = ULONG_LONG_MAX;
+    result.lane_id = USHRT_MAX;
+    result.path_pt = USHRT_MAX;
 
     /// Checking params
     if (exit_code == NULL)
@@ -70,7 +70,7 @@ struct Traffic_Car load_traffic_car(const char *const path, int *const exit_code
     #define LINES_BEFORE_TEXTURES 1
 
     /// Textures (gameplay)
-    for (size_t i = 0; i < 3; i++)
+    for (unsigned short i = 0; i < 3; i++)
     {
         result.textures[i] = IMG_LoadTexture(graphics_layer.renderer, car_data[i + LINES_BEFORE_TEXTURES]);
         if (result.textures[i] == NULL)
@@ -105,7 +105,7 @@ void free_traffic_car(struct Traffic_Car *const target)
     if (target == NULL)
         return;
     
-    for (size_t i = 0; i < 3; i++)
+    for (unsigned short i = 0; i < 3; i++)
     {
         if (target->textures[i] != NULL_TEXTURE)
         {

@@ -184,8 +184,8 @@ void read_data(void)
     curr_fps_cap_i            = (unsigned)atoi(save_data[1]);
     set_fps_cap(fps_cap_options[curr_fps_cap_i]);
 
-    const size_t car_i = (size_t)atoi(save_data[2]);
-    for (size_t i = 0; i < car_i; i++)
+    const unsigned short car_i = (unsigned short)atoi(save_data[2]);
+    for (unsigned short i = 0; i < car_i; i++)
         get_next_car();
     
     PERSONAL_BEST = (unsigned)atoi(save_data[3]);
@@ -209,7 +209,7 @@ void read_data(void)
 void save_data(void)
 {
     FILE* save_data = fopen(SAVE_DATA_PATH, "w");
-    fprintf(save_data, "%d\n%u\n%llu\n%u\n%d\n%d", audio_manager.using_audio, curr_fps_cap_i, players_car_manager.cur_car, PERSONAL_BEST, show_fps, logic_layer.logging_enabled);
+    fprintf(save_data, "%d\n%u\n%u\n%u\n%d\n%d", audio_manager.using_audio, curr_fps_cap_i, players_car_manager.cur_car, PERSONAL_BEST, show_fps, logic_layer.logging_enabled);
     fclose(save_data);
     print_success("Data saved");
     return;

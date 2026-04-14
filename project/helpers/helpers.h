@@ -1,7 +1,7 @@
 #ifndef HELPERS_H
 #define HELPERS_H
 
-#include <stdio.h> /// `size_t`.
+#include <stdio.h> /// `unsigned short`.
 
 
 /* Text coloring */
@@ -15,8 +15,8 @@
 
 /* Predef */
 
-void   free_ptr_arr(void **const target, const size_t len);
-char** read_file_by_line(const char *const path, const size_t target_lines);
+void   free_ptr_arr(void **const target, const unsigned short len);
+char** read_file_by_line(const char *const path, const unsigned short target_lines);
 void   textcolor(const unsigned short int color_code);
 
 

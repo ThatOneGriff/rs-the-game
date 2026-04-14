@@ -27,16 +27,16 @@ I wholeheartedly hate this code. Sorry. */
 
 /* Predef */
 
-struct Environment        new_environment(char **const texture_paths, const size_t texture_count, const size_t object_count, int *const exit_code);
+struct Environment        new_environment(char **const texture_paths, const unsigned short texture_count, const unsigned short object_count, int *const exit_code);
 void couple_move_component_to_environment(struct Environment *const to, struct Move_Component *const move_component, const struct Vec2 max_offset, int *const exit_code);
 void                     free_environment(struct Environment *const target);
 void        render_environment(const struct Environment *const target);
-void partly_render_environment(const struct Environment *const target, const size_t min_path_pt, size_t max_path_pt);
+void partly_render_environment(const struct Environment *const target, const unsigned short min_path_pt, unsigned short max_path_pt);
 
 
 /* Body */
 
-struct Environment new_environment(char **const texture_paths, const size_t texture_count, const size_t object_count, int *const exit_code)
+struct Environment new_environment(char **const texture_paths, const unsigned short texture_count, const unsigned short object_count, int *const exit_code)
 {
     struct Environment result = {0};
 
@@ -79,7 +79,7 @@ struct Environment new_environment(char **const texture_paths, const size_t text
     }
     add_to_deinit_stack(&deinit_stack, result.textures, (void (*)(void*))free);
     /// Textures (loading)
-    for (size_t i = 0; i < texture_count; i++)
+    for (unsigned short i = 0; i < texture_count; i++)
     {
         result.textures[i] = IMG_LoadTexture(graphics_layer.renderer, texture_paths[i]);
         if (result.textures[i] == NULL)
@@ -114,7 +114,7 @@ struct Environment new_environment(char **const texture_paths, const size_t text
     }
     add_to_deinit_stack(&deinit_stack, result.rects, (void (*)(void*))free);
 
-    result.cur_texture_indexes = calloc(object_count, sizeof(size_t)); /// We don't need to actually fill them, as that's `move_component`'s job.
+    result.cur_texture_indexes = calloc(object_count, sizeof(unsigned short)); /// We don't need to actually fill them, as that's `move_component`'s job.
     if (result.cur_texture_indexes == NULL)
     {
         print_error("`new_environment()`: couldn't allocate memory to `cur_texture_indexes`");
@@ -123,8 +123,8 @@ struct Environment new_environment(char **const texture_paths, const size_t text
         *exit_code = EXIT_FAILURE;
         return result;
     }
-    for (size_t i = 0; i < object_count; i++)
-        result.cur_texture_indexes[i] = randint(0, (unsigned int)texture_count-1); /// Randomized textures.
+    for (unsigned short i = 0; i < object_count; i++)
+        result.cur_texture_indexes[i] = (unsigned short)randint(0, (unsigned)texture_count-1); /// Randomized textures.
 
     result.object_count = object_count;
     free_deinit_stack(&deinit_stack); /// `free()` because all members are to be used later.
@@ -173,7 +173,7 @@ void free_environment(struct Environment *const target)
     
     if (target->textures != NULL)
     {
-        for (size_t i = 0; i < target->texture_count; i++)
+        for (unsigned short i = 0; i < target->texture_count; i++)
             if (target->textures[i] != NULL_TEXTURE)
                 SDL_DestroyTexture(target->textures[i]);
         free(target->textures);
@@ -209,9 +209,9 @@ void render_environment(const struct Environment *const target)
     move_all_rects(target->move_component);
     /// Rendering in path point order.
     /// [FALSE FOR NOW] Only 1 texture per path point is actually rendered to avoid visual cluttering.
-    for (size_t path_pt = 0; path_pt < target->move_component->path.pt_count; path_pt++)
+    for (unsigned short path_pt = 0; path_pt < target->move_component->path.pt_count; path_pt++)
     {
-        for (size_t i = 0; i < target->object_count; i++)
+        for (unsigned short i = 0; i < target->object_count; i++)
         {
             if (target->move_component->rects_pt_indices[i] != path_pt)
                 continue;
@@ -233,7 +233,7 @@ void render_environment(const struct Environment *const target)
 
 
 /// REDO according to DRY principle.
-void partly_render_environment(const struct Environment *const target, const size_t min_path_pt, size_t max_path_pt)
+void partly_render_environment(const struct Environment *const target, const unsigned short min_path_pt, unsigned short max_path_pt)
 {
     if (target == NULL || target->textures == NULL || target->rects == NULL || target->cur_texture_indexes == NULL || target->texture_count == 0 || target->object_count == 0)
     {
@@ -257,9 +257,9 @@ void partly_render_environment(const struct Environment *const target, const siz
     /// [FALSE FOR NOW] Only 1 texture per path point is actually rendered to avoid visual cluttering.
     if (max_path_pt > target->move_component->path.pt_count)
         max_path_pt = target->move_component->path.pt_count-1;
-    for (size_t path_pt = min_path_pt; path_pt <= max_path_pt; path_pt++)
+    for (unsigned short path_pt = min_path_pt; path_pt <= max_path_pt; path_pt++)
     {
-        for (size_t i = 0; i < target->object_count; i++)
+        for (unsigned short i = 0; i < target->object_count; i++)
         {
             if (target->move_component->rects_pt_indices[i] != path_pt)
                 continue;

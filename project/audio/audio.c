@@ -66,7 +66,7 @@ struct Music_Loader init_music_loader(const char *const music_data_path, int *co
     /// First line indicates track amount.
     char line[100];
     fgets(line, 100, music_data_file);
-    const unsigned int line_count = (unsigned int)atoi(line);
+    const unsigned short line_count = (unsigned short)atoi(line);
     if (line_count == 0)
     {
         print_error("`init_music_loader()`: music data line count = 0");
@@ -100,7 +100,7 @@ struct Music_Loader init_music_loader(const char *const music_data_path, int *co
 
     /// Path saving, test track loading.
     FILE* test_track_opener = NULL;
-    for (size_t i = 0; i < line_count; i++)
+    for (unsigned short i = 0; i < line_count; i++)
     {
         /// Memory allocation
         result.track_paths[i] = malloc(100 * sizeof(char));

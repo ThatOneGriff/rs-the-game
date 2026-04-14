@@ -14,13 +14,13 @@
 
 /* Predef */
 
-struct Path  new_path(const SDL_FRect *const points, const size_t pt_count, int *const exit_code);
+struct Path  new_path(const SDL_FRect *const points, const unsigned short pt_count, int *const exit_code);
 void        free_path(struct Path *const target);
 
 
 /* Body */
 
-struct Path new_path(const SDL_FRect *const points, const size_t pt_count, int *const exit_code)
+struct Path new_path(const SDL_FRect *const points, const unsigned short pt_count, int *const exit_code)
 {
     struct Path result;
     result.points = NULL;
@@ -50,7 +50,7 @@ struct Path new_path(const SDL_FRect *const points, const size_t pt_count, int *
         *exit_code = EXIT_FAILURE;
         return result;
     }
-    for (size_t i = 0; i < pt_count; i++)
+    for (unsigned short i = 0; i < pt_count; i++)
         result.points[i] = points[i];
     result.pt_count = pt_count;
     

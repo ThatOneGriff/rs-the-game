@@ -3,6 +3,7 @@
 
 /* Helpers */
 #include <stdio.h>                   /// `FILE`.
+#include <stdlib.h>                  /// Exit codes.
 #include <string.h>                  /// `memset()`.
 #include "../../debug.h"             /// Error message printing.
 #include "../../deinit_stack.h"      /// Deinitialization stack.
@@ -15,7 +16,7 @@
 #include "traffic_car.h" /// Cars.
 #include "../../game_components/movement/path.h" /// Traffic path.
 
-//#define TRAFFIC_ON_ROW_CHANCE     0.50f /// 50%
+//#define TRAFFIC_ON_ROW_CHANCE   0.50f /// 50%
 #define TRAFFIC_ON_2_LANES_CHANCE 0.70f /// 70%
 
 #define LANE_SPAWN_COOLDOWN 5
@@ -37,16 +38,16 @@ struct Traffic_Manager traffic_manager = {0};
 
 /* Predef */
 
-void init_traffic_manager(const size_t car_count, int *const exit_code);
+void init_traffic_manager(const unsigned short car_count, int *const exit_code);
 void free_traffic_manager(void);
 void   move_traffic       (const bool mode);
-void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car *const player_car, bool *const is_driving, unsigned int *const point_count);
+void render_traffic_on_pts(const unsigned short min_path_pt, unsigned short max_path_pt, struct Car *const player_car, bool *const is_driving, unsigned int *const point_count);
 
 
 /* Body */
 
 /// Assumes `traffic_car_manager` has been initialized.
-void init_traffic_manager(const size_t car_count, int *const exit_code)
+void init_traffic_manager(const unsigned short car_count, int *const exit_code)
 {
     /// Object preparation
     memset(&traffic_manager, 0, sizeof traffic_manager);
@@ -86,7 +87,7 @@ void init_traffic_manager(const size_t car_count, int *const exit_code)
     /// Cars (reading paths)
     char line[100];
     fgets(line, 100, car_data_file);
-    traffic_manager.car_count = (size_t)atoi(line);
+    traffic_manager.car_count = (unsigned short)atoi(line);
     if (traffic_manager.car_count == 0)
     {
         print_error("`init_car_manager()`: traffic car count == 0");
@@ -109,7 +110,7 @@ void init_traffic_manager(const size_t car_count, int *const exit_code)
     add_to_deinit_stack(&deinit_stack, traffic_manager.cars, (void (*)(void*))free);
 
     /// Cars (reading)
-    for (size_t i = 0; i < traffic_manager.car_count; i++)
+    for (unsigned short i = 0; i < traffic_manager.car_count; i++)
     {
         fgets(line, 100, car_data_file);
         line[strcspn(line, "\n")] = '\0';
@@ -175,7 +176,7 @@ void free_traffic_manager(void)
 {
     if (traffic_manager.cars != NULL)
     {
-        for (size_t i = 0; i < traffic_manager.car_count; i++)
+        for (unsigned short i = 0; i < traffic_manager.car_count; i++)
             free_traffic_car(&traffic_manager.cars[i]);
         free(traffic_manager.cars);
     }
@@ -211,9 +212,9 @@ void move_traffic(const bool mode)
     }
     
     /// Moving traffic
-    for (size_t car_id = 0; car_id < traffic_manager.car_count; car_id++)
+    for (unsigned short car_id = 0; car_id < traffic_manager.car_count; car_id++)
     {
-        if (traffic_manager.cars[car_id].lane_id == ULONG_LONG_MAX) /// Non-active traffic car
+        if (traffic_manager.cars[car_id].lane_id == USHRT_MAX) /// Non-active traffic car
             continue;
         
         if      (mode == MOVE_NORMAL)
@@ -224,8 +225,8 @@ void move_traffic(const bool mode)
                 --traffic_manager.cars[car_id].path_pt;
             else
             {
-                traffic_manager.cars[car_id].path_pt = ULONG_LONG_MAX;
-                traffic_manager.cars[car_id].path_pt = ULONG_LONG_MAX;
+                traffic_manager.cars[car_id].path_pt = USHRT_MAX;
+                traffic_manager.cars[car_id].path_pt = USHRT_MAX;
                 continue;
             }
         }
@@ -233,8 +234,8 @@ void move_traffic(const bool mode)
         /// Removing car (normal mode)
         if (traffic_manager.cars[car_id].path_pt >= traffic_manager.lanes[0].pt_count)
         {
-            traffic_manager.cars[car_id].lane_id = ULONG_LONG_MAX;
-            traffic_manager.cars[car_id].path_pt = ULONG_LONG_MAX;
+            traffic_manager.cars[car_id].lane_id = USHRT_MAX;
+            traffic_manager.cars[car_id].path_pt = USHRT_MAX;
         }
 
         traffic_manager.latest_move_tick = logic_layer.curr_tick;
@@ -249,18 +250,18 @@ void move_traffic(const bool mode)
         return;
     
     /// Seeding traffic on row
-    for (size_t i = 0; i < 2; i++)
+    for (unsigned short i = 0; i < 2; i++)
     {
-        const size_t lane = (size_t)randint(0,2);
+        const unsigned short lane = (unsigned short)randint(0,2);
         if (traffic_manager.lane_spawn_cooldowns[lane] > 0)
             return;
 
         /// Checking for car availability
-        size_t car_id = ULONG_LONG_MAX;
-        for (size_t j = 0; j < traffic_manager.car_count; j++)
-            if (traffic_manager.cars[j].lane_id == ULONG_LONG_MAX)
+        unsigned short car_id = USHRT_MAX;
+        for (unsigned short j = 0; j < traffic_manager.car_count; j++)
+            if (traffic_manager.cars[j].lane_id == USHRT_MAX)
                 car_id = j;
-        if (car_id == ULONG_LONG_MAX) /// All cars taken.
+        if (car_id == USHRT_MAX) /// All cars taken.
             break;
         
         /// Setting car on a lane
@@ -281,20 +282,20 @@ void move_traffic(const bool mode)
 }
 
 
-void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car *const player_car, bool *const is_driving, unsigned int *const point_count)
+void render_traffic_on_pts(const unsigned short min_path_pt, unsigned short max_path_pt, struct Car *const player_car, bool *const is_driving, unsigned int *const point_count)
 {
     /// TODO: check args
     if (max_path_pt >= traffic_manager.lanes[0].pt_count)
         max_path_pt  = traffic_manager.lanes[0].pt_count - 1;
     
-    for (size_t path_pt = min_path_pt; path_pt <= max_path_pt; path_pt++)
+    for (unsigned short path_pt = min_path_pt; path_pt <= max_path_pt; path_pt++)
     {
-        for (size_t car_id = 0; car_id < traffic_manager.car_count; car_id++)
+        for (unsigned short car_id = 0; car_id < traffic_manager.car_count; car_id++)
         {
             if (traffic_manager.cars[car_id].path_pt == path_pt)
             {
-                const size_t lane_id = traffic_manager.cars[car_id].lane_id;
-                if (lane_id == ULONG_LONG_MAX) /// Means the car is not on any lane /// UNTESTED change to `ULONG_LONG_MAX`.
+                const unsigned short lane_id = traffic_manager.cars[car_id].lane_id;
+                if (lane_id == USHRT_MAX) /// Means the car is not on any lane.
                     continue;
                 traffic_manager.cars[car_id].coords = traffic_manager.lanes[lane_id].points[path_pt];
                 render_traffic_car(&traffic_manager.cars[car_id]);

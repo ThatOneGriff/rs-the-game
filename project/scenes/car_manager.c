@@ -46,7 +46,7 @@ void init_car_manager(int *const exit_code)
     /// First line indicates track amount.
     char line[100];
     fgets(line, 100, car_data_file);
-    const size_t line_count = (size_t)atoi(line);
+    const unsigned short line_count = (unsigned short)atoi(line);
     if (line_count == 0)
     {
         print_error("`init_car_manager()`: car data line count = 0");
@@ -66,7 +66,7 @@ void init_car_manager(int *const exit_code)
     }
 
     /// Car loading
-    for (size_t i = 0; i < line_count; i++)
+    for (unsigned short i = 0; i < line_count; i++)
     {
         fgets(line, 100, car_data_file);
         line[strcspn(line, "\n")] = '\0';
@@ -90,7 +90,7 @@ void free_car_manager(void)
 {
     if (players_car_manager.cars != NULL)
     {
-        for (size_t i = 0; i < players_car_manager.car_count; i++)
+        for (unsigned short i = 0; i < players_car_manager.car_count; i++)
             free_car(&players_car_manager.cars[i]);
         free(players_car_manager.cars);
     }

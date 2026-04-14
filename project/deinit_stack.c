@@ -9,7 +9,7 @@
 
 /* Predef */
 
-struct Deinit_Stack new_deinit_stack(const size_t size, int *const exit_code);
+struct Deinit_Stack new_deinit_stack(const unsigned short size, int *const exit_code);
 void               free_deinit_stack(struct Deinit_Stack *const target); 
 void             add_to_deinit_stack(struct Deinit_Stack *const target, void *const new_element, void (*const new_free_function)(void*));
 void              flush_deinit_stack(struct Deinit_Stack *const target);
@@ -18,7 +18,7 @@ void           pop_from_deinit_stack(struct Deinit_Stack *const target);
 
 /* Body */
 
-struct Deinit_Stack new_deinit_stack(const size_t size, int *const exit_code)
+struct Deinit_Stack new_deinit_stack(const unsigned short size, int *const exit_code)
 {
     if (exit_code == NULL)
         print_warning("`new_deinit_stack()`: `exit_code` arg is `NULL`");
@@ -36,7 +36,7 @@ struct Deinit_Stack new_deinit_stack(const size_t size, int *const exit_code)
     if (result.free_functions == NULL)
     {
         print_error("`new_deinit_stack()`: couldn't allocate memory for free_functions");
-        for (size_t i = 0; i < size; i++)
+        for (unsigned short i = 0; i < size; i++)
         {
             free(result.elements[i]);
             result.elements[i] = NULL;

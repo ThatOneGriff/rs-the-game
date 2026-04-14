@@ -11,14 +11,14 @@
 struct Path
 {
     SDL_FRect* points;
-    size_t     pt_count;
+    unsigned short     pt_count;
     //bool is_loop; /// For now, every path is a loop.
 };
 
 
 /* Predef */
 
-struct Path  new_path(const SDL_FRect *const points, const size_t pt_count, int *const exit_code);
+struct Path  new_path(const SDL_FRect *const points, const unsigned short pt_count, int *const exit_code);
 void        free_path(struct Path *const target);
 
 

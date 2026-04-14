@@ -88,7 +88,7 @@ struct Car load_car(const char *const path, int *const exit_code)
     strcpy(result.info_text [1], car_data[10]);
 
     /// Textures (gameplay)
-    for (size_t i = 0; i < 5; i++)
+    for (unsigned short i = 0; i < 5; i++)
     {
         result.textures[i] = IMG_LoadTexture(graphics_layer.renderer, car_data[i+11]);
         if (result.textures[i] == NULL)
@@ -123,7 +123,7 @@ void free_car(struct Car *const target)
     if (target == NULL)
         return;
     
-    for (size_t i = 0; i < 5; i++)
+    for (unsigned short i = 0; i < 5; i++)
     {
         if (target->textures[i] != NULL_TEXTURE)
         {

@@ -7,7 +7,7 @@
 #include "debug.h"                   /// Error / warning output (Moved on top because of `STDIO_ENABLED`).
 #if STDIO_ENABLED
     #include <stdio.h>               /// `printf('\n')`.
-#endif /// STDIO_ENABLED    
+#endif /// STDIO_ENABLED
 
 /* Root folder headers */
 //#include "debug.h"                 /// Error printing.
@@ -39,7 +39,6 @@ miniaudio  version: 0.11.25 (updated 30.03.26 | checked 30.03.26) | https://gith
 */
 
 /* TODOs: */
-/// - `short` the `int`'s where possible;
 /// - `struct Text`, more optimized for reusing text components;
 /// - pushing an array of points/textures into array-like members of `game_components/*`, instead of individual `add_*()` calls;
 /// - player's car bouncing in beat to the music.
@@ -48,7 +47,7 @@ miniaudio  version: 0.11.25 (updated 30.03.26 | checked 30.03.26) | https://gith
 /// - progression system;
 /// - switch between metric and imperial system;
 /// - mouse control;
-/// - click sound (thus an option to disable music and/or sounds, not just the audio).
+/// - click sound (thus an option to disable music and/or sounds, not just the audio as a whole).
 
 /* Predef */
 

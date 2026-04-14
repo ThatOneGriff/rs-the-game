@@ -10,8 +10,8 @@
 struct Car_Manager
 {
     struct Car* cars;
-    size_t car_count;
-    size_t cur_car;
+    unsigned short car_count;
+    unsigned short cur_car;
 };
 extern struct Car_Manager players_car_manager;
 

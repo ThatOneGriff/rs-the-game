@@ -178,19 +178,19 @@ void _process_gameplay_car_input(void)
         gameplay_scene.car_ptr->latest_turn_start = 0;
     }
 
-    gameplay_scene.car_ptr->base_texture = (size_t)(2 + gameplay_scene.car_ptr->direction_x);
+    gameplay_scene.car_ptr->base_texture = (unsigned short)(2 + gameplay_scene.car_ptr->direction_x);
     /// NOTE: those nested `if-else`s are for overflow sanitizer compliance.
     /// - If turn recently started.
     if ((gameplay_scene.car_ptr->latest_turn_start != 0) && (logic_layer.curr_tick - gameplay_scene.car_ptr->latest_turn_start >= gameplay_scene.car_ptr->turn_smoothing_duration))
     {
         if (gameplay_scene.car_ptr->prev_turn_direction_x > 0)
-            gameplay_scene.car_ptr->base_texture += (size_t)gameplay_scene.car_ptr->prev_turn_direction_x;
+            gameplay_scene.car_ptr->base_texture += (unsigned short)gameplay_scene.car_ptr->prev_turn_direction_x;
         else
         {
-            if (gameplay_scene.car_ptr->base_texture <  (size_t)(-gameplay_scene.car_ptr->prev_turn_direction_x))
+            if (gameplay_scene.car_ptr->base_texture <  (unsigned short)(-gameplay_scene.car_ptr->prev_turn_direction_x))
                 gameplay_scene.car_ptr->base_texture = 0;
             else
-                gameplay_scene.car_ptr->base_texture -= (size_t)(-gameplay_scene.car_ptr->prev_turn_direction_x);
+                gameplay_scene.car_ptr->base_texture -= (unsigned short)(-gameplay_scene.car_ptr->prev_turn_direction_x);
         }
     }
     
@@ -198,13 +198,13 @@ void _process_gameplay_car_input(void)
     else if ((gameplay_scene.car_ptr->latest_turn_end   != 0) && (logic_layer.curr_tick - gameplay_scene.car_ptr->latest_turn_end   <= gameplay_scene.car_ptr->turn_smoothing_duration))
     {
         if (gameplay_scene.car_ptr->prev_turn_direction_x > 0)
-            gameplay_scene.car_ptr->base_texture += (size_t)gameplay_scene.car_ptr->prev_turn_direction_x;
+            gameplay_scene.car_ptr->base_texture += (unsigned short)gameplay_scene.car_ptr->prev_turn_direction_x;
         else
         {
-            if (gameplay_scene.car_ptr->base_texture <  (size_t)(-gameplay_scene.car_ptr->prev_turn_direction_x))
+            if (gameplay_scene.car_ptr->base_texture <  (unsigned short)(-gameplay_scene.car_ptr->prev_turn_direction_x))
                 gameplay_scene.car_ptr->base_texture = 0;
             else
-                gameplay_scene.car_ptr->base_texture -= (size_t)(-gameplay_scene.car_ptr->prev_turn_direction_x);
+                gameplay_scene.car_ptr->base_texture -= (unsigned short)(-gameplay_scene.car_ptr->prev_turn_direction_x);
         }
     }
     
@@ -222,16 +222,16 @@ void _process_gameplay_car_input(void)
     /// NOTE: again, integer overflow compliance.
     if (coord_based_diff > 0)
     {
-        gameplay_scene.car_ptr->base_texture += (size_t)coord_based_diff;
+        gameplay_scene.car_ptr->base_texture += (unsigned short)coord_based_diff;
         if (gameplay_scene.car_ptr->base_texture >= 5)
             gameplay_scene.car_ptr->base_texture = 4;
     }
     else
     {
-        if (gameplay_scene.car_ptr->base_texture <  (size_t)(-coord_based_diff))
+        if (gameplay_scene.car_ptr->base_texture <  (unsigned short)(-coord_based_diff))
             gameplay_scene.car_ptr->base_texture = 0;
         else
-            gameplay_scene.car_ptr->base_texture -= (size_t)(-coord_based_diff);
+            gameplay_scene.car_ptr->base_texture -= (unsigned short)(-coord_based_diff);
     }
     
     /// Moving the car across the screen.

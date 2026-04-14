@@ -23,7 +23,7 @@ struct Car
     char info_text [2][50];
 
     SDL_Texture* textures[5];
-    size_t       base_texture;
+    unsigned short       base_texture;
 
     SDL_FRect     coords;
     int           direction_x;

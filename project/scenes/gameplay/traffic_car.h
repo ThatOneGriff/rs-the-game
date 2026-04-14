@@ -14,9 +14,9 @@ struct Traffic_Car
 {
     char name[25];
     SDL_Texture* textures[3];
-    size_t       base_texture;
-    size_t    lane_id;
-    size_t    path_pt;
+    unsigned short       base_texture;
+    unsigned short    lane_id;
+    unsigned short    path_pt;
     SDL_FRect coords;
 };
 

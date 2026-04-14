@@ -15,9 +15,9 @@ struct Animated_Sprite
 
     SDL_Texture** frames;
     SDL_FRect     rect;
-    size_t cur_count;
-    size_t max_count;
-    size_t i;
+    unsigned short cur_count;
+    unsigned short max_count;
+    unsigned short i;
 
     time_tick_ms latest_change;
     time_span_ms step;
@@ -26,7 +26,7 @@ struct Animated_Sprite
 
 /* Predef */
 
-struct Animated_Sprite init_animated_sprite(const SDL_FRect rect, const size_t max_count, const time_span_ms step, int *const exit_code);
+struct Animated_Sprite init_animated_sprite(const SDL_FRect rect, const unsigned short max_count, const time_span_ms step, int *const exit_code);
 void                   free_animated_sprite(struct Animated_Sprite *const target);
 void add_to_animated_sprite(struct Animated_Sprite *const to, const char *const new_texture_path, int *const exit_code);
 void render_animated_sprite(struct Animated_Sprite *const target);

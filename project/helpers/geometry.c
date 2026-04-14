@@ -27,7 +27,7 @@ struct Path flipped_path_x(const struct Path path)
         print_error("`flipped_path_x()`: couldn't allocate memory");
         return result;
     }
-    for (size_t i = 0; i < path.pt_count; i++)
+    for (unsigned short i = 0; i < path.pt_count; i++)
     {
         result.points[i] = path.points[i];
         result.points[i].x = reflect_x(path.points[i].x) - path.points[i].w;

@@ -18,10 +18,10 @@
 struct Traffic_Manager
 {
     struct Traffic_Car* cars;
-    size_t              car_count;
+    unsigned short              car_count;
     
     struct Path lanes[3];
-    size_t lane_spawn_cooldowns[3];
+    unsigned short lane_spawn_cooldowns[3];
 
     time_tick_ms latest_move_tick;
     time_span_ms move_delta;
@@ -31,10 +31,10 @@ extern struct Traffic_Manager traffic_manager; /// Singleton.
 
 /* Predef */
 
-void init_traffic_manager(const size_t car_count, int *const exit_code);
+void init_traffic_manager(const unsigned short car_count, int *const exit_code);
 void free_traffic_manager(void);
 void   move_traffic       (const bool mode);
-void render_traffic_on_pts(const size_t min_path_pt, size_t max_path_pt, struct Car *const player_car, bool *const is_driving, unsigned int *const point_count);
+void render_traffic_on_pts(const unsigned short min_path_pt, unsigned short max_path_pt, struct Car *const player_car, bool *const is_driving, unsigned int *const point_count);
 
 
 #endif /// TRAFFIC_MANAGER_H

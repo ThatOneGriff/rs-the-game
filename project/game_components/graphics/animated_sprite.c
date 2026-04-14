@@ -19,7 +19,7 @@
 
 /* Predef */
 
-struct Animated_Sprite init_animated_sprite(const SDL_FRect rect, const size_t max_count, const time_span_ms step, int *const exit_code);
+struct Animated_Sprite init_animated_sprite(const SDL_FRect rect, const unsigned short max_count, const time_span_ms step, int *const exit_code);
 void                   free_animated_sprite(struct Animated_Sprite *const target);
 void add_to_animated_sprite(struct Animated_Sprite *const to, const char *const new_texture_path, int *const exit_code);
 void render_animated_sprite(struct Animated_Sprite *const target);
@@ -27,7 +27,7 @@ void render_animated_sprite(struct Animated_Sprite *const target);
 
 /* Body */
 
-struct Animated_Sprite init_animated_sprite(const SDL_FRect rect, const size_t max_count, const time_span_ms step, int *const exit_code)
+struct Animated_Sprite init_animated_sprite(const SDL_FRect rect, const unsigned short max_count, const time_span_ms step, int *const exit_code)
 {
     /// Object creation
     struct Animated_Sprite result = {0};
@@ -67,7 +67,7 @@ void free_animated_sprite(struct Animated_Sprite *const target)
     
     if (target->frames != NULL)
     {
-        for (size_t i = 0; i < target->cur_count; i++)
+        for (unsigned short i = 0; i < target->cur_count; i++)
         {
             if (target->frames[i] != NULL_TEXTURE)
             {

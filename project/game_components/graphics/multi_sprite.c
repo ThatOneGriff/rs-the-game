@@ -17,7 +17,7 @@
 
 /* Predef */
 
-struct Multi_Sprite load_multi_sprite(const char *const texture_path, const size_t max_count, int *const exit_code);
+struct Multi_Sprite load_multi_sprite(const char *const texture_path, const unsigned short max_count, int *const exit_code);
 void                free_multi_sprite(struct Multi_Sprite *const target);
 void add_to_multi_sprite(struct Multi_Sprite *const to, const SDL_FRect new_rects, int *const exit_code);
 void render_multi_sprite(const struct Multi_Sprite *const target);
@@ -25,7 +25,7 @@ void render_multi_sprite(const struct Multi_Sprite *const target);
 
 /* Body */
 
-struct Multi_Sprite load_multi_sprite(const char *const texture_path, const size_t max_count, int *const exit_code)
+struct Multi_Sprite load_multi_sprite(const char *const texture_path, const unsigned short max_count, int *const exit_code)
 {
     struct Multi_Sprite result = {0};
 
@@ -134,7 +134,7 @@ void render_multi_sprite(const struct Multi_Sprite *const target)
         return;
     }
     
-    for (size_t i = 0; i < target->cur_count; i++)
+    for (unsigned short i = 0; i < target->cur_count; i++)
     {
         if (target->rects[i].x + target->rects[i].w <= 0 ||
             target->rects[i].y + target->rects[i].h <= 0 ||

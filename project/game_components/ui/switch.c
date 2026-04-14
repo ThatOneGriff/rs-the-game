@@ -14,7 +14,7 @@
 
 /* Predef */
 
-struct Switch    init_switch(const size_t max_option_count, int *const exit_code);
+struct Switch    init_switch(const unsigned short max_option_count, int *const exit_code);
 void add_neighbors_to_switch(struct Switch *const target, void *const up, void *const down, void *const left, void *const right);
 void             free_switch(struct Switch *const target);
 void           add_to_switch(struct Switch *const target, const struct Pseudo_Button new_option);
@@ -24,7 +24,7 @@ void           render_switch(struct Switch *const target);
 
 /* Body */
 
-struct Switch init_switch(const size_t max_option_count, int *const exit_code)
+struct Switch init_switch(const unsigned short max_option_count, int *const exit_code)
 {
     if (exit_code == NULL)
         print_warning("`init_switch()`: `exit_code` arg is `NULL`");
@@ -81,7 +81,7 @@ void free_switch(struct Switch *const target)
 
     if (target->options != NULL)
     {
-        for (size_t i = 0; i < target->cur_option_count; i++)
+        for (unsigned short i = 0; i < target->cur_option_count; i++)
             free_pseudo_button(&target->options[i]);
         free(target->options);
     }

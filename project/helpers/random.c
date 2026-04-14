@@ -15,7 +15,7 @@
 unsigned int randint       (const unsigned int min, const unsigned int max);
          int randint_w_neg (         const int min,          const int max);
 unsigned int randint_except(      unsigned int min,       unsigned int max, const unsigned int except);
-unsigned int randint_except_array(unsigned int min,       unsigned int max,       unsigned int *const except_array, const size_t except_array_size);
+unsigned int randint_except_array(unsigned int min,       unsigned int max,       unsigned int *const except_array, const unsigned short except_array_size);
 SDL_Color    rand_color  (void);
 float        rand_percent(const unsigned int min, const unsigned int max);
 struct Vec2  rand_vec2   (const struct Vec2  min, const struct Vec2  max);
@@ -65,7 +65,7 @@ unsigned int randint_except(unsigned int min, unsigned int max, const unsigned i
 }
 
 
-unsigned int randint_except_array(unsigned int min, unsigned int max, unsigned int *const except_array, const size_t except_array_size)
+unsigned int randint_except_array(unsigned int min, unsigned int max, unsigned int *const except_array, const unsigned short except_array_size)
 {
     unsigned int result = UINT_MAX;
     bool is_in_except_array = false;
@@ -73,7 +73,7 @@ unsigned int randint_except_array(unsigned int min, unsigned int max, unsigned i
     {
         result = randint(min, max);
         is_in_except_array = false;
-        for (size_t i = 0; i < except_array_size; i++)
+        for (unsigned short i = 0; i < except_array_size; i++)
         {
             if (result == except_array[i])
             {

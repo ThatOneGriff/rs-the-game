@@ -242,7 +242,7 @@ void free_gameplay_scene(void)
     free_sprite(&gameplay_scene.curr_points_text);
     free_sprite(&gameplay_scene.fps_text);
     free_pause_screen(&gameplay_scene.pause_screen);
-    for (size_t i = 0; i < 10; i++)
+    for (unsigned short i = 0; i < 10; i++)
         free_sprite(&gameplay_scene.clouds[i]);
     free_environment     (&gameplay_scene.trees);
     free_animated_sprite(&gameplay_scene.stripes);
@@ -294,7 +294,7 @@ void render_gameplay_scene(void)
 
     /// Rendering
     SDL_RenderTexture(graphics_layer.renderer, gameplay_scene.sky_bg, NULL, NULL);
-    for (size_t i = 0; i < 10; i++)
+    for (unsigned short i = 0; i < 10; i++)
     {
         /// Just a bunch of magic numbers I got after playing around.
         gameplay_scene.clouds[i].rect.x += (float)CLOUD_VELOCITY * (float)FPS_manager.delta_ns / SEC_IN_NS / gameplay_scene.clouds[i].rect.w;
@@ -312,10 +312,10 @@ void render_gameplay_scene(void)
     if ((gameplay_scene.is_driving && (logic_layer.curr_tick - gameplay_scene.start_tick >= 2000)) || gameplay_scene.crash_tick != 0)
         render_traffic_on_pts(1, 9, gameplay_scene.car_ptr, &gameplay_scene.is_driving, &gameplay_scene.point_count);
     update_points();
-    partly_render_environment(&gameplay_scene.trees, 3, ULONG_LONG_MAX);
+    partly_render_environment(&gameplay_scene.trees, 3, USHRT_MAX);
     render_car(gameplay_scene.car_ptr);
     if ((gameplay_scene.is_driving && (logic_layer.curr_tick - gameplay_scene.start_tick >= 2000)) || gameplay_scene.crash_tick != 0)
-        render_traffic_on_pts(10, UINT_MAX, NULL, NULL, NULL);
+        render_traffic_on_pts(10, USHRT_MAX, NULL, NULL, NULL);
     render_sprite(&gameplay_scene.personal_best_text);
     render_sprite(&gameplay_scene.curr_points_text);
     if (show_fps)

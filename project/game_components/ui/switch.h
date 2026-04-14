@@ -20,15 +20,15 @@ struct Switch
     struct Pseudo_Button* options;
     struct Pseudo_Button* cur_option;
 
-    size_t max_option_count;
-    size_t cur_option_count;
-    size_t cur_option_id;
+    unsigned short max_option_count;
+    unsigned short cur_option_count;
+    unsigned short cur_option_id;
 };
 
 
 /* Predef */
 
-struct Switch    init_switch(const size_t max_option_count, int *const exit_code);
+struct Switch    init_switch(const unsigned short max_option_count, int *const exit_code);
 void add_neighbors_to_switch(struct Switch *const target, void *const up, void *const down, void *const left, void *const right);
 void             free_switch(struct Switch *const target);
 void           add_to_switch(struct Switch *const target, const struct Pseudo_Button new_option);

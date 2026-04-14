@@ -27,7 +27,7 @@ I wholeheartedly hate this code. Sorry. */
 /* Predef */
 
 struct Move_Component init_move_component(const struct Path path, const time_span_ms step, bool random_x_reflect, int *const exit_code);
-void                couple_move_component(struct Move_Component *const target, SDL_FRect *const manipulated_rects, const size_t rect_count, struct Vec2 max_offset, bool randomize_positions, int *const exit_code);
+void                couple_move_component(struct Move_Component *const target, SDL_FRect *const manipulated_rects, const unsigned short rect_count, struct Vec2 max_offset, bool randomize_positions, int *const exit_code);
 void move_all_rects     (struct Move_Component *const target);
 void free_move_component(struct Move_Component *const target);
 
@@ -50,7 +50,7 @@ struct Move_Component init_move_component(const struct Path path, const time_spa
 }
 
 
-void couple_move_component(struct Move_Component *const target, SDL_FRect *const manipulated_rects, const size_t rect_count, struct Vec2 max_offset, bool randomize_positions, int *const exit_code)
+void couple_move_component(struct Move_Component *const target, SDL_FRect *const manipulated_rects, const unsigned short rect_count, struct Vec2 max_offset, bool randomize_positions, int *const exit_code)
 {
     /// Param checking
     if (exit_code == NULL)
@@ -92,7 +92,7 @@ void couple_move_component(struct Move_Component *const target, SDL_FRect *const
         *exit_code = EXIT_FAILURE;
         return;
     }
-    for (size_t i = 0; i < rect_count; i++)
+    for (unsigned short i = 0; i < rect_count; i++)
         target->manipulated_rects[i] = &manipulated_rects[i];
     add_to_deinit_stack(&deinit_stack, target->manipulated_rects, (void (*)(void*))free);
     
@@ -109,13 +109,13 @@ void couple_move_component(struct Move_Component *const target, SDL_FRect *const
             return;
         }
 
-        for (size_t i = 0; i < rect_count; i++)
+        for (unsigned short i = 0; i < rect_count; i++)
             target->offsets[i] = rand_vec2(vec2(0.0, 0.0), max_offset);
 
         add_to_deinit_stack(&deinit_stack, target->offsets, (void (*)(void*))free);
     }
 
-    target->rects_pt_indices = calloc(rect_count, sizeof(size_t));
+    target->rects_pt_indices = calloc(rect_count, sizeof(unsigned short));
     if (target->rects_pt_indices == NULL)
     {
         print_error("`couple_move_component()`: couldn't allocate memory for `rects_pt_indices`");
@@ -139,10 +139,10 @@ void couple_move_component(struct Move_Component *const target, SDL_FRect *const
     }
 
     /// Position distribution (+ setting rects to the path's first point)
-    for (size_t i = 0; i < rect_count; i++)
+    for (unsigned short i = 0; i < rect_count; i++)
     {
         if (randomize_positions)
-            target->rects_pt_indices[i] = randint(0, (unsigned)target->path.pt_count-1);
+            target->rects_pt_indices[i] = (unsigned short)randint(0, (unsigned)target->path.pt_count-1);
         else
             target->rects_pt_indices[i] = i % target->path.pt_count;
         *(target->manipulated_rects[i]) = target->path.points[target->rects_pt_indices[i]];
@@ -180,7 +180,7 @@ void move_all_rects(struct Move_Component *const target)
         return;
     
     /// Moving all manipulated coords
-    for (size_t i = 0; i < target->rect_count; i++)
+    for (unsigned short i = 0; i < target->rect_count; i++)
     {
         ++target->rects_pt_indices[i];
         if (target->rects_pt_indices[i] >= target->path.pt_count)
