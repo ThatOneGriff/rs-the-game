@@ -9,6 +9,7 @@
 #include "../../audio/audio_manager.h"       /// `audio_manager.using_audio`.
 #include "../../game_components/text/text.h" /// Text.
 #include "../../game_components/ui/button.h" /// Buttons.
+#include "../../game_components/ui/pseudo_button.h" /// Pseudo buttons.
 #include "../../game_components/ui/switch.h" /// Switches.
 #include "../../graphics/fps.h"              /// FPS limit switch.
 #include "../../graphics/graphics_layer.h"   /// Rendering.
@@ -82,25 +83,25 @@ struct Options_Screen init_options_screen(int *const exit_code)
     add_to_deinit_stack(&deinit_stack, &result.audio_text, (void (*)(void*))free_sprite);
     
     /// Audio 'ON' button
-    const SDL_Color AUDIO_ON_SWITCH_COLOR = (audio_manager.audio_is_valid ? (SDL_Color){22,196,127,255} : (SDL_Color){57,62,70,255});
-    struct Button audio_on_button = create_button("ON", AUDIO_ON_SWITCH_COLOR, vec2(65, 50), 15, 2, exit_code);
+    const SDL_Color AUDIO_ON_SWITCH_COLOR = (audio_manager.audio_is_valid ? (SDL_Color){22,196,127,255} : DISABLED_BUTTON_COLOR);
+    struct Pseudo_Button audio_on_button = create_pseudo_button("ON", AUDIO_ON_SWITCH_COLOR, vec2(65, 50), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the audio 'ON' button");
+        print_error("`init_options_screen()`: couldn't create the audio 'ON' pseudo-button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &audio_on_button, (void (*)(void*))free_button);
+    add_to_deinit_stack(&deinit_stack, &audio_on_button, (void (*)(void*))free_pseudo_button);
     /// Audio 'OFF' button
-    const SDL_Color AUDIO_OFF_SWITCH_COLOR = (audio_manager.audio_is_valid ? (SDL_Color){237,63,39,255} : (SDL_Color){57,62,70,255});
-    struct Button audio_off_button = create_button("OFF", AUDIO_OFF_SWITCH_COLOR, vec2(65, 50), 15, 2, exit_code);
+    const SDL_Color AUDIO_OFF_SWITCH_COLOR = (audio_manager.audio_is_valid ? (SDL_Color){237,63,39,255} : DISABLED_BUTTON_COLOR);
+    struct Pseudo_Button audio_off_button = create_pseudo_button("OFF", AUDIO_OFF_SWITCH_COLOR, vec2(65, 50), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the audio 'OFF' button");
+        print_error("`init_options_screen()`: couldn't create the audio 'OFF' pseudo-button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &audio_off_button, (void (*)(void*))free_button);
+    add_to_deinit_stack(&deinit_stack, &audio_off_button, (void (*)(void*))free_pseudo_button);
     /// Audio switch
     result.audio_switch = init_switch(2, exit_code);
     if (*exit_code == EXIT_FAILURE)
@@ -127,41 +128,41 @@ struct Options_Screen init_options_screen(int *const exit_code)
     }
     add_to_deinit_stack(&deinit_stack, &result.fps_text, (void (*)(void*))free_sprite);
     /// FPS limit (30) button
-    struct Button fps_button_30 = create_button("30", (SDL_Color){246,255,153,255}, vec2(189, 70), 15, 2, exit_code);
+    struct Pseudo_Button fps_button_30 = create_pseudo_button("30", (SDL_Color){246,255,153,255}, vec2(189, 70), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the FPS limit (30) button");
+        print_error("`init_options_screen()`: couldn't create the FPS limit (30) pseudo-button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &fps_button_30, (void (*)(void*))free_button);
+    add_to_deinit_stack(&deinit_stack, &fps_button_30, (void (*)(void*))free_pseudo_button);
     /// FPS limit (60) button
-    struct Button fps_button_60 = create_button("60", (SDL_Color){22,196,127,255}, vec2(189, 70), 15, 2, exit_code);
+    struct Pseudo_Button fps_button_60 = create_pseudo_button("60", (SDL_Color){22,196,127,255}, vec2(189, 70), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the FPS limit (60) button");
+        print_error("`init_options_screen()`: couldn't create the FPS limit (60) pseudo-button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &fps_button_60, (void (*)(void*))free_button);
+    add_to_deinit_stack(&deinit_stack, &fps_button_60, (void (*)(void*))free_pseudo_button);
     /// FPS limit (120) button
-    struct Button fps_button_120 = create_button("120", (SDL_Color){22,196,127,255}, vec2(189, 70), 15, 2, exit_code);
+    struct Pseudo_Button fps_button_120 = create_pseudo_button("120", (SDL_Color){22,196,127,255}, vec2(189, 70), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the FPS limit (120) button");
+        print_error("`init_options_screen()`: couldn't create the FPS limit (120) pseudo-button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &fps_button_120, (void (*)(void*))free_button);
+    add_to_deinit_stack(&deinit_stack, &fps_button_120, (void (*)(void*))free_pseudo_button);
     /// FPS limit (none) button
-    struct Button fps_button_none = create_button("None", (SDL_Color){69,71,75,255}, vec2(189, 70), 15, 2, exit_code);
+    struct Pseudo_Button fps_button_none = create_pseudo_button("None", (SDL_Color){69,71,75,255}, vec2(189, 70), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the FPS limit (120) button");
+        print_error("`init_options_screen()`: couldn't create the FPS limit ('None') pseudo-button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &fps_button_none, (void (*)(void*))free_button);
+    add_to_deinit_stack(&deinit_stack, &fps_button_none, (void (*)(void*))free_pseudo_button);
     /// FPS switch
     result.fps_switch = init_switch(4, exit_code);
     if (*exit_code == EXIT_FAILURE)
@@ -191,23 +192,23 @@ struct Options_Screen init_options_screen(int *const exit_code)
     add_to_deinit_stack(&deinit_stack, &result.show_fps_text, (void (*)(void*))free_sprite);
 
     /// Show FPS 'ON' button
-    struct Button show_fps_on_button = create_button("ON", (SDL_Color){22,196,127,255}, vec2(102, 90), 15, 2, exit_code);
+    struct Pseudo_Button show_fps_on_button = create_pseudo_button("ON", (SDL_Color){22,196,127,255}, vec2(102, 90), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the 'Show FPS/ON' button");
+        print_error("`init_options_screen()`: couldn't create the 'Show FPS/ON' pseudo-button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &show_fps_on_button, (void (*)(void*))free_button);
+    add_to_deinit_stack(&deinit_stack, &show_fps_on_button, (void (*)(void*))free_pseudo_button);
     /// Show FPS 'OFF' button
-    struct Button show_fps_off_button = create_button("OFF", (SDL_Color){237,63,39,255}, vec2(102, 90), 15, 2, exit_code);
+    struct Pseudo_Button show_fps_off_button = create_pseudo_button("OFF", (SDL_Color){237,63,39,255}, vec2(102, 90), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the 'Show FPS/OFF' button");
+        print_error("`init_options_screen()`: couldn't create the 'Show FPS/OFF' pseudo-button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &show_fps_off_button, (void (*)(void*))free_button);
+    add_to_deinit_stack(&deinit_stack, &show_fps_off_button, (void (*)(void*))free_pseudo_button);
     /// 'Show FPS' switch
     result.show_fps_switch = init_switch(2, exit_code);
     if (*exit_code == EXIT_FAILURE)
@@ -232,23 +233,23 @@ struct Options_Screen init_options_screen(int *const exit_code)
     }
     add_to_deinit_stack(&deinit_stack, &result.logging_text, (void (*)(void*))free_sprite);
     /// Logging 'ON' button
-    struct Button logging_on_button = create_button("ON", (SDL_Color){22,196,127,255}, vec2(82, 110), 15, 2, exit_code);
+    struct Pseudo_Button logging_on_button = create_pseudo_button("ON", (SDL_Color){22,196,127,255}, vec2(82, 110), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the logging 'ON' button");
+        print_error("`init_options_screen()`: couldn't create the logging 'ON' pseudo-button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &logging_on_button, (void (*)(void*))free_button);
+    add_to_deinit_stack(&deinit_stack, &logging_on_button, (void (*)(void*))free_pseudo_button);
     /// Logging 'OFF' button
-    struct Button logging_off_button = create_button("OFF", (SDL_Color){237,63,39,255}, vec2(82, 110), 15, 2, exit_code);
+    struct Pseudo_Button logging_off_button = create_pseudo_button("OFF", (SDL_Color){237,63,39,255}, vec2(82, 110), 15, 2, exit_code);
     if (*exit_code == EXIT_FAILURE)
     {
-        print_error("`init_options_screen()`: couldn't create the logging 'OFF' button");
+        print_error("`init_options_screen()`: couldn't create the logging 'OFF' pseudo-button");
         flush_deinit_stack(&deinit_stack);
         return result;
     }
-    add_to_deinit_stack(&deinit_stack, &logging_off_button, (void (*)(void*))free_button);
+    add_to_deinit_stack(&deinit_stack, &logging_off_button, (void (*)(void*))free_pseudo_button);
     /// 'Logging' switch
     result.logging_switch = init_switch(2, exit_code);
     if (*exit_code == EXIT_FAILURE)

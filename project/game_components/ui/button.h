@@ -7,6 +7,8 @@
 #include "../graphics/sprite.h"     /// Rendering text into a texture.
 #include "../../helpers/geometry.h" /// `struct Vec2`.
 
+#define DISABLED_BUTTON_COLOR (SDL_Color){57,62,70,255}
+
 
 /* Struct */
 
