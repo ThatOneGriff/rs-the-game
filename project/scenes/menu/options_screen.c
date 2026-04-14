@@ -177,7 +177,7 @@ struct Options_Screen init_options_screen(int *const exit_code)
     add_to_switch(&result.fps_switch, fps_button_none);
     if (! audio_manager.audio_is_valid)
         result.fps_switch.is_focused = true;
-    for (unsigned int i = 0; i < curr_fps_cap_i; i++)
+    for (unsigned short i = 0; i < curr_fps_cap_i; i++)
         next_switch_option(&result.fps_switch); /// Set to curr FPS cap.
     add_to_deinit_stack(&deinit_stack, &result.fps_switch, (void (*)(void*))free_switch);
 

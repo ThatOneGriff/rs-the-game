@@ -181,7 +181,7 @@ void read_data(void)
         audio_manager.using_audio = (bool)atoi(save_data[0]);
     else
         audio_manager.using_audio = false;
-    curr_fps_cap_i            = (unsigned)atoi(save_data[1]);
+    curr_fps_cap_i             = (unsigned short)atoi(save_data[1]);
     set_fps_cap(fps_cap_options[curr_fps_cap_i]);
 
     const unsigned short car_i = (unsigned short)atoi(save_data[2]);

@@ -15,11 +15,11 @@ struct Music_Loader
     bool active;
 
     char** track_paths;
-    unsigned int track_count;
-    unsigned int curr_track;
+    unsigned track_count;
+    unsigned curr_track;
 
-    unsigned int latest_tracks_buffer[LATEST_TRACKS_BUFFER_SIZE];
-    unsigned int latest_track_i;
+    unsigned latest_tracks_buffer[LATEST_TRACKS_BUFFER_SIZE];
+    unsigned latest_track_i;
 
     time_tick_ms        track_end_tick; /// Is used to control the pause between tracks.
     time_tick_ms latest_track_end_check_tick;

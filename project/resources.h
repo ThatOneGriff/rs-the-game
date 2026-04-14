@@ -10,7 +10,7 @@
 extern SDL_Surface* ICON_TEXTURE;
 extern SDL_Texture* NULL_TEXTURE;
 extern char         MAIN_FONT_PATH[64];
-extern unsigned int PERSONAL_BEST;
+extern unsigned PERSONAL_BEST;
 
 
 /* Predef */

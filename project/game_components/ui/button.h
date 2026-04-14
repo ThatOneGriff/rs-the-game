@@ -27,7 +27,7 @@ struct Button
 
 /* Predef */
 
-struct Button  create_button(const char *const text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned int text_size, const unsigned int border_thickness, int *const exit_code);
+struct Button  create_button(const char *const text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned short text_size, const unsigned short border_thickness, int *const exit_code);
 void add_neighbors_to_button(struct Button *const target, void *const up, void *const down, void *const left, void *const right);
 void           render_button(const struct Button *const target);
 void             free_button(      struct Button *const target);

@@ -332,7 +332,7 @@ void update_fps_text(void)
         return;
 
     char fps_text_c[9]; /// REDO the naming.
-    sprintf(fps_text_c, "FPS: %u", (curr_fps <= 9999 ? curr_fps : 9999));
+    sprintf(fps_text_c, "FPS: %u", (unsigned short)(curr_fps <= 9999 ? curr_fps : 9999));
     free_sprite(&gameplay_scene.fps_text);
     gameplay_scene.fps_text = create_text(fps_text_c, (SDL_Color){255,255,255,255}, (SDL_Color){0,0,0,0}, fps_counter_position, 15, 1, &exit_code);
     return;

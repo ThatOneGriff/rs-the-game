@@ -40,7 +40,7 @@ struct Music_Loader init_music_loader(const char *const music_data_path, int *co
 {
     struct Music_Loader result = {0};
     memset(&result.latest_tracks_buffer, INT_MAX, sizeof(result.latest_tracks_buffer));
-    result.curr_track        = UINT_MAX;
+    result.curr_track        = USHRT_MAX;
     result.track_start_delay = 1500;
     result.latest_track_end_check_tick = logic_layer.curr_tick;
 
@@ -183,7 +183,7 @@ void freeze_music_loader(struct Music_Loader *const target)
     }
 
     target->active     = false;
-    target->curr_track = UINT_MAX;
+    target->curr_track = USHRT_MAX;
     return;
 }
 
@@ -204,7 +204,7 @@ void free_music_loader(struct Music_Loader *const target)
     }
     
     memset(target, 0, sizeof *target);
-    target->curr_track = UINT_MAX;
+    target->curr_track = USHRT_MAX;
     return;
 }
 

@@ -11,24 +11,24 @@
 /* Variables */
 
 struct FPS_Manager FPS_manager = {0};
-const unsigned int fps_cap_options[4] = {30, 60, 120, UINT_MAX};
-unsigned int  curr_fps_cap_i = 1;
-unsigned int  prev_fps = 0;
-unsigned int  curr_fps = 0;
+const unsigned short fps_cap_options[4] = {30, 60, 120, USHRT_MAX};
+unsigned short  curr_fps_cap_i = 1;
+unsigned short  prev_fps = 0;
+unsigned short  curr_fps = 0;
 bool          show_fps = false;
 struct Vec2 fps_counter_position = FPS_POS_2_DIGITS;
 
 
 /* Predef */
 
-void set_fps_cap(const unsigned int new_fps_cap);
+void set_fps_cap(const unsigned short new_fps_cap);
 void rem_fps_cap(void);
 
 
 /* Body */
 
 /// Also used as initialization.
-void set_fps_cap(const unsigned int new_fps_cap)
+void set_fps_cap(const unsigned short new_fps_cap)
 {
     if (new_fps_cap == 0)
     {

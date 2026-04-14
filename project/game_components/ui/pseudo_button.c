@@ -19,13 +19,13 @@
 
 /* Predef */
 
-struct Pseudo_Button create_pseudo_button(const char *const text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned int text_size, const unsigned int border_thickness, int *const exit_code);
+struct Pseudo_Button create_pseudo_button(const char *const text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned short text_size, const unsigned short border_thickness, int *const exit_code);
 void                   free_pseudo_button(struct Pseudo_Button *const target);
 
 
 /* Body */
 
-struct Pseudo_Button create_pseudo_button(const char *const text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned int text_size, const unsigned int border_thickness, int *const exit_code)
+struct Pseudo_Button create_pseudo_button(const char *const text, const SDL_Color inner_color, const struct Vec2 screen_pos, const unsigned short text_size, const unsigned short border_thickness, int *const exit_code)
 {
     struct Pseudo_Button result = {0};
 
