@@ -5,7 +5,7 @@
 #include <SDL3/SDL.h> /// SDL things.
 #include <stdbool.h>  /// `bool screen_changed, force_render`.
 
-#define WINDOW_TITLE "SDL Demo"
+#define WINDOW_TITLE "R.S.: The Game"
 #define WINDOW_WIDTH  960
 #define WINDOW_HEIGHT 720
 #define WINDOW_RECT (SDL_FRect){0, 0, WINDOW_WIDTH, WINDOW_HEIGHT}

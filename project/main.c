@@ -40,6 +40,9 @@ miniaudio  version: 0.11.25 (updated 30.03.26 | checked 30.03.26) | https://gith
 
 /* TODOs: */
 /// - `struct Text`, more optimized for reusing text components;
+///    How would it be done: arguments into text texture creation. If, for example, `font` is `NULL`, we make a new one; otherwise we keep it.
+/// - smooth out objects' movement;
+/// - all safety-related todo's (such as parameter checking);
 /// - pushing an array of points/textures into array-like members of `game_components/*`, instead of individual `add_*()` calls;
 /// - player's car bouncing in beat to the music.
 
