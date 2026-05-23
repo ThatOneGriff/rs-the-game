@@ -3,10 +3,10 @@ Hey everyone! This is my first "big" non-tutorial project. No piece of code was 
 ## Notes
 
 0) Work was done on a Windows machine. That said, Windows dependencies should be minimal: there's only one `#include <windows.h>` in `./project/helpers/helpers.c` for colored console output, and the build instruction themselves would need to be rewritten (as they use `.dll`'s).
-1) **Download the libraries.** Put the folders into `./SDL3/` and the `.dll` files into the root folder:
-	- SDL3: https://github.com/libsdl-org/SDL/releases - `./SDL3/SDL/`, `./SDL3.dll`;
-	- SDL3_image: https://github.com/libsdl-org/SDL_image/releases - `./SDL3/SDL_image/`, `./SDL3_image.dll`;
-	- SDL3_TTF: https://github.com/libsdl-org/SDL_ttf/releases - `./SDL3/SDL_ttf/`, `./SDL3_ttf.dll`.
+1) **Download the libraries.** Put the folders into `./build/SDL3/` and the `.dll` files into the root folder:
+	- SDL3: https://github.com/libsdl-org/SDL/releases - `./build/SDL3/SDL/`, `./SDL3.dll`;
+	- SDL3_image: https://github.com/libsdl-org/SDL_image/releases - `./build/SDL3/SDL_image/`, `./SDL3_image.dll`;
+	- SDL3_TTF: https://github.com/libsdl-org/SDL_ttf/releases - `./build/SDL3/SDL_ttf/`, `./SDL3_ttf.dll`.
 
 ## Compilation
 

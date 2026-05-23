@@ -1,0 +1,3 @@
+-I ./.build/SDL3/SDL/x86_64-w64-mingw32/include -I ./.build/SDL3/SDL_Image/x86_64-w64-mingw32/include -I ./.build/SDL3/SDL_ttf/x86_64-w64-mingw32/include -I ./project/_miniaudio/miniaudio.h
+-L ./.build/SDL3/SDL/x86_64-w64-mingw32/lib     -L ./.build/SDL3/SDL_image/x86_64-w64-mingw32/lib     -L ./.build/SDL3/SDL_ttf/x86_64-w64-mingw32/lib     -L ./
+-lSDL3                                          -lSDL3_image                                          -lSDL3_ttf                                          -lminiaudio
