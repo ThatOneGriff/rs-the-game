@@ -32,10 +32,10 @@
 #include "scenes/menu/menu_scene.h"          /// Menu scene.
 
 /* = Library information =
-SDL3       version: 3.4.2   (updated 26.02.26 | checked 30.03.26) | https://github.com/libsdl-org/SDL/releases
-SDL3_image version: 3.4.0   (updated 22.01.26 | checked 30.03.26) | https://github.com/libsdl-org/SDL_image/releases
-SDL3_ttf   version: 3.2.2   (updated 31.03.25 | checked 30.03.26) | https://github.com/libsdl-org/SDL_ttf/releases
-miniaudio  version: 0.11.25 (updated 30.03.26 | checked 30.03.26) | https://github.com/mackron/miniaudio/releases
+SDL3       version: 3.4.8   (updated 23.05.26 | checked 23.05.26) | https://github.com/libsdl-org/SDL/releases
+SDL3_image version: 3.4.4   (updated 23.05.26 | checked 23.05.26) | https://github.com/libsdl-org/SDL_image/releases
+SDL3_ttf   version: 3.2.2   (updated 31.03.25 | checked 23.05.26) | https://github.com/libsdl-org/SDL_ttf/releases
+miniaudio  version: 0.11.25 (updated 30.03.26 | checked 23.05.26) | https://github.com/mackron/miniaudio/releases
 */
 
 /* TODOs: */
